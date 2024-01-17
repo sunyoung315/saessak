@@ -28,11 +28,11 @@ s3 = boto3.client(
 
 @app.route("/health", methods=["GET"])
 def health() :
-    return jsonify({"status" : 200, "success" : True})
+    return jsonify({"status" : HTTPStatus.OK, "success" : True})
     
 
     
-# s3 업로드 테스트
+### s3 업로드 테스트 ###
 @app.route("/s3/upload", methods=["POST"])
 def uploadS3() :
     if(request.method == "POST") :
@@ -45,10 +45,11 @@ def uploadS3() :
 
             path = os.path.join(folder,str(uuid.uuid1()),os.path.splitext(file_name)[1])
             s3.upload_fileobj(file, bucket_name, path)
-        return jsonify({"status" : 200 , "message" : "upload success", "data" : {"size" : len(files)}} )
+        return jsonify({"status" : HTTPStatus.OK , "message" : "upload success", "data" : {"size" : len(files)}} )
 
-    return jsonify({"status" : 500 , "message" : "internal server error"})
+    return jsonify({"status" : HTTPStatus.INTERNAL_SERVER_ERROR , "message" : "internal server error"})
 
+### 아이 특징 등록 ###
 @app.route("/api/v2/regist", methods=["POST"])
 def registKid() :
 
@@ -61,6 +62,8 @@ def registKid() :
         # db 저장
     return "data"
 
+
+### 사진을 인식하여 아이 각각의 앨범 등록 ###
 @app.route("/api/v2/album", methods=['POST'])
 def createAlbum():
     if(request.method == 'POST') :
