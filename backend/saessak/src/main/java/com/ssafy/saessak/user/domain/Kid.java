@@ -1,10 +1,13 @@
 package com.ssafy.saessak.user.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.ssafy.saessak.album.domain.Album;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Builder(toBuilder = true)
@@ -50,6 +53,8 @@ public class Kid {
     @JoinColumn(name="classroom_id")
     private Classroom classroom;
 
+    @OneToMany(mappedBy = "kid")
+    private List<Album> albums = new ArrayList<>();
     public Kid updateParent(Parent parent){
         this.parent = parent;
         return this;

@@ -28,11 +28,12 @@ public class Album {
     @Column
     private Date albumDate;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "classroom_id")
     private Classroom classroom;
 
-    @OneToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "kid_id")
     private Kid kid;
 
     @JsonIgnore

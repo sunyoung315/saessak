@@ -26,6 +26,7 @@ public class File {
     private String fileUuid;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "album_id")
     private Album album;
 
 }
