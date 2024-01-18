@@ -101,4 +101,10 @@ public class UserService {
         }
         return kidListResponseDtoList;
     }
+
+    public String getParentToken(Long kidId) {
+        Kid kid = kidRepository.findById(kidId).get();
+        Parent parent = kid.getParent();
+        return parent.getParentDevice();
+    }
 }
