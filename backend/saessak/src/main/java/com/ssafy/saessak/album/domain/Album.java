@@ -26,6 +26,7 @@ public class Album {
     private String albumTitle;
 
     @Column
+    @Temporal(TemporalType.DATE)
     private Date albumDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -39,5 +40,9 @@ public class Album {
     @JsonIgnore
     @OneToMany(mappedBy = "album", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private final List<File> fileList = new ArrayList<>();
+
+    public void addFile(File file) {
+        fileList.add(file);
+    }
 
 }
