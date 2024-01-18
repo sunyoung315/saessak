@@ -19,10 +19,8 @@ public class File {
     private String fileName;
     @Column
     private String filePath;
-    @Column
-    private String fileUuid;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "album_id")
     private Album album;
 

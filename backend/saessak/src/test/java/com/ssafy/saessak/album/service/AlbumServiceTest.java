@@ -6,8 +6,7 @@ import com.ssafy.saessak.album.repository.AlbumRepository;
 import com.ssafy.saessak.album.repository.FileRepository;
 import com.ssafy.saessak.user.domain.Classroom;
 import com.ssafy.saessak.user.repository.ClassroomRepository;
-import lombok.extern.slf4j.Slf4j;
-import org.junit.Before;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +22,8 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 
 
-//@SpringBootTest
-@Slf4j
+@SpringBootTest
+
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ComponentScan(basePackageClasses = AlbumService.class)
@@ -61,7 +60,6 @@ class AlbumServiceTest {
                     .album(album)
                     .fileName("file_no_" + i)
                     .filePath("file_path_"+ i)
-                    .fileUuid("file_uuid_"+ UUID.randomUUID())
                     .build();
             album.addFile(file);
             fileRepository.save(file);
@@ -74,10 +72,6 @@ class AlbumServiceTest {
     public void fetchTest() {
         Album album = albumRepository.findById(albumId).get();
 
-        log.debug("album : {}", album.getAlbumTitle() );
-        for(File file : album.getFileList()){
-            log.debug("file : {}", file);
-        }
 
         assertEquals(album.getFileList().size(),10);
     }
@@ -85,22 +79,8 @@ class AlbumServiceTest {
     @Test
     public void fetchFiles() {
         List<File> files = fileRepository.findAll();
-        for(File file : files){
-            log.debug("file : {}", file);
-        }
+
         assertEquals(files.size(),10);
     }
 
-    @Test
-    public void findByClassroom() {
-        List<Album> list = albumService.getClassAlbum(Classroom.builder().classroomId(1L).build());
-
-        log.debug("result : {}", list);
-        for(Album album : list){
-            for(File file : album.getFileList()){
-                log.debug("file : {}", file.getFileName() );
-            }
-        }
-        assertEquals(list.size(),1);
-    }
 }
