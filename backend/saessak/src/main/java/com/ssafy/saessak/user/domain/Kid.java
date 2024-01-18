@@ -53,8 +53,8 @@ public class Kid {
     @JoinColumn(name="classroom_id")
     private Classroom classroom;
 
-    @OneToMany(mappedBy = "kid")
-    private List<Album> albums = new ArrayList<>();
+//    @OneToMany(mappedBy = "kid")
+//    private List<Album> albums = new ArrayList<>();
     public Kid updateParent(Parent parent){
         this.parent = parent;
         return this;
