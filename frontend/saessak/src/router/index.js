@@ -12,6 +12,7 @@ import MenuView from '@/components/menu/MenuView.vue';
 import AttendanceView from '@/components/attendance/AttendanceView.vue';
 import ChatView from '@/components/chat/ChatView.vue';
 import SettingView from '@/components/setting/SettingView.vue';
+import BoardSummary from '@/components/board/BoardSummary.vue';
 
 const routes = [
 	{ path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFoundView },
@@ -34,6 +35,13 @@ const routes = [
 		path: '/board',
 		name: 'Board',
 		component: BoardView,
+		children: [
+			{
+				path: '/summary',
+				name: 'Summary',
+				component: BoardSummary,
+			},
+		],
 	},
 	{
 		path: '/album',

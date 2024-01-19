@@ -11,9 +11,8 @@ export default defineConfig({
 			'@': fileURLToPath(new URL('./src', import.meta.url)),
 		},
 	},
-	server: {
-		proxy: {
-			'/text-summary': 'https://naveropenapi.apigw.ntruss.com',
-		},
-	},
+	// // 포트번호 변경
+	// server: {
+	// 	port: 3000,
+	// },
 });
