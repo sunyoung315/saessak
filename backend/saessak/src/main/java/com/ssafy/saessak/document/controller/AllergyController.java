@@ -22,9 +22,9 @@ public class AllergyController {
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS));
     }
 
-    @GetMapping(value = "/list")
-    public ResponseEntity<ResultResponse> list() {
-        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, allergyService.list()));
+    @GetMapping(value = "/list/{classroomId}")
+    public ResponseEntity<ResultResponse> list(@PathVariable("classroomId") Long classroomId) {
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, allergyService.list(classroomId)));
     }
 
     @GetMapping(value = "/{kidId}")

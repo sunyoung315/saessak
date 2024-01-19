@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -28,8 +29,9 @@ public class AllergyService {
         kid.setAllergy(requestDto.getKidAllergy(), requestDto.getKidAllergySignature(), LocalDate.now());
     }
 
-    public List<AllergyResponseDto> list() {
-        List<Kid> kidList = kidRepository.findAll();
+    public List<AllergyResponseDto> list(Long classroomId) {
+        Classroom classroom = classroomRepository.findById(classroomId).get();
+        List<Kid> kidList = kidRepository.findAllByClassroom(classroom);
 
         List<AllergyResponseDto> allgeryResponseDtoList = new ArrayList<>();
 

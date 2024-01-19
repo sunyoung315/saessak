@@ -47,6 +47,7 @@ public class UserService {
         final Kid kid = Kid.builder()
                 .kidName(kidRegistRequestDto.getKidName())
                 .kidBirthday(kidRegistRequestDto.getKidBirthday())
+                .kidAllergyCheck(false)
                 .classroom(classroom)
                 .build();
 

@@ -1,5 +1,6 @@
 package com.ssafy.saessak.user.domain;
 
+import com.ssafy.saessak.menu.domain.Menu;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,4 +22,7 @@ public class Daycare {
 
     @OneToMany(mappedBy = "daycare", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private final List<Classroom> classroomList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "daycare", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private final List<Menu> menuList = new ArrayList<>();
 }
