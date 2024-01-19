@@ -1,4 +1,4 @@
-package com.ssafy.saessak.attendance.dto;
+package com.ssafy.saessak.alarm.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,11 +10,12 @@ import java.time.LocalTime;
 @Builder
 @Getter
 @AllArgsConstructor
-public class AttendanceTimeResponseDto {
+public class AlarmResponseDto {
 
+    private Long alarmId;
     private String kidName;
-    private Long attendanceId;
-    private LocalDate attendanceDate;
-    private LocalTime attendanceTime;
+    private String alarmType;
+    private LocalDate alarmDate;
+    private LocalTime alarmContent;
 
 }

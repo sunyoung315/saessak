@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/fcm")
+@RequestMapping("/api/fcm")
 public class FcmController {
 
     @Autowired

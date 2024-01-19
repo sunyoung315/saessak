@@ -1,5 +1,7 @@
 package com.ssafy.saessak.attendance.controller;
 
+import com.ssafy.saessak.alarm.dto.AlarmRequestDto;
+import com.ssafy.saessak.alarm.service.AlarmService;
 import com.ssafy.saessak.attendance.dto.AttendanceRequestDto;
 import com.ssafy.saessak.attendance.dto.AttendanceTimeResponseDto;
 import com.ssafy.saessak.attendance.service.AttendanceService;
@@ -21,22 +23,31 @@ public class AttendanceController {
     private final AttendanceService attendanceService;
     private final UserService userService;
     private final FcmService fcmService;
+    private final AlarmService alarmService;
 
     @PostMapping(value = "/in/{kidId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResultResponse> inTime(@PathVariable("kidId") Long kidId) {
         AttendanceTimeResponseDto responseDto = attendanceService.inTime(kidId);
         String parentToken = userService.getParentToken(kidId);
 
-      FcmNotificationRequestDto.Notification notification = FcmNotificationRequestDto.Notification.builder()
+        FcmNotificationRequestDto.Notification notification = FcmNotificationRequestDto.Notification.builder()
               .token(parentToken)
               .title("등원 알림")
-              .body(responseDto.getAttendanceDate()+"일 "+responseDto.getAttendanceTime()+"에 등원했습니다")
+              .body(responseDto.getKidName()+" 어린이가 "+ responseDto.getAttendanceDate()+"일 "+responseDto.getAttendanceTime()+"에 등원했습니다")
               .build();
-      FcmNotificationRequestDto fcmRequestDto = FcmNotificationRequestDto.builder()
+        FcmNotificationRequestDto fcmRequestDto = FcmNotificationRequestDto.builder()
               .notification(notification)
               .build();
 
+        AlarmRequestDto alarmRequestDto = AlarmRequestDto.builder()
+                .kidId(kidId)
+                .alarmType("등원 알림")
+                .alarmDate(responseDto.getAttendanceDate())
+                .alarmContent(responseDto.getAttendanceTime())
+                .build();
+
         fcmService.sendNotification(fcmRequestDto);
+        alarmService.insertAlarm(alarmRequestDto);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, responseDto));
     }
 
@@ -48,13 +59,21 @@ public class AttendanceController {
         FcmNotificationRequestDto.Notification notification = FcmNotificationRequestDto.Notification.builder()
                 .token(parentToken)
                 .title("하원 알림")
-                .body(responseDto.getAttendanceDate()+"일 "+responseDto.getAttendanceTime()+"에 하원했습니다")
+                .body(responseDto.getKidName()+" 어린이가 "+ responseDto.getAttendanceDate()+"일 "+responseDto.getAttendanceTime()+"에 하원했습니다")
                 .build();
         FcmNotificationRequestDto fcmRequestDto = FcmNotificationRequestDto.builder()
                 .notification(notification)
                 .build();
 
+        AlarmRequestDto alarmRequestDto = AlarmRequestDto.builder()
+                .kidId(kidId)
+                .alarmType("하원 알림")
+                .alarmDate(responseDto.getAttendanceDate())
+                .alarmContent(responseDto.getAttendanceTime())
+                .build();
+
         fcmService.sendNotification(fcmRequestDto);
+        alarmService.insertAlarm(alarmRequestDto);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, responseDto));
     }
 

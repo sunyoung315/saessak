@@ -42,6 +42,7 @@ public class AttendanceService {
         kid.getAttendanceList().add(attendance);
 
         return AttendanceTimeResponseDto.builder()
+                .kidName(kid.getKidName())
                 .attendanceId(savedAttendance.getAttendanceId())
                 .attendanceDate(savedAttendance.getAttendanceDate())
                 .attendanceTime(savedAttendance.getAttendanceInTime())
@@ -55,6 +56,7 @@ public class AttendanceService {
 
         Attendance savedAttendance = attendance.outTime();
         return AttendanceTimeResponseDto.builder()
+                .kidName(kid.getKidName())
                 .attendanceId(savedAttendance.getAttendanceId())
                 .attendanceDate(savedAttendance.getAttendanceDate())
                 .attendanceTime(savedAttendance.getAttendanceOutTime())
