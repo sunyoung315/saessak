@@ -1,11 +1,28 @@
 <template>
 	<div>
 		<h2>BoardView</h2>
-		<button type="button" @click="getSummaryText()">요약레포트</button>
+		<button
+			type="button"
+			@click="getSummaryText()"
+			class="text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-gray-600 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800"
+		>
+			요약레포트
+		</button>
+		<div>
+			<b>본문</b>
+		</div>
+		<div>{{ content }}</div>
+		<div>
+			<b>요약</b>
+		</div>
+		<div>{{ summary }}</div>
 	</div>
 </template>
 
 <script setup>
+// import axios from 'axios';
+import { ref } from 'vue';
+
 const API_URL = '/text-summary/v1/summarize';
 
 const API_KEY_ID = import.meta.env.VITE_CLOVA_API_KEY_ID;
@@ -34,9 +51,10 @@ const boardList = [
 // boardContent 하나의 String으로 연결
 let content = '';
 for (let i = 0; i < boardList.length; i++) {
-	content += boardList[i].boardContent + '\n';
+	content +=
+		'[' + boardList[i].boardDate + ']\n' + boardList[i].boardContent + '\n';
 }
-// console.log(content);
+console.log(content);
 
 const docObject = {
 	content,
@@ -46,7 +64,7 @@ const optionObject = {
 	language: 'ko',
 	model: 'general',
 	tone: 1,
-	summaryCount: 1,
+	summaryCount: 3,
 };
 
 // 요청으로 보낼 데이터 하나의 Object로 생성
@@ -67,12 +85,14 @@ const requestOptions = {
 	body: JSON.stringify(requestData),
 };
 
+const summary = ref('');
+
 const getSummaryText = async function () {
 	try {
 		const response = await fetch(API_URL, requestOptions);
 		const data = await response.json();
+		summary.value = data.summary;
 		console.log(data);
-		return data; // 변환된 텍스트 결과 반환
 	} catch (err) {
 		console.log(err);
 		return null;
