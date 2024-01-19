@@ -1,7 +1,7 @@
 package com.ssafy.saessak.user.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ssafy.saessak.attendance.domain.Attendance;
+import com.ssafy.saessak.document.domain.Replacement;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -56,8 +56,21 @@ public class Kid {
     @OneToMany(mappedBy = "kid", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Attendance> attendanceList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "kid", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private List<Replacement> replacementList = new ArrayList<>();
+
     public Kid updateParent(Parent parent){
         this.parent = parent;
         return this;
+    }
+
+    public void setAllergy(String kidAllergy, String kidAllergySignature, LocalDate now) {
+        this.kidAllergy = kidAllergy;
+        this.kidAllergySignature = kidAllergySignature;
+        this.kidAllergyDate = now;
+    }
+
+    public void changeCheck() {
+        this.kidAllergyCheck = true;
     }
 }
