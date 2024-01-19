@@ -19,7 +19,7 @@ import java.util.List;
 @Table(name = "album")
 public class Album {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)//auto increase ment
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long AlbumId;
 
     @Column

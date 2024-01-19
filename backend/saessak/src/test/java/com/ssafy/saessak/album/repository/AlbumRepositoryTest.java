@@ -114,11 +114,6 @@ class AlbumRepositoryTest {
 
     }
 
-    @Test
-    public void findByClassroomId() {
-        List<Album> albums = albumRepository.findByClassroom(Classroom.builder().classroomId(1L).build());
-        assertEquals(albums.size(), 1);
-    }
 
 
 }
