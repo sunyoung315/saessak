@@ -1,5 +1,5 @@
 <template>
-	<div></div>
+	<div>AlbumView</div>
 </template>
 
 <script setup></script>

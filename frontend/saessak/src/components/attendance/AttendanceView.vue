@@ -1,5 +1,5 @@
 <template>
-	<div></div>
+	<div>AttendanceView</div>
 </template>
 
 <script setup></script>

@@ -1,5 +1,5 @@
 <template>
-	<div></div>
+	<div>NoticeView</div>
 </template>
 
 <script setup></script>

@@ -1,5 +1,5 @@
 <template>
-	<div></div>
+	<div>MenuView</div>
 </template>
 
 <script setup></script>

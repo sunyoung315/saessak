@@ -1,15 +1,21 @@
-<script setup>
-import { RouterLink, RouterView } from 'vue-router'
-import Header from "@/components/layout/Header.vue";
-import HelloWorld from './components/HelloWorld.vue'
-import ChatListView from './views/ChatListView.vue';
-import ChatView from './views/ChatView.vue';
-</script>
-
 <template>
-    <router-view></router-view>
+	<TheHeader />
+	<div id="nav-view">
+		<TheNav />
+		<TheView />
+	</div>
+	<TheFooter />
 </template>
 
-<style scoped>
+<script setup>
+import TheHeader from '@/components/common/TheHeader.vue';
+import TheNav from '@/components/common/TheNav.vue';
+import TheView from '@/components/common/TheView.vue';
+import TheFooter from '@/components/common/TheFooter.vue';
+</script>
 
+<style scoped>
+#nav-view {
+	display: flex;
+}
 </style>
