@@ -6,6 +6,7 @@ import LoginView from '@/views/LoginView.vue';
 import UserView from '@/components/user/UserView.vue';
 import BoardView from '@/components/board/BoardView.vue';
 import AlbumView from '@/components/album/AlbumView.vue';
+import AlbumCreate from '@/components/album/albumItems/AlbumCreate.vue';
 import NoticeView from '@/components/notice/NoticeView.vue';
 import DocumentView from '@/components/document/DocumentView.vue';
 import MenuView from '@/components/menu/MenuView.vue';
@@ -48,6 +49,13 @@ const routes = [
 		path: '/album',
 		name: 'Album',
 		component: AlbumView,
+		children: [
+			{
+				path: 'create',
+				name: 'AlbumCreate',
+				component: AlbumCreate,
+			}
+		]
 	},
 	{
 		path: '/notice',

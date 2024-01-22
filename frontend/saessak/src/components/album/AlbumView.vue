@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<div class="flex justify-between items-center">
-			<span class="text-4xl m-5 font-extrabold inline-block">앨범 제목</span>
+			<span class="text-4xl m-5 font-extrabold inline-block"><RouterLink to="/album">앨범 제목</RouterLink></span>
 			<label class="relative inline-flex items-center me-5 cursor-pointer">
 				<input type="checkbox" class="sr-only peer" checked />
 				<div
@@ -31,20 +31,44 @@
 				>
 					다운로드
 				</button>
+				<button class="addBtn" @click="addAlbum">추가</button>
 			</div>
 		</div>
+		<!-- <div v-if="user === 'teacher'">
+			<AlbumTeacherView />
+		</div>
+		<div v-else>
+			<AlbumParentsView />
+		</div> -->
 		<!-- <AlbumCardList /> -->
 		<!-- <AlbumCarouselList /> -->
-		<AlbumCreate />
+		<!-- <AlbumCreate /> -->
+		<DatePicker />
+		<RouterView />
 	</div>
 </template>
 
 <script setup>
+import axios from 'axios';
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+// import AlbumParentsView from '@/components/album/AlbumParentsView.vue';
+// import AlbumTeacherView from '@/components/album/AlbumTeacherView.vue';
+import DatePicker from '@/components/album/DatePicker.vue';
+
 // import AlbumCardList from '@/components/album/albumItems/AlbumCardList.vue';
 // import AlbumCarouselList from '@/components/album/albumItems/AlbumCarouselList.vue';
-import AlbumCreate from '@/components/album/albumItems/AlbumCreate.vue';
-import axios from 'axios';
+// import AlbumCreate from '@/components/album/albumItems/AlbumCreate.vue';
+
+const router = useRouter();
+
+// user
+const user = 'teacher';
+
+// 추가 버튼
+const addAlbum = () => {
+	router.push({name: 'AlbumCreate'});
+};
 
 // File Download 시작
 const download = async () => {
@@ -66,8 +90,9 @@ const download = async () => {
 	window.URL.revokeObjectURL(newUrl);
 }; // File Download 끝
 
-// DatePicker
+// DatePicker 시작
 const date = ref(new Date());
+// DatePicker 끝
 </script>
 
 <style scoped></style>
