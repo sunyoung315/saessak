@@ -1,3 +1,4 @@
+// tailwind.config.js
 module.exports = {
 	// purge: [],
 	purge: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
@@ -21,5 +22,5 @@ module.exports = {
 	variants: {
 		extend: {},
 	},
-	plugins: [],
+	plugins: [require("tailwind-scrollbar-hide")]],
 };

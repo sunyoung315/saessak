@@ -11,6 +11,7 @@ import DocumentView from '@/components/document/DocumentView.vue';
 import MenuView from '@/components/menu/MenuView.vue';
 import AttendanceView from '@/components/attendance/AttendanceView.vue';
 import ChatView from '@/components/chat/ChatView.vue';
+import ChatDetail from "@/components/chat/ChatDetailView.vue";
 import SettingView from '@/components/setting/SettingView.vue';
 import BoardSummary from '@/components/board/BoardSummary.vue';
 
@@ -73,6 +74,10 @@ const routes = [
 		name: 'Chat',
 		component: ChatView,
 	},
+	{
+		path: "/chat/:id",
+		component: ChatDetail
+	}, // /chat/:id에 대한 동적 라우트
 	{
 		path: '/setting',
 		name: 'Setting',
