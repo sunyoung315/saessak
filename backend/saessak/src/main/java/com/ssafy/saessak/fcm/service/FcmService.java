@@ -11,6 +11,7 @@ import com.ssafy.saessak.menu.domain.Food;
 import com.ssafy.saessak.menu.domain.Menu;
 import com.ssafy.saessak.menu.repository.FoodRepository;
 import com.ssafy.saessak.menu.repository.MenuRepository;
+import com.ssafy.saessak.user.domain.Classroom;
 import com.ssafy.saessak.user.domain.Kid;
 import com.ssafy.saessak.user.domain.Parent;
 import com.ssafy.saessak.user.domain.Teacher;
@@ -124,6 +125,7 @@ public class FcmService {
                 }
 
                 if (alarmFlag) {
+                    // 학부모에게 알림
                     Parent parent = kid.getParent();
                     FcmNotificationRequestDto.Notification notification1 = FcmNotificationRequestDto.Notification.builder()
                             .token(parent.getParentDevice())
@@ -133,24 +135,28 @@ public class FcmService {
                     FcmNotificationRequestDto fcmNotificationRequestDto1 = FcmNotificationRequestDto.builder()
                             .notification(notification1)
                             .build();
+                    sendNotification(fcmNotificationRequestDto1);
 
-                    FcmNotificationRequestDto.Notification notification2 = FcmNotificationRequestDto.Notification.builder()
-                            .token(kid.getTeacher().getTeacherDevice())
-                            .title("알러지 알림")
-                            .body(LocalDate.now() + "일에 " + menu.getMenuType() + "식단에 " + kid.getKidName() + " 어린이의 알러지를 유발하는 음식이 존재합니다")
-                            .build();
-                    FcmNotificationRequestDto fcmNotificationRequestDto2 = FcmNotificationRequestDto.builder()
-                            .notification(notification1)
-                            .build();
+                    // 반에 있는 선생님들에게 알림
+                    Classroom classroom = kid.getClassroom();
+                    List<Teacher> teacherList = teacherRepository.findAllByClassroom(classroom);
+                    for(Teacher teacher : teacherList) {
+                        FcmNotificationRequestDto.Notification notification2 = FcmNotificationRequestDto.Notification.builder()
+                                .token(teacher.getTeacherDevice())
+                                .title("알러지 알림")
+                                .body(LocalDate.now() + "일에 " + menu.getMenuType() + "식단에 " + kid.getKidName() + " 어린이의 알러지를 유발하는 음식이 존재합니다")
+                                .build();
+                        FcmNotificationRequestDto fcmNotificationRequestDto2 = FcmNotificationRequestDto.builder()
+                                .notification(notification1)
+                                .build();
+                        sendNotification(fcmNotificationRequestDto2);
+                    }
 
                     AlarmRequestDto alarmRequestDto = AlarmRequestDto.builder()
                             .kidId(kid.getKidId())
                             .alarmType("알러지 알림")
                             .alarmDate(LocalDate.now())
                             .build();
-
-                    sendNotification(fcmNotificationRequestDto1);
-                    sendNotification(fcmNotificationRequestDto2);
                     insertAlarm(alarmRequestDto);
                 }
             }
@@ -188,6 +194,7 @@ public class FcmService {
                 }
 
                 if (alarmFlag) {
+                    // 학부모에게 알림
                     Parent parent = kid.getParent();
                     FcmNotificationRequestDto.Notification notification1 = FcmNotificationRequestDto.Notification.builder()
                             .token(parent.getParentDevice())
@@ -197,24 +204,28 @@ public class FcmService {
                     FcmNotificationRequestDto fcmNotificationRequestDto1 = FcmNotificationRequestDto.builder()
                             .notification(notification1)
                             .build();
+                    sendNotification(fcmNotificationRequestDto1);
 
-                    FcmNotificationRequestDto.Notification notification2 = FcmNotificationRequestDto.Notification.builder()
-                            .token(kid.getTeacher().getTeacherDevice())
-                            .title("알러지 알림")
-                            .body(LocalDate.now() + "일에 " + menu.getMenuType() + "식단에 " + kid.getKidName() + " 어린이의 알러지를 유발하는 음식이 존재합니다")
-                            .build();
-                    FcmNotificationRequestDto fcmNotificationRequestDto2 = FcmNotificationRequestDto.builder()
-                            .notification(notification1)
-                            .build();
+                    // 반에 있는 선생님들에게 알림
+                    Classroom classroom = kid.getClassroom();
+                    List<Teacher> teacherList = teacherRepository.findAllByClassroom(classroom);
+                    for(Teacher teacher : teacherList) {
+                        FcmNotificationRequestDto.Notification notification2 = FcmNotificationRequestDto.Notification.builder()
+                                .token(teacher.getTeacherDevice())
+                                .title("알러지 알림")
+                                .body(LocalDate.now() + "일에 " + menu.getMenuType() + "식단에 " + kid.getKidName() + " 어린이의 알러지를 유발하는 음식이 존재합니다")
+                                .build();
+                        FcmNotificationRequestDto fcmNotificationRequestDto2 = FcmNotificationRequestDto.builder()
+                                .notification(notification1)
+                                .build();
+                        sendNotification(fcmNotificationRequestDto2);
+                    }
 
                     AlarmRequestDto alarmRequestDto = AlarmRequestDto.builder()
                             .kidId(kid.getKidId())
                             .alarmType("알러지 알림")
                             .alarmDate(LocalDate.now())
                             .build();
-
-                    sendNotification(fcmNotificationRequestDto1);
-                    sendNotification(fcmNotificationRequestDto2);
                     insertAlarm(alarmRequestDto);
                 }
             }
