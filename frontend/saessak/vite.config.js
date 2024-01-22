@@ -11,4 +11,8 @@ export default defineConfig({
 			'@': fileURLToPath(new URL('./src', import.meta.url)),
 		},
 	},
+	// // 포트번호 변경
+	// server: {
+	// 	port: 3000,
+	// },
 });
