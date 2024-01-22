@@ -1,24 +1,23 @@
 package com.ssafy.saessak.fcm.controller;
 
-import com.ssafy.saessak.fcm.dto.FcmNotificationRequestDto;
 import com.ssafy.saessak.fcm.dto.FcmTokenRequestDto;
 import com.ssafy.saessak.fcm.service.FcmService;
 import com.ssafy.saessak.result.ResultCode;
 import com.ssafy.saessak.result.ResultResponse;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
 import jakarta.validation.Valid;
 
-@RestController
 @RequestMapping("/api/fcm")
+@RequiredArgsConstructor
+@RestController
 public class FcmController {
 
-    @Autowired
     // 추후 작성 예정
-    private FcmService fcmService;
+    private final FcmService fcmService;
 
     @PostMapping("/parent/token")
     public ResponseEntity<?> saveParentToken(@RequestBody FcmTokenRequestDto requestDto) {
@@ -26,11 +25,11 @@ public class FcmController {
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS));
     }
 
-//    @PostMapping("/teacher/token")
-//    public ResponseEntity<?> saveTeacherToken(@RequestBody FcmTokenRequestDto requestDto) {
-//        fcmService.saveTeacherToken(requestDto);
-//        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS));
-//    }
+    @PostMapping("/teacher/token")
+    public ResponseEntity<?> saveTeacherToken(@RequestBody FcmTokenRequestDto requestDto) {
+        fcmService.saveTeacherToken(requestDto);
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS));
+    }
 
     @GetMapping("/parent/alarm/{parentId}")
     public ResponseEntity<?> changeParentAlarm(@PathVariable("parentId") Long parentId) {
@@ -38,11 +37,11 @@ public class FcmController {
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS));
     }
 
-//    @GetMapping("/parent/alarm/{teacherId}")
-//    public ResponseEntity<?> changeParentAlarm(@PathVariable("teacherId") Long teacherId) {
-//        fcmService.changeTeacherAlarm(teacherId);
-//        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS));
-//    }
+    @GetMapping("/teacher/alarm/{teacherId}")
+    public ResponseEntity<?> changeTeacherAlarm(@PathVariable("teacherId") Long teacherId) {
+        fcmService.changeTeacherAlarm(teacherId);
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS));
+    }
 
 //    @PostMapping("/sendNotification")
 //    // DTO 작성 예정

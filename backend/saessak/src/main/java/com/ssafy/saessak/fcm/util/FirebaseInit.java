@@ -28,7 +28,6 @@ public class FirebaseInit {
 
                 // 이미 초기화가 되어있는 지 확인 후
                 if (FirebaseApp.getApps().isEmpty()) {
-
                     // 비어있다면 초기화
                     FirebaseApp.initializeApp(options);
                     initialized = true;

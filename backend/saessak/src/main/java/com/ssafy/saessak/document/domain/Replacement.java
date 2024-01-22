@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 @Entity
 @Getter
@@ -24,7 +23,7 @@ public class Replacement {
     private Kid kid;
 
     @Column(name = "replacement_date")
-    private String replacementDate;
+    private LocalDate replacementDate;
 
     @Column(name = "replacement_time")
     private String replacementTime;

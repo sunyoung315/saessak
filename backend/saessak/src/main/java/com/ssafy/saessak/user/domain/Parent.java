@@ -1,11 +1,9 @@
 package com.ssafy.saessak.user.domain;
 
 
-import com.ssafy.saessak.attendance.domain.Attendance;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 

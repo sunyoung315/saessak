@@ -27,9 +27,9 @@ public class MenuService {
     private final DaycareRepository daycareRepository;
 
     @Transactional
-    public void insert(List<MenuRequestDto> menuRequestDtoList) {
+    public void insert(Long daycareId, List<MenuRequestDto> menuRequestDtoList) {
         for(MenuRequestDto requestDto : menuRequestDtoList) {
-            Daycare daycare = daycareRepository.findById(requestDto.getDaycareId()).get();
+            Daycare daycare = daycareRepository.findById(daycareId).get();
             Optional<Menu> result = menuRepository.findByDaycareAndMenuDateAndMenuType(daycare, requestDto.getMenuDate(), requestDto.getMenuType());
             if(result.isPresent()) { // 식단이 존재하는 경우
                 Menu menu = result.get();
@@ -37,7 +37,7 @@ public class MenuService {
                 Food food = Food.builder()
                         .menu(menu)
                         .foodName(requestDto.getFoodName())
-                        .allergyNum(requestDto.getAllergyNum())
+                        .foodAllergy(requestDto.getFoodAllergy())
                         .build();
                 foodRepository.save(food);
             } else {
@@ -51,7 +51,7 @@ public class MenuService {
                 Food food = Food.builder()
                         .menu(savedMenu)
                         .foodName(requestDto.getFoodName())
-                        .allergyNum(requestDto.getAllergyNum())
+                        .foodAllergy(requestDto.getFoodAllergy())
                         .build();
                 foodRepository.save(food);
             }
@@ -77,7 +77,7 @@ public class MenuService {
                 FoodResponseDto foodResponseDto = FoodResponseDto.builder()
                         .foodId(food.getFoodId())
                         .foodName(food.getFoodName())
-                        .allergyNum(food.getAllergyNum())
+                        .foodAllergy(food.getFoodAllergy())
                         .build();
                 foodResponseDtoList.add(foodResponseDto);
             }

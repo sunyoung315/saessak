@@ -1,7 +1,6 @@
 package com.ssafy.saessak.attendance.domain;
 
 import com.ssafy.saessak.user.domain.Kid;
-import com.ssafy.saessak.user.domain.Parent;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -24,10 +23,13 @@ public class Attendance {
     @JoinColumn(name = "kid_id")
     private Kid kid;
 
+    @Column(name = "attendance_date")
     private LocalDate attendanceDate;
 
+    @Column(name = "attendance_in_time")
     private LocalTime attendanceInTime;
 
+    @Column(name = "attendance_out_time")
     private LocalTime attendanceOutTime;
 
     public Attendance outTime(){

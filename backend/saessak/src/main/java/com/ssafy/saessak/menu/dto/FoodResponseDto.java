@@ -11,6 +11,6 @@ public class FoodResponseDto {
 
     private Long foodId;
     private String foodName;
-    private String allergyNum;
+    private String foodAllergy;
 
 }

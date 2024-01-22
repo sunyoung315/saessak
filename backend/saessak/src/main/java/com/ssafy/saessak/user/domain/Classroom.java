@@ -27,5 +27,9 @@ public class Classroom {
 
     @JsonIgnore
     @OneToMany(mappedBy = "classroom", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private final List<Teacher> teacherList = new ArrayList<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "classroom", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private final List<Kid> kidList = new ArrayList<>();
 }

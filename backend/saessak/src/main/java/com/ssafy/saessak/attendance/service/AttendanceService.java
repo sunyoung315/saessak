@@ -1,11 +1,10 @@
 package com.ssafy.saessak.attendance.service;
 
 import com.ssafy.saessak.attendance.domain.Attendance;
-import com.ssafy.saessak.attendance.dto.AttendanceKidListResponseDto;
-import com.ssafy.saessak.attendance.dto.AttendanceKidResponseDto;
-import com.ssafy.saessak.attendance.dto.AttendanceRequestDto;
-import com.ssafy.saessak.attendance.dto.AttendanceTimeResponseDto;
+import com.ssafy.saessak.attendance.dto.*;
 import com.ssafy.saessak.attendance.repository.AttendanceRepository;
+import com.ssafy.saessak.document.domain.Replacement;
+import com.ssafy.saessak.document.repository.ReplacementRepository;
 import com.ssafy.saessak.user.domain.Classroom;
 import com.ssafy.saessak.user.domain.Kid;
 import com.ssafy.saessak.user.repository.ClassroomRepository;
@@ -16,10 +15,12 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +29,7 @@ public class AttendanceService {
     private final AttendanceRepository attendanceRepository;
     private final ClassroomRepository classroomRepository;
     private final KidRepository kidRepository;
+    private final ReplacementRepository replacementRepository;
 
     @Transactional
     public AttendanceTimeResponseDto inTime(Long kidId) {
@@ -109,5 +111,28 @@ public class AttendanceService {
         int daysToAdd = (week-1)*7 - firstDayOfWeek + 1;
 
         return firstDayOfMonth.plusDays(daysToAdd);
+    }
+    
+    public ReplacementResponseDto checkReplacement(Long kidId) {
+        Kid kid = kidRepository.findById(kidId).get();
+        List<Replacement> replacementList = replacementRepository.findByKid(kid);
+
+        boolean check = false;
+        for(Replacement replacement : replacementList) {
+            if(replacement.getReplacementDate()==LocalDate.now()) {
+                LocalTime replacementTime = LocalTime.parse(replacement.getReplacementTime());
+                long timegap = ChronoUnit.MINUTES.between(replacementTime, LocalTime.now());
+                if(Math.abs(timegap) <= 15) {
+                    ReplacementResponseDto replacementResponseDto = ReplacementResponseDto.builder()
+                            .kidName(kid.getKidName())
+                            .replacementName(replacement.getReplacementName())
+                            .replacementRelationship(replacement.getReplacementRelationship())
+                            .build();
+                    return replacementResponseDto;
+                }
+            }
+        }
+
+        return null;
     }
 }

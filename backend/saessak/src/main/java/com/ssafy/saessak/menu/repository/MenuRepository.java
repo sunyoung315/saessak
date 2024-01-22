@@ -15,4 +15,6 @@ public interface MenuRepository extends JpaRepository<Menu, Long> {
     Optional<Menu> findByDaycareAndMenuDateAndMenuType (Daycare daycare, LocalDate menuDate, String menuType);
 
     List<Menu> findByMenuDateBetween(LocalDate startDate, LocalDate endDate);
+
+    Menu findByMenuDateAndMenuType(LocalDate now, String menuType);
 }

@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 @Builder
 @Getter
@@ -13,7 +12,7 @@ import java.time.LocalTime;
 public class ReplacementDetailResponseDto {
 
     private Long replacementId;
-    private String replacementDate;
+    private LocalDate replacementDate;
     private String replacementTime;
     private String replacementVehicle;
     private String replacementRelationship;

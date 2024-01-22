@@ -1,7 +1,7 @@
 package com.ssafy.saessak.document.service;
 
-import com.ssafy.saessak.alarm.domain.Alarm;
 import com.ssafy.saessak.document.domain.Replacement;
+import com.ssafy.saessak.document.dto.ReplacementAlarmResponseDto;
 import com.ssafy.saessak.document.dto.ReplacementDetailResponseDto;
 import com.ssafy.saessak.document.dto.ReplacementRequestDto;
 import com.ssafy.saessak.document.dto.ReplacementResponseDto;
@@ -27,7 +27,7 @@ public class ReplacementService {
     private final ClassroomRepository classroomRepository;
 
     @Transactional
-    public Long insert(ReplacementRequestDto requestDto) {
+    public ReplacementAlarmResponseDto insert(ReplacementRequestDto requestDto) {
         Kid kid = kidRepository.findById(requestDto.getKidId()).get();
 
         Replacement replacement = Replacement.builder()
@@ -44,7 +44,15 @@ public class ReplacementService {
                 .build();
 
         Replacement savedReplacement = replacementRepository.save(replacement);
-        return savedReplacement.getReplacementId();
+
+        ReplacementAlarmResponseDto responseDto = ReplacementAlarmResponseDto.builder()
+                .replacementId(savedReplacement.getReplacementId())
+                .teacherAlarmDevice(savedReplacement.getKid().getTeacher().getTeacherDevice())
+                .kidId(savedReplacement.getKid().getKidId())
+                .kidName(savedReplacement.getKid().getKidName())
+                .build();
+
+        return responseDto;
     }
 
     public List<ReplacementResponseDto> listOfkidId(Long kidId) {

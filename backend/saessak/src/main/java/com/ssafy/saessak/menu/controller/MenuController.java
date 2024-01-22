@@ -9,10 +9,7 @@ import com.ssafy.saessak.result.ResultResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -23,9 +20,9 @@ public class MenuController {
 
     private final MenuService menuService;
 
-    @PostMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResultResponse> insert(@RequestBody List<MenuRequestDto> menuRequestDtoList) {
-        menuService.insert(menuRequestDtoList);
+    @PostMapping(value = "/{daycardId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResultResponse> insert(@PathVariable Long daycardId, @RequestBody List<MenuRequestDto> menuRequestDtoList) {
+        menuService.insert(daycardId, menuRequestDtoList);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS));
     }
 

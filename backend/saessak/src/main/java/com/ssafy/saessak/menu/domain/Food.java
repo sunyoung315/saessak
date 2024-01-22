@@ -22,6 +22,6 @@ public class Food {
     @Column(name = "food_name")
     private String foodName;
 
-    @Column(name = "allergy_num")
-    private String allergyNum;
+    @Column(name = "food_allergy")
+    private String foodAllergy;
 }

@@ -3,7 +3,6 @@ package com.ssafy.saessak.alarm.domain;
 import com.ssafy.saessak.user.domain.Kid;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.Fetch;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -24,10 +23,13 @@ public class Alarm {
     @JoinColumn(name = "kid_id")
     private Kid kid;
 
+    @Column(name = "alarm_type")
     private String alarmType;
 
+    @Column(name = "alarm_date")
     private LocalDate alarmDate;
 
+    @Column(name = "alarm_content")
     private LocalTime alarmContent;
 
 }

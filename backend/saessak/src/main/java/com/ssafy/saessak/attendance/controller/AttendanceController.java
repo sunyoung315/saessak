@@ -4,6 +4,7 @@ import com.ssafy.saessak.alarm.dto.AlarmRequestDto;
 import com.ssafy.saessak.alarm.service.AlarmService;
 import com.ssafy.saessak.attendance.dto.AttendanceRequestDto;
 import com.ssafy.saessak.attendance.dto.AttendanceTimeResponseDto;
+import com.ssafy.saessak.attendance.dto.ReplacementResponseDto;
 import com.ssafy.saessak.attendance.service.AttendanceService;
 import com.ssafy.saessak.fcm.dto.FcmNotificationRequestDto;
 import com.ssafy.saessak.fcm.service.FcmService;
@@ -53,28 +54,50 @@ public class AttendanceController {
 
     @PostMapping(value = "/out/{kidId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResultResponse> outTime(@PathVariable("kidId") Long kidId) {
-        AttendanceTimeResponseDto responseDto = attendanceService.outTime(kidId);
+        AttendanceTimeResponseDto attendanceTimeResponseDto = attendanceService.outTime(kidId);
         String parentToken = userService.getParentToken(kidId);
 
-        FcmNotificationRequestDto.Notification notification = FcmNotificationRequestDto.Notification.builder()
-                .token(parentToken)
-                .title("하원 알림")
-                .body(responseDto.getKidName()+" 어린이가 "+ responseDto.getAttendanceDate()+"일 "+responseDto.getAttendanceTime()+"에 하원했습니다")
-                .build();
-        FcmNotificationRequestDto fcmRequestDto = FcmNotificationRequestDto.builder()
-                .notification(notification)
-                .build();
+        FcmNotificationRequestDto.Notification notification = null;
+        FcmNotificationRequestDto fcmRequestDto = null;
+        AlarmRequestDto alarmRequestDto = null;
 
-        AlarmRequestDto alarmRequestDto = AlarmRequestDto.builder()
-                .kidId(kidId)
-                .alarmType("하원 알림")
-                .alarmDate(responseDto.getAttendanceDate())
-                .alarmContent(responseDto.getAttendanceTime())
-                .build();
+        ReplacementResponseDto replacementResponseDto = attendanceService.checkReplacement(kidId);
+        if(replacementResponseDto != null) { // 대리인 귀가인 경우
+            notification = FcmNotificationRequestDto.Notification.builder()
+                    .token(parentToken)
+                    .title("대리인 알림")
+                    .body(replacementResponseDto.getReplacementRelationship()+
+                            "("+replacementResponseDto.getReplacementName()+") 님이 "+replacementResponseDto.getKidName()+" 어린이와 함께 귀가했습니다")
+                    .build();
+            fcmRequestDto = FcmNotificationRequestDto.builder()
+                    .notification(notification)
+                    .build();
+
+            alarmRequestDto = AlarmRequestDto.builder()
+                    .kidId(kidId)
+                    .alarmType("대리인 알림")
+                    .build();
+        } else {
+            notification = FcmNotificationRequestDto.Notification.builder()
+                    .token(parentToken)
+                    .title("하원 알림")
+                    .body(attendanceTimeResponseDto.getKidName() + " 어린이가 " + attendanceTimeResponseDto.getAttendanceDate() + "일 " + attendanceTimeResponseDto.getAttendanceTime() + "에 하원했습니다")
+                    .build();
+            fcmRequestDto = FcmNotificationRequestDto.builder()
+                    .notification(notification)
+                    .build();
+
+            alarmRequestDto = AlarmRequestDto.builder()
+                    .kidId(kidId)
+                    .alarmType("하원 알림")
+                    .alarmDate(attendanceTimeResponseDto.getAttendanceDate())
+                    .alarmContent(attendanceTimeResponseDto.getAttendanceTime())
+                    .build();
+        }
 
         fcmService.sendNotification(fcmRequestDto);
         alarmService.insertAlarm(alarmRequestDto);
-        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, responseDto));
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, attendanceTimeResponseDto));
     }
 
     @PostMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)

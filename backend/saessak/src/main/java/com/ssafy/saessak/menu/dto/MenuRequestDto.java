@@ -9,10 +9,9 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class MenuRequestDto {
 
-    private Long daycareId;
     private LocalDate menuDate;
     private String menuType;
     private String foodName;
-    private String allergyNum;
+    private String foodAllergy;
 
 }
