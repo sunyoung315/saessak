@@ -11,7 +11,7 @@ import DocumentView from '@/components/document/DocumentView.vue';
 import MenuView from '@/components/menu/MenuView.vue';
 import AttendanceView from '@/components/attendance/AttendanceView.vue';
 import ChatView from '@/components/chat/ChatView.vue';
-import ChatDetail from "@/components/ChatDetailView.vue";
+import ChatDetail from "@/components/chat/ChatDetailView.vue";
 import SettingView from '@/components/setting/SettingView.vue';
 
 const routes = [
