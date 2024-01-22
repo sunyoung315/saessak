@@ -53,13 +53,8 @@ public class Kid {
     private Parent parent;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="teacher_id")
-    private Teacher teacher;
-
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="classroom_id")
     private Classroom classroom;
-
 
     @OneToMany(mappedBy = "kid", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Attendance> attendanceList = new ArrayList<>();

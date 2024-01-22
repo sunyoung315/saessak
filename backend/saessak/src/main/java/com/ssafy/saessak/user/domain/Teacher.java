@@ -41,10 +41,6 @@ public class Teacher {
     @Column(name = "teacher_alarm")
     private boolean teacherAlarm;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "teacher", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    private List<Kid> kidList = new ArrayList<>();
-
     public void setToken(String token){
         this.teacherDevice = token;
     }
