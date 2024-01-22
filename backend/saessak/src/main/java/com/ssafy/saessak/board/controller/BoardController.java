@@ -1,25 +1,71 @@
 package com.ssafy.saessak.board.controller;
 
 
+import com.ssafy.saessak.board.domain.Board;
+import com.ssafy.saessak.board.dto.BoardDetailDto;
+import com.ssafy.saessak.board.dto.BoardRequestDto;
+import com.ssafy.saessak.board.dto.BoardResponseDto;
+import com.ssafy.saessak.board.dto.DateRequestDto;
 import com.ssafy.saessak.board.service.BoardService;
 import com.ssafy.saessak.result.ResultCode;
 import com.ssafy.saessak.result.ResultResponse;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RequiredArgsConstructor
-@RestController("/api/v2/board")
+@RestController()
+@RequestMapping("/api/v2/board")
+@Slf4j
 public class BoardController {
 
 
     private final BoardService boardService;
     @GetMapping("/health")
     public ResponseEntity<ResultResponse> getHealth(){
-        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS,"is alive"));
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS,"success"));
     }
+    // 아이 알림장 전체 조회
+    @GetMapping("/{kidId}")
+    public ResponseEntity<ResultResponse> getBoardList(@PathVariable(name = "kidId") Long kidId){
+        List<BoardResponseDto> result = boardService.findByKid(kidId);
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, result));
+    }
+    // 알림장 등록
+    @PostMapping("")
+    public ResponseEntity<ResultResponse> insertBoard(@RequestBody BoardRequestDto boardRequestDto){
+        Board board = boardService.saveBoard(boardRequestDto);
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, board.getBoardId()));
+    }
+    // 알림장 조회
+    @GetMapping("/detail/{boardId}")
+    public ResponseEntity<ResultResponse> readBoard(@PathVariable(name = "boardId") Long boardId){
+        BoardDetailDto boardDetailDto = boardService.readBoard(boardId);
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, boardDetailDto));
+    }
+    // 알림장 삭제
+    @DeleteMapping("/{boardId}")
+    public ResponseEntity<ResultResponse> deleteBoard(@PathVariable(name = "boardId") Long boardId){
+        Long result = boardService.deleteBoard(boardId);
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, result));
+    }
+    // 알림장 수정
+
+    // 달력을 통해 알림장 조회
+    @PostMapping("/day/{kidId}")
+    public ResponseEntity<ResultResponse> getBoardByDate(@PathVariable (name = "kidId") Long kidId,
+                                                         @RequestBody DateRequestDto dateRequestDto){
+        log.debug("받은 날짜 데이터 : {} " , dateRequestDto.getBoardDate());
+
+        BoardDetailDto baordBoardDetailDto =  boardService.findByKidAndDate(kidId, dateRequestDto.getBoardDate());
+
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, baordBoardDetailDto));
+    }
+
 
 }

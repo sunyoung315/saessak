@@ -24,10 +24,11 @@ public class Board {
     private Long boardId;
 
     @Column
+    @Temporal(TemporalType.DATE)
     private Date boardDate;
 
     @Column
-    private String boardString;
+    private String boardContent;
 
     @Column
     private String boardTemperature;
@@ -45,7 +46,7 @@ public class Board {
     private Float boardWeight;
 
     @Column
-    private Float boardPath;
+    private String boardPath;
 
     // join
     @ManyToOne(fetch = FetchType.LAZY)
