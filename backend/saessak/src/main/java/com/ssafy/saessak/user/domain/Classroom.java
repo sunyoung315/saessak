@@ -1,6 +1,7 @@
 package com.ssafy.saessak.user.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.ssafy.saessak.album.domain.Album;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -32,4 +33,9 @@ public class Classroom {
     @JsonIgnore
     @OneToMany(mappedBy = "classroom", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private final List<Kid> kidList = new ArrayList<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "classroom", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private final List<Album> albumList = new ArrayList<>();
+
 }

@@ -32,6 +32,13 @@ dependencies {
     implementation 'io.swagger.core.v3:swagger-annotations:2.2.16'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 
+
+    // logging
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+    testCompileOnly 'junit:junit:4.13.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.0'
 }
 
 tasks.named('test') {

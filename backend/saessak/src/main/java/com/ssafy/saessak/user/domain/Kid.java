@@ -1,7 +1,10 @@
 package com.ssafy.saessak.user.domain;
 
+
 import com.ssafy.saessak.attendance.domain.Attendance;
 import com.ssafy.saessak.document.domain.Replacement;
+import com.ssafy.saessak.album.domain.Album;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -57,11 +60,15 @@ public class Kid {
     @JoinColumn(name="classroom_id")
     private Classroom classroom;
 
+
     @OneToMany(mappedBy = "kid", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Attendance> attendanceList = new ArrayList<>();
 
     @OneToMany(mappedBy = "kid", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Replacement> replacementList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "kid")
+    private List<Album> albums = new ArrayList<>();
 
     public Kid updateParent(Parent parent){
         this.parent = parent;
