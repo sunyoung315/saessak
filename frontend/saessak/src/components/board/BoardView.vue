@@ -16,6 +16,7 @@
 				성장 기록 확인
 			</button>
 		</div>
+
 		<BoardSummaryModal ref="summaryModal" />
 		<BoardGrowthModal ref="growthModal" />
 	</div>
