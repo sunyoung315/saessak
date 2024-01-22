@@ -54,7 +54,7 @@ public class AllergyService {
 
         AllergyDetailResponseDto allergyDetailResponseDto = AllergyDetailResponseDto.builder()
                 .kidId(kid.getKidId())
-                .classroomName(kid.getTeacher().getClassroom().getClassroomName())
+                .classroomName(kid.getClassroom().getClassroomName())
                 .kidName(kid.getKidName())
                 .kidAllergy(kid.getKidAllergy())
                 .kidAllergySignature(kid.getKidAllergySignature())

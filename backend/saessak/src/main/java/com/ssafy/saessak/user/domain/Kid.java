@@ -56,7 +56,6 @@ public class Kid {
     @JoinColumn(name="classroom_id")
     private Classroom classroom;
 
-
     @OneToMany(mappedBy = "kid", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Attendance> attendanceList = new ArrayList<>();
 

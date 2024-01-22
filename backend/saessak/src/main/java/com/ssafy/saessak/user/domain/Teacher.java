@@ -40,6 +40,7 @@ public class Teacher {
 
     @Column(name = "teacher_alarm")
     private boolean teacherAlarm;
+
     public void setToken(String token){
         this.teacherDevice = token;
     }

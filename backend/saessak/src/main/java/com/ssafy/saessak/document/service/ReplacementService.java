@@ -8,8 +8,11 @@ import com.ssafy.saessak.document.dto.ReplacementResponseDto;
 import com.ssafy.saessak.document.repository.ReplacementRepository;
 import com.ssafy.saessak.user.domain.Classroom;
 import com.ssafy.saessak.user.domain.Kid;
+import com.ssafy.saessak.user.domain.Teacher;
 import com.ssafy.saessak.user.repository.ClassroomRepository;
 import com.ssafy.saessak.user.repository.KidRepository;
+import com.ssafy.saessak.user.repository.ParentRepository;
+import com.ssafy.saessak.user.repository.TeacherRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,6 +28,7 @@ public class ReplacementService {
     private final ReplacementRepository replacementRepository;
     private final KidRepository kidRepository;
     private final ClassroomRepository classroomRepository;
+    private final TeacherRepository teacherRepository;
 
     @Transactional
     public ReplacementAlarmResponseDto insert(ReplacementRequestDto requestDto) {
@@ -45,14 +49,22 @@ public class ReplacementService {
 
         Replacement savedReplacement = replacementRepository.save(replacement);
 
-        ReplacementAlarmResponseDto responseDto = ReplacementAlarmResponseDto.builder()
+        Classroom classroom = kid.getClassroom();
+        List<Teacher> teacherList = teacherRepository.findAllByClassroom(classroom);
+
+        List<String> teacherDeviceList = new ArrayList<>();
+        for(Teacher teacher : teacherList) {
+            teacherDeviceList.add(teacher.getTeacherDevice());
+        }
+
+        ReplacementAlarmResponseDto replacementAlarmResponseDto = ReplacementAlarmResponseDto.builder()
                 .replacementId(savedReplacement.getReplacementId())
-                .teacherAlarmDevice(savedReplacement.getKid().getTeacher().getTeacherDevice())
+                .teacherAlarmDeviceList(teacherDeviceList)
                 .kidId(savedReplacement.getKid().getKidId())
                 .kidName(savedReplacement.getKid().getKidName())
                 .build();
 
-        return responseDto;
+        return replacementAlarmResponseDto;
     }
 
     public List<ReplacementResponseDto> listOfkidId(Long kidId) {
