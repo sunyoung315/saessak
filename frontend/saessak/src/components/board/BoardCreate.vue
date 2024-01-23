@@ -1,8 +1,8 @@
 <template>
 	<div
-		class="container ml-12 mr-16 w-11/12 border border-gray-200 shadow rounded-lg"
+		class="container mx-16 p-1.5 w-auto border border-gray-200 shadow rounded-lg"
 	>
-		<div class="flex justify-end items-center">
+		<div class="flex justify-end items-center mb-10">
 			<button
 				type="button"
 				@click="registBoard()"
@@ -22,6 +22,7 @@
 			<label class="block mt-2 mb-5">
 				<span class="text-gray-700 ml-36 text-xl font-bold">내용</span>
 				<textarea
+					id="contents"
 					class="block mt-1 ml-32 mb-10 w-9/12 rounded-md border border-neutral-300 shadow focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
 					rows="6"
 				></textarea>
@@ -35,22 +36,22 @@
 				<span class="inline-block text-gray-700 m-5 text-md font-extrabold"
 					>체온 체크</span
 				>
-				<div class="inline-flex rounded-md shadow-sm" role="group">
+				<div class="inline-flex rounded-md shadow-sm h-12" role="group">
 					<button
 						type="button"
-						class="px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-s-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-blue-500 dark:focus:text-white"
+						class="px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-s-lg hover:bg-gray-100 hover:text-dark-navy hover:font-bold focus:z-10 focus:ring-2 focus:ring-dark-navy focus:text-dark-navy focus:font-bold focus:bg-gray-100"
 					>
 						정상
 					</button>
 					<button
 						type="button"
-						class="px-4 py-2 text-sm font-medium text-gray-900 bg-white border-t border-b border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-blue-500 dark:focus:text-white"
+						class="px-4 py-2 text-sm font-medium text-gray-900 bg-white border-t border-b border-gray-200 hover:bg-gray-100 hover:text-dark-navy hover:font-bold focus:z-10 focus:ring-2 focus:ring-dark-navy focus:text-dark-navy focus:font-bold focus:bg-gray-100"
 					>
 						미열
 					</button>
 					<button
 						type="button"
-						class="px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-e-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-blue-500 dark:focus:text-white"
+						class="px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-e-lg hover:bg-gray-100 hover:text-dark-navy hover:font-bold focus:z-10 focus:ring-2 focus:ring-dark-navy focus:text-dark-navy focus:font-bold focus:bg-gray-100"
 					>
 						고열
 					</button>
@@ -58,8 +59,8 @@
 			</div>
 			<div class="flex">
 				<span class="inline-block text-gray-700 m-5 text-md font-extrabold"
-					>수면 시간</span
-				>
+					>수면 시간
+				</span>
 				<div class="inline-block relative flex items-center max-w-[8rem]">
 					<button
 						type="button"
@@ -89,7 +90,7 @@
 						data-input-counter
 						aria-describedby="helper-text-explanation"
 						class="bg-gray-50 border-x-0 border-gray-300 h-11 text-center text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full py-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-						placeholder="999"
+						placeholder="0"
 						required
 					/>
 					<button
@@ -120,23 +121,22 @@
 				<span class="inline-block text-gray-700 m-5 text-md font-extrabold"
 					>배변 상태</span
 				>
-
-				<div class="inline-flex rounded-md shadow-sm" role="group">
+				<div class="inline-flex rounded-md shadow-sm h-12" role="group">
 					<button
 						type="button"
-						class="px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-s-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-blue-500 dark:focus:text-white"
+						class="px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-s-lg hover:bg-gray-100 hover:text-dark-navy hover:font-bold focus:z-10 focus:ring-2 focus:ring-dark-navy focus:text-dark-navy focus:font-bold focus:bg-gray-100"
 					>
 						보통
 					</button>
 					<button
 						type="button"
-						class="px-4 py-2 text-sm font-medium text-gray-900 bg-white border-t border-b border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-blue-500 dark:focus:text-white"
+						class="px-4 py-2 text-sm font-medium text-gray-900 bg-white border-t border-b border-gray-200 hover:bg-gray-100 hover:text-dark-navy hover:font-bold focus:z-10 focus:ring-2 focus:ring-dark-navy focus:text-dark-navy focus:font-bold focus:bg-gray-100"
 					>
 						묽음
 					</button>
 					<button
 						type="button"
-						class="px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-e-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-blue-500 dark:focus:text-white"
+						class="px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-e-lg hover:bg-gray-100 hover:text-dark-navy hover:font-bold focus:z-10 focus:ring-2 focus:ring-dark-navy focus:text-dark-navy focus:font-bold focus:bg-gray-100"
 					>
 						딱딱함
 					</button>
@@ -176,7 +176,7 @@
 						data-input-counter
 						aria-describedby="helper-text-explanation"
 						class="bg-gray-50 border-x-0 border-gray-300 h-11 text-center text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full py-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-						placeholder="999"
+						placeholder="0"
 						required
 					/>
 					<button
@@ -202,7 +202,7 @@
 						</svg>
 					</button>
 				</div>
-				<span class="inline-block">&nbsp;cm&nbsp;</span>
+				<span class="inline-block">&nbsp;&nbsp;cm&nbsp;&nbsp;</span>
 				<div class="inline-block relative flex items-center max-w-[8rem]">
 					<button
 						type="button"
@@ -232,7 +232,7 @@
 						data-input-counter
 						aria-describedby="helper-text-explanation"
 						class="bg-gray-50 border-x-0 border-gray-300 h-11 text-center text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full py-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-						placeholder="999"
+						placeholder="0"
 						required
 					/>
 					<button
@@ -258,7 +258,7 @@
 						</svg>
 					</button>
 				</div>
-				<span class="inline-block">&nbsp;kg&nbsp;</span>
+				<span class="inline-block">&nbsp;&nbsp;kg</span>
 			</div>
 		</div>
 		<br /><br />

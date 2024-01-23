@@ -1,15 +1,105 @@
 <template>
 	<div
-		class="container ml-12 mr-16 w-11/12 border border-gray-200 shadow rounded-lg"
+		class="container mx-12 p-1.5 flex flex-wrap justify-normar w-auto border border-gray-200 shadow rounded-lg"
 	>
-		<RouterLink
-			:to="{ path: `/detail/${id}` }"
-			class="bg-[url('assets/BoardFrame.png')] inline-block w-80 max-w-sm m-2 p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100"
-			>이동</RouterLink
-		>
+		<!-- Teacher Version -->
+		<template v-if="isTeacher">
+			<div v-for="child in childrenList" :key="child.kidId">
+				<RouterLink
+					:to="{ name: 'BoardDetail', params: { id: `${child.kidId}` } }"
+					class="m-2.5 bg-cover bg-[url('@/assets/BoardFrame.png')] inline-block w-80 h-96 p-6 bg-white rounded-lg hover:bg-gray-100"
+				>
+					<div class="relative left-28 top-5 font-extrabold text-lg">
+						{{ child.kidName.split('').join(' ') }}
+					</div>
+					<div class="relative left-9 top-16 w-56">
+						<img
+							:src="`src/assets/${child.kidProfile}`"
+							alt="profile"
+							class="w-56 h-52"
+						/>
+					</div>
+				</RouterLink>
+			</div>
+		</template>
+
+		<!-- Parent Version -->
+		<template v-else>
+			<div v-for="child in childrenList" :key="child.kidId">
+				<RouterLink
+					:to="{ name: 'BoardDetail', params: { id: `${child.kidId}` } }"
+					class="m-2.5 bg-cover bg-[url('@/assets/BoardFrame.png')] inline-block w-80 h-96 p-6 bg-white rounded-lg hover:bg-gray-100"
+				>
+					<div class="relative left-28 top-5 font-extrabold text-lg">
+						{{ child.kidName.split('').join(' ') }}
+					</div>
+					<div class="relative left-9 top-16 w-56">
+						<img
+							:src="`src/assets/${child.kidProfile}`"
+							alt="profile"
+							class="w-56 h-52"
+						/>
+					</div>
+				</RouterLink>
+			</div>
+		</template>
 	</div>
 </template>
 
-<script setup></script>
+<script setup>
+import { ref } from 'vue';
+const isTeacher = ref(false);
+
+const childrenList = [
+	{
+		kidId: 1,
+		kidName: '박나은',
+		// kidProfile: 'http://s3.url',
+		kidProfile: 'image3.png', //s3 rul
+	},
+	{
+		kidId: 2,
+		kidName: '박건후',
+		// kidProfile: 'http://s3.url',
+		kidProfile: 'image5.png',
+	},
+	{
+		kidId: 3,
+		kidName: '박진우',
+		// kidProfile: 'http://s3.url',
+		kidProfile: 'image8.png',
+	},
+	{
+		kidId: 4,
+		kidName: '윌리엄',
+		// kidProfile: 'http://s3.url',
+		kidProfile: 'image9.png',
+	},
+];
+
+// const boardList = [
+// 	{
+// 		boardId: 1,
+// 		kidId: 1,
+// 		classroomId: 1,
+// 		boardDate: '2024-01-12',
+// 		// boardPath: 'http://s3.url',
+// 	},
+// 	{
+// 		boardId: 2,
+// 		kidId: 1,
+// 		classroomId: 1,
+// 		boardDate: '2024-01-13',
+// 		// boardPath: 'http://s3.url',
+// 	},
+// 	{
+// 		boardId: 3,
+// 		kidId: 1,
+// 		classroomId: 1,
+// 		boardDate: '2024-01-14',
+// 		// boardPath: 'http://s3.url',
+// 	},
+// ];
+</script>
 
 <style scoped></style>

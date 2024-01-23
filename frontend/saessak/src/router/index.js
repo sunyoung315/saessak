@@ -15,7 +15,7 @@ import ChatDetail from '@/components/chat/ChatDetailView.vue';
 import SettingView from '@/components/setting/SettingView.vue';
 import BoardCreate from '@/components/board/BoardCreate.vue';
 import BoardList from '@/components/board/BoardList.vue';
-import BoardDetailVue from '@/components/board/BoardDetail.vue';
+import BoardDetail from '@/components/board/BoardDetail.vue';
 
 const routes = [
 	{ path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFoundView },
@@ -50,9 +50,9 @@ const routes = [
 				component: BoardCreate,
 			},
 			{
-				path: 'detail/:id',
+				path: ':id',
 				name: 'BoardDetail',
-				component: BoardDetailVue,
+				component: BoardDetail,
 			},
 		],
 	},

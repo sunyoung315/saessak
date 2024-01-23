@@ -18,7 +18,7 @@ module.exports = {
 				'yellow-bg2': '#FFF4B7',
 			},
 			backgroundImage: {
-				'book-pattern': "url('/assets/BoardFrame.png')",
+				'book-pattern': "url('@/assets/BoardFrame.png')",
 			},
 		},
 	},

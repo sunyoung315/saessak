@@ -18,7 +18,7 @@
 						요약레포트
 					</div>
 					<!-- VCalendar -->
-					<div class="flex justify-start pl-6">
+					<div class="flex justify-start pl-6 pt-3">
 						<v-date-picker
 							v-model.range="range"
 							mode="range"
@@ -26,9 +26,72 @@
 						>
 							<template #default="{ inputValue, inputEvents }">
 								<div class="flex jucenterstify- items-center">
-									<input :value="inputValue.start" v-on="inputEvents.start" />
-									<!-- <IconArrowRight /> -->
-									<input :value="inputValue.end" v-on="inputEvents.end" />
+									<div class="relative">
+										<div
+											class="absolute inset-y-0 start-0 top-0 flex items-center ps-3.5 pointer-events-none"
+										>
+											<svg
+												xmlns="http://www.w3.org/2000/svg"
+												width="24"
+												height="24"
+												viewBox="0 0 24 24"
+												fill="none"
+											>
+												<path
+													fill-rule="evenodd"
+													clip-rule="evenodd"
+													d="M16 2C16.5523 2 17 2.44772 17 3V4H20C21.1046 4 22 4.89543 22 6V20C22 21.1046 21.1046 22 20 22H4C2.89543 22 2 21.1046 2 20V6C2 4.89543 2.89543 4 4 4H7V3C7 2.44772 7.44772 2 8 2C8.55228 2 9 2.44772 9 3V4H15V3C15 2.44772 15.4477 2 16 2ZM20 11H4V20H20V11ZM7 6H4V9H20V6H17V7C17 7.55228 16.5523 8 16 8C15.4477 8 15 7.55228 15 7V6H9V7C9 7.55228 8.55228 8 8 8C7.44772 8 7 7.55228 7 7V6Z"
+													fill="#000000"
+												/>
+											</svg>
+										</div>
+										<input
+											:value="inputValue.start"
+											v-on="inputEvents.start"
+											class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5"
+										/>
+									</div>
+									<div class="p-2">
+										<svg
+											xmlns="http://www.w3.org/2000/svg"
+											width="24"
+											height="24"
+											viewBox="0 0 24 24"
+											fill="none"
+										>
+											<path
+												fill-rule="evenodd"
+												clip-rule="evenodd"
+												d="M13.6129 6.2097C13.2206 5.90468 12.6534 5.93241 12.2929 6.29289L12.2097 6.3871C11.9047 6.77939 11.9324 7.34662 12.2929 7.70711L15.5852 11H5C4.44772 11 4 11.4477 4 12C4 12.5523 4.44772 13 5 13H15.5852L12.2929 16.2929L12.2097 16.3871C11.9047 16.7794 11.9324 17.3466 12.2929 17.7071C12.6834 18.0976 13.3166 18.0976 13.7071 17.7071L18.7071 12.7071L18.7903 12.6129C19.0953 12.2206 19.0676 11.6534 18.7071 11.2929L13.7071 6.29289L13.6129 6.2097Z"
+												fill="#000000"
+											/>
+										</svg>
+									</div>
+									<div class="relative">
+										<div
+											class="absolute inset-y-0 start-0 top-0 flex items-center ps-3.5 pointer-events-none"
+										>
+											<svg
+												xmlns="http://www.w3.org/2000/svg"
+												width="24"
+												height="24"
+												viewBox="0 0 24 24"
+												fill="none"
+											>
+												<path
+													fill-rule="evenodd"
+													clip-rule="evenodd"
+													d="M16 2C16.5523 2 17 2.44772 17 3V4H20C21.1046 4 22 4.89543 22 6V20C22 21.1046 21.1046 22 20 22H4C2.89543 22 2 21.1046 2 20V6C2 4.89543 2.89543 4 4 4H7V3C7 2.44772 7.44772 2 8 2C8.55228 2 9 2.44772 9 3V4H15V3C15 2.44772 15.4477 2 16 2ZM20 11H4V20H20V11ZM7 6H4V9H20V6H17V7C17 7.55228 16.5523 8 16 8C15.4477 8 15 7.55228 15 7V6H9V7C9 7.55228 8.55228 8 8 8C7.44772 8 7 7.55228 7 7V6Z"
+													fill="#000000"
+												/>
+											</svg>
+										</div>
+										<input
+											:value="inputValue.end"
+											v-on="inputEvents.end"
+											class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5"
+										/>
+									</div>
 								</div>
 							</template>
 						</v-date-picker>
