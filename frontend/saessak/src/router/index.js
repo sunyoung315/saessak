@@ -54,8 +54,8 @@ const routes = [
 				path: 'create',
 				name: 'AlbumCreate',
 				component: AlbumCreate,
-			}
-		]
+			},
+		],
 	},
 	{
 		path: '/notice',

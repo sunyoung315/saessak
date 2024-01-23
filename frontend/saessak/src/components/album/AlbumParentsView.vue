@@ -1,6 +1,8 @@
 <template>
 	<div>
-		<h1>Parent</h1>
+		<span class="text-4xl m-5 font-extrabold inline-block"
+			><RouterLink to="/album">앨범 - 부모님</RouterLink></span
+		>
 		<AlbumCarouselList />
 	</div>
 </template>
