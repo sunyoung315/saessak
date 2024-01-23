@@ -54,7 +54,7 @@ const router = useRouter();
 const summaryModal = ref();
 const growthModal = ref();
 
-const isTeacher = ref(true);
+const isTeacher = ref(false);
 
 const goCreateBoard = () => {
 	router.push({ name: 'BoardCreate' });

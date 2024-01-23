@@ -1,6 +1,6 @@
 <template>
 	<div
-		class="container mx-16 p-1.5 w-auto border border-gray-200 shadow rounded-lg"
+		class="container mx-16 mb-10 p-1.5 w-auto border border-gray-200 shadow rounded-lg"
 	>
 		<div class="flex justify-end items-center mb-10">
 			<button

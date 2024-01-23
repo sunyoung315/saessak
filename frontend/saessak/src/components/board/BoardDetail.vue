@@ -1,42 +1,8 @@
 <template>
 	<div
-		class="container mx-16 p-1.5 w-auto border border-gray-200 shadow rounded-lg"
+		class="container mx-16 mb-10 p-1.5 w-auto border border-gray-200 shadow rounded-lg"
 	>
-		<div class="flex justify-between items-center mb-10">
-			<!-- datepicker -->
-			<div class="flex justify-start pl-6 pt-6">
-				<span class="text-gray-700 text-xl font-bold p-1.5 ml-8"
-					>날짜 :&nbsp;</span
-				>
-				<div class="block">
-					<VDatePicker v-model="date" :select-attribute="selectAttribute">
-						<template #default="{ inputValue, inputEvents }">
-							<div class="relative max-w-sm">
-								<div
-									class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none"
-								>
-									<svg
-										class="w-4 h-4 text-gray-500 dark:text-gray-400"
-										aria-hidden="true"
-										xmlns="http://www.w3.org/2000/svg"
-										fill="currentColor"
-										viewBox="0 0 20 20"
-									>
-										<path
-											d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"
-										/>
-									</svg>
-								</div>
-								<input
-									:value="inputValue"
-									v-on="inputEvents"
-									class="border border-gray-300 text-gray-900 text-sm font-bold rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5"
-								/>
-							</div>
-						</template>
-					</VDatePicker>
-				</div>
-			</div>
+		<div class="flex justify-end items-center">
 			<button
 				type="button"
 				@click="goBoardList()"
@@ -44,6 +10,42 @@
 			>
 				목록
 			</button>
+		</div>
+		<!-- datepicker -->
+		<div class="block mb-5">
+			<span class="text-gray-700 ml-36 text-xl font-bold">날짜</span>
+			<div class="block mt-1 ml-32 mb-10">
+				<VDatePicker
+					v-model="date"
+					:select-attribute="selectAttribute"
+					:disabled-dates="disabledDates"
+				>
+					<template #default="{ inputValue, inputEvents }">
+						<div class="relative max-w-sm">
+							<div
+								class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none"
+							>
+								<svg
+									class="w-4 h-4 text-gray-900 dark:text-gray-400"
+									aria-hidden="true"
+									xmlns="http://www.w3.org/2000/svg"
+									fill="currentColor"
+									viewBox="0 0 20 20"
+								>
+									<path
+										d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"
+									/>
+								</svg>
+							</div>
+							<input
+								:value="inputValue"
+								v-on="inputEvents"
+								class="border border-gray-300 text-gray-900 text-sm font-bold rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5"
+							/>
+						</div>
+					</template>
+				</VDatePicker>
+			</div>
 		</div>
 		<div>
 			<label class="block mt-2 mb-5">
@@ -311,6 +313,16 @@ const goBoardList = () => {
 const date = ref(new Date());
 
 const selectAttribute = ref({ highlight: 'yellow' });
+
+const today = new Date();
+const tomorrow = new Date(today);
+tomorrow.setDate(tomorrow.getDate() + 1);
+const disabledDates = ref([
+	{
+		start: tomorrow,
+		end: null,
+	},
+]);
 </script>
 
 <style scoped></style>
