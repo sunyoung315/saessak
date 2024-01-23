@@ -13,7 +13,9 @@ import AttendanceView from '@/components/attendance/AttendanceView.vue';
 import ChatView from '@/components/chat/ChatView.vue';
 import ChatDetail from '@/components/chat/ChatDetailView.vue';
 import SettingView from '@/components/setting/SettingView.vue';
-import BoardSummary from '@/components/board/BoardSummary.vue';
+import BoardCreate from '@/components/board/BoardCreate.vue';
+import BoardList from '@/components/board/BoardList.vue';
+import BoardDetailVue from '@/components/board/BoardDetail.vue';
 
 const routes = [
 	{ path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFoundView },
@@ -38,9 +40,19 @@ const routes = [
 		component: BoardView,
 		children: [
 			{
-				path: '/summary',
-				name: 'Summary',
-				component: BoardSummary,
+				path: '',
+				name: 'BoardList',
+				component: BoardList,
+			},
+			{
+				path: 'create',
+				name: 'BoardCreate',
+				component: BoardCreate,
+			},
+			{
+				path: 'detail/:id',
+				name: 'BoardDetail',
+				component: BoardDetailVue,
 			},
 		],
 	},

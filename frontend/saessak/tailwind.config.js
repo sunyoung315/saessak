@@ -17,10 +17,16 @@ module.exports = {
 				'yellow-bg1': '#FFFDF4',
 				'yellow-bg2': '#FFF4B7',
 			},
+			backgroundImage: {
+				'book-pattern': "url('/assets/BoardFrame.png')",
+			},
 		},
 	},
 	variants: {
 		extend: {},
 	},
-	plugins: [require("tailwind-scrollbar-hide")]
+	content: ['./node_modules/flowbite/**/*.js'],
+	plugins: [
+		require('tailwind-scrollbar-hide', '@tailwindcss/forms', 'flowbite/plugin'),
+	],
 };

@@ -13,7 +13,34 @@
 			<div
 				class="flowbit-modal__header px-4 py-2 flex justify-between items-center"
 			>
-				<div class="p-6 text-xl font-extrabold">요약레포트</div>
+				<div>
+					<div class="pl-8 pt-6 inline-block text-xl font-extrabold">
+						요약레포트
+					</div>
+					<!-- VCalendar -->
+					<div class="flex justify-start pl-6">
+						<v-date-picker
+							v-model.range="range"
+							mode="range"
+							:disabled-dates="disabledDates"
+						>
+							<template #default="{ inputValue, inputEvents }">
+								<div class="flex jucenterstify- items-center">
+									<input :value="inputValue.start" v-on="inputEvents.start" />
+									<!-- <IconArrowRight /> -->
+									<input :value="inputValue.end" v-on="inputEvents.end" />
+								</div>
+							</template>
+						</v-date-picker>
+						<button
+							type="button"
+							@click="getGPTResponse()"
+							class="m-2 text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-gray-600 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800"
+						>
+							조회
+						</button>
+					</div>
+				</div>
 				<button class="pr-5 pb-3 flowbit-modal__close" @click="closeModal">
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
@@ -31,29 +58,18 @@
 					</svg>
 				</button>
 			</div>
-			<!-- VCalendar -->
-			<v-date-picker
-				v-model.range="range"
-				mode="range"
-				:disabled-dates="disabledDates"
-			/>
 
 			<!-- content -->
-			<button
-				type="button"
-				@click="getGPTResponse()"
-				class="text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-gray-600 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800"
-			>
-				조회
-			</button>
-			<div>
-				<b>본문</b>
+			<div class="m-10">
+				<div>
+					<b>본문</b>
+				</div>
+				<div>{{ content }}</div>
+				<div>
+					<b>요약</b>
+				</div>
+				<div>{{ summary }}</div>
 			</div>
-			<div>{{ content }}</div>
-			<div>
-				<b>요약</b>
-			</div>
-			<div>{{ summary }}</div>
 		</div>
 	</div>
 </template>
@@ -78,7 +94,7 @@ defineExpose({ openModal });
 // VCalendar
 const range = ref({
 	start: null,
-	end: null,
+	span: 7,
 });
 
 watch(range, newRange => {
