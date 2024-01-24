@@ -13,5 +13,6 @@ import java.util.List;
 public interface RoomRepository extends JpaRepository<Room, Long> {
 
     List<Room> findAllByKid(Kid kid);
-    List<Room> findAllByKidAndTeacher(Kid kid, Teacher teacher);
+    List<Room> findAllByTeacher(Teacher teacher);
+    Room findByKidAndTeacher(Kid kid, Teacher teacher);
 }

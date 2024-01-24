@@ -2,6 +2,7 @@ package com.ssafy.saessak.chat.service;
 
 import com.ssafy.saessak.chat.domain.Chat;
 import com.ssafy.saessak.chat.domain.Room;
+import com.ssafy.saessak.chat.dto.ChatMessageRequest;
 import com.ssafy.saessak.chat.dto.RoomResponseDto;
 import com.ssafy.saessak.chat.repository.ChatRepository;
 import com.ssafy.saessak.chat.repository.RoomRepository;
@@ -44,11 +45,7 @@ public class ChatService {
         Teacher teacher = teacherRepository.findById(teacherId).get();
         Classroom classRoom = teacher.getClassroom();
 
-        List<Room> roomList = new ArrayList<>();
-        for(Kid k : classRoom.getKidList()){
-            List<Room> tmpList = roomRepository.findAllByKidAndTeacher(k, teacher);
-            roomList.addAll(tmpList);
-        }
+        List<Room> roomList = roomRepository.findAllByTeacher(teacher);
         return getRoomResponseDtos(roomList);
     }
 
@@ -74,14 +71,32 @@ public class ChatService {
                 .build();
     }
 
-    public void addRoom(Long teacherId, Long kidId) {
+    // 채팅방 생성
+    public Long addRoom(Long teacherId, Long kidId) {
         Teacher teacher = teacherRepository.findById(teacherId).get();
         Kid kid = kidRepository.findById(kidId).get();
-        Room room = Room.builder()
-                .kid(kid)
-                .teacher(teacher)
-                .lastVisitTime(LocalDateTime.now())
+        Room room = roomRepository.findByKidAndTeacher(kid, teacher);
+
+        if(room == null){
+            room = roomRepository.save(Room.builder()
+                    .kid(kid)
+                    .teacher(teacher)
+                    .lastVisitTime(LocalDateTime.now())
+                    .build());
+        }
+        return room.getRoomId();
+    }
+
+
+    // 채팅 저장
+    public void saveMessage(ChatMessageRequest message){
+        Chat chatMessage = Chat.builder()
+                .senderId(message.getSenderId())
+                .receiverId(message.getReceiverId())
+                .chatContent(message.getChatContent())
+                .chatTime(message.getChatTime())
+                .room(roomRepository.findById(message.getRoomId()).get())
                 .build();
-        roomRepository.save(room);
+        chatRepository.save(chatMessage);
     }
 }
