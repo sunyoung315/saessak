@@ -2,8 +2,7 @@ package com.ssafy.saessak.config;
 
 import com.ssafy.saessak.oauth.authentication.CustomAccessDeniedHandler;
 import com.ssafy.saessak.oauth.authentication.CustomJwtAuthenticationEntryPoint;
-import com.ssafy.saessak.oauth.jwt.JwtAuthenticationFilter;
-import com.ssafy.saessak.oauth.jwt.JwtTokenProvider;
+import com.ssafy.saessak.oauth.jwt.filter.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

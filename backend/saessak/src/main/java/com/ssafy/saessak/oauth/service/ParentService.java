@@ -2,9 +2,10 @@ package com.ssafy.saessak.oauth.service;
 
 import com.ssafy.saessak.oauth.authentication.UserAuthentication;
 import com.ssafy.saessak.oauth.dto.AccessTokenGetSuccess;
-import com.ssafy.saessak.oauth.dto.KakaoUserResponse;
+import com.ssafy.saessak.oauth.dto.kakao.KakaoUserResponse;
 import com.ssafy.saessak.oauth.dto.LoginSuccessResponse;
 import com.ssafy.saessak.oauth.jwt.JwtTokenProvider;
+import com.ssafy.saessak.oauth.token.service.RefreshTokenService;
 import com.ssafy.saessak.user.domain.Parent;
 import com.ssafy.saessak.user.repository.ParentRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,29 +24,22 @@ public class ParentService {
 
     public Long createUser(final KakaoUserResponse userResponse) {
         Parent parent = Parent.builder()
-                .parentEmail(userResponse.kakaoAccount().profile().accountEmail())
+                .parentEmail(userResponse.kakaoAccount().email())
                 .parentName(userResponse.kakaoAccount().profile().nickname())
                 .parentProfile(userResponse.kakaoAccount().profile().profileImageUrl())
+                .parentAlarm(false)
                 .build();
 
         return parentRepository.save(parent).getParentId();
     }
 
-    public Long getIdByEmail(String email, String name) {
+    public Long getIdByEmailAndName(String email, String name) {
         Optional<Parent> parent = parentRepository.findByParentEmailAndParentName(email, name);
         if(parent.isPresent()) {
             return parent.get().getParentId();
         }
         return 0L;
     }
-
-//    public Long getIdBySocialId(final Long socialId ) {
-//        Optional<Parent> parent = parentRepository.findBySocialId(socialId);
-//        if(parent.isPresent()) {
-//            return parent.get().getParentId();
-//        }
-//        return 0L;
-//    }
 
     public AccessTokenGetSuccess refreshToken( final String refreshToken ) {
         Long userId = jwtTokenProvider.getUserFromJwt(refreshToken);
@@ -62,11 +56,7 @@ public class ParentService {
         return parentRepository.findByParentEmailAndParentName(email, name).isPresent();
     }
 
-//    public boolean isExistingUser( final Long socialId ) {
-//        return parentRepository.findBySocialId(socialId).isPresent();
-//    }
-
-    public LoginSuccessResponse getTokenByUserId(final Long id ) {
+    public LoginSuccessResponse getTokenByUserId (final Long id) {
         UserAuthentication userAuthentication = new UserAuthentication(id, null, null);
         String refreshToken = jwtTokenProvider.issueRefreshToken(userAuthentication);
 //        refreshTokenService.saveRefreshToken(id, refreshToken);
@@ -77,7 +67,7 @@ public class ParentService {
     }
 
     @Transactional
-    public void deleteUser( final Long id ) {
+    public void deleteUser (final Long id) {
         Optional<Parent> parent = parentRepository.findById(id);
         if(parent.isPresent()) {
             parentRepository.deleteById(parent.get().getParentId());

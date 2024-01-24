@@ -1,6 +1,7 @@
-package com.ssafy.saessak.oauth.jwt;
+package com.ssafy.saessak.oauth.jwt.filter;
 
 import com.ssafy.saessak.oauth.authentication.UserAuthentication;
+import com.ssafy.saessak.oauth.jwt.JwtTokenProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,7 +16,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-import static com.ssafy.saessak.oauth.jwt.JwtValidationType.EXPIRED_JWT_TOKEN;
 import static com.ssafy.saessak.oauth.jwt.JwtValidationType.VALID_JWT;
 
 @Slf4j

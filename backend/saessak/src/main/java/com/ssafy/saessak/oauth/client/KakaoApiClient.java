@@ -1,6 +1,6 @@
 package com.ssafy.saessak.oauth.client;
 
-import com.ssafy.saessak.oauth.dto.KakaoUserResponse;
+import com.ssafy.saessak.oauth.dto.kakao.KakaoUserResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.GetMapping;

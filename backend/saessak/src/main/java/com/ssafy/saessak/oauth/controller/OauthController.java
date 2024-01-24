@@ -35,11 +35,6 @@ public class OauthController {
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, kakaoSocialService.login(request.getParameter("code"))));
     }
 
-//    @GetMapping("/kakao/callback")
-//    public ResponseEntity<ResultResponse> login(@RequestParam final String authorizationCode) {
-//        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, kakaoSocialService.login(authorizationCode)));
-//    }
-
 //    @GetMapping("/token-refresh")
 //    public SuccessResponse<AccessTokenGetSuccess> refreshToken(
 //            @RequestParam final String refreshToken

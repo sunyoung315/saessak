@@ -1,4 +1,4 @@
-package com.ssafy.saessak.oauth.service;
+package com.ssafy.saessak.oauth.token.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

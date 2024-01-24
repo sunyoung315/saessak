@@ -2,11 +2,9 @@ package com.ssafy.saessak.oauth.service;
 
 import com.ssafy.saessak.oauth.client.KakaoApiClient;
 import com.ssafy.saessak.oauth.client.KakaoAuthApiClient;
-import com.ssafy.saessak.oauth.dto.KakaoAccessTokenResponse;
-import com.ssafy.saessak.oauth.dto.KakaoUserResponse;
+import com.ssafy.saessak.oauth.dto.kakao.KakaoAccessTokenResponse;
+import com.ssafy.saessak.oauth.dto.kakao.KakaoUserResponse;
 import com.ssafy.saessak.oauth.dto.LoginSuccessResponse;
-import com.ssafy.saessak.oauth.jwt.JwtTokenProvider;
-import com.ssafy.saessak.user.repository.ParentRepository;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,10 +21,8 @@ public class KakaoSocialService extends SocialService {
 
     private static final String AUTH_CODE = "authorization_code";
 
-    private final ParentRepository parentRepository;
     private final KakaoApiClient kakaoApiClient;
     private final KakaoAuthApiClient kakaoAuthApiClient;
-    private final JwtTokenProvider jwtTokenProvider;
     private final ParentService parentService;
 
     @Value("${kakao.client.id}")
@@ -75,21 +71,16 @@ public class KakaoSocialService extends SocialService {
         return tokenResponse.accessToken();
     }
 
-    private LoginSuccessResponse getUserInfo( final String accessToken ) {
-        System.out.println("================getUserInfo 시작===============");
+    private LoginSuccessResponse getUserInfo (final String accessToken ) {
         KakaoUserResponse userResponse = kakaoApiClient.getUserInformation("Bearer " + accessToken);
         return getTokenDto(userResponse);
     }
 
-    private LoginSuccessResponse getTokenDto( final KakaoUserResponse userResponse ) {
-        String userEmail = userResponse.kakaoAccount().profile().accountEmail();
+    private LoginSuccessResponse getTokenDto (final KakaoUserResponse userResponse ) {
+        String userEmail = userResponse.kakaoAccount().email();
         String userName = userResponse.kakaoAccount().profile().nickname();
-        System.out.println("아이디 : "+userResponse.kakaoAccount().profile().profileImageUrl());
-        System.out.println("이메일 : "+ userEmail);
-        System.out.println("이름 : "+userName);
         if (parentService.isExistingUser(userEmail, userName)) {
-            System.out.println("================존재한다면??=========");
-            return parentService.getTokenByUserId(parentService.getIdByEmail(userEmail, userName));
+            return parentService.getTokenByUserId(parentService.getIdByEmailAndName(userEmail, userName));
         } else {
             Long id = parentService.createUser(userResponse);
 //            webhookService.callEvent(id);

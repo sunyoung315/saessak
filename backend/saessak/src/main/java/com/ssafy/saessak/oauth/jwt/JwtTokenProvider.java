@@ -27,7 +27,6 @@ public class JwtTokenProvider {
     private String JWT_SECRET;
 
     private static final String MEMBER_ID = "memberId";
-    private static final Long TOKEN_EXPIRATION_TIME = 24*60*60*1000L;
 
     @PostConstruct
     protected void init() {
@@ -39,10 +38,10 @@ public class JwtTokenProvider {
         return issueToken(authentication, ACCESS_TOKEN_EXPIRATION_TIME);
     }
 
-
     public String issueRefreshToken(final Authentication authentication) {
         return issueToken(authentication, REFRESH_TOKEN_EXPIRATION_TIME);
     }
+
     private String issueToken( final Authentication authentication, final Long expiredTime) {
         final Date now = new Date();
 
@@ -57,21 +56,6 @@ public class JwtTokenProvider {
                 .signWith(getSigningKey()) // Signature
                 .compact();
     }
-
-//    public String generateToken(Authentication authentication) {
-//        final Date now = new Date();
-//
-//        final Claims claims = Jwts.claims()
-//                .setIssuedAt(now)
-//                .setExpiration(new Date(now.getTime() + TOKEN_EXPIRATION_TIME));  // 만료 시간 설정
-//
-//        claims.put(MEMBER_ID, authentication.getPrincipal());
-//        return Jwts.builder()
-//                .setHeaderParam(Header.TYPE, Header.JWT_TYPE) // Header
-//                .setClaims(claims) // Claim
-//                .signWith(getSigningKey()) // Signature
-//                .compact();
-//    }
 
     private SecretKey getSigningKey() {
         String encodedKey = Base64.getEncoder().encodeToString(JWT_SECRET.getBytes()); //SecretKey 통해 서명 생성
