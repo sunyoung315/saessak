@@ -2,10 +2,7 @@ package com.ssafy.saessak.board.controller;
 
 
 import com.ssafy.saessak.board.domain.Board;
-import com.ssafy.saessak.board.dto.BoardDetailDto;
-import com.ssafy.saessak.board.dto.BoardRequestDto;
-import com.ssafy.saessak.board.dto.BoardResponseDto;
-import com.ssafy.saessak.board.dto.DateRequestDto;
+import com.ssafy.saessak.board.dto.*;
 import com.ssafy.saessak.board.service.BoardService;
 import com.ssafy.saessak.result.ResultCode;
 import com.ssafy.saessak.result.ResultResponse;
@@ -67,5 +64,23 @@ public class BoardController {
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, baordBoardDetailDto));
     }
 
+    @PostMapping("/physical/{kidId}")
+    public ResponseEntity<ResultResponse> getPhysicalList(@PathVariable (name= "kidId") Long kidId,
+                                                          @RequestBody DateBetweenRequestDto dateBetweenRequestDto){
+        log.debug("받은 날짜 데이터 : {} ~ {} ", dateBetweenRequestDto.getStartDate(), dateBetweenRequestDto.getEndDate());
+        List<PhysicalResponseDto> result = boardService.getPhysicalList(kidId,
+                dateBetweenRequestDto.getStartDate(), dateBetweenRequestDto.getEndDate());
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, result));
+    }
 
+    @PostMapping("/summary/{kidId}")
+    public ResponseEntity<ResultResponse> getContentList(@PathVariable(name = "kidId") Long kidId,
+                                                         @RequestBody DateBetweenRequestDto dateBetweenRequestDto){
+
+        List<ContentResponseDto> result = boardService.getContentList(kidId,
+                dateBetweenRequestDto.getStartDate(), dateBetweenRequestDto.getEndDate());
+
+
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, result));
+    }
 }

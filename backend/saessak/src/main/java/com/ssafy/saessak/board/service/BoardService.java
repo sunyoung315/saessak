@@ -1,10 +1,10 @@
 package com.ssafy.saessak.board.service;
 
 
+import com.ssafy.saessak.album.domain.Album;
+import com.ssafy.saessak.album.repository.AlbumRepository;
 import com.ssafy.saessak.board.domain.Board;
-import com.ssafy.saessak.board.dto.BoardDetailDto;
-import com.ssafy.saessak.board.dto.BoardRequestDto;
-import com.ssafy.saessak.board.dto.BoardResponseDto;
+import com.ssafy.saessak.board.dto.*;
 import com.ssafy.saessak.board.repository.BoardRepository;
 import com.ssafy.saessak.user.domain.Classroom;
 import com.ssafy.saessak.user.domain.Kid;
@@ -28,7 +28,7 @@ public class BoardService {
     private final BoardRepository boardRepository;
     private final KidRepository kidRepository;
     private final ClassroomRepository classroomRepository;
-
+    private final AlbumRepository albumRepository;
     // crud
     @Transactional
     public Board saveBoard(BoardRequestDto boardRequestDto){
@@ -83,10 +83,16 @@ public class BoardService {
         List<Board> result = boardRepository.findByKid(kid).get();
         List<BoardResponseDto> boardResponseDtoList = new ArrayList<>();
         for(Board board: result){
+            List<Album> albumList = albumRepository.findByKidAndAlbumDate(kid,board.getBoardDate()).get();
+            // 썸네일 넣는거 query 이게 맞나..?
+            String path = null;
+            if(! albumList.isEmpty() && ! albumList.get(0).getFileList().isEmpty()){
+                path = albumList.get(0).getFileList().get(0).getFilePath();
+            }
             BoardResponseDto boardResponseDto = BoardResponseDto.builder()
                     .boardDate(board.getBoardDate())
                     .boardId(board.getBoardId())
-                    .boardPath(board.getBoardPath())
+                    .boardPath(path)
                     .build();
 
             boardResponseDtoList.add(boardResponseDto);
@@ -116,5 +122,40 @@ public class BoardService {
         else{
             return null;
         }
+    }
+
+    public List<PhysicalResponseDto> getPhysicalList (Long kidId, Date startDate,Date endDate){
+        Kid kid = Kid.builder().kidId(kidId).build();
+        List<PhysicalResponseDto> physicalResponseDtoList= new ArrayList<>();
+
+        List<Board> result = boardRepository.findByKidAndBoardDateBetween(kid,startDate, endDate).get();
+        for( Board board : result){
+            PhysicalResponseDto physicalResponseDto = PhysicalResponseDto.builder()
+                    .boardDate(board.getBoardDate())
+                    .boardWeight(board.getBoardWeight())
+                    .boardTall(board.getBoardTall())
+                    .build();
+            physicalResponseDtoList.add(physicalResponseDto);
+        }
+
+        return physicalResponseDtoList;
+    }
+
+    public List<ContentResponseDto> getContentList (Long kidId, Date startDate, Date endDate){
+        List<ContentResponseDto> contentResponseDtoList = new ArrayList<>();
+        Kid kid = Kid.builder().kidId(kidId).build();
+        List<Board> result = boardRepository.findByKidAndBoardDateBetween(kid,startDate,endDate).get();
+
+        for(Board board : result){
+            ContentResponseDto contentResponseDto = ContentResponseDto.builder()
+                    .boardDate(board.getBoardDate())
+                    .boardContent(board.getBoardContent())
+                    .build();
+
+            contentResponseDtoList.add(contentResponseDto);
+        }
+
+
+        return contentResponseDtoList;
     }
 }
