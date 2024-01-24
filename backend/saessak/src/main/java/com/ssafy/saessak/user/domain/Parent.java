@@ -21,9 +21,6 @@ public class Parent {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long parentId;
 
-//    @Column(name = "parent_social_id")
-//    private Long parentSocialId;
-
     @Column(name = "parent_name", nullable = false)
     private String parentName;
 
@@ -43,7 +40,7 @@ public class Parent {
     private LocalDateTime parentAlarmTimestamp;
 
     @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    private final List<Kid> kidList = new ArrayList<>();
+    private List<Kid> kidList;
 
     public void setToken(String token){
         this.parentDevice = token;

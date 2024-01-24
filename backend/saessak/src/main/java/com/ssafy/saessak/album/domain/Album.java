@@ -39,7 +39,7 @@ public class Album {
 
     @JsonIgnore
     @OneToMany(mappedBy = "album", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    private final List<File> fileList = new ArrayList<>();
+    private List<File> fileList;
 
     public void addFile(File file) {
         fileList.add(file);
