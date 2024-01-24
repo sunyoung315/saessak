@@ -62,8 +62,18 @@ public class ChatService {
         return roomResponseDtoList;
     }
 
-    private RoomResponseDto roomInfoToDto(Room r) {
+        private RoomResponseDto roomInfoToDto(Room r) {
         Chat chat = chatRepository.findFirstByRoomOrderByChatTimeDesc(r);
+
+        if(chat == null){
+            return RoomResponseDto.builder()
+                    .roomId(r.getRoomId())
+                    .kidId(r.getKid().getKidId())
+                    .kidName(r.getKid().getKidName())
+                    .flag(false)
+                    .build();
+        }
+
         boolean isChatTimeBeforeLastVisitTime = chat.getChatTime().isBefore(r.getLastVisitTime());
         return RoomResponseDto.builder()
                 .roomId(r.getRoomId())
