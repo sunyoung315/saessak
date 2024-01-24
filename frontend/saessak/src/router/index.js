@@ -12,7 +12,8 @@ import DocumentView from '@/components/document/DocumentView.vue';
 import DocumentList from '@/components/document/DocumentList.vue';
 import DocumentReplaceDetail from '@/components/document/DocumentReplaceDetail.vue';
 import DocumentAllergyDetail from '@/components/document/DocumentAllergyDetail.vue';
-import DocumentCreate from '@/components/document/DocumentCreate.vue';
+import DocumentReplaceCreate from '@/components/document/DocumentReplaceCreate.vue';
+import DocumentAllergyCreate from '@/components/document/DocumentAllergyCreate.vue';
 import MenuView from '@/components/menu/MenuView.vue';
 import AttendanceView from '@/components/attendance/AttendanceView.vue';
 import ChatView from '@/components/chat/ChatView.vue';
@@ -87,11 +88,16 @@ const routes = [
 				component: DocumentAllergyDetail,
 			},
 			{
-				path: 'create',
-				name: 'DocumentCreate',
-				component: DocumentCreate,
+				path: 'replace/create',
+				name: 'DocumentReplaceCreate',
+				component: DocumentReplaceCreate,
 			},
-		]
+			{
+				path: 'allery/create',
+				name: 'DocumentAllergyCreate',
+				component: DocumentAllergyCreate,
+			},
+		],
 	},
 	{
 		path: '/menu',
