@@ -12,11 +12,11 @@
 					<div class="relative left-28 top-5 font-extrabold text-lg">
 						{{ child.kidName.split('').join(' ') }}
 					</div>
-					<div class="relative left-9 top-16 w-56">
+					<div class="relative left-[35px] top-[56px]">
 						<img
 							:src="`src/assets/${child.kidProfile}`"
 							alt="profile"
-							class="w-56 h-52"
+							class="w-[225.5px] h-[220px]"
 						/>
 					</div>
 				</RouterLink>
