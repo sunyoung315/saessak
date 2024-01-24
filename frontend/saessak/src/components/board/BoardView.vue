@@ -2,7 +2,7 @@
 	<!-- Parent Version -->
 	<div v-if="!isTeacher" class="container p-6 flex items-center">
 		<div>
-			<span class="text-4xl mt-10 ml-14 mb-3 mr-5 font-extrabold inline-block"
+			<span class="text-3xl mt-10 ml-14 mb-3 mr-5 font-extrabold inline-block"
 				>알림장</span
 			>
 		</div>
@@ -54,7 +54,7 @@ const router = useRouter();
 const summaryModal = ref();
 const growthModal = ref();
 
-const isTeacher = ref(false);
+const isTeacher = ref(true);
 
 const goCreateBoard = () => {
 	router.push({ name: 'BoardCreate' });

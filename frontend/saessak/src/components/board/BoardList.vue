@@ -7,7 +7,7 @@
 			<div v-for="child in childrenList" :key="child.kidId">
 				<RouterLink
 					:to="{ name: 'BoardDetail', params: { id: `${child.kidId}` } }"
-					class="m-2.5 bg-cover bg-[url('@/assets/BoardFrame.png')] inline-block w-80 h-96 p-6 bg-white rounded-lg hover:bg-gray-100"
+					class="m-1.5 bg-cover bg-[url('@/assets/BoardFrame.png')] inline-block w-80 h-96 p-6 bg-white rounded-lg hover:bg-gray-100"
 				>
 					<div class="relative left-28 top-5 font-extrabold text-lg">
 						{{ child.kidName.split('').join(' ') }}
@@ -28,7 +28,7 @@
 			<div v-for="board in boardList" :key="board.boardId">
 				<RouterLink
 					:to="{ name: 'BoardDetail', params: { id: `${board.boardId}` } }"
-					class="m-2.5 bg-cover bg-[url('@/assets/BoardFrame.png')] inline-block w-80 h-96 p-6 bg-white rounded-lg hover:bg-gray-100"
+					class="m-1.5 bg-cover bg-[url('@/assets/BoardFrame.png')] inline-block w-80 h-96 p-6 bg-white rounded-lg hover:bg-gray-100"
 				>
 					<div class="relative left-24 top-5 font-extrabold text-lg">
 						{{ board.boardDate }}
@@ -48,7 +48,7 @@
 
 <script setup>
 import { ref } from 'vue';
-const isTeacher = ref(false);
+const isTeacher = ref(true);
 
 const childrenList = [
 	{

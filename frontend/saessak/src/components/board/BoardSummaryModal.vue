@@ -262,8 +262,8 @@ const getGPTResponse = async () => {
 
 <style scoped>
 .flowbit-modal__container {
-	width: 75rem;
-	height: 40rem;
+	width: 60rem;
+	height: 35rem;
 	max-width: none;
 }
 </style>
