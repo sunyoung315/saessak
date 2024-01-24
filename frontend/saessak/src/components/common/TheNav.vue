@@ -10,10 +10,10 @@
 		>
 			<ul class="space-y-5 space-x-3 font-bold text-base">
 				<li></li>
-				<li @click="changeNavRed">
+				<li @click="changeNavColor('bg-nav-red')">
 					<RouterLink
 						:to="{ name: 'Home' }"
-						class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+						class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 focus:bg-gray-100 dark:hover:bg-gray-700 group"
 					>
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
@@ -28,10 +28,10 @@
 						<span class="ms-3">Home</span>
 					</RouterLink>
 				</li>
-				<li @click="changeNavOrange">
+				<li @click="changeNavColor('bg-nav-orange')">
 					<RouterLink
 						:to="{ name: 'Notice' }"
-						class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+						class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 focus:bg-gray-100 dark:hover:bg-gray-700 group"
 					>
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
@@ -47,10 +47,10 @@
 						<span class="flex-1 ms-3 whitespace-nowrap">공지사항</span>
 					</RouterLink>
 				</li>
-				<li @click="changeNavYellow">
+				<li @click="changeNavColor('bg-nav-yellow')">
 					<RouterLink
-						:to="{ name: 'Board' }"
-						class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+						:to="{ name: 'BoardList' }"
+						class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 focus:bg-gray-100 dark:hover:bg-gray-700 group"
 					>
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
@@ -66,10 +66,10 @@
 						<span class="flex-1 ms-3 whitespace-nowrap">알림장</span>
 					</RouterLink>
 				</li>
-				<li @click="changeNavGreen">
+				<li @click="changeNavColor('bg-nav-green')">
 					<RouterLink
 						:to="{ name: 'Album' }"
-						class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+						class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 focus:bg-gray-100 dark:hover:bg-gray-700 group"
 					>
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
@@ -85,10 +85,10 @@
 						<span class="flex-1 ms-3 whitespace-nowrap">앨범</span>
 					</RouterLink>
 				</li>
-				<li @click="changeNavBlue">
+				<li @click="changeNavColor('bg-nav-blue')">
 					<RouterLink
 						:to="{ name: 'Document' }"
-						class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+						class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 focus:bg-gray-100 dark:hover:bg-gray-700 group"
 					>
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
@@ -104,10 +104,10 @@
 						<span class="flex-1 ms-3 whitespace-nowrap">동의서</span>
 					</RouterLink>
 				</li>
-				<li @click="changeNavNavy">
+				<li @click="changeNavColor('bg-nav-navy')">
 					<RouterLink
 						:to="{ name: 'Menu' }"
-						class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+						class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 focus:bg-gray-100 dark:hover:bg-gray-700 group"
 					>
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
@@ -123,10 +123,10 @@
 						<span class="flex-1 ms-3 whitespace-nowrap">식단표</span>
 					</RouterLink>
 				</li>
-				<li @click="changeNavPurple">
+				<li @click="changeNavColor('bg-nav-purple')">
 					<RouterLink
 						:to="{ name: 'Attendance' }"
-						class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+						class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 focus:bg-gray-100 dark:hover:bg-gray-700 group"
 					>
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
@@ -148,35 +148,19 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
-const navColor = ref('bg-nav-red');
+import { ref, watch } from 'vue';
 
-const changeNavRed = () => {
-	navColor.value = 'bg-nav-red';
-};
+// Local Storage에서 색상을 가져와서 설정 or 기본으로 bg-nav-red로 설정
+const navColor = ref(localStorage.getItem('navColor') || 'bg-nav-red');
 
-const changeNavOrange = () => {
-	navColor.value = 'bg-nav-orange';
-};
+// navColor가 변경될 때 Local Storage에 저장
+watch(navColor, newColor => {
+	localStorage.setItem('navColor', newColor);
+});
 
-const changeNavYellow = () => {
-	navColor.value = 'bg-nav-yellow';
-};
-
-const changeNavGreen = () => {
-	navColor.value = 'bg-nav-green';
-};
-
-const changeNavBlue = () => {
-	navColor.value = 'bg-nav-blue';
-};
-
-const changeNavNavy = () => {
-	navColor.value = 'bg-nav-navy';
-};
-
-const changeNavPurple = () => {
-	navColor.value = 'bg-nav-purple';
+// 각 색상 변경 함수. 선택한 색상을 Local Storage에 저장
+const changeNavColor = color => {
+	navColor.value = color;
 };
 </script>
 
