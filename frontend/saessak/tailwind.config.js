@@ -2,7 +2,10 @@
 module.exports = {
 	// purge: [],
 	purge: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
-	darkMode: false, // or 'media' or 'class'
+	darkMode: false, // or 'media' or 'class'    
+	content: [
+        "./node_modules/flowbite/**/*.js"
+    ],
 	theme: {
 		extend: {
 			colors: {
@@ -22,5 +25,6 @@ module.exports = {
 	variants: {
 		extend: {},
 	},
-	plugins: [require("tailwind-scrollbar-hide")]
+	plugins: [require("tailwind-scrollbar-hide"), 
+	require('flowbite/plugin')]
 };
