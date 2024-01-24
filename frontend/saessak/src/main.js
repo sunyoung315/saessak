@@ -2,9 +2,16 @@ import { createApp } from 'vue';
 import App from './App.vue';
 import router from './router/index.js';
 import 'tailwindcss/tailwind.css';
-import VCalendar from 'v-calendar';
+import { setupCalendar, Calendar, DatePicker } from 'v-calendar';
 import 'v-calendar/style.css';
 
-// Use plugin with optional defaults
+const app = createApp(App);
 
-createApp(App).use(router).use(VCalendar).mount('#app');
+app.use(router);
+// Use plugin defaults (optional)
+app.use(setupCalendar, {});
+
+// Use the components
+app.component('VCalendar', Calendar);
+app.component('VDatePicker', DatePicker);
+app.mount('#app');
