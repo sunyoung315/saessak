@@ -11,8 +11,8 @@ import modules.db_connect  as db_util
 import modules.s3_connect as s3_util
 from sqlalchemy import insert, select
 from sqlalchemy.exc import SQLAlchemyError
-
-
+from io import BytesIO
+import tempfile
 ## db 설정
 album_table = table_info.get_album_table()
 file_table = table_info.get_file_table()
@@ -28,13 +28,16 @@ db_base_url = s3_util.db_base_url
 app = Flask(__name__)
 
 def get_face_feature(s3_url):
-    if not s3_url : return [0]*128
-
+    if not s3_url : 
+        return []   
+    print(s3_url)
     response = s3.get_object(Bucket = s3_bucket_name, Key= s3_url)
     data = response["Body"].read()
     encoded_img = np.frombuffer(data, dtype = np.uint8)
     img = cv2.imdecode(encoded_img,cv2.IMREAD_COLOR)
-    encodeding = face_recognition.face_encodings(img)[0]
+    encodeding = face_recognition.face_encodings(img)
+    if len(encodeding) == 0 :
+        return []
     
     return encodeding
 
@@ -46,12 +49,13 @@ def health() :
 ## get을 통해 image 파일 추출
 @app.route("/s3/download", methods=["GET"])
 def image_download() :
-    response = s3.get_object(Bucket = s3_bucket_name, Key= "class/1d6d0f50-c4c4-4f08-916a-d8c0d0730094.png")
+    response = s3.get_object(Bucket = s3_bucket_name, Key= "kid3.png")
     data = response["Body"].read()
     encoded_img = np.frombuffer(data, dtype = np.uint8)
     img = cv2.imdecode(encoded_img,cv2.IMREAD_COLOR)
     
     encoded = face_recognition.face_encodings(img)
+    print(encoded)
     return jsonify({"status" : HTTPStatus.OK})
 
 # s3 업로드 테스트
@@ -76,8 +80,7 @@ def uploadS3(classroomId) :
 
                 file_uuid = str(uuid.uuid4())
                 path = file_uuid + "." + file_extension
-                s3.upload_fileobj(file, s3_bucket_name, path)
-
+                s3.upload_fileobj(file.stream, s3_bucket_name, path)
                 photo.append({
                     "album_id" : album_id,
                     "file_name" : file_name,
@@ -111,10 +114,11 @@ def create_album(classroomId):
     if(request.method == 'POST') :
         # 이미지 리스트를 받는다.
         images = request.files.getlist("images")
-    
+
         album_date = request.form.get("albumDate")
         album_title = request.form.get("albumTitle")
-
+        
+        
         # 반 앨범 생성
         try : 
 
@@ -129,7 +133,7 @@ def create_album(classroomId):
                     url = r["kid_profile"]
                     child_dict[kid_id] = get_face_feature(url)
                 # 반 엘범 제작
-               
+                image_list = []
                 class_album = []
                 child_album = dict()
                 s3_list = []
@@ -140,22 +144,29 @@ def create_album(classroomId):
                     file_uuid = str(uuid.uuid4())
                     path = file_uuid+ "." + file_extension
 
-                    # s3 업로드하면 image파일을 못읽는데.. 어떻게 해야.. >> 업로드 시점을 transaction이 끝난뒤로 
                     s3_list.append(path)    
                     #반 엘범에 저장
                     add_object = {
                         "file_name" : file_name,
                         "file_path" : db_base_url + path,
                     }
+                
 
+                    
                     class_album.append(add_object)
-
+                    
+                    # 파일 오픈을 두번해서 오류가 난다.
                     file_byte = np.fromfile(image,np.uint8)
+                    
+                    
                     decoded_image = cv2.imdecode(file_byte, cv2.IMREAD_COLOR)
                     encodings = face_recognition.face_encodings(decoded_image)
+                    
                     for kid_id , feature in child_dict.items() :
+                        if len(feature) == 0 : 
+                            continue
                         for encoding in encodings :
-                            if face_recognition.compare_faces([feature],encoding, tolerance=0.6) : 
+                            if face_recognition.compare_faces(feature,encoding, tolerance=0.6) : 
                                 if kid_id in child_album :
                                     child_album[kid_id].append(add_object)
                                 else :
@@ -201,10 +212,11 @@ def create_album(classroomId):
                         value
                     )
                     
+                
+                # for i, image in enumerate(image_list) :
+                #     s3.upload_fileobj(image, s3_bucket_name, s3_list[i], ExtraArgs={'ContentType' : 'image/jpeg'})
                 conn.commit()  
                 
-                for  i in range(len(images)) :
-                    s3.upload_fileobj(images[i], s3_bucket_name, s3_list[i])
 
             
             return jsonify({"data" : "success", "status": HTTPStatus.OK})
