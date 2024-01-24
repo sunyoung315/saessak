@@ -43,8 +43,6 @@ public class ChatService {
 
     public List<RoomResponseDto> getRoomByTeacher(Long teacherId) {
         Teacher teacher = teacherRepository.findById(teacherId).get();
-        Classroom classRoom = teacher.getClassroom();
-
         List<Room> roomList = roomRepository.findAllByTeacher(teacher);
         return getRoomResponseDtos(roomList);
     }

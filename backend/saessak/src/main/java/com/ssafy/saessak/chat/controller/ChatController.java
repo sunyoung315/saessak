@@ -28,7 +28,7 @@ public class ChatController {
     @GetMapping(value = "/teacher/list/{teacherId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResultResponse> teacherList(@PathVariable("teacherId") Long teacherId) {
         List<RoomResponseDto> roomResponseDtoList = chatService.getRoomByTeacher(teacherId);
-        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS));
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, roomResponseDtoList));
     }
 
     @PostMapping(value = "/add/{teacherId}/{kidId}", produces = MediaType.APPLICATION_JSON_VALUE)
