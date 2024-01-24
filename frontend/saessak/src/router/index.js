@@ -6,8 +6,14 @@ import LoginView from '@/views/LoginView.vue';
 import UserView from '@/components/user/UserView.vue';
 import BoardView from '@/components/board/BoardView.vue';
 import AlbumView from '@/components/album/AlbumView.vue';
+import AlbumCreate from '@/components/album/albumItems/AlbumCreate.vue';
 import NoticeView from '@/components/notice/NoticeView.vue';
 import DocumentView from '@/components/document/DocumentView.vue';
+import DocumentList from '@/components/document/DocumentList.vue';
+import DocumentReplaceDetail from '@/components/document/DocumentReplaceDetail.vue';
+import DocumentAllergyDetail from '@/components/document/DocumentAllergyDetail.vue';
+import DocumentReplaceCreate from '@/components/document/DocumentReplaceCreate.vue';
+import DocumentAllergyCreate from '@/components/document/DocumentAllergyCreate.vue';
 import MenuView from '@/components/menu/MenuView.vue';
 import AttendanceView from '@/components/attendance/AttendanceView.vue';
 import ChatView from '@/components/chat/ChatView.vue';
@@ -60,6 +66,13 @@ const routes = [
 		path: '/album',
 		name: 'Album',
 		component: AlbumView,
+		children: [
+			{
+				path: 'create',
+				name: 'AlbumCreate',
+				component: AlbumCreate,
+			},
+		],
 	},
 	{
 		path: '/notice',
@@ -70,6 +83,33 @@ const routes = [
 		path: '/document',
 		name: 'Document',
 		component: DocumentView,
+		children: [
+			{
+				path: '',
+				name: 'DocumentList',
+				component: DocumentList,
+			},
+			{
+				path: 'replacement/:replacementId',
+				name: 'DocumentReplaceDetail',
+				component: DocumentReplaceDetail,
+			},
+			{
+				path: 'allgery/:kidId',
+				name: 'DocumentAllergyDetail',
+				component: DocumentAllergyDetail,
+			},
+			{
+				path: 'replace/create',
+				name: 'DocumentReplaceCreate',
+				component: DocumentReplaceCreate,
+			},
+			{
+				path: 'allery/create',
+				name: 'DocumentAllergyCreate',
+				component: DocumentAllergyCreate,
+			},
+		],
 	},
 	{
 		path: '/menu',
