@@ -16,6 +16,7 @@ module.exports = {
 				'dark-navy': '#333752',
 				'yellow-bg1': '#FFFDF4',
 				'yellow-bg2': '#FFF4B7',
+				'purple-bg': '#DAD2DF',
 			},
 			backgroundImage: {
 				'book-pattern': "url('@/assets/BoardFrame.png')",

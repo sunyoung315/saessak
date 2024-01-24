@@ -1,33 +1,37 @@
 <template>
 	<div
-		class="container mx-16 mb-10 p-8 w-auto border border-gray-200 shadow rounded-lg bg bg-nav-purple"
+		class="container relative mx-16 mb-10 p-8 w-auto border border-gray-200 shadow rounded-lg bg bg-purple-bg"
 	>
-		<div class="flex bg bg-white inline-block w-80 m-2 border rounded-md">
-			<div class="my-2 mx-5 inline-block text-black font-bold">
-				파란색
+		<div class="flex justify-end m-2">
+			<div
+				class="flex items-center my-2 mx-5 inline-block text-black font-bold"
+			>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
-					id="Layer_1"
-					data-name="Layer 1"
+					id="Bold"
 					viewBox="0 0 24 24"
-					class="size-2 inline-block fill-blue-500"
+					class="size-4 mx-1 fill-blue-500"
 				>
-					<path d="M12,0A12,12,0,1,0,24,12,12.013,12.013,0,0,0,12,0Z" />
+					<path
+						d="M12,0A12,12,0,1,0,24,12,12.013,12.013,0,0,0,12,0Zm0,21a9,9,0,1,1,9-9A9.01,9.01,0,0,1,12,21Z"
+					/>
 				</svg>
-				: 출석
+				<span>: 출석</span>
 			</div>
-			<div class="my-2 mx-5 inline-block text-black font-bold">
-				빨간색
+			<div
+				class="flex items-center my-2 mx-5 inline-block text-black font-bold"
+			>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
-					id="Layer_1"
-					data-name="Layer 1"
+					id="Bold"
 					viewBox="0 0 24 24"
-					class="size-2 inline-block fill-red-500"
+					class="size-4 mx-1 fill-red-500"
 				>
-					<path d="M12,0A12,12,0,1,0,24,12,12.013,12.013,0,0,0,12,0Z" />
+					<path
+						d="M12,0A12,12,0,1,0,24,12,12.013,12.013,0,0,0,12,0Zm0,21a9,9,0,1,1,9-9A9.01,9.01,0,0,1,12,21Z"
+					/>
 				</svg>
-				: 결석
+				<span>: 결석</span>
 			</div>
 		</div>
 		<VCalendar :attributes="attributes" expanded :rows="2" class="p-8">
@@ -86,7 +90,11 @@ const attendedDates = attendanceList
 	.map(({ attendanceDate, attendanceInTime, attendanceOutTime }) => ({
 		key: 'attended',
 		dates: [attendanceDate],
-		dot: 'blue',
+		highlight: {
+			color: 'blue',
+			fillMode: 'outline',
+		},
+		// dot: 'blue',
 		popover: { label: `등원: ${attendanceInTime}, 하원: ${attendanceOutTime}` },
 	}));
 
@@ -95,7 +103,11 @@ const absentDates = attendanceList
 	.map(({ attendanceDate }) => ({
 		key: 'absent',
 		dates: [attendanceDate],
-		dot: 'red',
+		highlight: {
+			color: 'red',
+			fillMode: 'outline',
+		},
+		// dot: 'red',
 		popover: { label: '결석' },
 	}));
 
