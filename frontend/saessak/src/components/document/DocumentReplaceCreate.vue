@@ -1,6 +1,6 @@
 <template>
-	<div class="w-3/4">
-		<RouterView></RouterView>
+	<div>
+		<h2>Replace Create</h2>
 	</div>
 </template>
 
