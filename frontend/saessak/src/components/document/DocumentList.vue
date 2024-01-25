@@ -284,12 +284,25 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { useReplacementStore } from '@/stores/replaceDocument';
 
 const router = useRouter();
+const replacementStore = useReplacementStore();
 
-const isTeacher = ref(false);
+const replacementList = ref([]);
+// console.log(replacementList);
+
+onMounted(async () => {
+	await replacementStore.getReplacementList(2);
+	replacementList.value = replacementStore.replacementList;
+});
+
+// console.log(replacementStore);
+
+// boolean 설정, isTeacher: 선생님/학부모, isReplace: 귀가동의서/알러지
+const isTeacher = ref(true);
 const isReplace = ref(true);
 
 // 동의서 버튼 동작
@@ -311,6 +324,8 @@ function createDocument() {
 	}
 }
 // 버튼 끝
+
+// 더미데이터 sql 가져오는거
 
 // 더미 데이터
 const kidReplaceList = ref([
