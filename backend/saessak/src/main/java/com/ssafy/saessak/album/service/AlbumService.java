@@ -9,6 +9,8 @@ import com.ssafy.saessak.album.repository.AlbumRepository;
 import com.ssafy.saessak.album.repository.FileRepository;
 import com.ssafy.saessak.user.domain.Classroom;
 import com.ssafy.saessak.user.domain.Kid;
+import com.ssafy.saessak.user.repository.ClassroomRepository;
+import com.ssafy.saessak.user.repository.KidRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -24,30 +26,30 @@ public class AlbumService {
 
     private final AlbumRepository albumRepository;
     private final FileRepository fileRepository;
-
+    private final ClassroomRepository classroomRepository;
+    private final KidRepository kidRepository;
     //엘범 조회
     public List<AlbumResponseDto> getClassAlbumList (Long classroomId){
-        Classroom classroom = Classroom.builder().classroomId(classroomId).build();
+        Classroom classroom = classroomRepository.findById(classroomId).get();
         List<Album> albumList = albumRepository.findByClassroom(classroom).get();
         return makeAlbumResponseDtoList(albumList);
     }
 
     public List<AlbumResponseDto> getKidAlbumList (Long kidId){
-        //Kid kid = Kid.builder().kidId(kidId).build();
-        Kid kid = null;
+        Kid kid = kidRepository.findById(kidId).get();
         List<Album> albumList = albumRepository.findByKid(kid).get();
         return makeAlbumResponseDtoList(albumList);
     }
 
     public List<AlbumResponseDto> getKidAlbum(Long kidId, Date date){
-        //Kid kid = Kid.builder().kidId(kidId).build();
+        Kid kid = kidRepository.findById(kidId).get();
         Kid kid = null;
         List<Album> albumList = albumRepository.findByKidAndAlbumDate(kid,date).get();
         return makeAlbumResponseDtoList(albumList);
     }
 
     public List<AlbumResponseDto> getClassAlbum(Long classroomId, Date date){
-        Classroom classroom = Classroom.builder().classroomId(classroomId).build();
+        Classroom classroom = classroomRepository.findById(classroomId).get();
         List<Album> albumList = albumRepository.findByClassroomAndAlbumDate(classroom, date).get();
         return makeAlbumResponseDtoList(albumList);
     }
