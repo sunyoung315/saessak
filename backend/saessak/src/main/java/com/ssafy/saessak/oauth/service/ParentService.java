@@ -39,13 +39,13 @@ public class ParentService {
                 .parentAlarm(false)
                 .build();
 
-        return parentRepository.save(parent).getParentId();
+        return parentRepository.save(parent).getId();
     }
 
     public Long getIdByEmailAndName(String email, String name) {
         Optional<Parent> parent = parentRepository.findByParentEmailAndParentName(email, name);
         if(parent.isPresent()) {
-            return parent.get().getParentId();
+            return parent.get().getId();
         }
         return 0L;
     }
@@ -89,8 +89,8 @@ public class ParentService {
         for(Kid kid : kidList) {
             KidResponseDto kidResponseDto = KidResponseDto.builder()
                     .classroomId(kid.getClassroom().getClassroomId())
-                    .parentId(kid.getParent().getParentId())
-                    .kidId(kid.getKidId())
+                    .parentId(kid.getParent().getId())
+                    .kidId(kid.getId())
                     .kidName(kid.getKidName())
                     .build();
             kidResponseDtoList.add(kidResponseDto);
