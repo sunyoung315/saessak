@@ -91,14 +91,14 @@
 									<button
 										type="submit"
 										class="w-16 my-2 mr-2 p-2 border rounded-md text-center h-9 align-center font-semibold bg-dark-navy text-white"
-										@click="inTimePush"
+										@click="inTimePush(attendance.kidId)"
 									>
 										등원
 									</button>
 									<button
 										type="submit"
 										class="w-16 my-2 mr-2 p-2 border rounded-md text-center h-9 align-center font-semibold bg-dark-navy text-white"
-										@click="OutTimePush"
+										@click="outTimePush(attendance.kidId)"
 									>
 										하원
 									</button>
@@ -113,98 +113,58 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, watch, onMounted } from 'vue';
 import { getWeekOfMonth, getMonth } from 'date-fns';
+import { useAttendanceStore } from '@/store/attendance.js';
 
 // input type="date"는 "yyyy-MM-dd" 형식의 문자열 -> 같은 형식으로 변환
 let selectedDate = ref(new Date().toISOString().split('T')[0]);
 
+const year = ref();
+const month = ref();
+const weekOfMonth = ref();
+
+watch(
+	selectedDate,
+	newVal => {
+		if (newVal) {
+			let date = new Date(newVal);
+			// 일요일 기준(0), 월요일 기준(1)
+			weekOfMonth.value = getWeekOfMonth(date, { weekStartsOn: 0 });
+			month.value = getMonth(date) + 1;
+			year.value = date.getFullYear();
+		}
+	},
+	{ immediate: true },
+);
+
 let weekly = computed(() => {
 	if (selectedDate.value) {
-		let date = new Date(selectedDate.value);
-		// 일요일 기준(0), 월요일 기준(1)
-		let weekOfMonth = getWeekOfMonth(date, { weekStartsOn: 0 });
-		let month = getMonth(date) + 1;
-		let year = date.getFullYear();
-		return `${year}년 ${month}월 ${weekOfMonth}주차`;
+		return `${year.value}년 ${month.value}월 ${weekOfMonth.value}주차`;
 	}
 	return '';
 });
 
-const attendanceList = [
-	{
-		kidId: 100,
-		kidName: '박나은',
-		attendance: [
-			{
-				attendanceId: 1,
-				attendanceDate: '24/01/22',
-				attendanceInTime: '09:01',
-				attendanceOutTime: '16:01',
-			},
-			{
-				attendanceId: 2,
-				attendanceDate: '24/01/23',
-				attendanceInTime: '09:01',
-				attendanceOutTime: '16:01',
-			},
-			{
-				attendanceId: 3,
-				attendanceDate: '24/01/24',
-				attendanceInTime: '09:01',
-				attendanceOutTime: '',
-			},
-			{
-				attendanceId: 4,
-				attendanceDate: '24/01/25',
-				attendanceInTime: '09:01',
-				attendanceOutTime: '16:01',
-			},
-			// {
-			// 	attendanceId: 5,
-			// 	attendanceDate: '24/01/26',
-			// 	attendanceInTime: '09:01',
-			// 	attendanceOutTime: '16:01',
-			// },
-		],
-	},
-	{
-		kidId: 200,
-		kidName: '박건후',
-		attendance: [
-			{
-				attendanceId: 1,
-				attendanceDate: '24/01/22',
-				attendanceInTime: '09:00',
-				attendanceOutTime: '16:00',
-			},
-			{
-				attendanceId: 2,
-				attendanceDate: '24/01/23',
-				attendanceInTime: '09:00',
-				attendanceOutTime: '16:00',
-			},
-			{
-				attendanceId: 3,
-				attendanceDate: '24/01/24',
-				attendanceInTime: '09:00',
-				attendanceOutTime: '16:00',
-			},
-			{
-				attendanceId: 4,
-				attendanceDate: '24/01/25',
-				attendanceInTime: '',
-				attendanceOutTime: '',
-			},
-			// {
-			// 	attendanceId: 5,
-			// 	attendanceDate: '24/01/26',
-			// 	attendanceInTime: '09:00',
-			// 	attendanceOutTime: '16:00',
-			// },
-		],
-	},
-];
+const store = useAttendanceStore();
+
+const classroomId = 2;
+
+const listData = ref({
+	classroomId,
+	year,
+	month,
+	week: weekOfMonth,
+});
+
+const attendanceList = ref([]);
+const getList = async () => {
+	await store.getList(listData.value);
+	attendanceList.value = store.attendanceList;
+};
+
+onMounted(async () => {
+	await getList();
+});
 </script>
 
 <style scoped></style>
