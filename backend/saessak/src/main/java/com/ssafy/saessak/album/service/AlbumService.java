@@ -43,7 +43,6 @@ public class AlbumService {
 
     public List<AlbumResponseDto> getKidAlbum(Long kidId, Date date){
         Kid kid = kidRepository.findById(kidId).get();
-        Kid kid = null;
         List<Album> albumList = albumRepository.findByKidAndAlbumDate(kid,date).get();
         return makeAlbumResponseDtoList(albumList);
     }
