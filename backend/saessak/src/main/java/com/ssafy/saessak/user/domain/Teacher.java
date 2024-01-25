@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,14 +20,11 @@ public class Teacher extends User {
     @JoinColumn(name = "classroom_id")
     private Classroom classroom;
 
-    @Column(name = "teacher_name")
+    @Column(name = "teacher_name", nullable = false)
     private String teacherName;
 
-    @Column(name = "teacher_email")
+    @Column(name = "teacher_email", nullable = false, unique = true)
     private String teacherEmail;
-
-    @Column(name = "teacher_password")
-    private String teacherPassword;
 
     @Column(name = "teacher_device")
     private String teacherDevice;
@@ -34,8 +32,11 @@ public class Teacher extends User {
     @Column(name = "teacher_profile")
     private String teacherProfile;
 
-    @Column(name = "teacher_alarm")
+    @Column(name = "teacher_alarm", nullable = false)
     private boolean teacherAlarm;
+
+    @Column(name = "teacher_alarm_timestamp")
+    private LocalDateTime teacherAlarmTimestamp;
 
     public void setToken(String token){
         this.teacherDevice = token;

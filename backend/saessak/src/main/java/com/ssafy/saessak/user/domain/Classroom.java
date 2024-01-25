@@ -28,14 +28,14 @@ public class Classroom {
 
     @JsonIgnore
     @OneToMany(mappedBy = "classroom", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    private final List<Teacher> teacherList = new ArrayList<>();
+    private List<Teacher> teacherList;
 
     @JsonIgnore
     @OneToMany(mappedBy = "classroom", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    private final List<Kid> kidList = new ArrayList<>();
+    private List<Kid> kidList;
 
     @JsonIgnore
     @OneToMany(mappedBy = "classroom", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    private final List<Album> albumList = new ArrayList<>();
+    private List<Album> albumList;
 
 }

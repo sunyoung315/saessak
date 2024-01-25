@@ -34,6 +34,6 @@ public class Menu {
     private String menuPath; // s3 url 예정
 
     @OneToMany(mappedBy = "menu", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    List<Food> foodList = new ArrayList<>();
+    List<Food> foodList;
 
 }

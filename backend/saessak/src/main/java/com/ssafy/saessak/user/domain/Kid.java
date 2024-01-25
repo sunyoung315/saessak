@@ -53,13 +53,13 @@ public class Kid extends User {
     private Classroom classroom;
 
     @OneToMany(mappedBy = "kid", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    private List<Attendance> attendanceList = new ArrayList<>();
+    private List<Attendance> attendanceList;
 
     @OneToMany(mappedBy = "kid", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    private List<Replacement> replacementList = new ArrayList<>();
+    private List<Replacement> replacementList;
 
     @OneToMany(mappedBy = "kid")
-    private List<Album> albums = new ArrayList<>();
+    private List<Album> albums;
 
     public Kid updateParent(Parent parent){
         this.parent = parent;

@@ -1,8 +1,10 @@
 package com.ssafy.saessak.user.service;
 
+import com.google.api.client.util.Value;
 import com.ssafy.saessak.user.domain.Classroom;
 import com.ssafy.saessak.user.domain.Kid;
 import com.ssafy.saessak.user.domain.Parent;
+import com.ssafy.saessak.user.dto.KakaoResponseDto;
 import com.ssafy.saessak.user.domain.Teacher;
 import com.ssafy.saessak.user.dto.KidListResponseDto;
 import com.ssafy.saessak.user.dto.KidRegistRequestDto;
@@ -30,7 +32,6 @@ public class UserService {
         final Parent parent = Parent.builder()
                 .parentName(parentJoinRequestDto.getParentName())
                 .parentEmail(parentJoinRequestDto.getParentEmail())
-                .parentPassword(parentJoinRequestDto.getParentPassword())
                 .parentName(parentJoinRequestDto.getParentName())
                 .parentAlarm(false)
                 .build();

@@ -3,7 +3,6 @@ package com.ssafy.saessak.user.controller;
 import com.ssafy.saessak.result.ResultCode;
 import com.ssafy.saessak.result.ResultResponse;
 import com.ssafy.saessak.user.dto.KidRegistRequestDto;
-import com.ssafy.saessak.user.dto.ParentRegistRequestDto;
 import com.ssafy.saessak.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -16,11 +15,6 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
-
-    @PostMapping(value = "/parent/register", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResultResponse> registParent(@RequestBody ParentRegistRequestDto parentRegistRequestDto) {
-        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, userService.registParent(parentRegistRequestDto)));
-    }
 
     @PostMapping(value = "/kid/register/{classroomId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResultResponse> registKid(@PathVariable("classroomId") Long classroomId, @RequestBody KidRegistRequestDto kidRegistRequestDto) {

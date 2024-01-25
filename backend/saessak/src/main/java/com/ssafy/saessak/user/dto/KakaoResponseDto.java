@@ -3,14 +3,13 @@ package com.ssafy.saessak.user.dto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Builder
 @Getter
 @AllArgsConstructor
-public class ParentRegistRequestDto {
+public class KakaoResponseDto {
 
-    private String parentName;
-    private String parentEmail;
-
+    private Long id;
+    private String email;
+    private String nickname;
 }
