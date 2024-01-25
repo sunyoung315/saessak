@@ -13,12 +13,17 @@ spring:
     hibernate:
       ddl-auto: update
 
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
 kakao:
   client:
     id: 8a0f1735f002f9571ca3a2c4e30db8da
     secret: wR3nvxNdDN0AMMBjsiznkFMGewPSwSql
   redirect:
-    url: http://localhost:8080/oauth/kakao/callback
+    url: http://localhost:8080/api/oauth/kakao/callback
 
 jwt:
   token:
