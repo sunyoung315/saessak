@@ -3,6 +3,7 @@ package com.ssafy.saessak.oauth.controller;
 import com.ssafy.saessak.oauth.dto.LoginSuccessResponseDto;
 import com.ssafy.saessak.oauth.service.KakaoSocialService;
 import com.ssafy.saessak.oauth.service.ParentService;
+import com.ssafy.saessak.oauth.service.TeacherService;
 import com.ssafy.saessak.oauth.token.service.RefreshTokenService;
 import com.ssafy.saessak.result.ResultCode;
 import com.ssafy.saessak.result.ResultResponse;
@@ -24,6 +25,7 @@ public class OauthController {
 
     private final KakaoSocialService kakaoSocialService;
     private final ParentService parentService;
+    private final TeacherService teacherService;
     private final RefreshTokenService refreshTokenService;
 
 
@@ -37,25 +39,29 @@ public class OauthController {
     @GetMapping("/kakao/callback")
     public ResponseEntity<ResultResponse> login(HttpServletRequest request) {
         LoginSuccessResponseDto loginSuccessResponseDto = kakaoSocialService.login(request.getParameter("code"));
-        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, parentService.login(loginSuccessResponseDto)));
+        if(loginSuccessResponseDto.isTeacher()) {
+            return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, teacherService.login(loginSuccessResponseDto)));
+        } else {
+            return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, parentService.login(loginSuccessResponseDto)));
+        }
     }
 
-    @GetMapping("/token-refresh")
-    public ResponseEntity<ResultResponse> refreshToken(@RequestParam final String refreshToken) {
-        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, parentService.refreshToken(refreshToken)));
-    }
-
-    @DeleteMapping("/delete")
-    public ResponseEntity<ResultResponse> deleteUser(final Principal principal) {
-        refreshTokenService.deleteRefreshToken(Long.valueOf(principal.getName()));
-        parentService.deleteUser(Long.valueOf(principal.getName()));
-        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS));
-    }
-
-    @PostMapping("/logout")
-    public ResponseEntity<ResultResponse> logout(final Principal principal) {
-        refreshTokenService.deleteRefreshToken(Long.valueOf(principal.getName()));
-        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS));
-    }
+//    @GetMapping("/token-refresh")
+//    public ResponseEntity<ResultResponse> refreshToken(@RequestParam final String refreshToken) {
+//        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, parentService.refreshToken(refreshToken)));
+//    }
+//
+//    @DeleteMapping("/delete")
+//    public ResponseEntity<ResultResponse> deleteUser(final Principal principal) {
+//        refreshTokenService.deleteRefreshToken(Long.valueOf(principal.getName()));
+//        parentService.deleteUser(Long.valueOf(principal.getName()));
+//        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS));
+//    }
+//
+//    @PostMapping("/logout")
+//    public ResponseEntity<ResultResponse> logout(final Principal principal) {
+//        refreshTokenService.deleteRefreshToken(Long.valueOf(principal.getName()));
+//        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS));
+//    }
 
 }
