@@ -18,11 +18,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name="kid")
-public class Kid {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long kidId;
+public class Kid extends User {
 
     @Column(name = "kid_name", nullable = false)
     private String kidName;

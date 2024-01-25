@@ -15,11 +15,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name="parent")
-public class Parent {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long parentId;
+public class Parent extends User {
 
     @Column(name = "parent_name", nullable = false)
     private String parentName;

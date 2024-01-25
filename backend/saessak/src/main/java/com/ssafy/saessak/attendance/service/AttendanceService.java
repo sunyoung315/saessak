@@ -92,7 +92,7 @@ public class AttendanceService {
                 attendanceKidResponseDtoList.add(attendanceKidResponseDto);
             }
             AttendanceKidListResponseDto attendanceKidListResponseDto = AttendanceKidListResponseDto.builder()
-                    .kidId(k.getKidId())
+                    .kidId(k.getId())
                     .kidName(k.getKidName())
                     .attendance(attendanceKidResponseDtoList)
                     .build();
