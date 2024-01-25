@@ -63,7 +63,7 @@ public class Kid extends User {
     private List<Album> albums;
 
     @OneToMany(mappedBy = "kid" ,fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    private List<Board> boardList = new ArrayList<>();
+    private List<Board> boardList;
 
 
 
