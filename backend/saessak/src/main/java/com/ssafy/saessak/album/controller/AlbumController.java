@@ -17,7 +17,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-@RequestMapping("/api/v2/album")
+@RequestMapping("/api/album")
 @RestController
 @RequiredArgsConstructor
 @Slf4j
