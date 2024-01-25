@@ -1,3 +1,4 @@
+
 <template>
   <div
     class="flex flex-col justify-between w-full h-screen max-w-md p-8 mx-auto my-auto overflow-y-scroll bg-white border border-gray-200 rounded-lg shadow scrollbar-hide sm:p-8 dark:bg-gray-800 dark:border-gray-700"
@@ -38,4 +39,6 @@ const showChat = (name) => {
   console.log(chatSwitch.value);
 };
 </script>
-<style></style>
+<style scoped>
+
+</style>

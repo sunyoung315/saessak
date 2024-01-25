@@ -1,16 +1,15 @@
 <template>
-    
   <div
-    class="fixed top-0 left-0 right-0 z-10 flex items-center justify-between w-full max-w-md px-3 py-5 pb-4 mx-auto bg-yellow-50"
+    class="fixed w-1/3 top-0 right-0 flex items-center justify-between px-3 py-5 pb-4 mx-auto bg-yellow-50"
   >
-    <h5 class="flex items-center justify-center text-xl font-bold leading-none text-gray-900 dark:text-white">
+    <h5
+      class="flex items-center justify-center text-xl font-bold leading-none text-gray-900 dark:text-white"
+    >
       학부모 목록
     </h5>
   </div>
   <div class="flow-root grow">
-    <div
-      class="w-full max-w-sm mt-3 bg-white dark:bg-gray-800 dark:border-gray-700"
-    >
+    <div class="w-full max-w-sm mt-3 mx-auto bg-white dark:bg-gray-800 dark:border-gray-700">
       <div class="flex flex-wrap pt-5 mt-auto mb-3 justify-evenly">
         <div
           v-for="person in Person"
@@ -23,16 +22,14 @@
             alt="Bonnie image"
           />
           <h5 class="text-xl font-medium text-gray-900 dark:text-white">
-            {{ person.name }}
+            {{ userFlag == false ? person.kidName : person.teacherName}} {{ userFlag == false ? "학부모" : "선생님" }}
           </h5>
-          <span class="mb-0 text-sm text-gray-500 dark:text-gray-400"
-            >Visual Designer</span
-          >
+          <span class="mb-0 text-sm text-gray-500 dark:text-gray-400">{{ userFlag == false ? "" : person.kidName }}</span>
           <div class="flex mt-3 mb-2">
-            <a
-              href="#"
-              class="inline-flex items-center px-4 py-2 text-center text-white bg-blue-700 rounded-lg font -medium mt-0text-sm hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-              >MESSAGE</a
+            <button
+             @click="addChat(userFlag == false ? person.kidId : [person.teacherId, person.kidId])"
+              class="inline-flex items-center px-4 py-2 text-center text-white bg-lime-500 rounded-lg font -medium mt-0text-sm hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+              >TALK</button
             >
           </div>
         </div>
@@ -42,17 +39,66 @@
 </template>
 
 <script setup>
-const Person = [
-  { id: 1, name: "김하은" },
-  { id: 2, name: "윤선아" },
-  { id: 3, name: "이민주" },
-  { id: 4, name: "조효은" },
-  { id: 5, name: "김쪼꼬" },
-  { id: 6, name: "루피" },
-  { id: 7, name: "마라샹궈" },
-  { id: 8, name: "꿔바로우" },
-  { id: 7, name: "햅쌀와플" },
-  { id: 8, name: "떡튀순" },
-];
+import { getClassKids, getMyTeacher } from '@/api/user'
+import { addNewChat } from '@/api/chat'
+import { ref, onMounted } from 'vue'
+
+onMounted(() => {
+  getPersonList()
+})
+
+const userId = ref(1);
+const classroomId = ref(2);
+const userFlag = ref(true)
+
+const getPersonList = () => {
+  if (!userFlag.value) {
+    console.log('선생님 - 반 아이 조회')
+    getClassKids(
+      classroomId.value,
+      ({ data }) => {
+        console.log(data.data)
+        Person.value = data.data
+      },
+      (error) => {
+        console.log(error)
+      }
+    )
+  } else {
+    console.log('학부모 - 선생님 조회');
+    getMyTeacher(
+      userId.value,
+      ({data}) => {
+        console.log(data.data);
+        Person.value = data.data;
+      },
+      (error) => {
+        console.log(error);
+      }
+    )
+  }
+}
+
+const Person = ref([]);
+const emit = defineEmits(["chatEvent"]); // CHAT 버튼 눌렀을 때 채팅방으로 이동
+
+
+const addChat = (input) => {
+  console.log("addChat 실행");
+  console.log(input);
+  let tId = userFlag == false ? userId : input[0] ; // 선생님 화면 : 학부모 화면
+  let kId = userFlag == false ? input : input[1]; 
+  console.log(tId + "/" + kId);
+  addNewChat(
+    tId, kId, ({data}) => {
+      console.log(data.data);
+      const roomId = "roomId";
+      emit("chatEvent", roomId);
+    },
+    (error) => {
+      console.log(error);
+    }
+  )
+}
 </script>
 <style></style>

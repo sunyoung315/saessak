@@ -1,10 +1,16 @@
 package com.ssafy.saessak.user.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import com.ssafy.saessak.attendance.domain.Attendance;
+import com.ssafy.saessak.document.domain.Replacement;
+import com.ssafy.saessak.album.domain.Album;
+
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Builder(toBuilder = true)
@@ -50,8 +56,27 @@ public class Kid {
     @JoinColumn(name="classroom_id")
     private Classroom classroom;
 
+    @OneToMany(mappedBy = "kid", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private List<Attendance> attendanceList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "kid", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private List<Replacement> replacementList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "kid")
+    private List<Album> albums = new ArrayList<>();
+
     public Kid updateParent(Parent parent){
         this.parent = parent;
         return this;
+    }
+
+    public void setAllergy(String kidAllergy, String kidAllergySignature, LocalDate now) {
+        this.kidAllergy = kidAllergy;
+        this.kidAllergySignature = kidAllergySignature;
+        this.kidAllergyDate = now;
+    }
+
+    public void changeCheck() {
+        this.kidAllergyCheck = true;
     }
 }
