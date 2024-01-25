@@ -37,5 +37,17 @@ public class Parent {
     @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private final List<Kid> kidList = new ArrayList<>();
 
+    public void setToken(String token){
+        this.parentDevice = token;
+    }
+
+    public void setAlarm() {
+        if(!this.parentAlarm) {
+            this.parentAlarm = true;
+        } else {
+            this.parentAlarm = false;
+        }
+    }
+
 }
 

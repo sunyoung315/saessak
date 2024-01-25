@@ -1,12 +1,6 @@
 package com.ssafy.saessak.result;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.springframework.http.HttpStatus;
-
-import java.io.Serializable;
 
 @Getter
 public class ResultResponse {
