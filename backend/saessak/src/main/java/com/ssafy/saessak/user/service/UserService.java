@@ -35,7 +35,7 @@ public class UserService {
                 .parentAlarm(false)
                 .build();
         final Parent savedParent = parentRepository.save(parent);
-        return savedParent.getParentId();
+        return savedParent.getId();
     }
 
     @Transactional
@@ -51,7 +51,7 @@ public class UserService {
                 .build();
 
         final Kid savedKid = kidRepository.save(kid);
-        return savedKid.getKidId();
+        return savedKid.getId();
     }
 
     @Transactional
@@ -62,7 +62,7 @@ public class UserService {
         Kid k = kid.updateParent(parent);
 
         KidListResponseDto kidListResponseDto = KidListResponseDto.builder()
-                .kidId(k.getKidId())
+                .kidId(k.getId())
                 .kidName(k.getKidName())
                 .kidBirthday(k.getKidBirthday())
                 .kidAllergy(k.getKidAllergy())
@@ -70,7 +70,7 @@ public class UserService {
                 .kidAllergySignature(k.getKidAllergySignature())
                 .kidInviteLink(k.getKidInviteLink())
                 .kidAllergyDate(k.getKidAllergyDate())
-                .parentId(Optional.ofNullable(k.getParent()).map(Parent::getParentId).orElse(null))
+                .parentId(Optional.ofNullable(k.getParent()).map(Parent::getId).orElse(null))
                 .classroomId(k.getClassroom().getClassroomId())
                 .build();
         return kidListResponseDto;
@@ -86,7 +86,7 @@ public class UserService {
         List<KidListResponseDto> kidListResponseDtoList = new ArrayList<>();
         for(Kid k : classroom.getKidList()){
             KidListResponseDto kidListResponseDto = KidListResponseDto.builder()
-                    .kidId(k.getKidId())
+                    .kidId(k.getId())
                     .kidName(k.getKidName())
                     .kidBirthday(k.getKidBirthday())
                     .kidAllergy(k.getKidAllergy())
@@ -94,7 +94,7 @@ public class UserService {
                     .kidAllergySignature(k.getKidAllergySignature())
                     .kidInviteLink(k.getKidInviteLink())
                     .kidAllergyDate(k.getKidAllergyDate())
-                    .parentId(Optional.ofNullable(k.getParent()).map(Parent::getParentId).orElse(null))
+                    .parentId(Optional.ofNullable(k.getParent()).map(Parent::getId).orElse(null))
                     .classroomId(k.getClassroom().getClassroomId())
                     .build();
             kidListResponseDtoList.add(kidListResponseDto);
@@ -107,7 +107,7 @@ public class UserService {
         Parent parent = parentRepository.findById(parentId).get();
         Map<Long, List<Teacher>> teacherList = new HashMap<>();
         for(Kid k : parent.getKidList()){
-            teacherList.put(k.getKidId(), k.getClassroom().getTeacherList());
+            teacherList.put(k.getId(), k.getClassroom().getTeacherList());
         }
 
         List<TeacherListReponseDto> teacherListReponseDtoList = new ArrayList<>();
@@ -116,10 +116,10 @@ public class UserService {
             Kid k = kidRepository.findById(kidId).get();
             for (Teacher t : tlist) {
                 TeacherListReponseDto teacherListReponseDto = TeacherListReponseDto.builder()
-                        .teacherId(t.getTeacherId())
+                        .teacherId(t.getId())
                         .teacherName(t.getTeacherName())
                         .className(t.getClassroom().getClassroomName())
-                        .kidId(k.getKidId())
+                        .kidId(k.getId())
                         .kidName(k.getKidName())
                         .build();
                 teacherListReponseDtoList.add(teacherListReponseDto);

@@ -37,7 +37,7 @@ public class AllergyService {
 
         for(Kid kid : kidList) {
             AllergyResponseDto allergyResponseDto = AllergyResponseDto.builder()
-                    .kidId(kid.getKidId())
+                    .kidId(kid.getId())
                     .kidName(kid.getKidName())
                     .kidAllergyDate(kid.getKidAllergyDate())
                     .kidAllergyCheck(kid.getKidAllergyCheck())
@@ -53,7 +53,7 @@ public class AllergyService {
         Kid kid = kidRepository.findById(kidId).get();
 
         AllergyDetailResponseDto allergyDetailResponseDto = AllergyDetailResponseDto.builder()
-                .kidId(kid.getKidId())
+                .kidId(kid.getId())
                 .classroomName(kid.getClassroom().getClassroomName())
                 .kidName(kid.getKidName())
                 .kidAllergy(kid.getKidAllergy())

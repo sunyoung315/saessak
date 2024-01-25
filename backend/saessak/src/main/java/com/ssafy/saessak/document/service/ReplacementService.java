@@ -60,7 +60,7 @@ public class ReplacementService {
         ReplacementAlarmResponseDto replacementAlarmResponseDto = ReplacementAlarmResponseDto.builder()
                 .replacementId(savedReplacement.getReplacementId())
                 .teacherAlarmDeviceList(teacherDeviceList)
-                .kidId(savedReplacement.getKid().getKidId())
+                .kidId(savedReplacement.getKid().getId())
                 .kidName(savedReplacement.getKid().getKidName())
                 .build();
 

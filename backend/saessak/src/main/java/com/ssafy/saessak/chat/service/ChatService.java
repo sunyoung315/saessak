@@ -61,37 +61,29 @@ public class ChatService {
         }
         return roomResponseDtoList;
     }
-
-        private RoomResponseDto roomInfoToDto(Room r) {
-        Chat chat = chatRepository.findFirstByRoomOrderByChatTimeDesc(r);
-
-        if(chat == null){
-            return RoomResponseDto.builder()
-                    .roomId(r.getRoomId())
-                    .kidId(r.getKid().getKidId())
-                    .kidName(r.getKid().getKidName())
-                    .flag(false)
-                    .build();
-        }
-
-        boolean isChatTimeBeforeLastVisitTime = chat.getChatTime().isBefore(r.getLastVisitTime());
-        return RoomResponseDto.builder()
-                .roomId(r.getRoomId())
-                .kidId(r.getKid().getKidId())
-                .kidName(r.getKid().getKidName())
-                .lastChat(chat.getChatContent())
-                .flag(isChatTimeBeforeLastVisitTime)
-                .build();
-    }
-
+    private RoomResponseDto roomInfoToDto(Room r) {
+//        Chat chat = chatRepository.findFirstByRoomOrderByChatTimeDesc(r);
+//
+//        if(chat == null){
+//            return RoomResponseDto.builder()
+//                    .roomId(r.getRoomId())
+//                    .kidId(r.getKid().getKidId())
+//                    .kidName(r.getKid().getKidName())
+//                    .flag(false)
+//                    .build();
+//        }
+//
+//        boolean isChatTimeBeforeLastVisitTime = chat.getChatTime().isBefore(r.getLastVisitTime());
+//        return RoomResponseDto.builder()
+//                .roomId(r.getRoomId())
+//                .kidId(r.getKid().getKidId())
+//                .kidName(r.getKid().getKidName())
+//                .lastChat(chat.getChatContent())
+//                .flag(isChatTimeBeforeLastVisitTime)
+//                .build();
+    return null;
+}
     public void addRoom(Long teacherId, Long kidId) {
-        Teacher teacher = teacherRepository.findById(teacherId).get();
-        Kid kid = kidRepository.findById(kidId).get();
-        Room room = Room.builder()
-                .kid(kid)
-                .teacher(teacher)
-                .lastVisitTime(LocalDateTime.now())
-                .build();
-        roomRepository.save(room);
+
     }
 }
