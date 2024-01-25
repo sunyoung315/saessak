@@ -28,7 +28,7 @@
 	<!-- Teacher Version -->
 	<div v-else class="container p-6">
 		<div class="flex justify-between items-center">
-			<span class="text-4xl mt-10 ml-14 mb-3 font-extrabold inline-block"
+			<span class="text-3xl mt-10 ml-14 mb-3 font-extrabold inline-block"
 				>알림장</span
 			>
 			<button
