@@ -39,6 +39,7 @@ public class AttendanceController {
         FcmNotificationRequestDto fcmRequestDto = FcmNotificationRequestDto.builder()
               .notification(notification)
               .build();
+        System.out.println(notification.getBody());
 
         AlarmRequestDto alarmRequestDto = AlarmRequestDto.builder()
                 .kidId(kidId)

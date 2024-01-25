@@ -56,55 +56,29 @@ public class ChatService {
         }
         return roomResponseDtoList;
     }
+    private RoomResponseDto roomInfoToDto(Room r) {
+//        Chat chat = chatRepository.findFirstByRoomOrderByChatTimeDesc(r);
+//
+//        if(chat == null){
+//            return RoomResponseDto.builder()
+//                    .roomId(r.getRoomId())
+//                    .kidId(r.getKid().getKidId())
+//                    .kidName(r.getKid().getKidName())
+//                    .flag(false)
+//                    .build();
+//        }
+//
+//        boolean isChatTimeBeforeLastVisitTime = chat.getChatTime().isBefore(r.getLastVisitTime());
+//        return RoomResponseDto.builder()
+//                .roomId(r.getRoomId())
+//                .kidId(r.getKid().getKidId())
+//                .kidName(r.getKid().getKidName())
+//                .lastChat(chat.getChatContent())
+//                .flag(isChatTimeBeforeLastVisitTime)
+//                .build();
+    return null;
+}
+    public void addRoom(Long teacherId, Long kidId) {
 
-        private RoomResponseDto roomInfoToDto(Room r) {
-        Chat chat = chatRepository.findFirstByRoomOrderByChatTimeDesc(r);
-
-        if(chat == null){
-            return RoomResponseDto.builder()
-                    .roomId(r.getRoomId())
-                    .kidId(r.getKid().getKidId())
-                    .kidName(r.getKid().getKidName())
-                    .flag(false)
-                    .build();
-        }
-
-        boolean isChatTimeBeforeLastVisitTime = chat.getChatTime().isBefore(r.getLastVisitTime());
-        return RoomResponseDto.builder()
-                .roomId(r.getRoomId())
-                .kidId(r.getKid().getKidId())
-                .kidName(r.getKid().getKidName())
-                .lastChat(chat.getChatContent())
-                .flag(isChatTimeBeforeLastVisitTime)
-                .build();
-    }
-
-    // 채팅방 생성
-    public Long addRoom(Long teacherId, Long kidId) {
-        Teacher teacher = teacherRepository.findById(teacherId).get();
-        Kid kid = kidRepository.findById(kidId).get();
-        Room room = roomRepository.findByKidAndTeacher(kid, teacher);
-
-        if(room == null){
-            room = roomRepository.save(Room.builder()
-                    .kid(kid)
-                    .teacher(teacher)
-                    .lastVisitTime(LocalDateTime.now())
-                    .build());
-        }
-        return room.getRoomId();
-    }
-
-
-    // 채팅 저장
-    public void saveMessage(ChatMessageRequest message){
-        Chat chatMessage = Chat.builder()
-                .senderId(message.getSenderId())
-                .receiverId(message.getReceiverId())
-                .chatContent(message.getChatContent())
-                .chatTime(message.getChatTime())
-                .room(roomRepository.findById(message.getRoomId()).get())
-                .build();
-        chatRepository.save(chatMessage);
     }
 }

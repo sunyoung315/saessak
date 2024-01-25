@@ -153,7 +153,7 @@ public class FcmService {
                     }
 
                     AlarmRequestDto alarmRequestDto = AlarmRequestDto.builder()
-                            .kidId(kid.getKidId())
+                            .kidId(kid.getId())
                             .alarmType("알러지 알림")
                             .alarmDate(LocalDate.now())
                             .build();
@@ -222,7 +222,7 @@ public class FcmService {
                     }
 
                     AlarmRequestDto alarmRequestDto = AlarmRequestDto.builder()
-                            .kidId(kid.getKidId())
+                            .kidId(kid.getId())
                             .alarmType("알러지 알림")
                             .alarmDate(LocalDate.now())
                             .build();
