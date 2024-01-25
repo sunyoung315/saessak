@@ -1,4 +1,4 @@
-package com.ssafy.saessak.oauth.exception.message;
+package com.ssafy.saessak.oauth.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

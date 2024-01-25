@@ -1,4 +1,4 @@
-package com.ssafy.saessak.oauth.dto.kakao;
+package com.ssafy.saessak.oauth.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,21 +1,14 @@
 package com.ssafy.saessak.oauth.service;
 
 import com.ssafy.saessak.oauth.authentication.UserAuthentication;
-import com.ssafy.saessak.oauth.dto.KidResponseDto;
-import com.ssafy.saessak.oauth.dto.LoginParentResponseDto;
 import com.ssafy.saessak.oauth.dto.LoginSuccessResponseDto;
-import com.ssafy.saessak.oauth.dto.kakao.LoginTeacherResponseDto;
+import com.ssafy.saessak.oauth.dto.LoginTeacherResponseDto;
 import com.ssafy.saessak.oauth.jwt.JwtTokenProvider;
 import com.ssafy.saessak.oauth.token.service.RefreshTokenService;
-import com.ssafy.saessak.user.domain.Kid;
-import com.ssafy.saessak.user.domain.Parent;
 import com.ssafy.saessak.user.domain.Teacher;
 import com.ssafy.saessak.user.repository.TeacherRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor

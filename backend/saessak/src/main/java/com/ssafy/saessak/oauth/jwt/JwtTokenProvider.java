@@ -26,7 +26,7 @@ public class JwtTokenProvider {
     @Value("${jwt.token.secret-key}")
     private String JWT_SECRET;
 
-    private static final String MEMBER_ID = "memberId";
+    private static final String USER_ID = "userId";
 
     @PostConstruct
     protected void init() {
@@ -49,7 +49,7 @@ public class JwtTokenProvider {
                 .setIssuedAt(now)
                 .setExpiration(new Date(now.getTime() + expiredTime));  // 만료 시간 설정
 
-        claims.put(MEMBER_ID, authentication.getPrincipal());
+        claims.put(USER_ID, authentication.getPrincipal());
         return Jwts.builder()
                 .setHeaderParam(Header.TYPE, Header.JWT_TYPE) // Header
                 .setClaims(claims) // Claim
@@ -87,6 +87,6 @@ public class JwtTokenProvider {
 
     public Long getUserFromJwt(String token) {
         Claims claims = getBody(token);
-        return Long.valueOf(claims.get(MEMBER_ID).toString());
+        return Long.valueOf(claims.get(USER_ID).toString());
     }
 }
