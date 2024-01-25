@@ -101,8 +101,14 @@ public class AttendanceController {
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, attendanceTimeResponseDto));
     }
 
-    @PostMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResultResponse> list(@RequestBody AttendanceRequestDto attendanceRequestDto) {
-        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, attendanceService.list(attendanceRequestDto)));
+    @PostMapping(value = "/teacher/list", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResultResponse> listOfteacher(@RequestBody AttendanceRequestDto attendanceRequestDto) {
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, attendanceService.listOfteacher(attendanceRequestDto)));
     }
+
+    @GetMapping(value = "/parent/list/{kidId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResultResponse> listOfParent(@PathVariable("kidId") Long kidId) {
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, attendanceService.listOfParent(kidId)));
+    }
+
 }
