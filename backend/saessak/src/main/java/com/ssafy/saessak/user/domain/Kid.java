@@ -2,6 +2,7 @@ package com.ssafy.saessak.user.domain;
 
 
 import com.ssafy.saessak.attendance.domain.Attendance;
+import com.ssafy.saessak.board.domain.Board;
 import com.ssafy.saessak.document.domain.Replacement;
 import com.ssafy.saessak.album.domain.Album;
 
@@ -60,6 +61,11 @@ public class Kid extends User {
 
     @OneToMany(mappedBy = "kid")
     private List<Album> albums;
+
+    @OneToMany(mappedBy = "kid" ,fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private List<Board> boardList = new ArrayList<>();
+
+
 
     public Kid updateParent(Parent parent){
         this.parent = parent;
