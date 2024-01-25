@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="container p-6">
 		<span class="text-3xl mt-10 ml-14 mb-3 mr-5 font-extrabold inline-block"
 			>출석부</span
 		>
@@ -16,7 +16,8 @@
 import { ref } from 'vue';
 import AttendanceTable from '@/components/attendance/AttendanceTable.vue';
 import AttendanceCalender from '@/components/attendance/AttendanceCalender.vue';
-const isTeacher = ref(false);
+
+const isTeacher = ref(true);
 </script>
 
 <style scoped></style>
