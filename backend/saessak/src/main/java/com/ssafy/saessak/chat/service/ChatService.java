@@ -2,6 +2,7 @@ package com.ssafy.saessak.chat.service;
 
 import com.ssafy.saessak.chat.domain.Chat;
 import com.ssafy.saessak.chat.domain.Room;
+import com.ssafy.saessak.chat.dto.ChatMessageRequest;
 import com.ssafy.saessak.chat.dto.RoomResponseDto;
 import com.ssafy.saessak.chat.repository.ChatRepository;
 import com.ssafy.saessak.chat.repository.RoomRepository;
@@ -17,6 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,13 +44,7 @@ public class ChatService {
 
     public List<RoomResponseDto> getRoomByTeacher(Long teacherId) {
         Teacher teacher = teacherRepository.findById(teacherId).get();
-        Classroom classRoom = teacher.getClassroom();
-
-        List<Room> roomList = new ArrayList<>();
-        for(Kid k : classRoom.getKidList()){
-            List<Room> tmpList = roomRepository.findAllByKidAndTeacher(k, teacher);
-            roomList.addAll(tmpList);
-        }
+        List<Room> roomList = roomRepository.findAllByTeacher(teacher);
         return getRoomResponseDtos(roomList);
     }
 
@@ -61,29 +57,58 @@ public class ChatService {
         }
         return roomResponseDtoList;
     }
-    private RoomResponseDto roomInfoToDto(Room r) {
-//        Chat chat = chatRepository.findFirstByRoomOrderByChatTimeDesc(r);
-//
-//        if(chat == null){
-//            return RoomResponseDto.builder()
-//                    .roomId(r.getRoomId())
-//                    .kidId(r.getKid().getKidId())
-//                    .kidName(r.getKid().getKidName())
-//                    .flag(false)
-//                    .build();
-//        }
-//
-//        boolean isChatTimeBeforeLastVisitTime = chat.getChatTime().isBefore(r.getLastVisitTime());
-//        return RoomResponseDto.builder()
-//                .roomId(r.getRoomId())
-//                .kidId(r.getKid().getKidId())
-//                .kidName(r.getKid().getKidName())
-//                .lastChat(chat.getChatContent())
-//                .flag(isChatTimeBeforeLastVisitTime)
-//                .build();
-    return null;
-}
-    public void addRoom(Long teacherId, Long kidId) {
 
+    private RoomResponseDto roomInfoToDto(Room r) {
+        Chat chat = chatRepository.findFirstByRoomOrderByChatTimeDesc(r);
+        if(chat == null){
+            return RoomResponseDto.builder()
+                    .roomId(r.getRoomId())
+                    .kidId(r.getKid().getId())
+                    .kidName(r.getKid().getKidName())
+                    .flag(false)
+                    .build();
+        }
+
+        boolean isChatTimeBeforeLastVisitTime = chat.getChatTime().isBefore(r.getLastVisitTime());
+        return RoomResponseDto.builder()
+                .roomId(r.getRoomId())
+                .kidId(r.getKid().getId())
+                .kidName(r.getKid().getKidName())
+                .lastChat(chat.getChatContent())
+                .flag(isChatTimeBeforeLastVisitTime)
+                .build();
+    }
+
+    // 채팅방 생성
+    public Long addRoom(Long teacherId, Long kidId) {
+        Teacher teacher = teacherRepository.findById(teacherId).get();
+        Kid kid = kidRepository.findById(kidId).get();
+        Room room = roomRepository.findByKidAndTeacher(kid, teacher);
+
+        if(room == null){
+            room = roomRepository.save(Room.builder()
+                    .kid(kid)
+                    .teacher(teacher)
+                    .lastVisitTime(LocalDateTime.now())
+                    .build());
+        }
+        return room.getRoomId();
+    }
+
+
+    // 채팅 저장
+    public void saveMessage(ChatMessageRequest message){
+        String dateString = message.getChatTime();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+        LocalDateTime dateTime = LocalDateTime.parse(dateString, formatter);
+
+        Chat chatMessage = Chat.builder()
+                .senderId(message.getSenderId())
+                .receiverId(message.getReceiverId())
+                .chatContent(message.getChatContent())
+                .chatTime(dateTime)
+                .room(roomRepository.findById(message.getRoomId()).get())
+                .build();
+        chatRepository.save(chatMessage);
     }
 }

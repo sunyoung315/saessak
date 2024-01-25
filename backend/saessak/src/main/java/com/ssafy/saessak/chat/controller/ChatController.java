@@ -28,18 +28,11 @@ public class ChatController {
     @GetMapping(value = "/teacher/list/{teacherId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResultResponse> teacherList(@PathVariable("teacherId") Long teacherId) {
         List<RoomResponseDto> roomResponseDtoList = chatService.getRoomByTeacher(teacherId);
-        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS));
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, roomResponseDtoList));
     }
 
     @PostMapping(value = "/add/{teacherId}/{kidId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResultResponse> createRoom(@PathVariable("teacherId") Long teacherId, @PathVariable("kidId") Long kidId) {
-        chatService.addRoom(teacherId, kidId);
-        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS));
-    }
-
-    @GetMapping(value = "/{roomId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResultResponse> roomInfo(@PathVariable("roomId") Long roomId) {
-
-        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS));
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, chatService.addRoom(teacherId, kidId)));
     }
 }
