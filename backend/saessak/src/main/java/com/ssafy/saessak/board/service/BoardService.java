@@ -57,7 +57,7 @@ public class BoardService {
 
         return BoardDetailDto.builder()
                 .boardId(board.getBoardId())
-                .kidId(board.getKid().getKidId())
+                .kidId(board.getKid().getId())
                 .classroomId(board.getClassroom().getClassroomId())
                 .boardDate(board.getBoardDate())
                 .boardContent(board.getBoardContent())
@@ -79,7 +79,7 @@ public class BoardService {
         return board.getBoardId();
     }
     public List<BoardResponseDto> findByKid(Long kidId){
-        Kid kid = Kid.builder().kidId(kidId).build();
+        Kid kid = kidRepository.findById(kidId).get();
         List<Board> result = boardRepository.findByKid(kid).get();
         List<BoardResponseDto> boardResponseDtoList = new ArrayList<>();
         for(Board board: result){
@@ -101,13 +101,13 @@ public class BoardService {
     }
 
     public BoardDetailDto findByKidAndDate (Long kidId, Date date){
-        Kid kid = Kid.builder().kidId(kidId).build();
+        Kid kid = kidRepository.findById(kidId).get();
         Optional<List<Board>> result = boardRepository.findByKidAndBoardDate(kid,date);
         if (result.isPresent()){
             Board board = result.get().get(0);
             return BoardDetailDto.builder()
                     .boardId(board.getBoardId())
-                    .kidId(board.getKid().getKidId())
+                    .kidId(board.getKid().getId())
                     .classroomId(board.getClassroom().getClassroomId())
                     .boardDate(board.getBoardDate())
                     .boardPath(board.getBoardPath())
@@ -125,7 +125,7 @@ public class BoardService {
     }
 
     public List<PhysicalResponseDto> getPhysicalList (Long kidId, Date startDate,Date endDate){
-        Kid kid = Kid.builder().kidId(kidId).build();
+        Kid kid = kidRepository.findById(kidId).get();
         List<PhysicalResponseDto> physicalResponseDtoList= new ArrayList<>();
 
         List<Board> result = boardRepository.findByKidAndBoardDateBetween(kid,startDate, endDate).get();
@@ -143,7 +143,7 @@ public class BoardService {
 
     public List<ContentResponseDto> getContentList (Long kidId, Date startDate, Date endDate){
         List<ContentResponseDto> contentResponseDtoList = new ArrayList<>();
-        Kid kid = Kid.builder().kidId(kidId).build();
+        Kid kid = kidRepository.findById(kidId).get();
         List<Board> result = boardRepository.findByKidAndBoardDateBetween(kid,startDate,endDate).get();
 
         for(Board board : result){
