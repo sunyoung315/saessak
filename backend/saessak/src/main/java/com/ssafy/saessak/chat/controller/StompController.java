@@ -20,7 +20,7 @@ public class StompController {
     private final ChatService chatService;
 
     @MessageMapping("/message")     // 클라이언트에서 /pub/message 로 메시지를 발행한다.
-    public void message(HttpServletRequest request, ChatMessageRequest message) {
+    public void message(ChatMessageRequest message) {
 
 //        로그인 정보 기반으로 sender 설정 -> 로그인 구현 후 추가
 //        String token = JwtHeaderUtil.getAccessToken(request);

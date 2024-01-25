@@ -13,8 +13,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/chat")     // SockJS 연결 주소
-                .setAllowedOriginPatterns("*")      // 서버 환경에 맞게 변경 필요
-                .withSockJS();
+                .setAllowedOriginPatterns("*");      // 서버 환경에 맞게 변경 필요
+//                .withSockJS();
     }
 
     @Override
