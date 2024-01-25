@@ -33,13 +33,15 @@ public class AlbumService {
     }
 
     public List<AlbumResponseDto> getKidAlbumList (Long kidId){
-        Kid kid = Kid.builder().kidId(kidId).build();
+        //Kid kid = Kid.builder().kidId(kidId).build();
+        Kid kid = null;
         List<Album> albumList = albumRepository.findByKid(kid).get();
         return makeAlbumResponseDtoList(albumList);
     }
 
     public List<AlbumResponseDto> getKidAlbum(Long kidId, Date date){
-        Kid kid = Kid.builder().kidId(kidId).build();
+        //Kid kid = Kid.builder().kidId(kidId).build();
+        Kid kid = null;
         List<Album> albumList = albumRepository.findByKidAndAlbumDate(kid,date).get();
         return makeAlbumResponseDtoList(albumList);
     }
