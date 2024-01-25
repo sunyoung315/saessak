@@ -9,10 +9,11 @@ import java.util.List;
 @Builder
 @Getter
 @AllArgsConstructor
-public class LoginResponseDto {
+public class LoginParentResponseDto {
 
-    private boolean flag;
+    private boolean isTeacher;
     private String accessToken;
     private String refreshToken;
     private List<KidResponseDto> kidList;
+
 }
