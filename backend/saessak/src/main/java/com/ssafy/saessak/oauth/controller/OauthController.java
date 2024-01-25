@@ -58,10 +58,10 @@ public class OauthController {
 //        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS));
 //    }
 //
-//    @PostMapping("/logout")
-//    public ResponseEntity<ResultResponse> logout(final Principal principal) {
-//        refreshTokenService.deleteRefreshToken(Long.valueOf(principal.getName()));
-//        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS));
-//    }
+    @PostMapping("/logout")
+    public ResponseEntity<ResultResponse> logout(final Principal principal) {
+        refreshTokenService.deleteRefreshToken(Long.valueOf(principal.getName()));
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS));
+    }
 
 }

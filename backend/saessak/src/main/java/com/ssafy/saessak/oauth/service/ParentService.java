@@ -7,7 +7,7 @@ import com.ssafy.saessak.oauth.dto.LoginParentResponseDto;
 import com.ssafy.saessak.oauth.dto.LoginSuccessResponseDto;
 import com.ssafy.saessak.oauth.dto.kakao.KakaoUserResponse;
 import com.ssafy.saessak.oauth.exception.UnAuthorizedException;
-import com.ssafy.saessak.oauth.exception.message.ErrorMessage;
+import com.ssafy.saessak.oauth.exception.ErrorMessage;
 import com.ssafy.saessak.oauth.jwt.JwtTokenProvider;
 import com.ssafy.saessak.oauth.token.service.RefreshTokenService;
 import com.ssafy.saessak.user.domain.Kid;

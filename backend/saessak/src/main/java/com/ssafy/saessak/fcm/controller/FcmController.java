@@ -16,7 +16,6 @@ import jakarta.validation.Valid;
 @RestController
 public class FcmController {
 
-    // 추후 작성 예정
     private final FcmService fcmService;
 
     @PostMapping("/parent/token")
