@@ -29,9 +29,9 @@ jwt:
   token:
     secret-key: dyAeHubOOc8KaOfYB6XEQoEj1QzRlVgtjNL8PYs1A1tymZvvqkcEU7L1imkKHeDa
   access-token:
-    expire-length: 1800000
+    expire-length: 1800000 # 30분
   refresh-token:
-    expire-length: 1209600000
+    expire-length: 86400000 # 1일
 
 cloud:
   aws:

@@ -17,6 +17,7 @@ bin/
 !**/src/main/**/bin/
 !**/src/test/**/bin/
 application.properties
+application.yml
 
 ### IntelliJ IDEA ###
 .idea
@@ -42,5 +43,7 @@ firebase-messaging-sw.js
 saessak-63104-firebase-adminsdk-5s8na-3d340d35dd.json
 
 # Ignore files in resources/static
+src/main/resources/**
+/resources/*
 /resources/static/*
 /resources/static/**/*

@@ -1,5 +1,8 @@
 package com.ssafy.saessak.oauth.authentication;
 
+import com.ssafy.saessak.user.domain.User;
+import com.ssafy.saessak.user.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;

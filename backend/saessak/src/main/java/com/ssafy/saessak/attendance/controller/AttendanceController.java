@@ -8,8 +8,10 @@ import com.ssafy.saessak.attendance.dto.ReplacementResponseDto;
 import com.ssafy.saessak.attendance.service.AttendanceService;
 import com.ssafy.saessak.fcm.dto.FcmNotificationRequestDto;
 import com.ssafy.saessak.fcm.service.FcmService;
+import com.ssafy.saessak.oauth.service.AuthenticationService;
 import com.ssafy.saessak.result.ResultCode;
 import com.ssafy.saessak.result.ResultResponse;
+import com.ssafy.saessak.user.domain.User;
 import com.ssafy.saessak.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -25,6 +27,7 @@ public class AttendanceController {
     private final UserService userService;
     private final FcmService fcmService;
     private final AlarmService alarmService;
+    private final AuthenticationService authenticationService;
 
     @PostMapping(value = "/in/{kidId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResultResponse> inTime(@PathVariable("kidId") Long kidId) {
@@ -103,11 +106,15 @@ public class AttendanceController {
 
     @PostMapping(value = "/teacher/list", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResultResponse> listOfteacher(@RequestBody AttendanceRequestDto attendanceRequestDto) {
+        User user = authenticationService.getUserByAuthentication();
+        authenticationService.AuthenticationByObject(user, attendanceRequestDto.getClassroomId());
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, attendanceService.listOfteacher(attendanceRequestDto)));
     }
 
     @GetMapping(value = "/parent/list/{kidId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResultResponse> listOfParent(@PathVariable("kidId") Long kidId) {
+        User user = authenticationService.getUserByAuthentication();
+        authenticationService.AuthenticationByObject(user, kidId);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, attendanceService.listOfParent(kidId)));
     }
 

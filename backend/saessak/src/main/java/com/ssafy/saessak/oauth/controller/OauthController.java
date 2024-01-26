@@ -37,11 +37,12 @@ public class OauthController {
     }
 
     @GetMapping("/kakao/callback")
-    public ResponseEntity<ResultResponse> login(HttpServletRequest request) {
+    public ResponseEntity<ResultResponse> login(HttpServletRequest request, HttpServletResponse response) throws IOException {
         LoginSuccessResponseDto loginSuccessResponseDto = kakaoSocialService.login(request.getParameter("code"));
         if(loginSuccessResponseDto.isTeacher()) {
             return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, teacherService.login(loginSuccessResponseDto)));
         } else {
+            parentService.login(loginSuccessResponseDto);
             return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, parentService.login(loginSuccessResponseDto)));
         }
     }
