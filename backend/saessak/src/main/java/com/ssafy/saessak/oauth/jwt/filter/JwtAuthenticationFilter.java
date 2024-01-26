@@ -36,6 +36,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             if (jwtTokenProvider.validateToken(token) == VALID_JWT) {
                 Long userId = jwtTokenProvider.getUserFromJwt(token);
                 // authentication 객체 생성 -> principal에 유저정보를 담는다.
+                System.out.println("authentication 객체 생성");
                 UserAuthentication authentication = new UserAuthentication(userId.toString(), null, null);
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authentication);

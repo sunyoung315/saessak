@@ -2,8 +2,10 @@ package com.ssafy.saessak.fcm.controller;
 
 import com.ssafy.saessak.fcm.dto.FcmTokenRequestDto;
 import com.ssafy.saessak.fcm.service.FcmService;
+import com.ssafy.saessak.oauth.service.AuthenticationService;
 import com.ssafy.saessak.result.ResultCode;
 import com.ssafy.saessak.result.ResultResponse;
+import com.ssafy.saessak.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,27 +19,37 @@ import jakarta.validation.Valid;
 public class FcmController {
 
     private final FcmService fcmService;
+    private final AuthenticationService authenticationService;
 
     @PostMapping("/parent/token")
     public ResponseEntity<?> saveParentToken(@RequestBody FcmTokenRequestDto requestDto) {
+        User user = authenticationService.getUserByAuthentication();
+        authenticationService.AuthenticationById(user, requestDto.getId());
         fcmService.saveParentToken(requestDto);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS));
     }
 
     @PostMapping("/teacher/token")
     public ResponseEntity<?> saveTeacherToken(@RequestBody FcmTokenRequestDto requestDto) {
+        User user = authenticationService.getUserByAuthentication();
+        authenticationService.AuthenticationById(user, requestDto.getId());
         fcmService.saveTeacherToken(requestDto);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS));
     }
 
     @GetMapping("/parent/alarm/{parentId}")
     public ResponseEntity<?> changeParentAlarm(@PathVariable("parentId") Long parentId) {
+        User user = authenticationService.getUserByAuthentication();
+        System.out.println("인증 user id "+user.getId());
+        authenticationService.AuthenticationById(user, parentId);
         fcmService.changeParentAlarm(parentId);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS));
     }
 
     @GetMapping("/teacher/alarm/{teacherId}")
     public ResponseEntity<?> changeTeacherAlarm(@PathVariable("teacherId") Long teacherId) {
+        User user = authenticationService.getUserByAuthentication();
+        authenticationService.AuthenticationById(user, teacherId);
         fcmService.changeTeacherAlarm(teacherId);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS));
     }

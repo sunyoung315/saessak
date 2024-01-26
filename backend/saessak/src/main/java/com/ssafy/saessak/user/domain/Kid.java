@@ -65,8 +65,6 @@ public class Kid extends User {
     @OneToMany(mappedBy = "kid" ,fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Board> boardList = new ArrayList<>();
 
-
-
     public Kid updateParent(Parent parent){
         this.parent = parent;
         return this;

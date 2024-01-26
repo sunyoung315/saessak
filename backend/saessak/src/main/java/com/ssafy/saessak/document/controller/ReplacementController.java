@@ -7,9 +7,12 @@ import com.ssafy.saessak.document.dto.ReplacementRequestDto;
 import com.ssafy.saessak.document.service.ReplacementService;
 import com.ssafy.saessak.fcm.dto.FcmNotificationRequestDto;
 import com.ssafy.saessak.fcm.service.FcmService;
+import com.ssafy.saessak.oauth.service.AuthenticationService;
 import com.ssafy.saessak.result.ResultCode;
 import com.ssafy.saessak.result.ResultResponse;
+import com.ssafy.saessak.user.domain.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,12 +28,15 @@ public class ReplacementController {
     private final ReplacementService replacementService;
     private final FcmService fcmService;
     private final AlarmService alarmService;
+    private final AuthenticationService authenticationService;
 
     @PostMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResultResponse> insert(@RequestBody ReplacementRequestDto replacementRequestDto) {
+        User user = authenticationService.getUserByAuthentication();
+        authenticationService.AuthenticationByObject(user, replacementRequestDto.getKidId());
         ReplacementAlarmResponseDto responseDto = replacementService.insert(replacementRequestDto);
         List<String> teacherDeviceList = responseDto.getTeacherAlarmDeviceList();
-        for(String teacherDevice : teacherDeviceList) {
+        for (String teacherDevice : teacherDeviceList) {
             FcmNotificationRequestDto.Notification notification = FcmNotificationRequestDto.Notification.builder()
                     .token(teacherDevice)
                     .title("귀가동의서 알림")
@@ -53,11 +59,15 @@ public class ReplacementController {
 
     @GetMapping(value = "/list/kid/{kidId}")
     public ResponseEntity<ResultResponse> listOfkidId(@PathVariable("kidId") Long kidId) {
+        User user = authenticationService.getUserByAuthentication();
+        authenticationService.AuthenticationByObject(user, kidId);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, replacementService.listOfkidId(kidId)));
     }
 
     @GetMapping(value = "/list/classroom/{classroomId}")
     public ResponseEntity<ResultResponse> listOfclassroomId(@PathVariable("classroomId") Long classroomId) {
+        User user = authenticationService.getUserByAuthentication();
+        authenticationService.AuthenticationByObject(user, classroomId);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, replacementService.listOfclassroomId(classroomId)));
     }
 
@@ -65,7 +75,6 @@ public class ReplacementController {
     public ResponseEntity<ResultResponse> detail(@PathVariable("replacementId") Long replacementId) {
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, replacementService.detail(replacementId)));
     }
-
 
     @GetMapping(value = "/check/{replacementId}")
     public ResponseEntity<ResultResponse> changeCheck(@PathVariable("replacementId") Long replacementId) {
