@@ -10,9 +10,10 @@
     <ul role="list" class="" v-for="chatItem in chat" :key="chatItem.chatId">
       <li v-if="chatItem.flag === false" class="py-3 mb-2 border rounded-lg sm:py-4">
         <div
-          @click="chatDetail({roomId : chatItem.roomId, receiverId : userFlag == false ? chatItem.kidId : chatItem.teacherId, senderId : userFlag == false ? 0 : chatItem.kidId})"
+          @click="chatDetail({roomId : chatItem.roomId, receiverId : userFlag == false ? chatItem.kidId : chatItem.teacherId, senderId : userFlag == false ? userId : chatItem.kidId})"
           class="flex items-center px-3"
-        >
+        ><!--학부모->아이ID는 현재의 아이모드를 구분하기 위해 pinia에 저장해서 거기서 가져오기-->
+        <!--선생님 화면에서 본인의 teacherId는 로그인 정보에서 가져오기-->
           <div class="flex-shrink-0">
             <img
               class="w-8 h-8 rounded-full"
@@ -26,7 +27,7 @@
               {{ userFlag == false ? '학부모' : '선생님' }}
             </p>
             <p class="text-sm text-gray-500 truncate dark:text-gray-400">
-              {{ chatItem.lastChat }} {{ chatItem.roomId }}
+              {{ chatItem.lastChat }}
             </p>
           </div>
         </div>
@@ -74,7 +75,7 @@ onMounted(() => {
 })
 
 const userFlag = ref(false)
-const userId = ref(1)
+const userId = ref(3)
 const getChatList = () => {
   console.log('채팅 리스트 조회')
   if (!userFlag.value) {
@@ -121,6 +122,7 @@ const chat = ref([])
 // ];
 
 const chatDetail = (roomInfo) => {
+  console.log("chatlistview - chatDetail");
   console.log(roomInfo)
   emit('chatEvent', roomInfo)
 }
