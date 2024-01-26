@@ -1,6 +1,7 @@
 package com.ssafy.saessak.chat.controller;
 
 
+import com.ssafy.saessak.chat.dto.ChatMessageResponse;
 import com.ssafy.saessak.chat.dto.RoomResponseDto;
 import com.ssafy.saessak.chat.service.ChatService;
 import com.ssafy.saessak.document.dto.AllergyRequestDto;
@@ -28,6 +29,12 @@ public class ChatController {
     @GetMapping(value = "/teacher/list/{teacherId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResultResponse> teacherList(@PathVariable("teacherId") Long teacherId) {
         List<RoomResponseDto> roomResponseDtoList = chatService.getRoomByTeacher(teacherId);
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, roomResponseDtoList));
+    }
+
+    @GetMapping(value = "/room/list/{roomId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResultResponse> roomChatList(@PathVariable("roomId") Long roomId) {
+        List<ChatMessageResponse> roomResponseDtoList = chatService.getAllChat(roomId);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, roomResponseDtoList));
     }
 

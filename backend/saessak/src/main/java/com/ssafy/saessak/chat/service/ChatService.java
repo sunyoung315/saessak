@@ -3,6 +3,7 @@ package com.ssafy.saessak.chat.service;
 import com.ssafy.saessak.chat.domain.Chat;
 import com.ssafy.saessak.chat.domain.Room;
 import com.ssafy.saessak.chat.dto.ChatMessageRequest;
+import com.ssafy.saessak.chat.dto.ChatMessageResponse;
 import com.ssafy.saessak.chat.dto.RoomResponseDto;
 import com.ssafy.saessak.chat.repository.ChatRepository;
 import com.ssafy.saessak.chat.repository.RoomRepository;
@@ -110,5 +111,21 @@ public class ChatService {
                 .room(roomRepository.findById(message.getRoomId()).get())
                 .build();
         chatRepository.save(chatMessage);
+    }
+
+    public List<ChatMessageResponse> getAllChat(Long roomId) {
+        Room room = roomRepository.findById(roomId).get();
+
+        List<ChatMessageResponse> chatMessageResponseList = new ArrayList<>();
+        for(Chat c : room.getChatList()){
+            ChatMessageResponse chatMessageResponse = ChatMessageResponse.builder()
+                    .senderId(c.getSenderId())
+                    .receiverId(c.getReceiverId())
+                    .chatContent(c.getChatContent())
+                    .chatTime(c.getChatTime().toString())
+                    .build();
+            chatMessageResponseList.add(chatMessageResponse);
+        }
+        return chatMessageResponseList;
     }
 }
