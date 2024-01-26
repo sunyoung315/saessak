@@ -4,6 +4,7 @@ import com.ssafy.saessak.oauth.authentication.CustomAccessDeniedHandler;
 import com.ssafy.saessak.oauth.authentication.CustomJwtAuthenticationEntryPoint;
 import com.ssafy.saessak.oauth.jwt.filter.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
+import org.apache.http.auth.AUTH;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;

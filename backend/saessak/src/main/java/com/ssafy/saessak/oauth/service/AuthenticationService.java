@@ -31,7 +31,7 @@ public class AuthenticationService {
             Parent parent = parentRepository.findById(user.getId()).get();
             Kid kid = kidRepository.findById(id).get();
 
-            if(!kid.getParent().getId().equals(parent.getId())) {
+            if(kid.getParent().getId() == parent.getId()) {
                 return;
             }
         }
@@ -39,7 +39,7 @@ public class AuthenticationService {
             Teacher teacher = teacherRepository.findById(user.getId()).get();
             Classroom classroom = classroomRepository.findById(user.getId()).get();
 
-            if(teacher.getClassroom().getClassroomId().equals(classroom.getClassroomId()))
+            if(teacher.getClassroom().getClassroomId() == classroom.getClassroomId())
                 return;
         }
         throw new UnAuthorizedException(ErrorMessage.AUTHENTICATION_CODE_EXPIRED);
@@ -55,7 +55,7 @@ public class AuthenticationService {
         if(teacherRepository.findById(user.getId()).isPresent()) {
             Teacher teacher = teacherRepository.findById(user.getId()).get();
 
-            if(teacher.getId().equals(id))
+            if(teacher.getId() == id)
                 return;
         }
         throw new UnAuthorizedException(ErrorMessage.AUTHENTICATION_CODE_EXPIRED);
