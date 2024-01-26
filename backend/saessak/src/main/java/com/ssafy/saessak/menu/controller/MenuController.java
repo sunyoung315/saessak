@@ -1,6 +1,5 @@
 package com.ssafy.saessak.menu.controller;
 
-import com.ssafy.saessak.menu.dto.MenuPhotoRequestDto;
 import com.ssafy.saessak.menu.dto.MenuRequestDto;
 import com.ssafy.saessak.menu.dto.MenuWeekRequestDto;
 import com.ssafy.saessak.menu.service.MenuService;
@@ -10,7 +9,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RequestMapping("/api/menu")
@@ -31,9 +32,14 @@ public class MenuController {
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, menuService.list(menuWeekRequestDto)));
     }
 
-    @PostMapping(value = "/photo", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResultResponse> insertPhoto(@RequestBody MenuPhotoRequestDto menuWeekRequestDto) {
-        menuService.insertPhoto(menuWeekRequestDto);
+    @PostMapping(value = "/photo", produces = MediaType.APPLICATION_JSON_VALUE, consumes = "multipart/form-data")
+    public ResponseEntity<ResultResponse> insertPhoto(@RequestParam("menuId") Long menuId,
+                                                      @RequestPart("MultipartFile") MultipartFile menuFile) {
+        try {
+            menuService.insertPhoto(menuId, menuFile);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS));
     }
 }

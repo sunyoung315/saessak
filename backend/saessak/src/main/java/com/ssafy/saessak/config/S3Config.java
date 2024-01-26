@@ -1,4 +1,4 @@
-package com.ssafy.saessak.s3;
+package com.ssafy.saessak.config;
 
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;

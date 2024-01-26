@@ -30,10 +30,14 @@ public class Menu {
     @Column(name = "menu_type")
     private String menuType;
 
+
     @Column(name = "menu_path")
     private String menuPath; // s3 url 예정
 
     @OneToMany(mappedBy = "menu", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     List<Food> foodList;
 
+    public void uploadPhoto(String filePath) {
+        this.menuPath = filePath;
+    }
 }

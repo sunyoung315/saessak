@@ -5,12 +5,15 @@ import com.ssafy.saessak.menu.domain.Menu;
 import com.ssafy.saessak.menu.dto.*;
 import com.ssafy.saessak.menu.repository.FoodRepository;
 import com.ssafy.saessak.menu.repository.MenuRepository;
+import com.ssafy.saessak.s3.S3Upload;
 import com.ssafy.saessak.user.domain.Daycare;
 import com.ssafy.saessak.user.repository.DaycareRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
@@ -25,6 +28,7 @@ public class MenuService {
     private final MenuRepository menuRepository;
     private final FoodRepository foodRepository;
     private final DaycareRepository daycareRepository;
+    private final S3Upload s3Uploader;
 
     @Transactional
     public void insert(Long daycareId, List<MenuRequestDto> menuRequestDtoList) {
@@ -33,7 +37,6 @@ public class MenuService {
             Optional<Menu> result = menuRepository.findByDaycareAndMenuDateAndMenuType(daycare, requestDto.getMenuDate(), requestDto.getMenuType());
             if(result.isPresent()) { // 식단이 존재하는 경우
                 Menu menu = result.get();
-
                 Food food = Food.builder()
                         .menu(menu)
                         .foodName(requestDto.getFoodName())
@@ -104,8 +107,11 @@ public class MenuService {
         return firstDayOfMonth.plusDays(daysToAdd);
     }
 
-    public void insertPhoto(MenuPhotoRequestDto requestDto) {
-        Menu menu = menuRepository.findById(requestDto.getMenuId()).get();
-        // AWS 사진 upload 구현해야함
+    @Transactional
+    public void insertPhoto(Long menuId, MultipartFile menuFile) throws IOException {
+        Menu menu = menuRepository.findById(menuId).get();
+        // AWS S3 사진 upload
+        String filePath = s3Uploader.upload(menuFile);
+        menu.uploadPhoto(filePath);
     }
 }
