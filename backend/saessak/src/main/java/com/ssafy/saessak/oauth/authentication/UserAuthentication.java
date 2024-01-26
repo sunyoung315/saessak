@@ -14,9 +14,4 @@ public class UserAuthentication extends UsernamePasswordAuthenticationToken {
         super(principal, credentials, authorities);
     }
 
-    public getUserByAuthentication() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-    }
-
 }
