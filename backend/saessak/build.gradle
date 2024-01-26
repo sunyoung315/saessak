@@ -22,7 +22,6 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-quartz'
-    implementation 'com.google.firebase:firebase-admin:9.2.0'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
 
@@ -32,6 +31,8 @@ dependencies {
     implementation 'io.swagger.core.v3:swagger-annotations:2.2.16'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 
+    // Firebase
+    implementation 'com.google.firebase:firebase-admin:9.2.0'
 
     // logging
     testCompileOnly 'org.projectlombok:lombok'
@@ -53,6 +54,9 @@ dependencies {
 
     // webSocket
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
+    // AWS S3
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 }
 
 tasks.named('test') {

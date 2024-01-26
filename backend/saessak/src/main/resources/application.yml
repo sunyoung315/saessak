@@ -32,3 +32,16 @@ jwt:
     expire-length: 1800000
   refresh-token:
     expire-length: 1209600000
+
+cloud:
+  aws:
+    s3:
+      bucket: saessack-photo-album
+    credentials:
+      access-key: AKIAUZRXT2PHNBJ4QE7T
+      secret-key: 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
+    region:
+      static: ap-northeast-2
+      auto: false
+    stack:
+      auto: false
