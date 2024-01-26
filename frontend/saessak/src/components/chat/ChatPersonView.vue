@@ -47,9 +47,9 @@ onMounted(() => {
   getPersonList()
 })
 
-const userId = ref(1);
-const classroomId = ref(2);
-const userFlag = ref(true)
+const userId = ref(3);
+const classroomId = ref(1);
+const userFlag = ref(false)
 
 const getPersonList = () => {
   if (!userFlag.value) {
@@ -86,14 +86,14 @@ const emit = defineEmits(["chatEvent"]); // CHAT 버튼 눌렀을 때 채팅방�
 const addChat = (input) => {
   console.log("addChat 실행");
   console.log(input);
-  let tId = userFlag == false ? userId : input[0] ; // 선생님 화면 : 학부모 화면
-  let kId = userFlag == false ? input : input[1]; 
+  let tId = userFlag.value == false ? userId.value : input[0] ; // 선생님 화면일때 : 학부모 화면일때
+  let kId = userFlag.value == false ? input : input[1]; 
   console.log(tId + "/" + kId);
   addNewChat(
     tId, kId, ({data}) => {
       console.log(data.data);
-      const roomId = "roomId";
-      emit("chatEvent", roomId);
+      const roomInfo = {roomId : data.data, senderId : userFlag.value == false ? tId : kId, receiverId : userFlag.value == false ? kId : tId};
+      emit("chatEvent", roomInfo);
     },
     (error) => {
       console.log(error);
