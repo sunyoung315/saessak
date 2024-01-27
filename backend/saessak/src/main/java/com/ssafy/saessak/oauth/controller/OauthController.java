@@ -31,10 +31,10 @@ public class OauthController {
 
 
     @GetMapping("/kakao/login")
-    public ResponseEntity<ResultResponse> login(HttpServletResponse response) throws IOException {
+    public String login(HttpServletResponse response) throws IOException {
         String kakao_uri = kakaoSocialService.getKakaoLogin();
-        response.sendRedirect(kakao_uri);
-        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS));
+//        response.sendRedirect(kakao_uri);
+        return kakao_uri;
     }
 
     @GetMapping("/kakao/callback")
