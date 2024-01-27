@@ -51,7 +51,7 @@ def verify_test():
     
     image1 = request.files.get("image1")
     image2 = request.files.get("image2")
-    
+    print(image1.content_type)
     np1 = np.frombuffer(image1.read(), dtype=np.uint8)
     np2 = np.frombuffer(image2.read(), dtype=np.uint8)
 
@@ -107,6 +107,7 @@ def uploadAlbum(classroomId):
             ### 파일들을 순회한다.
 
             for image in images : 
+                
                 content_type = image.content_type
                 secure_file(image.filename)
                 file_name, file_extension = os.path.splitext(image.filename)
@@ -114,7 +115,7 @@ def uploadAlbum(classroomId):
                 file_uuid = str(uuid.uuid4())
                 path = "class/" + file_uuid+ "." + file_extension
                 s3_key_list.append(path)
-                s3_content_type.append(s3_content_type)
+                s3_content_type.append(content_type)
                 add_object = {
                     "file_name" : file_name,
                     "file_path" : db_base_url + path,
@@ -122,9 +123,11 @@ def uploadAlbum(classroomId):
                 #반은 일단 저장
                 class_album.append(add_object)
 
-                file_byte = np.fromfile(image,np.uint8)
+                file_byte = np.frombuffer(image.read(),np.uint8)
                 decoded_image = cv2.imdecode(file_byte, cv2.IMREAD_COLOR)
-                
+                file_obj = BytesIO(file_byte)
+                image_list.append(file_obj)
+
             ## 이부분 함수 파고들어서 개선 가능 
                 for key, kid_image in kid_dict.items() :
                     result = verify_image(kid_image, decoded_image)
@@ -133,6 +136,7 @@ def uploadAlbum(classroomId):
 
             ## 분류 완료 
             # 반엘범 생성
+            created_albumid = []
             result = conn.execute(
                 insert(album_table),
                 {
@@ -142,6 +146,7 @@ def uploadAlbum(classroomId):
                 }
             )
             album_id = result.inserted_primary_key[0]
+            created_albumid.append(album_id)
             for row in class_album : 
                 row["album_id"] = album_id
             
@@ -163,6 +168,8 @@ def uploadAlbum(classroomId):
                     }
                 )
                 album_id = result.inserted_primary_key[0]
+                created_albumid.append(album_id)
+
                 for row in value : 
                     row["album_id"] = album_id
                 conn.execute(
@@ -170,12 +177,14 @@ def uploadAlbum(classroomId):
                     value
                 )
 
-            ## s3업로드는 나중에
+            ## s3업로드
+            for i, image in enumerate(image_list) :
+                s3.upload_fileobj(image, s3_bucket_name, s3_key_list[i], ExtraArgs={'ContentType': s3_content_type[i]}  )
             
 
 
             conn.commit()
-            return jsonify({"data" : True})
+            return jsonify({"albumid" : created_albumid})
     except SQLAlchemyError as e :
         conn.rollback()
         return jsonify({"error" : str(e)})
