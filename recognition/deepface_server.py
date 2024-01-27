@@ -13,6 +13,8 @@ import modules.s3_connect as s3_util
 from sqlalchemy import insert, select
 from sqlalchemy.exc import SQLAlchemyError
 from io import BytesIO
+import numpy as np
+import cv2
 
 ## db 설정
 album_table = table_info.get_album_table()
@@ -33,6 +35,24 @@ CORS(app, origins="*")
 @app.route('/')
 def index():
     return "home"
+
+@app.route("/test/verify", methods=["POST"])
+def verify_test():
+    
+    image1 = request.files.get("image1")
+    image2 = request.files.get("image2")
+    
+    np1 = np.frombuffer(image1.read(), dtype=np.uint8)
+    np2 = np.frombuffer(image2.read(), dtype=np.uint8)
+
+    decoded1 = cv2.imdecode(np1, cv2.IMREAD_COLOR)
+    decoded2 = cv2.imdecode(np2, cv2.IMREAD_COLOR)
+
+    result = DeepFace.verify(decoded1, decoded2)
+    
+    return jsonify({"data" : result})
+     
+
 
 @app.route("/s3/upload/<classroomId>", methods=["POST"])
 def uploadS3(classroomId) :
@@ -72,23 +92,42 @@ def uploadS3(classroomId) :
     
     return jsonify({"status" : 500 , "message" : "internal server error"})
 
-@app.route('/verify', methods=['POST'])
-def verify():
-    try:
-        # POST 요청에서 이미지 데이터를 가져옴
-        image1_data = request.files['image1'].read()
-        image2_data = request.files['image2'].read()
+models = [
+  "VGG-Face", 
+  "Facenet", 
+  "Facenet512", 
+  "OpenFace", 
+  "DeepFace", 
+  "DeepID", 
+  "ArcFace", 
+  "Dlib", 
+  "SFace",
+]
+
+
+@app.route("/api/v2/album/<classroomId>", methods=['POST'])
+def makeAlbum(classroomId):
     
 
-        # 이미지 데이터를 base64 문자열로 변환
-        image1_base64 = "data:image/png;base64," + base64.b64encode(image1_data).decode('utf-8')
-        image2_base64 = "data:image/png;base64," + base64.b64encode(image2_data).decode('utf-8')
-        # 이미지 간의 얼굴 유사성 계산
-        result = DeepFace.verify(image1_base64, image2_base64)
+
+    return jsonify({"status" : HTTPStatus.OK})
+
+
+def verify(image1, image2):
+        '''
+        params
+        image1 : np array로 써도되나?
+        image2 : base64로 변환한 문자열 2
+        '''
+        result = DeepFace.verify(image1, image2, 
+                                 model_name="VGG-Face",
+                                 normalization="base", 
+                                 align=True, 
+                                 detector_backend="opencv",
+                                 enforce_detection=False)
             # 결과 반환
+        
         return jsonify(result)
-    except Exception as e:
-        return jsonify({'error': str(e)})
 
 if __name__ == '__main__':
     app.run(debug=True)
