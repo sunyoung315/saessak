@@ -9,13 +9,13 @@ const url = "/chat";
 // 2. (학부모) 나의 전체 아이 선생님 목록 조회 - parentId --> user에서 가져오기
 
 // 3. (선생님) 내가 참여하고 있는 채팅방 목록 조회 - teacherId
-function chatListTeacher(parentId, sucess, fail){
-    local.get(`${url}/parent/list/${parentId}`).then(sucess).catch(fail);
+function chatListTeacher(teacherId, sucess, fail){
+    local.get(`${url}/teacher/list/${teacherId}`).then(sucess).catch(fail);
 }
 
 // 4. (학부모) 내가 참여하고 있는 채팅방 목록 조회 - parentId
-function chatListParent(teacherId, sucess, fail){
-    local.get(`${url}/teacher/list/${teacherId}`).then(sucess).catch(fail);
+function chatListParent(parentId, sucess, fail){
+    local.get(`${url}/parent/list/${parentId}`).then(sucess).catch(fail);
 }
 
 // 5. (공통) 상세 채팅 내용 불러오기 - roomId
@@ -28,10 +28,16 @@ function addNewChat(teacherId, kidId, sucess, fail){
     local.post(`${url}/add/${teacherId}/${kidId}`).then(sucess).catch(fail);
 }
 
+// 7. (공통) 채팅방 진입 시 이전에 저장된 채팅 내역 불러오기
+function loadChat(roomId, sucess, fail){
+    local.get(`${url}/room/list/${roomId}`).then(sucess).catch(fail);
+}
+
 
 export {
     chatListParent,
     chatListTeacher,
     detailChat,
-    addNewChat
+    addNewChat,
+    loadChat
 }

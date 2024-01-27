@@ -8,10 +8,11 @@
 
     <!-- message -->
     <div
-      class="flex flex-col justify-between scrollbar-hide overflow-y-scroll w-full h-5/6 mt-0 px-5"
+      ref="chatbox"
+      class="chatbox flex flex-col scrollbar-hide overflow-y-scroll w-full h-5/6 mt-0 px-5"
     >
       <div v-for="msg in recvList" :key="msg.chatId" class="flex flex-col mt-5">
-        <!--발신 메시지-->
+        <!--발신 메시지(오른쪽)-->
         <div v-if="msg.senderId == userId" class="flex justify-end mb-4">
           <div
             class="px-4 py-3 mr-2 text-white bg-yellow-500 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl"
@@ -25,7 +26,7 @@
           />
         </div>
 
-        <!--수신 메시지-->
+        <!--수신 메시지(왼쪽)-->
         <div v-else class="flex justify-start mb-4">
           <img
             src="https://source.unsplash.com/vpOeXr5wmR4/600x600"
@@ -40,7 +41,7 @@
         </div>
       </div>
     </div>
-    <!-- end message -->
+    <!-- end message(오른쪽) -->
     <div class="h-7 w-7 ml-auto mr-2.5 border rounded-full bg-neutral-500">
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
         <path
@@ -62,6 +63,7 @@
             type="text"
             id="msg-input"
             v-model="msg"
+            @keyup.enter="send()"
             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           />
         </div>
@@ -93,33 +95,51 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import Stomp from 'webstomp-client'
-import SockJS from 'sockjs-client' // 채팅 라이브러리 import
+import { ref, nextTick, onMounted } from 'vue'
+import {loadChat} from '@/api/chat'
+import Stomp from 'webstomp-client' // 채팅 라이브러리 import
 //채팅메시지 = {room_id, chat_content, sender_id, receiver_id}
 const props = defineProps({
   roomInfo: {
     type: Object,
     default: () => ({
       roomId: 0,
-      senderId: '',
-      receiverId: ''
+      senderId: 0,
+      receiverId: 0
     })
   }
 })
 
-const userId = ref(2)
+
+onMounted(() => { // 접속하면 이전 채팅 load
+  loadChat(props.roomInfo.roomId,
+  ({data}) => {
+    console.log("채팅 내역 조회")
+    console.log(data);
+    recvList.value = data.data;
+    downScroll();
+  })
+})
+
+const userId = ref(3)
 const userFlag = ref(false)
-const sendFlag = userFlag == false ? 't' : 'k'
-const receiveFlag = userFlag == false ? 'k' : 't'
+const chatbox = ref(null)
 
 console.log(props.roomInfo)
 const roomId = props.roomInfo.roomId // 채팅방 번호
 const connected = ref(false) // 소켓 연결 여부
-const socket = new WebSocket('ws://localhost:8081/chat')
+const socket = new WebSocket('ws://i10a706.p.ssafy.io:8081/chat')
 const recvList = ref([])
 const msg = ref('')
 const stomp = Stomp.over(socket)
+
+const downScroll = () => {
+  nextTick(() => {
+        if (chatbox.value) {
+          chatbox.value.scrollTo(0, chatbox.value.scrollHeight)
+        }
+      })
+}
 
 console.log('소켓 연결 시작')
 // console.log(roomId);
@@ -137,6 +157,13 @@ stomp.connect(
 
       // 받은 데이터를 json으로 파싱하고 리스트에 넣어줍니다.
       recvList.value.push(JSON.parse(res.body))
+      
+    downScroll();
+      // nextTick(() => {
+      //   if (chatbox.value) {
+      //     chatbox.value.scrollTo(0, chatbox.value.scrollHeight)
+      //   }
+      // })
     })
   },
   (error) => {
@@ -152,6 +179,7 @@ function addZero(value) {
 const send = () => {
   // 메세지 전송
   console.log('Send message:' + msg.value)
+
   let currentDate = new Date()
 
   var formattedDate =
@@ -175,30 +203,12 @@ const send = () => {
       receiverId: props.roomInfo.receiverId,
       senderId: props.roomInfo.senderId,
       chatContent: msg.value,
-      chatTime : formattedDate
+      chatTime: formattedDate
     }
     stomp.send('/pub/message', JSON.stringify(sendMsg), {})
+    msg.value = ''
   }
 }
-
-const chat = [
-  { chatId: 1, chatContent: '안녕하세요~', senderId: '1t' },
-  { chatId: 2, chatContent: '안녕하세요 ㅎㅎ', senderId: '1k' },
-  { chatId: 3, chatContent: '알림장 확인 부탁드립니다', senderId: '1t' },
-  { chatId: 4, chatContent: '네 감사합니다~', senderId: '1k' },
-  { chatId: 5, chatContent: '안녕하세요~', senderId: '1t' },
-  { chatId: 6, chatContent: '안녕하세요 ㅎㅎ', senderId: '1k' },
-  { chatId: 7, chatContent: '알림장 확인 부탁드립니다', senderId: '1t' },
-  { chatId: 8, chatContent: '네 감사합니다~', senderId: '1k' },
-  { chatId: 9, chatContent: '안녕하세요~', senderId: '1t' },
-  { chatId: 10, chatContent: '안녕하세요 ㅎㅎ', senderId: '1k' },
-  { chatId: 11, chatContent: '알림장 확인 부탁드립니다', senderId: '1t' },
-  { chatId: 12, chatContent: '네 감사합니다~', senderId: '1k' },
-  { chatId: 13, chatContent: '안녕하세요~', senderId: '1t' },
-  { chatId: 14, chatContent: '안녕하세요 ㅎㅎ', senderId: '1k' },
-  { chatId: 15, chatContent: '알림장 확인 부탁드립니다', senderId: '1t' },
-  { chatId: 16, chatContent: '네 감사합니다~', senderId: '1k' }
-]
 </script>
 
 <style></style>
