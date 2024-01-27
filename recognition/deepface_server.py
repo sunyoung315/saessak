@@ -15,6 +15,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from io import BytesIO
 import numpy as np
 import cv2
+import requests
 
 ## db 설정
 album_table = table_info.get_album_table()
@@ -48,10 +49,35 @@ def verify_test():
     decoded1 = cv2.imdecode(np1, cv2.IMREAD_COLOR)
     decoded2 = cv2.imdecode(np2, cv2.IMREAD_COLOR)
 
-    result = DeepFace.verify(decoded1, decoded2)
+    result = verify(decoded1, decoded2)
     
     return jsonify({"data" : result})
      
+
+def get_classroom_npArray(classroomId) :
+    # 반이 아이들을 모두 가져오자
+    base_url = ""
+    with engine.connect() as conn : 
+        result = conn.execute(
+            select(kid_table).where(kid_table.c.classroom_id == classroomId)
+        )
+
+        kid_dict = dict()
+        for r in result.mappings() :
+            kid_id = r["kid_id"]
+            url = r["kid_profile"] 
+            kid_dict[kid_id] = url
+
+            url_parser = url.split("/")
+            url = base_url + url_parser[-1]
+            response = s3.get_object(Bucket = s3_bucket_name, Key= url)
+            data = response["Body"].read()
+            encoded_img = np.frombuffer(data, dtype = np.uint8)
+            img = cv2.imdecode(encoded_img,cv2.IMREAD_COLOR)
+            
+            kid_dict[kid_id] = img
+
+    return kid_dict
 
 
 @app.route("/s3/upload/<classroomId>", methods=["POST"])
@@ -74,7 +100,7 @@ def uploadS3(classroomId) :
                 file_name , file_extension = secure_filename(file.filename).split(".")
 
                 file_uuid = str(uuid.uuid4())
-                path = "/test" + file_uuid + "." + file_extension
+                path = "test/" + file_uuid + "." + file_extension
                 s3.upload_fileobj(file.stream, s3_bucket_name, path)
                 photo.append({
                     "album_id" : album_id,
@@ -104,30 +130,25 @@ models = [
   "SFace",
 ]
 
-
-@app.route("/api/v2/album/<classroomId>", methods=['POST'])
-def makeAlbum(classroomId):
-    
-
-
-    return jsonify({"status" : HTTPStatus.OK})
-
+metrics = ["cosine", "euclidean", "euclidean_l2"]
 
 def verify(image1, image2):
         '''
         params
-        image1 : np array로 써도되나?
-        image2 : base64로 변환한 문자열 2
+        image1 : np array
+        image2 : np array
         '''
         result = DeepFace.verify(image1, image2, 
                                  model_name="VGG-Face",
                                  normalization="base", 
                                  align=True, 
                                  detector_backend="opencv",
-                                 enforce_detection=False)
+                                 enforce_detection=False,
+                                 distance_metric="euclidean_l2"
+                                 )
             # 결과 반환
         
-        return jsonify(result)
+        return result
 
 if __name__ == '__main__':
     app.run(debug=True)
