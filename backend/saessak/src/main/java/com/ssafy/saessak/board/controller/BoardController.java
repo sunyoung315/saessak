@@ -17,7 +17,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController()
-@RequestMapping("/api/v2/board")
+@RequestMapping("/api/board")
 @Slf4j
 public class BoardController {
 
