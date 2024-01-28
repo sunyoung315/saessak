@@ -92,13 +92,13 @@ export const useAttendanceStore = defineStore('attendance', () => {
 			// 시간 형식 파싱(hh:mm)
 			oneKidList.value.map(record => {
 				if (record.attendanceInTime) {
-					let date = new Date(`1970-01-01T${record.attendanceInTime}Z`);
+					let date = new Date(`1970-01-01T${record.attendanceInTime}`);
 					let hours = date.getHours().toString().padStart(2, '0');
 					let minutes = date.getMinutes().toString().padStart(2, '0');
 					record.attendanceInTime = `${hours}:${minutes}`;
 				}
 				if (record.attendanceOutTime) {
-					let date = new Date(`1970-01-01T${record.attendanceOutTime}Z`);
+					let date = new Date(`1970-01-01T${record.attendanceOutTime}`);
 					let hours = date.getHours().toString().padStart(2, '0');
 					let minutes = date.getMinutes().toString().padStart(2, '0');
 					record.attendanceOutTime = `${hours}:${minutes}`;
