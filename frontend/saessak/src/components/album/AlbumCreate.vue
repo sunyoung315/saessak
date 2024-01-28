@@ -25,6 +25,7 @@
 					type="text"
 					class="block mt-1 ml-32 mb-10 w-5/12 rounded-md border border-neutral-300 shadow focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
 					rows="6"
+					placeholder="제목을 입력해주세요."
 				/>
 			</label>
 		</div>
@@ -60,7 +61,7 @@
 		</div>
 		<div>
 			<span class="text-gray-700 ml-36 text-xl font-bold">첨부파일</span>
-			<div class="w-32 ml-36 h-32 border-2 border-dotted border-blue-500">
+			<div class="w-32 ml-36 h-32 border-2 border-dotted border-blue-500 mb-4">
 				<div v-if="images" class="w-full h-full flex items-center">
 					<img :src="images" alt="image" />
 				</div>
