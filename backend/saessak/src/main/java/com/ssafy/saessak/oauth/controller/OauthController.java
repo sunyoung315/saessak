@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.IOException;
 import java.security.Principal;
@@ -31,19 +32,16 @@ public class OauthController {
 
 
     @GetMapping("/kakao/login")
-    public String login(HttpServletResponse response) throws IOException {
-        String kakao_uri = kakaoSocialService.getKakaoLogin();
-//        response.sendRedirect(kakao_uri);
-        return kakao_uri;
+    public String getKakaologin() {
+        return kakaoSocialService.getKakaoLogin();
     }
 
     @GetMapping("/kakao/callback")
-    public ResponseEntity<ResultResponse> login(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public ResponseEntity<ResultResponse> login(HttpServletRequest request) throws IOException {
         LoginSuccessResponseDto loginSuccessResponseDto = kakaoSocialService.login(request.getParameter("code"));
         if(loginSuccessResponseDto.isTeacher()) {
             return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, teacherService.login(loginSuccessResponseDto)));
         } else {
-            parentService.login(loginSuccessResponseDto);
             return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, parentService.login(loginSuccessResponseDto)));
         }
     }
