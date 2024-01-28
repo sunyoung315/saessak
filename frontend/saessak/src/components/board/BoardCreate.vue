@@ -36,7 +36,7 @@
 				<span class="inline-block text-gray-700 m-5 text-md font-extrabold"
 					>체온 체크
 				</span>
-				<div class="inline-block relative flex items-center">
+				<div class="relative flex items-center">
 					<button
 						type="button"
 						id="decrement-button"
@@ -96,7 +96,7 @@
 				<span class="inline-block text-gray-700 m-5 text-md font-extrabold"
 					>수면 시간
 				</span>
-				<div class="inline-block relative flex items-center">
+				<div class="relative flex items-center">
 					<button
 						type="button"
 						id="decrement-button"
@@ -181,7 +181,7 @@
 				<span class="inline-block text-gray-700 m-5 text-md font-extrabold"
 					>키/몸무게</span
 				>
-				<div class="inline-block relative flex items-center">
+				<div class="relative flex items-center">
 					<button
 						type="button"
 						id="decrement-button"
@@ -236,7 +236,7 @@
 					</button>
 				</div>
 				<div class="pl-3 pr-6">cm</div>
-				<div class="inline-block relative flex items-center">
+				<div class="relative flex items-center">
 					<button
 						type="button"
 						id="decrement-button"

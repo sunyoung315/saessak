@@ -1,116 +1,105 @@
 <template>
-	<div
-		class="container mx-16 mb-10 p-1.5 flex flex-wrap justify-normar w-auto border border-gray-200 shadow rounded-lg"
-	>
+	<div class="view-frame">
 		<!-- Teacher Version -->
 		<template v-if="isTeacher">
-			<div v-for="child in childrenList" :key="child.kidId">
-				<RouterLink
-					:to="{ name: 'BoardDetail', params: { id: `${child.kidId}` } }"
-					class="m-1.5 bg-cover bg-[url('@/assets/BoardFrame.png')] inline-block w-80 h-96 p-6 bg-white rounded-lg hover:bg-gray-100"
-				>
-					<div class="relative left-28 top-5 font-extrabold text-lg">
-						{{ child.kidName.split('').join(' ') }}
-					</div>
-					<div class="relative left-[35px] top-[56px]">
-						<img
-							:src="`src/assets/${child.kidProfile}`"
-							alt="profile"
-							class="w-[225.5px] h-[220px]"
-						/>
-					</div>
-				</RouterLink>
+			<div class="book-flex">
+				<div v-for="kid in kidsList" :key="kid.kidId">
+					<RouterLink
+						:to="{ name: 'BoardDetail', params: { id: `${kid.kidId}` } }"
+						class="book-frame"
+					>
+						<div class="book-title-teacher">
+							{{ kid.kidName.split('').join(' ') }}
+						</div>
+						<div class="book-photo-position">
+							<img
+								:src="`src/assets/${kid.kidProfile}`"
+								alt="profile"
+								class="book-photo-size"
+							/>
+						</div>
+					</RouterLink>
+				</div>
 			</div>
 		</template>
 
 		<!-- Parent Version -->
 		<template v-else>
-			<div v-for="board in boardList" :key="board.boardId">
-				<RouterLink
-					:to="{ name: 'BoardDetail', params: { id: `${board.boardId}` } }"
-					class="m-1.5 bg-cover bg-[url('@/assets/BoardFrame.png')] inline-block w-80 h-96 p-6 bg-white rounded-lg hover:bg-gray-100"
-				>
-					<div class="relative left-24 top-5 font-extrabold text-lg">
-						{{ board.boardDate }}
-					</div>
-					<div class="relative left-9 top-16 w-56">
-						<img
-							:src="`src/assets/${board.boardPath}`"
-							alt="profile"
-							class="w-56 h-52"
-						/>
-					</div>
-				</RouterLink>
+			<div class="book-flex">
+				<div v-for="board in myKidBoards" :key="board.boardId">
+					<RouterLink
+						:to="{ name: 'BoardDetail', params: { id: `${board.boardId}` } }"
+						class="book-frame"
+					>
+						<div class="book-title-parent">
+							{{ board.boardDate }}
+						</div>
+						<div class="book-photo-position">
+							<img
+								:src="`src/assets/${board.boardPath}`"
+								alt="profile"
+								class="book-photo-size"
+							/>
+						</div>
+					</RouterLink>
+				</div>
 			</div>
 		</template>
 	</div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
+import { useBoardStore } from '@/store/board';
+import { useUserStore } from '@/store/user';
+
+// 임시 user 변수
 const isTeacher = ref(true);
+const classroomId = ref(2);
+const kidId = ref(1);
 
-const childrenList = [
-	{
-		kidId: 1,
-		kidName: '박나은',
-		// kidProfile: 'http://s3.url',
-		kidProfile: 'image3.png', //s3 rul
-	},
-	{
-		kidId: 2,
-		kidName: '박건후',
-		// kidProfile: 'http://s3.url',
-		kidProfile: 'image5.png',
-	},
-	{
-		kidId: 3,
-		kidName: '박진우',
-		// kidProfile: 'http://s3.url',
-		kidProfile: 'image8.png',
-	},
-	{
-		kidId: 4,
-		kidName: '윌리엄',
-		// kidProfile: 'http://s3.url',
-		kidProfile: 'image9.png',
-	},
-];
+const boardStore = useBoardStore();
+const userStore = useUserStore();
 
-const boardList = [
-	{
-		boardId: 1,
-		kidId: 1,
-		classroomId: 1,
-		boardDate: '2024-01-12',
-		// boardPath: 'http://s3.url',
-		boardPath: 'image1.png',
-	},
-	{
-		boardId: 2,
-		kidId: 1,
-		classroomId: 1,
-		boardDate: '2024-01-13',
-		// boardPath: 'http://s3.url',
-		boardPath: 'image4.png',
-	},
-	{
-		boardId: 3,
-		kidId: 1,
-		classroomId: 1,
-		boardDate: '2024-01-14',
-		// boardPath: 'http://s3.url',
-		boardPath: 'image6.png',
-	},
-	{
-		boardId: 4,
-		kidId: 1,
-		classroomId: 1,
-		boardDate: '2024-01-15',
-		// boardPath: 'http://s3.url',
-		boardPath: 'image8.png',
-	},
-];
+// 선생님ver 반 아이들 리스트
+const kidsList = ref([]);
+
+const getKidsList = async classroomId => {
+	await userStore.getKidsList(classroomId);
+	kidsList.value = userStore.kidsList;
+};
+
+// 학부모ver 내 아이 알림장 리스트
+const myKidBoards = ref([]);
+
+const getMyKidBoards = async kidId => {
+	await boardStore.getMyKidBoards(kidId);
+	myKidBoards.value = boardStore.myKidBoards;
+};
+
+onMounted(async () => {
+	await getMyKidBoards(kidId.value);
+	await getKidsList(classroomId.value);
+});
 </script>
 
-<style scoped></style>
+<style scoped>
+.book-flex {
+	@apply flex flex-wrap justify-between min-h-screen;
+}
+.book-frame {
+	@apply bg-cover bg-[url('@/assets/BoardFrame.png')] inline-block w-[24rem] h-[29rem] p-6 m-1.5 mb-6 bg-white rounded-lg hover:bg-yellow-50 hover:bg-opacity-65;
+}
+.book-title-teacher {
+	@apply relative left-[9.7rem] top-[2rem] font-extrabold text-lg;
+}
+.book-title-parent {
+	@apply relative left-[8.3rem] top-[2.1rem] font-extrabold text-lg;
+}
+.book-photo-position {
+	@apply relative left-[3rem] top-[5rem];
+}
+.book-photo-size {
+	@apply w-[17rem] h-[16.5rem];
+}
+</style>

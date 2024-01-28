@@ -1,19 +1,17 @@
 <template>
-	<div
-		class="container mx-16 mb-10 p-1.5 w-auto border border-gray-200 shadow rounded-lg"
-	>
+	<div class="view-frame">
 		<div class="flex justify-end items-center">
 			<button
 				type="button"
-				@click="goBoardList()"
-				class="mt-8 mr-8 text-white hover:text-dark-navy border border-dark-navy bg-dark-navy hover:bg-white focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+				@click="goBoardList(kidId)"
+				class="btn mt-5 mr-7 mb-3"
 			>
 				목록
 			</button>
 		</div>
 		<!-- datepicker -->
 		<div class="block mb-5">
-			<span class="text-gray-700 ml-36 text-xl font-bold">날짜</span>
+			<span class="content-title">날짜</span>
 			<div class="block mt-1 ml-32 mb-10">
 				<VDatePicker
 					v-model="date"
@@ -26,7 +24,7 @@
 								class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none"
 							>
 								<svg
-									class="w-4 h-4 text-gray-900 dark:text-gray-400"
+									class="w-4 h-4 text-gray-900"
 									aria-hidden="true"
 									xmlns="http://www.w3.org/2000/svg"
 									fill="currentColor"
@@ -40,311 +38,153 @@
 							<input
 								:value="inputValue"
 								v-on="inputEvents"
-								class="border border-gray-300 text-gray-900 text-sm font-bold rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5"
+								class="datepicker-input"
 							/>
 						</div>
 					</template>
 				</VDatePicker>
 			</div>
 		</div>
-		<div>
-			<label class="block mt-2 mb-5">
-				<span class="text-gray-700 ml-36 text-xl font-bold">내용</span>
+		<!-- Contents -->
+		<template v-if="!store.noContent">
+			<div class="block mt-2 mb-5">
+				<span class="content-title">내용</span>
 				<textarea
 					id="contents"
-					class="block mt-1 ml-32 mb-10 w-9/12 rounded-md border border-neutral-300 shadow focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+					class="content-box mb-10 p-4 text-lg"
 					rows="6"
+					:value="store.oneBoard.boardContent"
 					readonly
 				></textarea>
-			</label>
-		</div>
-		<span class="text-gray-700 ml-36 text-xl font-bold">건강기록</span>
-		<div
-			class="block ml-32 mb-0 mt-1 p-2 bg-white w-9/12 border border-neutral-300 rounded-lg shadow"
-		>
-			<div class="flex items-center">
-				<span class="inline-block text-gray-700 m-5 text-md font-extrabold"
-					>체온 체크
-				</span>
-				<div class="inline-block relative flex items-center">
-					<button
-						type="button"
-						id="decrement-button"
-						data-input-counter-decrement="quantity-input"
-						class="bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 border border-gray-300 rounded-s-lg p-3 h-10 focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none"
-					>
-						<svg
-							class="w-3 h-3 text-gray-900 dark:text-white"
-							aria-hidden="true"
-							xmlns="http://www.w3.org/2000/svg"
-							fill="none"
-							viewBox="0 0 18 2"
-						>
-							<path
-								stroke="currentColor"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M1 1h16"
-							/>
-						</svg>
-					</button>
+			</div>
+			<span class="content-title">건강기록</span>
+			<div class="content-box mb-0 p-2">
+				<div class="record-flex">
+					<span class="record-title">체온 체크 </span>
 					<input
 						type="text"
-						id="quantity-input"
-						data-input-counter
-						aria-describedby="helper-text-explanation"
-						class="bg-gray-50 border-x-0 border-gray-300 h-10 text-center text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-20 py-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-						placeholder="0"
+						class="record-content"
+						:value="store.oneBoard.boardTemperature"
 						readonly
 					/>
-					<button
-						type="button"
-						id="increment-button"
-						data-input-counter-increment="quantity-input"
-						class="bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 border border-gray-300 rounded-e-lg p-3 h-10 focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none"
-					>
-						<svg
-							class="w-3 h-3 text-gray-900 dark:text-white"
-							aria-hidden="true"
-							xmlns="http://www.w3.org/2000/svg"
-							fill="none"
-							viewBox="0 0 18 18"
-						>
-							<path
-								stroke="currentColor"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M9 1v16M1 9h16"
-							/>
-						</svg>
-					</button>
+					<div class="unit">°C</div>
 				</div>
-				<div class="pl-3 pr-6">°C</div>
-			</div>
-			<div class="flex items-center">
-				<span class="inline-block text-gray-700 m-5 text-md font-extrabold"
-					>수면 시간
-				</span>
-				<div class="inline-block relative flex items-center">
-					<button
-						type="button"
-						id="decrement-button"
-						data-input-counter-decrement="quantity-input"
-						class="bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 border border-gray-300 rounded-s-lg p-3 h-10 focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none"
-					>
-						<svg
-							class="w-3 h-3 text-gray-900 dark:text-white"
-							aria-hidden="true"
-							xmlns="http://www.w3.org/2000/svg"
-							fill="none"
-							viewBox="0 0 18 2"
-						>
-							<path
-								stroke="currentColor"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M1 1h16"
-							/>
-						</svg>
-					</button>
+				<div class="record-flex">
+					<span class="record-title">수면 시간 </span>
+					<div class="relative flex items-center">
+						<input
+							type="text"
+							class="record-content"
+							:value="store.oneBoard.boardSleepTime"
+							readonly
+						/>
+					</div>
+					<div class="unit">시간</div>
+				</div>
+				<div>
+					<span class="record-title">배변 상태</span>
+					<div class="group-button" role="group">
+						<template v-if="store.oneBoard.boardPoopStatus === '보통'">
+							<button
+								type="button"
+								class="group-button-left-item-focus"
+								disabled
+							>
+								보통
+							</button>
+						</template>
+						<template v-else>
+							<button type="button" class="group-button-left-item" disabled>
+								보통
+							</button>
+						</template>
+						<template v-if="store.oneBoard.boardPoopStatus === '묽음'">
+							<button
+								type="button"
+								class="group-button-center-item-focus"
+								disabled
+							>
+								묽음
+							</button>
+						</template>
+						<template v-else>
+							<button type="button" class="group-button-center-item" disabled>
+								묽음
+							</button>
+						</template>
+						<template v-if="store.oneBoard.boardPoopStatus === '묽음'">
+							<button
+								type="button"
+								class="group-button-right-item-focus"
+								disabled
+							>
+								딱딱함
+							</button>
+						</template>
+						<template v-else>
+							<button type="button" class="group-button-right-item" disabled>
+								딱딱함
+							</button>
+						</template>
+					</div>
+				</div>
+				<div class="record-flex">
+					<span class="record-title">키/몸무게</span>
 					<input
 						type="text"
-						id="quantity-input"
-						data-input-counter
-						aria-describedby="helper-text-explanation"
-						class="bg-gray-50 border-x-0 border-gray-300 h-10 text-center text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-20 py-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-						placeholder="0"
+						class="record-content"
+						:value="store.oneBoard.boardTall"
 						readonly
 					/>
-					<button
-						type="button"
-						id="increment-button"
-						data-input-counter-increment="quantity-input"
-						class="bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 border border-gray-300 rounded-e-lg p-3 h-10 focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none"
-					>
-						<svg
-							class="w-3 h-3 text-gray-900 dark:text-white"
-							aria-hidden="true"
-							xmlns="http://www.w3.org/2000/svg"
-							fill="none"
-							viewBox="0 0 18 18"
-						>
-							<path
-								stroke="currentColor"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M9 1v16M1 9h16"
-							/>
-						</svg>
-					</button>
-				</div>
-				<div class="pl-3 pr-6">시간</div>
-			</div>
-			<div>
-				<span class="inline-block text-gray-700 m-5 text-md font-extrabold"
-					>배변 상태</span
-				>
-				<div class="inline-flex rounded-md shadow-sm h-11" role="group">
-					<button
-						type="button"
-						class="px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-s-lg focus:z-10 focus:ring-2 focus:ring-dark-navy focus:text-dark-navy focus:font-bold focus:bg-gray-100"
-						disabled
-					>
-						보통
-					</button>
-					<button
-						type="button"
-						class="px-4 py-2 text-sm font-medium text-gray-900 bg-white border-t border-b border-gray-200 focus:z-10 focus:ring-2 focus:ring-dark-navy focus:text-dark-navy focus:font-bold focus:bg-gray-100"
-						disabled
-					>
-						묽음
-					</button>
-					<button
-						type="button"
-						class="px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-e-lg focus:z-10 focus:ring-2 focus:ring-dark-navy focus:text-dark-navy focus:font-bold focus:bg-gray-100"
-						disabled
-					>
-						딱딱함
-					</button>
-				</div>
-			</div>
-
-			<div class="flex items-center">
-				<span class="inline-block text-gray-700 m-5 text-md font-extrabold"
-					>키/몸무게</span
-				>
-				<div class="inline-block relative flex items-center">
-					<button
-						type="button"
-						id="decrement-button"
-						data-input-counter-decrement="quantity-input"
-						class="bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 border border-gray-300 rounded-s-lg p-3 h-10 focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none"
-					>
-						<svg
-							class="w-3 h-3 text-gray-900 dark:text-white"
-							aria-hidden="true"
-							xmlns="http://www.w3.org/2000/svg"
-							fill="none"
-							viewBox="0 0 18 2"
-						>
-							<path
-								stroke="currentColor"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M1 1h16"
-							/>
-						</svg>
-					</button>
+					<div class="unit">cm</div>
 					<input
 						type="text"
-						id="quantity-input"
-						data-input-counter
-						aria-describedby="helper-text-explanation"
-						class="bg-gray-50 border-x-0 border-gray-300 h-10 text-center text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-20 py-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-						placeholder="0"
+						class="record-content"
+						:value="store.oneBoard.boardWeight"
 						readonly
 					/>
-					<button
-						type="button"
-						id="increment-button"
-						data-input-counter-increment="quantity-input"
-						class="bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 border border-gray-300 rounded-e-lg p-3 h-10 focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none"
-					>
-						<svg
-							class="w-3 h-3 text-gray-900 dark:text-white"
-							aria-hidden="true"
-							xmlns="http://www.w3.org/2000/svg"
-							fill="none"
-							viewBox="0 0 18 18"
-						>
-							<path
-								stroke="currentColor"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M9 1v16M1 9h16"
-							/>
-						</svg>
-					</button>
+					<div class="unit">kg</div>
 				</div>
-				<div class="pl-3 pr-6">cm</div>
-				<div class="inline-block relative flex items-center">
-					<button
-						type="button"
-						id="decrement-button"
-						data-input-counter-decrement="quantity-input"
-						class="bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 border border-gray-300 rounded-s-lg p-3 h-10 focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none"
-					>
-						<svg
-							class="w-3 h-3 text-gray-900 dark:text-white"
-							aria-hidden="true"
-							xmlns="http://www.w3.org/2000/svg"
-							fill="none"
-							viewBox="0 0 18 2"
-						>
-							<path
-								stroke="currentColor"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M1 1h16"
-							/>
-						</svg>
-					</button>
-					<input
-						type="text"
-						id="quantity-input"
-						data-input-counter
-						aria-describedby="helper-text-explanation"
-						class="bg-gray-50 border-x-0 border-gray-300 h-10 text-center text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-20 py-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-						placeholder="0"
-						readonly
-					/>
-					<button
-						type="button"
-						id="increment-button"
-						data-input-counter-increment="quantity-input"
-						class="bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 border border-gray-300 rounded-e-lg p-3 h-10 focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none"
-					>
-						<svg
-							class="w-3 h-3 text-gray-900 dark:text-white"
-							aria-hidden="true"
-							xmlns="http://www.w3.org/2000/svg"
-							fill="none"
-							viewBox="0 0 18 18"
-						>
-							<path
-								stroke="currentColor"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M9 1v16M1 9h16"
-							/>
-						</svg>
-					</button>
-				</div>
-				<div class="pl-3 pr-6">kg</div>
 			</div>
-		</div>
+		</template>
+		<template v-else>
+			<div class="no-content">{{ store.noContent }}</div>
+		</template>
 		<br /><br />
 	</div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-const router = useRouter();
+import { ref, onMounted, watch } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
+import { useBoardStore } from '@/store/board';
 
+// 임시 data
+const kidId = ref(1);
+
+const router = useRouter();
+const route = useRoute();
+const store = useBoardStore();
+
+// url 파리미터
+const boardId = ref(route.params);
+
+// 목록으로 router 이동
 const goBoardList = () => {
 	router.push({ name: 'BoardList' });
 };
 
-const date = ref(new Date());
+// 알림장 1개
+const oneBoard = ref({});
+
+// 알림장 상세조회(boardId)
+const getOneBoard = async boardId => {
+	await store.getOneBoard(boardId);
+	oneBoard.value = store.oneBoard;
+};
+
+// datepicker 설정
+const date = ref(oneBoard.value.boardDate);
 
 const selectAttribute = ref({ highlight: 'yellow' });
 
@@ -357,6 +197,68 @@ const disabledDates = ref([
 		end: null,
 	},
 ]);
+
+// datepicker 날짜 변화 감지
+watch(date, newVal => {
+	if (newVal) {
+		const newValue = new Date(newVal);
+		const year = newValue.getFullYear();
+		const month = ('0' + (newValue.getMonth() + 1)).slice(-2);
+		const day = ('0' + newValue.getDate()).slice(-2);
+		const newDate = `${year}-${month}-${day}`;
+		store.date = newDate;
+		// 알림장 상세조회(date)
+		store.getOneBoardByDate(kidId.value);
+	}
+});
+
+onMounted(async () => {
+	await getOneBoard(boardId.value.id);
+	date.value = oneBoard.value.boardDate;
+});
 </script>
 
-<style scoped></style>
+<style scoped>
+.content-title {
+	@apply ml-36 text-gray-900 text-xl font-bold;
+}
+.content-box {
+	@apply block ml-32 mt-1 w-9/12 rounded-md border border-neutral-300 shadow;
+}
+.record-title {
+	@apply inline-block m-5 text-gray-700 text-base font-extrabold;
+}
+.record-flex {
+	@apply flex items-center;
+}
+.record-content {
+	@apply block w-20 h-11 py-2.5 bg-gray-100 rounded-md border border-neutral-300 text-center text-gray-900 text-base;
+}
+.unit {
+	@apply pl-3 pr-6;
+}
+.no-content {
+	@apply mx-36 mt-8 text-lg;
+}
+.group-button {
+	@apply inline-flex h-11 rounded-md shadow-sm;
+}
+.group-button-left-item {
+	@apply h-11 px-6 py-2 text-base font-medium text-gray-900 bg-white border border-gray-200 rounded-s-lg focus:z-10 focus:ring-2 focus:ring-dark-navy focus:text-dark-navy focus:font-bold focus:bg-gray-100;
+}
+.group-button-left-item-focus {
+	@apply h-11 px-6 py-2 text-base border border-gray-200 rounded-s-lg z-10 ring-2 ring-dark-navy text-dark-navy font-bold bg-gray-100;
+}
+.group-button-center-item {
+	@apply h-11 px-6 py-2 text-base font-medium text-gray-900 bg-white border-t border-b border-gray-200 focus:z-10 focus:ring-2 focus:ring-dark-navy focus:text-dark-navy focus:font-bold focus:bg-gray-100;
+}
+.group-button-center-item-focus {
+	@apply h-11 px-6 py-2 text-base border-t border-b border-gray-200 z-10 ring-2 ring-dark-navy text-dark-navy font-bold bg-gray-100;
+}
+.group-button-right-item {
+	@apply h-11 px-6 py-2 text-base font-medium text-gray-900 bg-white border border-gray-200 rounded-e-lg focus:z-10 focus:ring-2 focus:ring-dark-navy focus:text-dark-navy focus:font-bold focus:bg-gray-100;
+}
+.group-button-right-item-focus {
+	@apply h-11 px-6 py-2 text-base border border-gray-200 rounded-e-lg z-10 ring-2 ring-dark-navy text-dark-navy font-bold bg-gray-100;
+}
+</style>
