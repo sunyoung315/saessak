@@ -1,3 +1,16 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+@layer components {
+  .view-container {
+    @apply container p-6;
+  }
+  .nav-title {
+    @apply text-3xl mt-10 ml-14 mb-3 mr-5 font-extrabold inline-block;
+  }
+  .view-frame {
+    @apply container mx-16 mb-10 p-8 w-auto border border-gray-200 shadow rounded-lg;
+  }
+}
