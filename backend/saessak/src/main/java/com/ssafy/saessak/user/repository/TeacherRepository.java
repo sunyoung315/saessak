@@ -8,8 +8,11 @@ import org.springframework.security.authentication.TestingAuthenticationProvider
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface TeacherRepository extends JpaRepository<Teacher, Long> {
     List<Teacher> findAllByClassroom(Classroom classroom);
+
+    Optional<Teacher> findByTeacherEmailAndTeacherName(String teacherEmail, String teacherName);
 }

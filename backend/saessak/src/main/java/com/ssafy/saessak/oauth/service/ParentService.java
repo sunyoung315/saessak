@@ -3,11 +3,11 @@ package com.ssafy.saessak.oauth.service;
 import com.ssafy.saessak.oauth.authentication.UserAuthentication;
 import com.ssafy.saessak.oauth.dto.AccessTokenGetSuccess;
 import com.ssafy.saessak.oauth.dto.KidResponseDto;
-import com.ssafy.saessak.oauth.dto.LoginResponseDto;
+import com.ssafy.saessak.oauth.dto.LoginParentResponseDto;
 import com.ssafy.saessak.oauth.dto.LoginSuccessResponseDto;
 import com.ssafy.saessak.oauth.dto.kakao.KakaoUserResponse;
 import com.ssafy.saessak.oauth.exception.UnAuthorizedException;
-import com.ssafy.saessak.oauth.exception.message.ErrorMessage;
+import com.ssafy.saessak.oauth.exception.ErrorMessage;
 import com.ssafy.saessak.oauth.jwt.JwtTokenProvider;
 import com.ssafy.saessak.oauth.token.service.RefreshTokenService;
 import com.ssafy.saessak.user.domain.Kid;
@@ -20,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -43,11 +42,8 @@ public class ParentService {
     }
 
     public Long getIdByEmailAndName(String email, String name) {
-        Optional<Parent> parent = parentRepository.findByParentEmailAndParentName(email, name);
-        if(parent.isPresent()) {
-            return parent.get().getId();
-        }
-        return 0L;
+        Parent parent = parentRepository.findByParentEmailAndParentName(email, name).get();
+        return parent.getId();
     }
 
     public AccessTokenGetSuccess refreshToken( final String refreshToken ) {
@@ -73,6 +69,7 @@ public class ParentService {
                 .userId(userId)
                 .accessToken(jwtTokenProvider.issueAccessToken(userAuthentication))
                 .refreshToken(refreshToken)
+                .isTeacher(false)
                 .build();
     }
 
@@ -82,7 +79,7 @@ public class ParentService {
         parentRepository.delete(parent);
     }
 
-    public LoginResponseDto login(LoginSuccessResponseDto loginSuccessResponseDto) {
+    public LoginParentResponseDto login(LoginSuccessResponseDto loginSuccessResponseDto) {
         List<KidResponseDto> kidResponseDtoList = new ArrayList<>();
         Parent parent = parentRepository.findById(loginSuccessResponseDto.getUserId()).get();
         List<Kid> kidList = kidRepository.findAllByParent(parent);
@@ -96,8 +93,8 @@ public class ParentService {
             kidResponseDtoList.add(kidResponseDto);
         }
 
-        LoginResponseDto loginResponseDto = LoginResponseDto.builder()
-                .flag(false)
+        LoginParentResponseDto loginResponseDto = LoginParentResponseDto.builder()
+                .isTeacher(false)
                 .accessToken(loginSuccessResponseDto.getAccessToken())
                 .refreshToken(loginSuccessResponseDto.getRefreshToken())
                 .kidList(kidResponseDtoList)

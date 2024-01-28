@@ -66,7 +66,6 @@ public class Kid extends User {
     private List<Board> boardList;
 
 
-
     public Kid updateParent(Parent parent){
         this.parent = parent;
         return this;

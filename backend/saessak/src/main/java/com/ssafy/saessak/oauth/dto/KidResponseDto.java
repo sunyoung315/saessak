@@ -13,4 +13,5 @@ public class KidResponseDto {
     private Long parentId;
     private Long kidId;
     private String kidName;
+
 }

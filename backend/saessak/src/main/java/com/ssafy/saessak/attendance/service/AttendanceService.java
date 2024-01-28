@@ -65,7 +65,7 @@ public class AttendanceService {
                 .build();
     }
 
-    public List<AttendanceKidListResponseDto> list(AttendanceRequestDto requestDto) {
+    public List<AttendanceKidListResponseDto> listOfteacher(AttendanceRequestDto requestDto) {
         // 반에서 아이 찾기
         Classroom classroom = classroomRepository.findById(requestDto.getClassroomId()).get();
         List<Kid> kidList = kidRepository.findAllByClassroom(classroom);
@@ -101,6 +101,24 @@ public class AttendanceService {
         }
 
         return attendanceKidListResponseDtoList;
+    }
+
+    public List<AttendanceKidResponseDto> listOfParent(Long kidId) {
+        Kid kid = kidRepository.findById(kidId).get();
+        List<Attendance> attendanceList = attendanceRepository.findAllByKid(kid);
+        List<AttendanceKidResponseDto> responseDtoList = new ArrayList<>();
+        for(Attendance attendance : attendanceList) {
+            AttendanceKidResponseDto attendanceKidResponseDto = AttendanceKidResponseDto.builder()
+                    .attendanceId(attendance.getAttendanceId())
+                    .attendanceDate(attendance.getAttendanceDate())
+                    .attendanceInTime(attendance.getAttendanceInTime())
+                    .attendanceOutTime(attendance.getAttendanceOutTime())
+                    .build();
+
+            responseDtoList.add(attendanceKidResponseDto);
+        }
+
+        return responseDtoList;
     }
 
     // 해당 주차의 시작일을 계산

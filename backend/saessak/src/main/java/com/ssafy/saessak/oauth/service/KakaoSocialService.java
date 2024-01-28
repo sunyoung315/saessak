@@ -5,8 +5,8 @@ import com.ssafy.saessak.oauth.client.KakaoAuthApiClient;
 import com.ssafy.saessak.oauth.dto.LoginSuccessResponseDto;
 import com.ssafy.saessak.oauth.dto.kakao.KakaoAccessTokenResponse;
 import com.ssafy.saessak.oauth.dto.kakao.KakaoUserResponse;
-import com.ssafy.saessak.oauth.exception.message.BadRequestException;
-import com.ssafy.saessak.oauth.exception.message.ErrorMessage;
+import com.ssafy.saessak.oauth.exception.BadRequestException;
+import com.ssafy.saessak.oauth.exception.ErrorMessage;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +26,7 @@ public class KakaoSocialService extends SocialService {
     private final KakaoApiClient kakaoApiClient;
     private final KakaoAuthApiClient kakaoAuthApiClient;
     private final ParentService parentService;
+    private final TeacherService teacherService;
 
     @Value("${kakao.client.id}")
     private String KAKAO_CLIENT_ID;
@@ -83,7 +84,9 @@ public class KakaoSocialService extends SocialService {
         String userName = userResponse.kakaoAccount().profile().nickname();
         if (parentService.isExistingUser(userEmail, userName)) {
             return parentService.getTokenByUserId(parentService.getIdByEmailAndName(userEmail, userName));
-        } else {
+        } else if(teacherService.isExistingUser(userEmail, userName)) {
+            return teacherService.getTokenByUserId(teacherService.getIdByEmailAndName(userEmail, userName));
+        } else { // 회원가입
             Long id = parentService.createUser(userResponse);
             return parentService.getTokenByUserId(id);
         }

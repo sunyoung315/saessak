@@ -4,15 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.util.List;
-
 @Builder
 @Getter
 @AllArgsConstructor
-public class LoginResponseDto {
+public class LoginTeacherResponseDto {
 
-    private boolean flag;
+    private Long teacherId;
+    private String teacherName;
+    private Boolean isTeacher;
+    private Long classroomId;
     private String accessToken;
     private String refreshToken;
-    private List<KidResponseDto> kidList;
 }
