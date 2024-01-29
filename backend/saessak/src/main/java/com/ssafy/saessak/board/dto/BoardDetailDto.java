@@ -15,7 +15,7 @@ public class BoardDetailDto {
     Date boardDate;
     String boardContent;
     String boardTemperature;
-    Integer boardSleepTime;
+    Float boardSleepTime;
     String boardPoopStatus;
     Float boardTall;
     Float boardWeight;
