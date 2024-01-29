@@ -188,8 +188,8 @@ def uploadAlbum(classroomId):
     except SQLAlchemyError as e :
         conn.rollback()
         return jsonify({"error" : str(e)})
-    # except Exception as e:
-    #     return jsonify({"error" : str(e)})
+    except Exception as e:
+        return jsonify({"error" : str(e)})
 
 @app.route("/s3/upload/<classroomId>", methods=["POST"])
 def uploadS3(classroomId) :
