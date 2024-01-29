@@ -11,11 +11,11 @@ import java.util.Optional;
 
 public interface AlbumRepository extends JpaRepository<Album,Long> {
     // 학급 전체 엘범
-    Optional<List<Album>> findByClassroom(Classroom classroom);
+    Optional<List<Album>> findByClassroomAndKidIsNull(Classroom classroom);
     // 아이 전체 엘범
     Optional<List<Album>> findByKid(Kid kid);
     // 학급 날짜 엘범
-    Optional<List<Album>> findByClassroomAndAlbumDate(Classroom classroom, Date date);
+    Optional<List<Album>> findByClassroomAndAlbumDateAndKidIsNull(Classroom classroom, Date date);
     // 아이 날짜 엘범
     Optional<List<Album>> findByKidAndAlbumDate(Kid kid, Date date);
     
