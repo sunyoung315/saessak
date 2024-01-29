@@ -3,34 +3,22 @@ package com.ssafy.saessak.user.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuperBuilder
 @Getter
-@Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name="teacher")
 public class Teacher extends User {
 
-    @ManyToOne
-    @JoinColumn(name = "classroom_id")
-    private Classroom classroom;
-
-    @Column(name = "teacher_name", nullable = false)
-    private String teacherName;
-
-    @Column(name = "teacher_email", nullable = false, unique = true)
-    private String teacherEmail;
-
     @Column(name = "teacher_device")
     private String teacherDevice;
-
-    @Column(name = "teacher_profile")
-    private String teacherProfile;
 
     @Column(name = "teacher_alarm", nullable = false)
     private boolean teacherAlarm;
@@ -48,6 +36,10 @@ public class Teacher extends User {
         } else {
             this.teacherAlarm = false;
         }
+    }
+
+    public void mapping_classroom(Classroom classroom) {
+        super.mapping_classroom(classroom);
     }
 
 }

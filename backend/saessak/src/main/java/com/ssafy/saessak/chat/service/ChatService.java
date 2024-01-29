@@ -65,7 +65,7 @@ public class ChatService {
             return RoomResponseDto.builder()
                     .roomId(r.getRoomId())
                     .kidId(r.getKid().getId())
-                    .kidName(r.getKid().getKidName())
+                    .kidName(r.getKid().getNickname())
                     .flag(false)
                     .build();
         }
@@ -74,7 +74,7 @@ public class ChatService {
         return RoomResponseDto.builder()
                 .roomId(r.getRoomId())
                 .kidId(r.getKid().getId())
-                .kidName(r.getKid().getKidName())
+                .kidName(r.getKid().getNickname())
                 .lastChat(chat.getChatContent())
                 .flag(isChatTimeBeforeLastVisitTime)
                 .build();

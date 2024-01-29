@@ -61,7 +61,7 @@ public class ReplacementService {
                 .replacementId(savedReplacement.getReplacementId())
                 .teacherAlarmDeviceList(teacherDeviceList)
                 .kidId(savedReplacement.getKid().getId())
-                .kidName(savedReplacement.getKid().getKidName())
+                .kidName(savedReplacement.getKid().getNickname())
                 .build();
 
         return replacementAlarmResponseDto;
@@ -77,7 +77,7 @@ public class ReplacementService {
             ReplacementResponseDto replacementResponseDto = ReplacementResponseDto.builder()
                     .replacementId(replacement.getReplacementId())
                     .replacementDay(replacement.getReplacementDay())
-                    .kidName(kid.getKidName())
+                    .kidName(kid.getNickname())
                     .replacementCheck(replacement.isReplacementCheck())
                     .build();
 
@@ -100,7 +100,7 @@ public class ReplacementService {
                 ReplacementResponseDto replacementResponseDto = ReplacementResponseDto.builder()
                         .replacementId(replacement.getReplacementId())
                         .replacementDay(replacement.getReplacementDay())
-                        .kidName(kid.getKidName())
+                        .kidName(kid.getNickname())
                         .replacementCheck(replacement.isReplacementCheck())
                         .build();
 

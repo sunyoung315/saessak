@@ -8,21 +8,19 @@ import com.ssafy.saessak.album.domain.Album;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuperBuilder
 @Getter
-@Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name="kid")
 public class Kid extends User {
-
-    @Column(name = "kid_name", nullable = false)
-    private String kidName;
 
     @Column(name = "kid_birthday", nullable = false)
     private LocalDate kidBirthday;
@@ -30,14 +28,11 @@ public class Kid extends User {
     @Column(name = "kid_allergy")
     private String kidAllergy;
 
-    @Column(name = "kid_profile")
-    private String kidProfile; // s3 url 예정
-
     @Column(name = "kid_allergy_signature")
     private String kidAllergySignature;
 
-    @Column(name = "kid_invite_link")
-    private String kidInviteLink;
+    @Column(name = "kid_invite_code")
+    private String kidInviteCode;
 
     @Column(name = "kid_allergy_check")
     private Boolean kidAllergyCheck; // 확인 여부
@@ -48,10 +43,6 @@ public class Kid extends User {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="parent_id")
     private Parent parent;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="classroom_id")
-    private Classroom classroom;
 
     @OneToMany(mappedBy = "kid", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Attendance> attendanceList;
@@ -79,5 +70,9 @@ public class Kid extends User {
 
     public void changeCheck() {
         this.kidAllergyCheck = true;
+    }
+
+    public void mapping_parent(Parent parent) {
+        this.parent = parent;
     }
 }

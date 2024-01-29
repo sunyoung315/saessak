@@ -46,7 +46,7 @@ public class AlarmService {
         for(Alarm alarm : alarmList) {
             AlarmResponseDto alarmResponseDto = AlarmResponseDto.builder()
                     .alarmId(alarm.getAlarmId())
-                    .kidName(kid.getKidName())
+                    .kidName(kid.getNickname())
                     .alarmType(alarm.getAlarmType())
                     .alarmDate(alarm.getAlarmDate())
                     .alarmContent(alarm.getAlarmContent())
@@ -70,7 +70,7 @@ public class AlarmService {
             for(Alarm alarm : alarmList) {
                 AlarmResponseDto alarmResponseDto = AlarmResponseDto.builder()
                         .alarmId(alarm.getAlarmId())
-                        .kidName(kid.getKidName())
+                        .kidName(kid.getNickname())
                         .alarmType(alarm.getAlarmType())
                         .alarmDate(alarm.getAlarmDate())
                         .alarmContent(alarm.getAlarmContent())
