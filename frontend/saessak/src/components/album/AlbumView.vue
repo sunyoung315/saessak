@@ -13,7 +13,7 @@
 						v-model="showStatus"
 					/>
 					<div
-						class="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-dark-navy peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-8 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-dark-navy"
+						class="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-dark-navy peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-8 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-5 after:transition-all peer-checked:bg-dark-navy"
 					></div>
 					<span
 						class="text-xl m-5 font-extrabold inline-block text-gray-900 dark:text-gray-300"
@@ -22,7 +22,7 @@
 					>
 				</label>
 				<!-- DatePicker 시작-->
-				<VDatePicker v-model="date" v-if="showStatus">
+				<!-- <VDatePicker v-model="date" v-if="showStatus">
 					<template #default="{ inputValue, togglePopover }">
 						<input class="px-3 py-2 mt-6 mr-6 border" :value="inputValue" />
 						<button class="px-3 py-2" @click="togglePopover">
@@ -42,7 +42,7 @@
 							</svg>
 						</button>
 					</template>
-				</VDatePicker>
+				</VDatePicker> -->
 				<!-- DatePicker 끝-->
 			</div>
 			<div class="flex justify-end">
@@ -82,7 +82,7 @@ const showStatus = ref(false);
 const isTeacher = ref(true);
 
 // datePicker
-const date = ref(new Date());
+// const date = ref(new Date());
 
 // Btn
 function registAlbum() {

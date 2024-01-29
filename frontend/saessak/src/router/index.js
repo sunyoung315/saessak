@@ -80,7 +80,7 @@ const routes = [
 				component: AlbumCreate,
 			},
 			{
-				path: 'detail',
+				path: ':id',
 				name: 'AlbumDetail',
 				component: AlbumDetail,
 			},

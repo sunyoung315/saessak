@@ -1,20 +1,24 @@
 <template>
 	<div>
-		<!-- 선생님 Carousel : 아이별 조회이지만 현재 더미 데이터가 따로 없어서 s3에 있는 전체 리스트 가져옴-->
+		<!-- {{ recentAlbumList }} -->
 		<div v-if="isTeacher">
-			<div v-for="album in AlbumAllList" :key="album.albumId">
+			<div v-for="kid in recentAlbumList" :key="kid.kidId">
 				<img src="@/assets/film.png" alt="필름" />
-				<Carousel :items-to-show="5" :wrap-around="true">
+				<Carousel
+					:items-to-show="5"
+					:wrap-around="true"
+					v-if="kid.albumResponseDto"
+				>
 					<Slide
-						v-for="file in album.fileResponseDtoList"
+						v-for="file in kid.albumResponseDto.fileResponseDtoList"
 						:key="file.fileId"
-						@click="goDetail"
+						@click="goDetail(kid.kidId)"
 					>
 						<div class="carousel__item">
 							<img
 								class="album"
 								:src="`${file.filePath}`"
-								:for="album.albumId"
+								:for="kid.albumResponseDto.albumId"
 								alt="image"
 							/>
 						</div>
@@ -25,14 +29,19 @@
 				</Carousel>
 				<img src="@/assets/film.png" alt="필름" />
 				<div class="flex justify-between">
-					<span class="m-4">{{ album.albumId }}</span>
+					<button
+						class="bg-nav-green m-4 text-black font-bold py-2 px-4 rounded-full"
+					>
+						{{ kid.kidName }}
+					</button>
+
 					<span class="m-4">→ 전체 조회</span>
 				</div>
 			</div>
 		</div>
 		<!-- 부모님별 Carousel : 날짜별-->
 		<div v-else>
-			<div v-for="album in kidAlbumDummyList" :key="album.albumId">
+			<div v-for="album in albumDateAllList" :key="album.albumId">
 				<Carousel :items-to-show="5" :wrap-around="true">
 					<Slide
 						v-for="file in album.fileResponseDtoList"
@@ -53,7 +62,12 @@
 					</template>
 				</Carousel>
 				<div class="flex justify-between">
-					<span>{{ album.albumId }}</span>
+					<button
+						class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
+					>
+						{{ album.albumId }}
+					</button>
+					<!-- <span>{{ album.albumId }}</span> -->
 					<span>전체 조회</span>
 				</div>
 			</div>
@@ -73,16 +87,20 @@ const isTeacher = ref(true);
 
 const albumStore = useAlbumStore();
 
-const kidAlbumList = ref([]);
-const AlbumAllList = ref([]);
+const myKidAlbumDateList = ref([]);
+const albumDateAllList = ref([]);
+const recentAlbumList = ref([]);
 
 onMounted(async () => {
-	// 아이별 조회 // kidId: 번호
-	await albumStore.getkidAlbumList(1);
-	kidAlbumList.value = albumStore.kidAlbumList;
-	// 반 전체 조회 // classroom 번호
-	await albumStore.getAlbumAllList(1);
-	AlbumAllList.value = albumStore.AlbumAllList;
+	// 내 아이 날짜별 앨범 조회 (학부모) // 번호: kidId
+	// await albumStore.getkidAlbumDateList(1);
+	// myKidAlbumDateList.value = albumStore.myKidAlbumDateList;
+	// 반 날짜별 전체 조회 (학부모) // 번호: classroom
+	// await albumStore.getAlbumDateAllList(2);
+	// albumDateAllList.value = albumStore.albumDateAllList;
+	// 반 아이들 최신 앨범 리스트 조회 (선생님), 번호: classRoomId
+	await albumStore.getRecentAlbumList(2);
+	recentAlbumList.value = albumStore.recentAlbumList;
 });
 
 const props = defineProps({
@@ -103,58 +121,10 @@ defineComponent({
 });
 // carousel 끝
 
-// 아이별 앨범 조회 (선생님)
-const kidAlbumDummyList = [
-	{
-		albumId: 333333,
-		albumDate: '2024-11-11',
-		albumTitle: '1월 생일자 사진',
-		fileResponseDtoList: [
-			{
-				fileId: 21,
-				fileName: '1사진',
-				filePath: 'http://asda',
-				image: 'image1.png',
-			},
-			{
-				fileId: 22,
-				fileName: '2사진',
-				filePath: 'http://asda',
-				image: 'image2.png',
-			},
-			{
-				fileId: 23,
-				fileName: '3사진',
-				filePath: 'http://asda',
-				image: 'image3.png',
-			},
-		],
-	},
-	{
-		albumId: 44444444444444,
-		albumDate: '2024-11-11',
-		albumTitle: '2월 생일자 사진',
-		fileResponseDtoList: [
-			{
-				fileId: 24,
-				fileName: '4사진',
-				filePath: 'http://asda',
-				image: 'image4.png',
-			},
-			{
-				fileId: 25,
-				fileName: '5사진',
-				filePath: 'http://asda',
-				image: 'image5.png',
-			},
-		],
-	},
-];
-
-function goDetail() {
-	console.log('해당 아이의 상세 페이지로 이동');
+function goDetail(kidId) {
 	router.push({
 		name: 'AlbumDetail',
+		params: { id: kidId },
 	});
 }
 </script>

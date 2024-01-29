@@ -20,18 +20,18 @@
 		</div>
 		<div>
 			<label class="block mt-2 mb-5">
-				<span class="text-gray-700 ml-36 text-xl font-bold">제목</span>
+				<span class="content-title">제목</span>
 				<input
 					type="text"
-					class="block mt-1 ml-32 mb-10 w-5/12 rounded-md border border-neutral-300 shadow focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+					class="block ml-32 mt-2 shadow appearance-none border rounded w-5/12 py-2 px-3 text-gray-700 leading-tight"
 					rows="6"
 					placeholder="제목을 입력해주세요."
 				/>
 			</label>
 		</div>
-		<span class="text-gray-700 ml-36 text-xl font-bold">날짜</span>
+		<span class="content-title">날짜</span>
 		<div
-			class="block ml-32 mb-0 mt-1 bg-white w-3/12 border border-neutral-300 rounded-lg shadow"
+			class="block ml-32 mb-4 mt-1 bg-white w-3/12 border border-neutral-300 rounded-lg shadow"
 		>
 			<!-- DatePicker 시작-->
 			<div class="flex jucenterstify- items-center">
@@ -60,7 +60,7 @@
 			<!-- DatePicker 끝-->
 		</div>
 		<div>
-			<span class="text-gray-700 ml-36 text-xl font-bold">첨부파일</span>
+			<span class="content-title">첨부파일 (사진, 동영상 0 / 10)</span>
 			<div class="w-32 ml-36 h-32 border-2 border-dotted border-blue-500 mb-4">
 				<div v-if="images" class="w-full h-full flex items-center">
 					<img :src="images" alt="image" />
@@ -107,14 +107,24 @@ import axios from 'axios';
 import { ref, onMounted } from 'vue';
 
 // 이미지 업로드
-let images = ref('');
+let images = ref();
 const imageRef = ref(null);
 
 const uploadImage = () => {
 	let form = new FormData();
-	let image = imageRef.value.files[0];
+	let imageFile = imageRef.value.files[0];
 
-	form.append('image', image);
+	form.append('image', imageFile);
+
+	// 이미지 미리보기
+	let reader = new FileReader();
+	reader.onload = e => {
+		images.value = e.target.result;
+	};
+	reader.readAsDataURL(imageFile);
+
+	// 업로드 파일명 출력
+	console.log('업로드 파일명:', imageFile.name);
 
 	// post 경로 변경 필요함.
 	axios
@@ -144,6 +154,9 @@ onMounted(() => {
 // 버튼 기능
 function registAlbum() {
 	console.log('regist');
+	router.push({
+		name: 'AlbumList',
+	});
 }
 
 function goBack() {
@@ -152,4 +165,8 @@ function goBack() {
 // 버튼 기능 끝
 </script>
 
-<style scoped></style>
+<style scoped>
+.content-title {
+	@apply ml-36 text-gray-900 text-xl font-bold;
+}
+</style>
