@@ -1,11 +1,7 @@
 <template>
 	<div class="view-frame">
 		<div class="flex justify-end items-center">
-			<button
-				type="button"
-				@click="goBoardList(kidId)"
-				class="btn mt-5 mr-7 mb-3"
-			>
+			<button type="button" @click="goBoardList()" class="btn mt-5 mr-7 mb-3">
 				목록
 			</button>
 		</div>
@@ -112,7 +108,7 @@
 								묽음
 							</button>
 						</template>
-						<template v-if="store.oneBoard.boardPoopStatus === '묽음'">
+						<template v-if="store.oneBoard.boardPoopStatus === '딱딱함'">
 							<button
 								type="button"
 								class="group-button-right-item-focus"

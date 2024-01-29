@@ -26,6 +26,6 @@
     @apply text-white text-base font-medium rounded-lg mt-9 mr-12 px-5 py-2.5 text-center border border-dark-navy bg-dark-navy hover:text-dark-navy hover:bg-white focus:outline-none;
   }
   .datepicker-input {
-    @apply block w-60 ps-10 p-2.5 border border-gray-300 text-gray-900 text-sm font-bold rounded-lg;
+    @apply block w-60 h-14 ps-10 p-2.5 border border-gray-300 text-gray-900 text-sm font-bold rounded-lg;
   }
 }

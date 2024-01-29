@@ -24,7 +24,9 @@
 	<div v-else class="view-container">
 		<div class="view-title-teacher">
 			<span class="nav-title">알림장</span>
-			<button type="button" @click="goCreateBoard()" class="btn">작성</button>
+			<template v-if="path !== 'create'">
+				<button type="button" @click="goCreateBoard()" class="btn">작성</button>
+			</template>
 		</div>
 	</div>
 
@@ -32,12 +34,13 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { ref, computed } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
 import BoardSummaryModal from '@/components/board/BoardSummaryModal.vue';
 import BoardGrowthModal from '@/components/board/BoardGrowthModal.vue';
 
 const router = useRouter();
+const route = useRoute();
 
 const summaryModal = ref();
 const growthModal = ref();
@@ -47,6 +50,10 @@ const isTeacher = ref(true);
 const goCreateBoard = () => {
 	router.push({ name: 'BoardCreate' });
 };
+
+const path = computed(() => {
+	return route.path.substr(7);
+});
 </script>
 
 <style scoped>
