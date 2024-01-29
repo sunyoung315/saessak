@@ -36,7 +36,7 @@ public class OauthController {
         return kakaoSocialService.getKakaoLogin();
     }
 
-    @GetMapping("/kakao/token/{code}")
+    @GetMapping("/kakao/callback/{code}")
     public ResponseEntity<ResultResponse> login(@PathVariable("code") String code) {
         LoginSuccessResponseDto loginSuccessResponseDto = kakaoSocialService.login(code);
         if(loginSuccessResponseDto.isTeacher()) {
