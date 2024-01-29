@@ -89,10 +89,12 @@ public class BoardService {
             if(! albumList.isEmpty() && ! albumList.get(0).getFileList().isEmpty()){
                 path = albumList.get(0).getFileList().get(0).getFilePath();
             }
+
             BoardResponseDto boardResponseDto = BoardResponseDto.builder()
                     .boardDate(board.getBoardDate())
                     .boardId(board.getBoardId())
                     .boardPath(path)
+                    .kidId(kidId)
                     .build();
 
             boardResponseDtoList.add(boardResponseDto);
@@ -139,6 +141,7 @@ public class BoardService {
                 .boardTall(board.getBoardTall())
                 .boardId(board.getBoardId())
                 .boardSleepTime(board.getBoardSleepTime())
+                .boardContent(board.getBoardContent())
                 .build();
     }
     public List<PhysicalResponseDto> getPhysicalList (Long kidId, Date startDate,Date endDate){
