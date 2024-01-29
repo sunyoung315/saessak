@@ -16,10 +16,8 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 public class AlbumResponseDto {
-
     private Long albumId;
     private Date albumDate;
     private String albumTitle;
     private List<FileResponseDto> fileResponseDtoList;
-
 }
