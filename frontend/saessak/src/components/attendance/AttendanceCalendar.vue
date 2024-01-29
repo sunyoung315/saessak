@@ -1,5 +1,5 @@
 <template>
-	<div class="view-frame">
+	<div class="view-frame p-6">
 		<vue-cal
 			class="mx-5 my-3"
 			active-view="month"
@@ -94,7 +94,6 @@ const getList = async () => {
 			}
 		}
 	}
-	console.log(events.value);
 };
 
 onMounted(async () => {
@@ -140,7 +139,7 @@ onMounted(async () => {
 	@apply h-28;
 }
 :deep(.vuecal__cell--selected) {
-	@apply bg-nav-purple bg-opacity-10;
+	@apply bg-nav-purple bg-opacity-40;
 }
 :deep(.vuecal__cell-date) {
 	@apply mb-1;

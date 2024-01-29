@@ -1,5 +1,5 @@
 <template>
-	<div class="view-frame">
+	<div class="view-frame p-6">
 		<!-- datepicker -->
 		<div class="flex justify-between items-center m-5">
 			<VDatePicker
@@ -69,7 +69,7 @@
 							{{ oneKid.kidName }}
 						</th>
 						<td
-							class="pl-4"
+							class="pl-2"
 							v-for="formattedDate in formattedDates"
 							:key="formattedDate"
 						>
@@ -194,27 +194,6 @@ const weekOfMonth = ref();
 // 선택한 날짜의 월~금요일 날짜
 const weekDays = ref([]);
 
-// input에서 날짜 선택으로 인한 변화 추적
-watch(
-	selectedDate,
-	newVal => {
-		if (newVal) {
-			let date = new Date(newVal);
-			// 일요일 기준(0), 월요일 기준(1)
-			weekOfMonth.value = getWeekOfMonth(date, { weekStartsOn: 1 });
-			month.value = getMonth(date) + 1;
-			year.value = date.getFullYear();
-
-			// 주차에 해당하는 날짜 계산
-			const startOfWeek = addDays(date, -(date.getDay() || 7) + 1); // 주의 첫번째 요일 (월요일)
-			weekDays.value = Array.from({ length: 5 }, (_, i) =>
-				addDays(startOfWeek, i),
-			);
-		}
-	},
-	{ immediate: true },
-);
-
 // 테이블 thead에 표시할 일자만 추출
 const formattedWeekDays = computed(() => {
 	return weekDays.value.map(date => format(date, 'd일'));
@@ -256,10 +235,44 @@ const getList = async () => {
 	attendanceList.value = store.weeklyList;
 };
 
+// input에서 날짜 선택으로 인한 변화 추적
+watch(
+	selectedDate,
+	async newVal => {
+		if (newVal) {
+			let date = new Date(newVal);
+			// 일요일 기준(0), 월요일 기준(1)
+			weekOfMonth.value = getWeekOfMonth(date, { weekStartsOn: 1 });
+			month.value = getMonth(date) + 1;
+			year.value = date.getFullYear();
+
+			// 주차에 해당하는 날짜 계산
+			const startOfWeek = addDays(date, -(date.getDay() || 7) + 1); // 주의 첫번째 요일 (월요일)
+			weekDays.value = Array.from({ length: 5 }, (_, i) =>
+				addDays(startOfWeek, i),
+			);
+
+			// listData 업데이트
+			listData.value = {
+				...listData.value,
+				year: year.value,
+				month: month.value,
+				week: weekOfMonth.value,
+			};
+
+			// attendanceList 갱신
+			await getList();
+		}
+	},
+	{ immediate: true },
+);
+
+// 등원 요청
 const inTimePush = async kidId => {
 	await store.kidIn(kidId);
 };
 
+//하원 요청
 const outTimePush = async kidId => {
 	await store.kidOut(kidId);
 };
