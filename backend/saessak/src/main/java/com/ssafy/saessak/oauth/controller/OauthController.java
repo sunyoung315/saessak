@@ -39,7 +39,7 @@ public class OauthController {
     }
 
     @Operation(summary = "사용자 검증 (로그인 or 회원가입)")
-    @GetMapping("/kakao/token/{code}")
+    @GetMapping("/kakao/callback/{code}")
     public ResponseEntity<ResultResponse> login(@PathVariable("code") String code) {
         LoginSuccessResponseDto loginSuccessResponseDto = kakaoSocialService.login(code);
         if(loginSuccessResponseDto.isTeacher()) {

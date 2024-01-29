@@ -43,7 +43,7 @@ public class BoardController {
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, board.getBoardId()));
     }
     // 알림장 조회
-    @GetMapping("/detail/{boardId}")
+    @GetMapping("/{boardId}")
     public ResponseEntity<ResultResponse> readBoard(@PathVariable(name = "boardId") Long boardId){
         BoardDetailDto boardDetailDto = boardService.readBoard(boardId);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, boardDetailDto));
@@ -66,7 +66,12 @@ public class BoardController {
 
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, baordBoardDetailDto));
     }
-
+    // 아이의 가장 최근 알림장 조회
+    @GetMapping("/current/{kidId}")
+    public ResponseEntity<ResultResponse> getKidCurrentBoard(@PathVariable(name = "kidId") Long kidId){
+        BoardDetailDto boardDetailDto = boardService.getKidCurrentBoard(kidId);
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, boardDetailDto));
+    }
     @PostMapping("/physical/{kidId}")
     public ResponseEntity<ResultResponse> getPhysicalList(@PathVariable (name= "kidId") Long kidId,
                                                           @RequestBody DateBetweenRequestDto dateBetweenRequestDto){
