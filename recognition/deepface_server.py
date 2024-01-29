@@ -41,27 +41,7 @@ def secure_file(file_name):
     
     return secured_filename
 
-@app.route('/')
-def index():
-    return "한글 안되나..?"
-
-@app.route("/test/verify", methods=["POST"])
-def verify_test():
-    
-    image1 = request.files.get("image1")
-    image2 = request.files.get("image2")
-    print(image1.content_type)
-    np1 = np.frombuffer(image1.read(), dtype=np.uint8)
-    np2 = np.frombuffer(image2.read(), dtype=np.uint8)
-
-    decoded1 = cv2.imdecode(np1, cv2.IMREAD_COLOR)
-    decoded2 = cv2.imdecode(np2, cv2.IMREAD_COLOR)
-
-    result = verify_image(decoded1, decoded2)
-    
-    return jsonify({"data" : result})
-
-@app.route("/album/<classroomId>", methods=["POST"])
+@app.route("/ai/album/<classroomId>", methods=["POST"])
 def uploadAlbum(classroomId):
     try : 
         images = request.files.getlist("images")

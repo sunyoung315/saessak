@@ -33,7 +33,7 @@ face_feature_table = Table(
 kid_table = Table(
     "kid",
     metadata,
-    Column("kid_id",Integer, primary_key=True),
+    Column("id",Integer, primary_key=True),
     Column("kid_profile", String),
     Column("classroom_id",ForeignKey("classroom_id"), nullable=False)
 
