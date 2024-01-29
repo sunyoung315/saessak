@@ -19,11 +19,11 @@ public class TeacherService {
     private final JwtTokenProvider jwtTokenProvider;
 
     public boolean isExistingUser(String email, String name) {
-        return teacherRepository.findByTeacherEmailAndTeacherName(email, name).isPresent();
+        return teacherRepository.findByEmailAndNickname(email, name).isPresent();
     }
 
     public Long getIdByEmailAndName(String email, String name) {
-        Teacher teacher = teacherRepository.findByTeacherEmailAndTeacherName(email, name).get();
+        Teacher teacher = teacherRepository.findByEmailAndNickname(email, name).get();
         return teacher.getId();
     }
 
@@ -43,7 +43,7 @@ public class TeacherService {
         Teacher teacher = teacherRepository.findById(loginSuccessResponseDto.getUserId()).get();
         LoginTeacherResponseDto loginTeacherResponseDto = LoginTeacherResponseDto.builder()
                 .teacherId(teacher.getId())
-                .teacherName(teacher.getTeacherName())
+                .teacherName(teacher.getNickname())
                 .isTeacher(true)
                 .classroomId(teacher.getClassroom().getClassroomId())
                 .accessToken(loginSuccessResponseDto.getAccessToken())

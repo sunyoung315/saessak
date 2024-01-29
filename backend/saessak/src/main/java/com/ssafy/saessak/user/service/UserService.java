@@ -28,34 +28,6 @@ public class UserService {
     private final ClassroomRepository classroomRepository;
 
     @Transactional
-    public Long registParent(ParentRegistRequestDto parentJoinRequestDto) {
-        final Parent parent = Parent.builder()
-                .parentName(parentJoinRequestDto.getParentName())
-                .parentEmail(parentJoinRequestDto.getParentEmail())
-                .parentName(parentJoinRequestDto.getParentName())
-                .parentAlarm(false)
-                .build();
-        final Parent savedParent = parentRepository.save(parent);
-        return savedParent.getId();
-    }
-
-    @Transactional
-    public Long registKid(Long classroomId, KidRegistRequestDto kidRegistRequestDto) {
-
-        Classroom classroom = classroomRepository.findById(classroomId).get();
-
-        final Kid kid = Kid.builder()
-                .kidName(kidRegistRequestDto.getKidName())
-                .kidBirthday(kidRegistRequestDto.getKidBirthday())
-                .kidAllergyCheck(false)
-                .classroom(classroom)
-                .build();
-
-        final Kid savedKid = kidRepository.save(kid);
-        return savedKid.getId();
-    }
-
-    @Transactional
     public KidListResponseDto mapping(Long parentId, Long kidId) {
         Parent parent = parentRepository.findById(parentId).get();
         Kid kid = kidRepository.findById(kidId).get();
@@ -64,12 +36,11 @@ public class UserService {
 
         KidListResponseDto kidListResponseDto = KidListResponseDto.builder()
                 .kidId(k.getId())
-                .kidName(k.getKidName())
+                .kidName(k.getNickname())
                 .kidBirthday(k.getKidBirthday())
                 .kidAllergy(k.getKidAllergy())
-                .kidProfile(k.getKidProfile())
+                .kidProfile(k.getProfile())
                 .kidAllergySignature(k.getKidAllergySignature())
-                .kidInviteLink(k.getKidInviteLink())
                 .kidAllergyDate(k.getKidAllergyDate())
                 .parentId(Optional.ofNullable(k.getParent()).map(Parent::getId).orElse(null))
                 .classroomId(k.getClassroom().getClassroomId())
@@ -88,12 +59,11 @@ public class UserService {
         for(Kid k : classroom.getKidList()){
             KidListResponseDto kidListResponseDto = KidListResponseDto.builder()
                     .kidId(k.getId())
-                    .kidName(k.getKidName())
+                    .kidName(k.getNickname())
                     .kidBirthday(k.getKidBirthday())
                     .kidAllergy(k.getKidAllergy())
-                    .kidProfile(k.getKidProfile())
+                    .kidProfile(k.getProfile())
                     .kidAllergySignature(k.getKidAllergySignature())
-                    .kidInviteLink(k.getKidInviteLink())
                     .kidAllergyDate(k.getKidAllergyDate())
                     .parentId(Optional.ofNullable(k.getParent()).map(Parent::getId).orElse(null))
                     .classroomId(k.getClassroom().getClassroomId())
@@ -118,10 +88,10 @@ public class UserService {
             for (Teacher t : tlist) {
                 TeacherListReponseDto teacherListReponseDto = TeacherListReponseDto.builder()
                         .teacherId(t.getId())
-                        .teacherName(t.getTeacherName())
+                        .teacherName(t.getNickname())
                         .className(t.getClassroom().getClassroomName())
                         .kidId(k.getId())
-                        .kidName(k.getKidName())
+                        .kidName(k.getNickname())
                         .build();
                 teacherListReponseDtoList.add(teacherListReponseDto);
             }

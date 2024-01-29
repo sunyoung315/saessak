@@ -12,8 +12,10 @@ import com.ssafy.saessak.oauth.jwt.JwtTokenProvider;
 import com.ssafy.saessak.oauth.token.service.RefreshTokenService;
 import com.ssafy.saessak.user.domain.Kid;
 import com.ssafy.saessak.user.domain.Parent;
+import com.ssafy.saessak.user.domain.User;
 import com.ssafy.saessak.user.repository.KidRepository;
 import com.ssafy.saessak.user.repository.ParentRepository;
+import com.ssafy.saessak.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,22 +29,22 @@ public class ParentService {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final ParentRepository parentRepository;
+    private final UserRepository userRepository;
     private final KidRepository kidRepository;
     private final RefreshTokenService refreshTokenService;
 
     public Long createUser(final KakaoUserResponse userResponse) {
-        Parent parent = Parent.builder()
-                .parentEmail(userResponse.kakaoAccount().email())
-                .parentName(userResponse.kakaoAccount().profile().nickname())
-                .parentProfile(userResponse.kakaoAccount().profile().profileImageUrl())
-                .parentAlarm(false)
+        User user = User.builder()
+                .email(userResponse.kakaoAccount().email())
+                .nickname(userResponse.kakaoAccount().profile().nickname())
+                .profile(userResponse.kakaoAccount().profile().profileImageUrl())
                 .build();
 
-        return parentRepository.save(parent).getId();
+        return userRepository.save(user).getId();
     }
 
     public Long getIdByEmailAndName(String email, String name) {
-        Parent parent = parentRepository.findByParentEmailAndParentName(email, name).get();
+        Parent parent = parentRepository.findByEmailAndNickname(email, name).get();
         return parent.getId();
     }
 
@@ -58,7 +60,7 @@ public class ParentService {
     }
 
     public boolean isExistingUser(String email, String name) {
-        return parentRepository.findByParentEmailAndParentName(email, name).isPresent();
+        return parentRepository.findByEmailAndNickname(email, name).isPresent();
     }
 
     public LoginSuccessResponseDto getTokenByUserId (final Long userId) {
@@ -88,7 +90,7 @@ public class ParentService {
                     .classroomId(kid.getClassroom().getClassroomId())
                     .parentId(kid.getParent().getId())
                     .kidId(kid.getId())
-                    .kidName(kid.getKidName())
+                    .kidName(kid.getNickname())
                     .build();
             kidResponseDtoList.add(kidResponseDto);
         }

@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-@Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
@@ -20,17 +19,8 @@ public class Teacher extends User {
     @JoinColumn(name = "classroom_id")
     private Classroom classroom;
 
-    @Column(name = "teacher_name", nullable = false)
-    private String teacherName;
-
-    @Column(name = "teacher_email", nullable = false, unique = true)
-    private String teacherEmail;
-
     @Column(name = "teacher_device")
     private String teacherDevice;
-
-    @Column(name = "teacher_profile")
-    private String teacherProfile;
 
     @Column(name = "teacher_alarm", nullable = false)
     private boolean teacherAlarm;

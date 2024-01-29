@@ -44,7 +44,7 @@ public class AttendanceService {
         kid.getAttendanceList().add(attendance);
 
         return AttendanceTimeResponseDto.builder()
-                .kidName(kid.getKidName())
+                .kidName(kid.getNickname())
                 .attendanceId(savedAttendance.getAttendanceId())
                 .attendanceDate(savedAttendance.getAttendanceDate())
                 .attendanceTime(savedAttendance.getAttendanceInTime())
@@ -58,7 +58,7 @@ public class AttendanceService {
 
         Attendance savedAttendance = attendance.outTime();
         return AttendanceTimeResponseDto.builder()
-                .kidName(kid.getKidName())
+                .kidName(kid.getNickname())
                 .attendanceId(savedAttendance.getAttendanceId())
                 .attendanceDate(savedAttendance.getAttendanceDate())
                 .attendanceTime(savedAttendance.getAttendanceOutTime())
@@ -93,7 +93,7 @@ public class AttendanceService {
             }
             AttendanceKidListResponseDto attendanceKidListResponseDto = AttendanceKidListResponseDto.builder()
                     .kidId(k.getId())
-                    .kidName(k.getKidName())
+                    .kidName(k.getNickname())
                     .attendance(attendanceKidResponseDtoList)
                     .build();
 
@@ -142,7 +142,7 @@ public class AttendanceService {
                 long timegap = ChronoUnit.MINUTES.between(replacementTime, LocalTime.now());
                 if(Math.abs(timegap) <= 15) {
                     ReplacementResponseDto replacementResponseDto = ReplacementResponseDto.builder()
-                            .kidName(kid.getKidName())
+                            .kidName(kid.getNickname())
                             .replacementName(replacement.getReplacementName())
                             .replacementRelationship(replacement.getReplacementRelationship())
                             .build();

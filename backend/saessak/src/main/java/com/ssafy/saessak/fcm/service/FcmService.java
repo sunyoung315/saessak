@@ -130,7 +130,7 @@ public class FcmService {
                     FcmNotificationRequestDto.Notification notification1 = FcmNotificationRequestDto.Notification.builder()
                             .token(parent.getParentDevice())
                             .title("알러지 알림")
-                            .body(LocalDate.now() + "일에 " + menu.getMenuType() + "식단에 " + kid.getKidName() + " 어린이의 알러지를 유발하는 음식이 존재합니다")
+                            .body(LocalDate.now() + "일에 " + menu.getMenuType() + "식단에 " + kid.getNickname() + " 어린이의 알러지를 유발하는 음식이 존재합니다")
                             .build();
                     FcmNotificationRequestDto fcmNotificationRequestDto1 = FcmNotificationRequestDto.builder()
                             .notification(notification1)
@@ -144,7 +144,7 @@ public class FcmService {
                         FcmNotificationRequestDto.Notification notification2 = FcmNotificationRequestDto.Notification.builder()
                                 .token(teacher.getTeacherDevice())
                                 .title("알러지 알림")
-                                .body(LocalDate.now() + "일에 " + menu.getMenuType() + "식단에 " + kid.getKidName() + " 어린이의 알러지를 유발하는 음식이 존재합니다")
+                                .body(LocalDate.now() + "일에 " + menu.getMenuType() + "식단에 " + kid.getNickname() + " 어린이의 알러지를 유발하는 음식이 존재합니다")
                                 .build();
                         FcmNotificationRequestDto fcmNotificationRequestDto2 = FcmNotificationRequestDto.builder()
                                 .notification(notification1)
@@ -168,7 +168,8 @@ public class FcmService {
         List<Kid> kidList = kidRepository.findAll();
         for(Kid kid : kidList) {
             String findKidAllergy = kid.getKidAllergy();
-            String[] kidAllergyList = findKidAllergy.split("/");
+            String[] kidAllergyList = null;
+            if(findKidAllergy != null) kidAllergyList = findKidAllergy.split("/");
 
             Menu menu = menuRepository.findByMenuDateAndMenuType(LocalDate.now(), "점심");
 
@@ -199,7 +200,7 @@ public class FcmService {
                     FcmNotificationRequestDto.Notification notification1 = FcmNotificationRequestDto.Notification.builder()
                             .token(parent.getParentDevice())
                             .title("알러지 알림")
-                            .body(LocalDate.now() + "일에 " + menu.getMenuType() + "식단에 " + kid.getKidName() + " 어린이의 알러지를 유발하는 음식이 존재합니다")
+                            .body(LocalDate.now() + "일에 " + menu.getMenuType() + "식단에 " + kid.getNickname() + " 어린이의 알러지를 유발하는 음식이 존재합니다")
                             .build();
                     FcmNotificationRequestDto fcmNotificationRequestDto1 = FcmNotificationRequestDto.builder()
                             .notification(notification1)
@@ -213,7 +214,7 @@ public class FcmService {
                         FcmNotificationRequestDto.Notification notification2 = FcmNotificationRequestDto.Notification.builder()
                                 .token(teacher.getTeacherDevice())
                                 .title("알러지 알림")
-                                .body(LocalDate.now() + "일에 " + menu.getMenuType() + "식단에 " + kid.getKidName() + " 어린이의 알러지를 유발하는 음식이 존재합니다")
+                                .body(LocalDate.now() + "일에 " + menu.getMenuType() + "식단에 " + kid.getNickname() + " 어린이의 알러지를 유발하는 음식이 존재합니다")
                                 .build();
                         FcmNotificationRequestDto fcmNotificationRequestDto2 = FcmNotificationRequestDto.builder()
                                 .notification(notification1)

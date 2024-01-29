@@ -17,11 +17,6 @@ public class UserController {
 
     private final UserService userService;
 
-    @Operation(summary = "반에 아이를 등록")
-    @PostMapping(value = "/kid/register/{classroomId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResultResponse> registKid(@PathVariable("classroomId") Long classroomId, @RequestBody KidRegistRequestDto kidRegistRequestDto) {
-        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, userService.registKid(classroomId, kidRegistRequestDto)));
-    }
 
     @Operation(summary = "아이와 부모 매핑")
     @PostMapping(value = "/{parentId}/{kidId}", produces = MediaType.APPLICATION_JSON_VALUE)
