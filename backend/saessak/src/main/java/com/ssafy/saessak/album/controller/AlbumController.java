@@ -3,6 +3,7 @@ package com.ssafy.saessak.album.controller;
 import com.ssafy.saessak.album.domain.Album;
 import com.ssafy.saessak.album.dto.AlbumRequestDto;
 import com.ssafy.saessak.album.dto.AlbumResponseDto;
+import com.ssafy.saessak.album.dto.KidAlbumResponseDto;
 import com.ssafy.saessak.album.service.AlbumService;
 import com.ssafy.saessak.result.ResultCode;
 import com.ssafy.saessak.result.ResultResponse;
@@ -56,8 +57,8 @@ public class AlbumController {
 
     @GetMapping("/classroom/kid/{classroomId}")
     public ResponseEntity<ResultResponse> getKidsCurrentAlbumList(@PathVariable(name = "classroomId") Long classroomId){
-        List<AlbumResponseDto> albumResponseDtoList = albumService.getKidsCurrentAlbum(classroomId);
-        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, albumResponseDtoList));
+        List<KidAlbumResponseDto> kidAlbumResponseDtoList = albumService.getKidsCurrentAlbum(classroomId);
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, kidAlbumResponseDtoList));
     }
 
 }

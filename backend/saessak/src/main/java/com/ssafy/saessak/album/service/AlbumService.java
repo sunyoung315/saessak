@@ -5,6 +5,7 @@ import com.ssafy.saessak.album.domain.Album;
 import com.ssafy.saessak.album.domain.File;
 import com.ssafy.saessak.album.dto.AlbumResponseDto;
 import com.ssafy.saessak.album.dto.FileResponseDto;
+import com.ssafy.saessak.album.dto.KidAlbumResponseDto;
 import com.ssafy.saessak.album.repository.AlbumRepository;
 import com.ssafy.saessak.album.repository.FileRepository;
 import com.ssafy.saessak.user.domain.Classroom;
@@ -26,9 +27,9 @@ import java.util.Optional;
 public class AlbumService {
 
     private final AlbumRepository albumRepository;
-    private final FileRepository fileRepository;
     private final ClassroomRepository classroomRepository;
     private final KidRepository kidRepository;
+
     //엘범 조회
     public List<AlbumResponseDto> getClassAlbumList (Long classroomId){
         Classroom classroom = classroomRepository.findById(classroomId).get();
@@ -48,13 +49,18 @@ public class AlbumService {
         return makeAlbumResponseDtoList(albumList);
     }
 
-    public List<AlbumResponseDto> getKidsCurrentAlbum (Long classroomId){
+    public List<KidAlbumResponseDto> getKidsCurrentAlbum (Long classroomId){
         Classroom classroom = classroomRepository.findById((classroomId)).get();
         List<Kid> kids = kidRepository.findAllByClassroom(classroom);
-        List<AlbumResponseDto> albumList = new ArrayList<>();
+        List<KidAlbumResponseDto> albumList = new ArrayList<>();
         for(Kid kid : kids){
             Optional<Album> album = albumRepository.findFirstByKidOrderByAlbumDateDesc(kid);
-            album.ifPresent(value -> albumList.add(makeAlbumResponseDto(value)));
+            KidAlbumResponseDto kidAlbumResponseDto = KidAlbumResponseDto.builder()
+                    .kidId(kid.getId())
+                    .kidName(kid.getKidName())
+                    .albumResponseDto(makeAlbumResponseDto(album.get()))
+                    .build();
+            albumList.add(kidAlbumResponseDto);
         }
 
         return albumList;
@@ -69,6 +75,7 @@ public class AlbumService {
 
 
     private AlbumResponseDto makeAlbumResponseDto(Album album){
+        if(album == null) return null;
         AlbumResponseDto albumResponseDto = AlbumResponseDto.builder()
                 .albumId(album.getAlbumId())
                 .albumTitle(album.getAlbumTitle())
