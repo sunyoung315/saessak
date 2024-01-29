@@ -5,7 +5,10 @@
 			<div class="book-flex">
 				<div v-for="kid in kidsList" :key="kid.kidId">
 					<RouterLink
-						:to="{ name: 'BoardDetail', params: { id: `${kid.kidId}` } }"
+						:to="{
+							name: 'BoardDetailTeacher',
+							params: { id: `${kid.kidId}` },
+						}"
 						class="book-frame"
 					>
 						<div class="book-title-teacher">
@@ -28,7 +31,10 @@
 			<div class="book-flex">
 				<div v-for="board in myKidBoards" :key="board.boardId">
 					<RouterLink
-						:to="{ name: 'BoardDetail', params: { id: `${board.boardId}` } }"
+						:to="{
+							name: 'BoardDetailParent',
+							params: { id: `${board.boardId}` },
+						}"
 						class="book-frame"
 					>
 						<div class="book-title-parent">
@@ -54,7 +60,7 @@ import { useBoardStore } from '@/store/board';
 import { useUserStore } from '@/store/user';
 
 // 임시 user 변수
-const isTeacher = ref(true);
+const isTeacher = ref(false);
 const classroomId = ref(2);
 const kidId = ref(1);
 
@@ -85,10 +91,10 @@ onMounted(async () => {
 
 <style scoped>
 .book-flex {
-	@apply flex flex-wrap justify-between min-h-screen;
+	@apply flex flex-wrap justify-start;
 }
 .book-frame {
-	@apply bg-cover bg-[url('@/assets/BoardFrame.png')] bg-72 inline-block w-[18rem] h-[21.5rem] p-6 m-1.5 mb-6 bg-white rounded-lg hover:bg-yellow-50 hover:bg-opacity-65;
+	@apply bg-[url('@/assets/BoardFrame.png')] bg-72 inline-block w-[18rem] h-[21.5rem] p-6 mx-7 my-4 bg-white rounded-lg hover:bg-yellow-50 hover:bg-opacity-65;
 }
 .book-title-teacher {
 	@apply relative left-[6.7rem] top-[1rem] font-extrabold text-base;

@@ -14,10 +14,11 @@
 				<div class="block mt-1 ml-32 mb-10">
 					<select
 						id="name"
-						class="datepicker-input px-5 text-base"
-						:value="kidId"
+						class="datepicker-input px-5 text-[18px]"
+						v-model="newBoard.kidId"
+						required
 					>
-						<option selected>이름을 선택해주세요.</option>
+						<option selected :value="0">이름을 선택해주세요.</option>
 						<template v-for="kid in userStore.kidsList" :key="kid.kidId">
 							<option :value="kid.kidId">{{ kid.kidName }}</option>
 						</template>
@@ -31,6 +32,7 @@
 					class="content-box mb-10 p-4 text-lg"
 					rows="6"
 					v-model="newBoard.boardContent"
+					required
 				></textarea>
 			</label>
 		</div>
@@ -259,7 +261,6 @@ const router = useRouter();
 const userStore = useUserStore();
 
 // 임시 data(로그인한 선생님 정보에서 가져올 data)
-const kidId = ref(1);
 const classroomId = ref(2);
 
 onMounted(async () => {
@@ -273,7 +274,7 @@ const goBoardList = () => {
 
 // 새로운 알림장 변수
 const newBoard = ref({
-	kidId: kidId.value,
+	kidId: 0,
 	classroomId: classroomId.value,
 	boardDate: new Date(),
 	boardContent: '',
@@ -411,7 +412,7 @@ const registBoard = () => {
 	@apply px-5 py-2 text-base rounded-e-lg z-10 ring-2 ring-dark-navy text-dark-navy font-bold bg-gray-100;
 }
 .minus-button {
-	@apply h-10 bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded-s-lg p-3 h-10 focus:ring-gray-100 focus:ring-2 focus:outline-none;
+	@apply bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded-s-lg p-3 h-10 focus:ring-gray-100 focus:ring-2 focus:outline-none;
 }
 .plus-button {
 	@apply bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded-e-lg p-3 h-10 focus:ring-gray-100 focus:ring-2 focus:outline-none;

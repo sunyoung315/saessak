@@ -24,6 +24,11 @@ export const useBoardStore = defineStore('board', () => {
 
 	// 알림장 1개
 	const oneBoard = ref({});
+	// 검색할 날짜
+	const date = ref('');
+	// 알림장이 없을 경우
+	const noContent = ref('');
+
 	// 알림장 상세보기(boardId)
 	const getOneBoard = async boardId => {
 		await axios({
@@ -37,8 +42,6 @@ export const useBoardStore = defineStore('board', () => {
 		});
 	};
 
-	const date = ref('');
-	const noContent = ref('');
 	// 알림장 상세보기(date)
 	const getOneBoardByDate = async kidId => {
 		await axios({
@@ -55,8 +58,31 @@ export const useBoardStore = defineStore('board', () => {
 				noContent.value = '';
 				oneBoard.value = resp.data.data;
 			})
-			.catch(() => {
-				noContent.value = '등록된 알림장이 없습니다.';
+			.catch(error => {
+				if (error.response.status === 500) {
+					noContent.value = '등록된 알림장이 없습니다.';
+				}
+			});
+	};
+
+	// 알림장 상세보기(kidId, 최신 알림장)
+	const getCurrentBoard = async kidId => {
+		await axios({
+			url: `${LOCAL_API}/current/${kidId}`,
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		})
+			.then(resp => {
+				noContent.value = '';
+				oneBoard.value = resp.data.data;
+				date.value = oneBoard.value.boardDate;
+			})
+			.catch(error => {
+				if (error.response.status === 500) {
+					noContent.value = '등록된 알림장이 없습니다.';
+				}
 			});
 	};
 
@@ -68,5 +94,6 @@ export const useBoardStore = defineStore('board', () => {
 		date,
 		getOneBoardByDate,
 		noContent,
+		getCurrentBoard,
 	};
 });
