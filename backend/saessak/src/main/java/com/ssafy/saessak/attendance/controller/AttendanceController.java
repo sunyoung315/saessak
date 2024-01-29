@@ -13,6 +13,7 @@ import com.ssafy.saessak.result.ResultCode;
 import com.ssafy.saessak.result.ResultResponse;
 import com.ssafy.saessak.user.domain.User;
 import com.ssafy.saessak.user.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +30,7 @@ public class AttendanceController {
     private final AlarmService alarmService;
     private final AuthenticationService authenticationService;
 
+    @Operation(summary = "등원 여부 입력")
     @PostMapping(value = "/in/{kidId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResultResponse> inTime(@PathVariable("kidId") Long kidId) {
         AttendanceTimeResponseDto responseDto = attendanceService.inTime(kidId);
@@ -56,6 +58,7 @@ public class AttendanceController {
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, responseDto));
     }
 
+    @Operation(summary = "하원 여부 입력")
     @PostMapping(value = "/out/{kidId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResultResponse> outTime(@PathVariable("kidId") Long kidId) {
         AttendanceTimeResponseDto attendanceTimeResponseDto = attendanceService.outTime(kidId);
@@ -104,6 +107,7 @@ public class AttendanceController {
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, attendanceTimeResponseDto));
     }
 
+    @Operation(summary = "주간 출석부 조회(선생님)")
     @PostMapping(value = "/teacher/list", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResultResponse> listOfteacher(@RequestBody AttendanceRequestDto attendanceRequestDto) {
         User user = authenticationService.getUserByAuthentication();
@@ -111,6 +115,7 @@ public class AttendanceController {
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, attendanceService.listOfteacher(attendanceRequestDto)));
     }
 
+    @Operation(summary = "아이 출석부 조회(학부모)")
     @GetMapping(value = "/parent/list/{kidId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResultResponse> listOfParent(@PathVariable("kidId") Long kidId) {
         User user = authenticationService.getUserByAuthentication();

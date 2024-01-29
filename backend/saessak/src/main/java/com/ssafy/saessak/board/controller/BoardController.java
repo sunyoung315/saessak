@@ -6,6 +6,7 @@ import com.ssafy.saessak.board.dto.*;
 import com.ssafy.saessak.board.service.BoardService;
 import com.ssafy.saessak.result.ResultCode;
 import com.ssafy.saessak.result.ResultResponse;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,10 +24,12 @@ public class BoardController {
 
 
     private final BoardService boardService;
-    @GetMapping("/health")
-    public ResponseEntity<ResultResponse> getHealth(){
-        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS,"success"));
-    }
+
+//    @GetMapping("/health")
+//    public ResponseEntity<ResultResponse> getHealth(){
+//        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS,"success"));
+//    }
+
     // 아이 알림장 전체 조회
     @GetMapping("/{kidId}")
     public ResponseEntity<ResultResponse> getBoardList(@PathVariable(name = "kidId") Long kidId){

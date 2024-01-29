@@ -7,6 +7,7 @@ import com.ssafy.saessak.oauth.service.TeacherService;
 import com.ssafy.saessak.oauth.token.service.RefreshTokenService;
 import com.ssafy.saessak.result.ResultCode;
 import com.ssafy.saessak.result.ResultResponse;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -31,11 +32,13 @@ public class OauthController {
     private final RefreshTokenService refreshTokenService;
 
 
+    @Operation(summary = "카카오 로그인 창 접근")
     @GetMapping("/kakao/login")
     public String getKakaologin() {
         return kakaoSocialService.getKakaoLogin();
     }
 
+    @Operation(summary = "사용자 검증 (로그인 or 회원가입)")
     @GetMapping("/kakao/token/{code}")
     public ResponseEntity<ResultResponse> login(@PathVariable("code") String code) {
         LoginSuccessResponseDto loginSuccessResponseDto = kakaoSocialService.login(code);
@@ -58,6 +61,7 @@ public class OauthController {
 //        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS));
 //    }
 //
+    @Operation(summary = "로그아웃")
     @PostMapping("/logout")
     public ResponseEntity<ResultResponse> logout(final Principal principal) {
         refreshTokenService.deleteRefreshToken(Long.valueOf(principal.getName()));

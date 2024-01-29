@@ -11,6 +11,7 @@ import com.ssafy.saessak.oauth.service.AuthenticationService;
 import com.ssafy.saessak.result.ResultCode;
 import com.ssafy.saessak.result.ResultResponse;
 import com.ssafy.saessak.user.domain.User;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -30,6 +31,7 @@ public class ReplacementController {
     private final AlarmService alarmService;
     private final AuthenticationService authenticationService;
 
+    @Operation(summary = "대리인 귀가 동의서 입력")
     @PostMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResultResponse> insert(@RequestBody ReplacementRequestDto replacementRequestDto) {
         User user = authenticationService.getUserByAuthentication();
@@ -57,6 +59,7 @@ public class ReplacementController {
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, responseDto));
     }
 
+    @Operation(summary = "대리인 귀가 동의서 목록 조회(학부모)")
     @GetMapping(value = "/list/kid/{kidId}")
     public ResponseEntity<ResultResponse> listOfkidId(@PathVariable("kidId") Long kidId) {
         User user = authenticationService.getUserByAuthentication();
@@ -64,6 +67,7 @@ public class ReplacementController {
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, replacementService.listOfkidId(kidId)));
     }
 
+    @Operation(summary = "대리인 귀가 동의서 목록 조회(선생님)")
     @GetMapping(value = "/list/classroom/{classroomId}")
     public ResponseEntity<ResultResponse> listOfclassroomId(@PathVariable("classroomId") Long classroomId) {
         User user = authenticationService.getUserByAuthentication();
@@ -71,11 +75,13 @@ public class ReplacementController {
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, replacementService.listOfclassroomId(classroomId)));
     }
 
+    @Operation(summary = "대리인 귀가 동의서 세부내용 조회")
     @GetMapping(value = "/{replacementId}")
     public ResponseEntity<ResultResponse> detail(@PathVariable("replacementId") Long replacementId) {
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, replacementService.detail(replacementId)));
     }
 
+    @Operation(summary = "대리인 귀가 동의서 확인 버튼")
     @GetMapping(value = "/check/{replacementId}")
     public ResponseEntity<ResultResponse> changeCheck(@PathVariable("replacementId") Long replacementId) {
         replacementService.changeCheck(replacementId);
