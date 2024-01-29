@@ -61,7 +61,7 @@ def verify_test():
     
     return jsonify({"data" : result})
 
-@app.route("/album/<classroomId>", methods=["POST"])
+@app.route("/ai/api/album/<classroomId>", methods=["POST"])
 def uploadAlbum(classroomId):
     try : 
         images = request.files.getlist("images")
