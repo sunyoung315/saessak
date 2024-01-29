@@ -47,31 +47,47 @@ public class AlbumService {
         return makeAlbumResponseDtoList(albumList);
     }
 
+    public List<AlbumResponseDto> getKidsCurrentAlbum (Long classroomId){
+        Classroom classroom = classroomRepository.findById((classroomId)).get();
+        List<Kid> kids = kidRepository.findAllByClassroom(classroom);
+        List<AlbumResponseDto> albumList = new ArrayList<>();
+        for(Kid kid : kids){
+            Album album = albumRepository.findFirstByKidOrderByAlbumDateDesc(kid).get();
+            albumList.add(makeAlbumResponseDto(album));
+        }
+
+        return albumList;
+    }
+
+
     public List<AlbumResponseDto> getClassAlbum(Long classroomId, Date date){
         Classroom classroom = classroomRepository.findById(classroomId).get();
         List<Album> albumList = albumRepository.findByClassroomAndAlbumDate(classroom, date).get();
         return makeAlbumResponseDtoList(albumList);
     }
 
+
+    private AlbumResponseDto makeAlbumResponseDto(Album album){
+        AlbumResponseDto albumResponseDto = AlbumResponseDto.builder()
+                .albumId(album.getAlbumId())
+                .albumTitle(album.getAlbumTitle())
+                .albumDate(album.getAlbumDate())
+                .fileResponseDtoList(new ArrayList<>())
+                .build();
+        for(File file : album.getFileList()){
+            FileResponseDto fileResponseDto = FileResponseDto.builder()
+                    .fileId(file.getFileId())
+                    .fileName(file.getFileName())
+                    .filePath(file.getFilePath())
+                    .build();
+            albumResponseDto.getFileResponseDtoList().add(fileResponseDto);
+        }
+        return albumResponseDto;
+    }
     private List<AlbumResponseDto> makeAlbumResponseDtoList(List<Album> albumList){
         List<AlbumResponseDto> albumResponseDtoList = new ArrayList<>();
-
         for(Album album : albumList){
-            AlbumResponseDto albumResponseDto = AlbumResponseDto.builder()
-                    .albumId(album.getAlbumId())
-                    .albumTitle(album.getAlbumTitle())
-                    .albumDate(album.getAlbumDate())
-                    .fileResponseDtoList(new ArrayList<>())
-                    .build();
-            for(File file : album.getFileList()){
-                FileResponseDto fileResponseDto = FileResponseDto.builder()
-                        .fileId(file.getFileId())
-                        .fileName(file.getFileName())
-                        .filePath(file.getFilePath())
-                        .build();
-                albumResponseDto.getFileResponseDtoList().add(fileResponseDto);
-            }
-            albumResponseDtoList.add(albumResponseDto);
+            albumResponseDtoList.add(makeAlbumResponseDto(album));
         }
         return albumResponseDtoList;
     }

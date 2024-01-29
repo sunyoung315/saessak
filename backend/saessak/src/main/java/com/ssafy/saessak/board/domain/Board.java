@@ -27,14 +27,14 @@ public class Board {
     @Temporal(TemporalType.DATE)
     private Date boardDate;
 
-    @Column
+    @Column(length = 1000)
     private String boardContent;
 
     @Column
     private String boardTemperature;
 
     @Column(name = "board_sleeptime")
-    private Integer boardSleepTime;
+    private Float boardSleepTime;
 
     @Column
     private String boardPoopStatus;

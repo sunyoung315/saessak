@@ -25,12 +25,12 @@ public class AlbumController {
 
     private final AlbumService albumService;
 
-    @GetMapping("/class/{classroomId}")
+    @GetMapping("/classroom/{classroomId}")
     public ResponseEntity<ResultResponse> getClassAlbumList(@PathVariable(name = "classroomId") Long classroomId) {
         List<AlbumResponseDto> albumResponseDtoList = albumService.getClassAlbumList(classroomId);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS,albumResponseDtoList));
     }
-    @PostMapping("/class/{classroomId}")
+    @PostMapping("/classroom/{classroomId}")
     public ResponseEntity<ResultResponse> getClassAlbum
             (@PathVariable(name = "classroomId") Long classroomId, @RequestBody AlbumRequestDto albumRequestDto){
         log.debug("controller requestBody  : {}", albumRequestDto);
@@ -51,6 +51,12 @@ public class AlbumController {
             (@PathVariable(name = "kidId") Long kidId, @RequestBody AlbumRequestDto albumRequestDto){
         Date albumDate = albumRequestDto.getAlbumDate();
         List<AlbumResponseDto> albumResponseDtoList =  albumService.getKidAlbum(kidId, albumDate);
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, albumResponseDtoList));
+    }
+
+    @GetMapping("/classroom/kid/{classroomId}")
+    public ResponseEntity<ResultResponse> getKidsCurrentAlbumList(@PathVariable(name = "classroomId") Long classroomId){
+        List<AlbumResponseDto> albumResponseDtoList = albumService.getKidsCurrentAlbum(classroomId);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, albumResponseDtoList));
     }
 
