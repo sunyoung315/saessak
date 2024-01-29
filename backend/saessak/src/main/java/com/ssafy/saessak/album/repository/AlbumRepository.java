@@ -19,5 +19,5 @@ public interface AlbumRepository extends JpaRepository<Album,Long> {
     // 아이 날짜 엘범
     Optional<List<Album>> findByKidAndAlbumDate(Kid kid, Date date);
     
-
+    Optional<Album> findFirstByKidOrderByAlbumDateDesc(Kid kid);
 }
