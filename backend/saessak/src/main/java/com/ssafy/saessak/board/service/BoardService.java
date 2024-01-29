@@ -123,7 +123,24 @@ public class BoardService {
             return null;
         }
     }
+    // 아이의 가장 최근 엘범
+    public BoardDetailDto getKidCurrentBoard( Long kidId){
+        Kid kid = kidRepository.findById(kidId).get();
+        Board board = boardRepository.findFirstByKidOrderByBoardDateDesc(kid).get();
 
+        return BoardDetailDto.builder()
+                .kidId(kidId)
+                .classroomId(kid.getClassroom().getClassroomId())
+                .boardDate(board.getBoardDate())
+                .boardTemperature(board.getBoardTemperature())
+                .boardDate(board.getBoardDate())
+                .boardWeight(board.getBoardWeight())
+                .boardPoopStatus(board.getBoardPoopStatus())
+                .boardTall(board.getBoardTall())
+                .boardId(board.getBoardId())
+                .boardSleepTime(board.getBoardSleepTime())
+                .build();
+    }
     public List<PhysicalResponseDto> getPhysicalList (Long kidId, Date startDate,Date endDate){
         Kid kid = kidRepository.findById(kidId).get();
         List<PhysicalResponseDto> physicalResponseDtoList= new ArrayList<>();
