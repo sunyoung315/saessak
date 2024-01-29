@@ -19,7 +19,7 @@ import java.util.concurrent.CompletableFuture;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class KakaoSocialService extends SocialService {
+public class KakaoSocialService {
 
     private static final String AUTH_CODE = "authorization_code";
 
@@ -48,8 +48,7 @@ public class KakaoSocialService extends SocialService {
     }
 
     @Transactional
-    @Override
-    public LoginSuccessResponseDto login(String authorizationCode) {
+    public KakaoUserResponse login(String authorizationCode) {
         String accessToken = "";
         try {
             // 인가 코드로 Access Token + Refresh Token 받아오기
@@ -74,21 +73,24 @@ public class KakaoSocialService extends SocialService {
         return tokenResponse.accessToken();
     }
 
-    private LoginSuccessResponseDto getUserInfo (final String accessToken ) {
-        KakaoUserResponse userResponse = kakaoApiClient.getUserInformation("Bearer " + accessToken);
-        return getTokenDto(userResponse);
+    private KakaoUserResponse getUserInfo (final String accessToken ) {
+//        KakaoUserResponse userResponse = kakaoApiClient.getUserInformation("Bearer " + accessToken);
+        return kakaoApiClient.getUserInformation("Bearer " + accessToken);
+//        return getTokenDto(userResponse);
     }
 
     private LoginSuccessResponseDto getTokenDto (final KakaoUserResponse userResponse ) {
         String userEmail = userResponse.kakaoAccount().email();
         String userName = userResponse.kakaoAccount().profile().nickname();
-        if (parentService.isExistingUser(userEmail, userName)) {
-            return parentService.getTokenByUserId(parentService.getIdByEmailAndName(userEmail, userName));
-        } else if(teacherService.isExistingUser(userEmail, userName)) {
-            return teacherService.getTokenByUserId(teacherService.getIdByEmailAndName(userEmail, userName));
-        } else { // 회원가입
-            Long id = parentService.createUser(userResponse);
-            return parentService.getTokenByUserId(id);
+        Long userId = 0L;
+        userId = parentService.isExistingParent(userEmail, userName);
+        if(userId > 0) {
+            return parentService.getTokenByUserId(userId);
         }
+        userId = teacherService.isExistingTeacher(userEmail, userName);
+        if(userId > 0) {
+            return parentService.getTokenByUserId(userId);
+        }
+        return null;
     }
 }

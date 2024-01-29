@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -59,8 +60,12 @@ public class ParentService {
         );
     }
 
-    public boolean isExistingUser(String email, String name) {
-        return parentRepository.findByEmailAndNickname(email, name).isPresent();
+    public Long isExistingParent(String email, String name) {
+        Optional<Parent> parent = parentRepository.findByEmailAndNickname(email, name);
+        if(parent.isPresent()) {
+            return parent.get().getId();
+        }
+        return 0L;
     }
 
     public LoginSuccessResponseDto getTokenByUserId (final Long userId) {

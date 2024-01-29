@@ -1,12 +1,17 @@
 package com.ssafy.saessak.oauth.controller;
 
 import com.ssafy.saessak.oauth.dto.LoginSuccessResponseDto;
+import com.ssafy.saessak.oauth.dto.RegistRequestDto;
+import com.ssafy.saessak.oauth.dto.kakao.KakaoUserResponse;
 import com.ssafy.saessak.oauth.service.KakaoSocialService;
+import com.ssafy.saessak.oauth.service.KakaoUserService;
 import com.ssafy.saessak.oauth.service.ParentService;
 import com.ssafy.saessak.oauth.service.TeacherService;
 import com.ssafy.saessak.oauth.token.service.RefreshTokenService;
 import com.ssafy.saessak.result.ResultCode;
 import com.ssafy.saessak.result.ResultResponse;
+import com.ssafy.saessak.user.domain.Parent;
+import com.ssafy.saessak.user.domain.Teacher;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -27,9 +32,10 @@ import java.security.Principal;
 public class OauthController {
 
     private final KakaoSocialService kakaoSocialService;
+    private final RefreshTokenService refreshTokenService;
+    private final KakaoUserService kakaoUserService;
     private final ParentService parentService;
     private final TeacherService teacherService;
-    private final RefreshTokenService refreshTokenService;
 
 
     @Operation(summary = "카카오 로그인 창 접근")
@@ -41,12 +47,31 @@ public class OauthController {
     @Operation(summary = "사용자 검증 (로그인 or 회원가입)")
     @GetMapping("/kakao/callback/{code}")
     public ResponseEntity<ResultResponse> login(@PathVariable("code") String code) {
-        LoginSuccessResponseDto loginSuccessResponseDto = kakaoSocialService.login(code);
-        if(loginSuccessResponseDto.isTeacher()) {
-            return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, teacherService.login(loginSuccessResponseDto)));
+        KakaoUserResponse kakaoUserResponse = kakaoSocialService.login(code);
+        if(kakaoUserService.checkUser(kakaoUserResponse)) {
+            if(kakaoUserService.isParent(kakaoUserResponse).isPresent()) {
+                System.out.println("부모 로그인");
+                Parent parent = kakaoUserService.isParent(kakaoUserResponse).get();
+                LoginSuccessResponseDto loginSuccessResponseDto = parentService.getTokenByUserId(parent.getId());
+                return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS,parentService.login(loginSuccessResponseDto)));
+            }
+            if(kakaoUserService.isTeacher(kakaoUserResponse).isPresent()) {
+                System.out.println("선생 로그인");
+                Teacher teacher = kakaoUserService.isTeacher(kakaoUserResponse).get();
+                LoginSuccessResponseDto loginSuccessResponseDto = teacherService.getTokenByUserId(teacher.getId());
+                return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS,teacherService.login(loginSuccessResponseDto)));
+            }
         } else {
-            return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, parentService.login(loginSuccessResponseDto)));
+            return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, kakaoUserService.regist(code, kakaoUserResponse)));
         }
+        return null;
+    }
+
+    @Operation(summary = "선생님/학부모 회원가입")
+    @PostMapping("/kakao/join")
+    public ResponseEntity<ResultResponse> join(@RequestBody RegistRequestDto registRequestDto) {
+        System.out.println("/kakao/join");
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, kakaoUserService.join(registRequestDto)));
     }
 
 //    @GetMapping("/token-refresh")

@@ -5,10 +5,13 @@ import com.ssafy.saessak.oauth.dto.LoginSuccessResponseDto;
 import com.ssafy.saessak.oauth.dto.LoginTeacherResponseDto;
 import com.ssafy.saessak.oauth.jwt.JwtTokenProvider;
 import com.ssafy.saessak.oauth.token.service.RefreshTokenService;
+import com.ssafy.saessak.user.domain.Parent;
 import com.ssafy.saessak.user.domain.Teacher;
 import com.ssafy.saessak.user.repository.TeacherRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -18,8 +21,12 @@ public class TeacherService {
     private final RefreshTokenService refreshTokenService;
     private final JwtTokenProvider jwtTokenProvider;
 
-    public boolean isExistingUser(String email, String name) {
-        return teacherRepository.findByEmailAndNickname(email, name).isPresent();
+    public Long isExistingTeacher(String email, String name) {
+        Optional<Teacher> teacher = teacherRepository.findByEmailAndNickname(email, name);
+        if(teacher.isPresent()) {
+            return teacher.get().getId();
+        }
+        return 0L;
     }
 
     public Long getIdByEmailAndName(String email, String name) {
