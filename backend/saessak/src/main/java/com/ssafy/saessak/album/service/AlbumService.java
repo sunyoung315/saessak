@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +32,7 @@ public class AlbumService {
     //엘범 조회
     public List<AlbumResponseDto> getClassAlbumList (Long classroomId){
         Classroom classroom = classroomRepository.findById(classroomId).get();
-        List<Album> albumList = albumRepository.findByClassroom(classroom).get();
+        List<Album> albumList = albumRepository.findByClassroomAndKidIsNull(classroom).get();
         return makeAlbumResponseDtoList(albumList);
     }
 
@@ -52,8 +53,8 @@ public class AlbumService {
         List<Kid> kids = kidRepository.findAllByClassroom(classroom);
         List<AlbumResponseDto> albumList = new ArrayList<>();
         for(Kid kid : kids){
-            Album album = albumRepository.findFirstByKidOrderByAlbumDateDesc(kid).get();
-            albumList.add(makeAlbumResponseDto(album));
+            Optional<Album> album = albumRepository.findFirstByKidOrderByAlbumDateDesc(kid);
+            album.ifPresent(value -> albumList.add(makeAlbumResponseDto(value)));
         }
 
         return albumList;
@@ -62,7 +63,7 @@ public class AlbumService {
 
     public List<AlbumResponseDto> getClassAlbum(Long classroomId, Date date){
         Classroom classroom = classroomRepository.findById(classroomId).get();
-        List<Album> albumList = albumRepository.findByClassroomAndAlbumDate(classroom, date).get();
+        List<Album> albumList = albumRepository.findByClassroomAndAlbumDateAndKidIsNull(classroom, date).get();
         return makeAlbumResponseDtoList(albumList);
     }
 
