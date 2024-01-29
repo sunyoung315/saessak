@@ -1,6 +1,5 @@
 package com.ssafy.saessak.album.controller;
 
-import com.ssafy.saessak.album.domain.Album;
 import com.ssafy.saessak.album.dto.AlbumRequestDto;
 import com.ssafy.saessak.album.dto.AlbumResponseDto;
 import com.ssafy.saessak.album.dto.KidAlbumResponseDto;
@@ -13,11 +12,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.xml.transform.Result;
-import java.util.Calendar;
+
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 @RequestMapping("/api/album")
 @RestController

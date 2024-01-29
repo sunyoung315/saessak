@@ -50,7 +50,7 @@ public class AlbumService {
     }
 
     public List<KidAlbumResponseDto> getKidsCurrentAlbum (Long classroomId){
-        Classroom classroom = classroomRepository.findById((classroomId)).get();
+        Classroom classroom = classroomRepository.findById(classroomId).get();
         List<Kid> kids = kidRepository.findAllByClassroom(classroom);
         List<KidAlbumResponseDto> albumList = new ArrayList<>();
         for(Kid kid : kids){
@@ -58,7 +58,7 @@ public class AlbumService {
             KidAlbumResponseDto kidAlbumResponseDto = KidAlbumResponseDto.builder()
                     .kidId(kid.getId())
                     .kidName(kid.getKidName())
-                    .albumResponseDto(makeAlbumResponseDto(album.get()))
+                    .albumResponseDto(album.isPresent()? makeAlbumResponseDto(album.get()) : null)
                     .build();
             albumList.add(kidAlbumResponseDto);
         }
