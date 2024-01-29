@@ -19,4 +19,12 @@ public class User {
     private String nickname;
     private String email;
     private String profile;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="classroom_id")
+    private Classroom classroom;
+
+    public void mapping_classroom(Classroom classroom) {
+        this.classroom = classroom;
+    }
 }

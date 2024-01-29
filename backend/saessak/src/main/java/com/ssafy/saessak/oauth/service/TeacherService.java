@@ -1,15 +1,18 @@
 package com.ssafy.saessak.oauth.service;
 
-import com.ssafy.saessak.oauth.authentication.UserAuthentication;
 import com.ssafy.saessak.oauth.dto.LoginSuccessResponseDto;
 import com.ssafy.saessak.oauth.dto.LoginTeacherResponseDto;
-import com.ssafy.saessak.oauth.jwt.JwtTokenProvider;
-import com.ssafy.saessak.oauth.token.service.RefreshTokenService;
-import com.ssafy.saessak.user.domain.Parent;
+import com.ssafy.saessak.oauth.dto.kakao.KakaoUserResponse;
+import com.ssafy.saessak.user.domain.Classroom;
+
 import com.ssafy.saessak.user.domain.Teacher;
+import com.ssafy.saessak.user.domain.User;
+import com.ssafy.saessak.user.repository.ClassroomRepository;
 import com.ssafy.saessak.user.repository.TeacherRepository;
+import com.ssafy.saessak.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -18,32 +21,32 @@ import java.util.Optional;
 public class TeacherService {
 
     private final TeacherRepository teacherRepository;
-    private final RefreshTokenService refreshTokenService;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final UserRepository userRepository;
+    private final ClassroomRepository classroomRepository;
 
-    public Long isExistingTeacher(String email, String name) {
-        Optional<Teacher> teacher = teacherRepository.findByEmailAndNickname(email, name);
-        if(teacher.isPresent()) {
-            return teacher.get().getId();
-        }
-        return 0L;
+    public Optional<Teacher> isTeacher(KakaoUserResponse kakaoUserResponse) {
+        return teacherRepository.findByEmailAndNickname(kakaoUserResponse.kakaoAccount().email(),
+                kakaoUserResponse.kakaoAccount().profile().nickname());
     }
 
-    public Long getIdByEmailAndName(String email, String name) {
-        Teacher teacher = teacherRepository.findByEmailAndNickname(email, name).get();
-        return teacher.getId();
-    }
-
-    public LoginSuccessResponseDto getTokenByUserId (final Long userId) {
-        UserAuthentication userAuthentication = new UserAuthentication(userId, null, null);
-        String refreshToken = jwtTokenProvider.issueRefreshToken(userAuthentication);
-        refreshTokenService.saveRefreshToken(userId, refreshToken);
-        return LoginSuccessResponseDto.builder()
-                .userId(userId)
-                .accessToken(jwtTokenProvider.issueAccessToken(userAuthentication))
-                .refreshToken(refreshToken)
-                .isTeacher(true)
+    @Transactional
+    public Long registTeacher(Long userId) {
+        User user = userRepository.findById(userId).get();
+        Teacher teacher = Teacher.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .nickname(user.getNickname())
+                .profile(user.getProfile())
                 .build();
+        userRepository.delete(user);
+        Teacher savedTeacher = teacherRepository.save(teacher);
+        return savedTeacher.getId();
+    }
+
+    public void mapping(Long teacherId, Long classroomId) {
+        Classroom classroom = classroomRepository.findById(classroomId).get();
+        Teacher teacher = teacherRepository.findById(teacherId).get();
+        teacher.mapping_classroom(classroom);
     }
 
     public LoginTeacherResponseDto login(LoginSuccessResponseDto loginSuccessResponseDto) {

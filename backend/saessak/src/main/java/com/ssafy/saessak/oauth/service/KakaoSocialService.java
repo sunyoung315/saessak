@@ -2,7 +2,6 @@ package com.ssafy.saessak.oauth.service;
 
 import com.ssafy.saessak.oauth.client.KakaoApiClient;
 import com.ssafy.saessak.oauth.client.KakaoAuthApiClient;
-import com.ssafy.saessak.oauth.dto.LoginSuccessResponseDto;
 import com.ssafy.saessak.oauth.dto.kakao.KakaoAccessTokenResponse;
 import com.ssafy.saessak.oauth.dto.kakao.KakaoUserResponse;
 import com.ssafy.saessak.oauth.exception.BadRequestException;
@@ -74,23 +73,7 @@ public class KakaoSocialService {
     }
 
     private KakaoUserResponse getUserInfo (final String accessToken ) {
-//        KakaoUserResponse userResponse = kakaoApiClient.getUserInformation("Bearer " + accessToken);
         return kakaoApiClient.getUserInformation("Bearer " + accessToken);
-//        return getTokenDto(userResponse);
     }
 
-    private LoginSuccessResponseDto getTokenDto (final KakaoUserResponse userResponse ) {
-        String userEmail = userResponse.kakaoAccount().email();
-        String userName = userResponse.kakaoAccount().profile().nickname();
-        Long userId = 0L;
-        userId = parentService.isExistingParent(userEmail, userName);
-        if(userId > 0) {
-            return parentService.getTokenByUserId(userId);
-        }
-        userId = teacherService.isExistingTeacher(userEmail, userName);
-        if(userId > 0) {
-            return parentService.getTokenByUserId(userId);
-        }
-        return null;
-    }
 }

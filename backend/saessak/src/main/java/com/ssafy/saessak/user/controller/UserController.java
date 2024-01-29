@@ -24,15 +24,15 @@ public class UserController {
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, userService.mapping(parentId, kidId)));
     }
 
-    @Operation(summary = "반 아이 목록 조회")
-    @GetMapping(value = "/kid/{classroomId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResultResponse> getClassKid(@PathVariable("classroomId") Long classroomId) {
-        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, userService.getClassKid(classroomId)));
-    }
-
-    @Operation(summary = "학부모가 자신의 선생님 목록 확인")
-    @GetMapping(value = "/teacher/{parentId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResultResponse> getParentTeacher(@PathVariable("parentId") Long parentId) {
-        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, userService.getParentTeacher(parentId)));
-    }
+//    @Operation(summary = "반 아이 목록 조회")
+//    @GetMapping(value = "/kid/{classroomId}", produces = MediaType.APPLICATION_JSON_VALUE)
+//    public ResponseEntity<ResultResponse> getClassKid(@PathVariable("classroomId") Long classroomId) {
+//        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, userService.getClassKid(classroomId)));
+//    }
+//
+//    @Operation(summary = "학부모가 자신의 선생님 목록 확인")
+//    @GetMapping(value = "/teacher/{parentId}", produces = MediaType.APPLICATION_JSON_VALUE)
+//    public ResponseEntity<ResultResponse> getParentTeacher(@PathVariable("parentId") Long parentId) {
+//        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, userService.getParentTeacher(parentId)));
+//    }
 }

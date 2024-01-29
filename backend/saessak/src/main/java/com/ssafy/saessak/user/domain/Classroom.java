@@ -29,14 +29,6 @@ public class Classroom {
 
     @JsonIgnore
     @OneToMany(mappedBy = "classroom", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    private List<Teacher> teacherList;
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "classroom", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    private List<Kid> kidList;
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "classroom", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Album> albumList;
 
     @JsonIgnore

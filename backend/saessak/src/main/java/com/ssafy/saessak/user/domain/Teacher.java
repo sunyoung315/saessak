@@ -17,10 +17,6 @@ import java.util.List;
 @Table(name="teacher")
 public class Teacher extends User {
 
-    @ManyToOne
-    @JoinColumn(name = "classroom_id")
-    private Classroom classroom;
-
     @Column(name = "teacher_device")
     private String teacherDevice;
 
@@ -40,6 +36,10 @@ public class Teacher extends User {
         } else {
             this.teacherAlarm = false;
         }
+    }
+
+    public void mapping_classroom(Classroom classroom) {
+        super.mapping_classroom(classroom);
     }
 
 }

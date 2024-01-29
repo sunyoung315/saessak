@@ -1,18 +1,10 @@
 package com.ssafy.saessak.oauth.service;
 
-import com.ssafy.saessak.oauth.authentication.UserAuthentication;
-import com.ssafy.saessak.oauth.dto.AccessTokenGetSuccess;
 import com.ssafy.saessak.oauth.dto.KidResponseDto;
 import com.ssafy.saessak.oauth.dto.LoginParentResponseDto;
 import com.ssafy.saessak.oauth.dto.LoginSuccessResponseDto;
 import com.ssafy.saessak.oauth.dto.kakao.KakaoUserResponse;
-import com.ssafy.saessak.oauth.exception.UnAuthorizedException;
-import com.ssafy.saessak.oauth.exception.ErrorMessage;
-import com.ssafy.saessak.oauth.jwt.JwtTokenProvider;
-import com.ssafy.saessak.oauth.token.service.RefreshTokenService;
-import com.ssafy.saessak.user.domain.Kid;
-import com.ssafy.saessak.user.domain.Parent;
-import com.ssafy.saessak.user.domain.User;
+import com.ssafy.saessak.user.domain.*;
 import com.ssafy.saessak.user.repository.KidRepository;
 import com.ssafy.saessak.user.repository.ParentRepository;
 import com.ssafy.saessak.user.repository.UserRepository;
@@ -28,62 +20,36 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ParentService {
 
-    private final JwtTokenProvider jwtTokenProvider;
     private final ParentRepository parentRepository;
     private final UserRepository userRepository;
     private final KidRepository kidRepository;
-    private final RefreshTokenService refreshTokenService;
 
-    public Long createUser(final KakaoUserResponse userResponse) {
-        User user = User.builder()
-                .email(userResponse.kakaoAccount().email())
-                .nickname(userResponse.kakaoAccount().profile().nickname())
-                .profile(userResponse.kakaoAccount().profile().profileImageUrl())
-                .build();
-
-        return userRepository.save(user).getId();
-    }
-
-    public Long getIdByEmailAndName(String email, String name) {
-        Parent parent = parentRepository.findByEmailAndNickname(email, name).get();
-        return parent.getId();
-    }
-
-    public AccessTokenGetSuccess refreshToken( final String refreshToken ) {
-        Long userId = jwtTokenProvider.getUserFromJwt(refreshToken);
-        if (!userId.equals(refreshTokenService.findIdByRefreshToken(refreshToken))) {
-            throw new UnAuthorizedException(ErrorMessage.TOKEN_INCORRECT_ERROR);
-        }
-        UserAuthentication userAuthentication = new UserAuthentication(userId, null, null);
-        return new AccessTokenGetSuccess(
-                jwtTokenProvider.issueAccessToken(userAuthentication)
-        );
-    }
-
-    public Long isExistingParent(String email, String name) {
-        Optional<Parent> parent = parentRepository.findByEmailAndNickname(email, name);
-        if(parent.isPresent()) {
-            return parent.get().getId();
-        }
-        return 0L;
-    }
-
-    public LoginSuccessResponseDto getTokenByUserId (final Long userId) {
-        UserAuthentication userAuthentication = new UserAuthentication(userId, null, null);
-        String refreshToken = jwtTokenProvider.issueRefreshToken(userAuthentication);
-        refreshTokenService.saveRefreshToken(userId, refreshToken);
-        return LoginSuccessResponseDto.builder()
-                .userId(userId)
-                .accessToken(jwtTokenProvider.issueAccessToken(userAuthentication))
-                .refreshToken(refreshToken)
-                .isTeacher(false)
-                .build();
+    public Optional<Parent> isParent(KakaoUserResponse kakaoUserResponse) {
+        return parentRepository.findByEmailAndNickname(kakaoUserResponse.kakaoAccount().email(),
+                kakaoUserResponse.kakaoAccount().profile().nickname());
     }
 
     @Transactional
-    public void deleteUser (final Long id) {
-        Parent parent = parentRepository.findById(id).get();
-        parentRepository.delete(parent);
+    public Long registParent(Long userId) {
+        User user = userRepository.findById(userId).get();
+        Parent parent = Parent.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .nickname(user.getNickname())
+                .profile(user.getProfile())
+                .build();
+        userRepository.delete(user);
+        Parent savedParent = parentRepository.save(parent);
+        return savedParent.getId();
+    }
+
+    public void mapping(Long parentId, Long kidId) {
+        Kid kid = kidRepository.findById(kidId).get();
+        Parent parent = parentRepository.findById(parentId).get();
+        List<Kid> kidList = parent.getKidList();
+        if(kidList == null) kidList = new ArrayList<>();
+        kidList.add(kid);
+        kid.mapping_parent(parent);
     }
 
     public LoginParentResponseDto login(LoginSuccessResponseDto loginSuccessResponseDto) {

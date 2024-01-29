@@ -44,10 +44,6 @@ public class Kid extends User {
     @JoinColumn(name="parent_id")
     private Parent parent;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="classroom_id")
-    private Classroom classroom;
-
     @OneToMany(mappedBy = "kid", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Attendance> attendanceList;
 
@@ -74,5 +70,9 @@ public class Kid extends User {
 
     public void changeCheck() {
         this.kidAllergyCheck = true;
+    }
+
+    public void mapping_parent(Parent parent) {
+        this.parent = parent;
     }
 }

@@ -15,4 +15,5 @@ public interface TeacherRepository extends JpaRepository<Teacher, Long> {
     List<Teacher> findAllByClassroom(Classroom classroom);
 
     Optional<Teacher> findByEmailAndNickname(String teacherEmail, String teacherName);
+
 }
