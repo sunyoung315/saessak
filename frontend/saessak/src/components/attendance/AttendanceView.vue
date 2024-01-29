@@ -16,7 +16,7 @@ import AttendanceTable from '@/components/attendance/AttendanceTable.vue';
 import AttendanceCalendar from '@/components/attendance/AttendanceCalendar.vue';
 // import OriginalCalendar from '@/components/attendance/OriginalCalendar.vue';
 
-const isTeacher = ref(false);
+const isTeacher = ref(true);
 </script>
 
 <style scoped></style>
