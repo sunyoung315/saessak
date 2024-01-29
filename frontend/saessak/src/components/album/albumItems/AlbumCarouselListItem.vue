@@ -3,39 +3,40 @@
 		<!-- {{ recentAlbumList }} -->
 		<div v-if="isTeacher">
 			<div v-for="kid in recentAlbumList" :key="kid.kidId">
-				<img src="@/assets/film.png" alt="필름" />
-				<Carousel
-					:items-to-show="5"
-					:wrap-around="true"
-					v-if="kid.albumResponseDto"
-				>
-					<Slide
-						v-for="file in kid.albumResponseDto.fileResponseDtoList"
-						:key="file.fileId"
-						@click="goDetail(kid.kidId)"
+				<div v-if="kid.albumResponseDto">
+					<img src="@/assets/film.png" alt="필름" />
+					<Carousel
+						:items-to-show="5"
+						:wrap-around="true"
+						v-if="kid.albumResponseDto"
 					>
-						<div class="carousel__item">
-							<img
-								class="album"
-								:src="`${file.filePath}`"
-								:for="kid.albumResponseDto.albumId"
-								alt="image"
-							/>
-						</div>
-					</Slide>
-					<template #addons>
-						<Navigation />
-					</template>
-				</Carousel>
-				<img src="@/assets/film.png" alt="필름" />
-				<div class="flex justify-between">
-					<button
-						class="bg-nav-green m-4 text-black font-bold py-2 px-4 rounded-full"
-					>
-						{{ kid.kidName }}
-					</button>
-
-					<span class="m-4">→ 전체 조회</span>
+						<Slide
+							v-for="file in kid.albumResponseDto.fileResponseDtoList"
+							:key="file.fileId"
+							@click="goDetail(kid.kidId)"
+						>
+							<div class="carousel__item">
+								<img
+									class="album"
+									:src="`${file.filePath}`"
+									:for="kid.albumResponseDto.albumId"
+									alt="image"
+								/>
+							</div>
+						</Slide>
+						<template #addons>
+							<Navigation />
+						</template>
+					</Carousel>
+					<img src="@/assets/film.png" alt="필름" />
+					<div class="flex justify-between">
+						<button
+							class="bg-nav-green m-4 text-black font-bold py-2 px-4 rounded-full"
+						>
+							{{ kid.kidName }}
+						</button>
+						<span class="m-4 text-xl font-bold">→ 전체 조회</span>
+					</div>
 				</div>
 			</div>
 		</div>

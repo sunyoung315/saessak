@@ -45,7 +45,8 @@ export const useAlbumStore = defineStore('album', () => {
 			.post(`${REST_ALBUM_API}/kid/${kidId}`, { albumDate })
 			.then(response => {
 				myKidAlbumDateList.value = response.data.data;
-				// console.log(myKidAlbumDateList);
+				console.log('myKidAlbumDateList: ' + myKidAlbumDateList.value);
+				console.log(myKidAlbumDateList.value[0]);
 			});
 	};
 
