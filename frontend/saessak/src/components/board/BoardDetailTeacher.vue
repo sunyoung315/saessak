@@ -155,28 +155,28 @@ import { ref, onMounted, watch } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useBoardStore } from '@/store/board';
 
-// 임시 data
-const kidId = ref(1);
-
 const router = useRouter();
-const route = useRoute();
-const store = useBoardStore();
-
-// url 파리미터
-const boardId = ref(route.params);
 
 // 목록으로 router 이동
 const goBoardList = () => {
 	router.push({ name: 'BoardList' });
 };
 
-// 알림장 1개
+const route = useRoute();
+
+// url 파리미터
+const kidId = ref(route.params.id);
+
+const store = useBoardStore();
+
+// 알림장 상세정보
 const oneBoard = ref({});
 
-// 알림장 상세조회(boardId)
-const getOneBoard = async boardId => {
-	await store.getOneBoard(boardId);
+// 알림장 상세조회(kidId, 최신 알림장)
+const getOneBoard = async kidId => {
+	await store.getCurrentBoard(kidId);
 	oneBoard.value = store.oneBoard;
+	store.date = oneBoard.value.boardDate;
 };
 
 // datepicker 설정
@@ -195,22 +195,31 @@ const disabledDates = ref([
 ]);
 
 // datepicker 날짜 변화 감지
-watch(date, newVal => {
-	if (newVal) {
+watch(date, (newVal, oldVal) => {
+	if (newVal && newVal !== oldVal) {
 		const newValue = new Date(newVal);
 		const year = newValue.getFullYear();
 		const month = ('0' + (newValue.getMonth() + 1)).slice(-2);
 		const day = ('0' + newValue.getDate()).slice(-2);
 		const newDate = `${year}-${month}-${day}`;
-		store.date = newDate;
 		// 알림장 상세조회(date)
-		store.getOneBoardByDate(kidId.value);
+		if (store.date !== newDate) {
+			store.date = newDate;
+			store.getOneBoardByDate(kidId.value);
+		}
 	}
 });
 
+// getOneBoard함수에서 store.date 업데이트될 때 date값도 함께 업데이트
+watch(
+	() => store.date,
+	newVal => {
+		date.value = newVal;
+	},
+);
+
 onMounted(async () => {
-	await getOneBoard(boardId.value.id);
-	date.value = oneBoard.value.boardDate;
+	await getOneBoard(kidId.value);
 });
 </script>
 
