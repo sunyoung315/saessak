@@ -6,6 +6,7 @@ import com.ssafy.saessak.oauth.service.AuthenticationService;
 import com.ssafy.saessak.result.ResultCode;
 import com.ssafy.saessak.result.ResultResponse;
 import com.ssafy.saessak.user.domain.User;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +22,7 @@ public class FcmController {
     private final FcmService fcmService;
     private final AuthenticationService authenticationService;
 
+    @Operation(summary = "학부모 알림기기 토큰 갱신")
     @PostMapping("/parent/token")
     public ResponseEntity<?> saveParentToken(@RequestBody FcmTokenRequestDto requestDto) {
         User user = authenticationService.getUserByAuthentication();
@@ -29,6 +31,7 @@ public class FcmController {
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS));
     }
 
+    @Operation(summary = "선생님 알림기기 토큰 갱신")
     @PostMapping("/teacher/token")
     public ResponseEntity<?> saveTeacherToken(@RequestBody FcmTokenRequestDto requestDto) {
         User user = authenticationService.getUserByAuthentication();
@@ -37,6 +40,7 @@ public class FcmController {
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS));
     }
 
+    @Operation(summary = "학부모 알림 활성화 여부 변경")
     @GetMapping("/parent/alarm/{parentId}")
     public ResponseEntity<?> changeParentAlarm(@PathVariable("parentId") Long parentId) {
         User user = authenticationService.getUserByAuthentication();
@@ -46,6 +50,7 @@ public class FcmController {
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS));
     }
 
+    @Operation(summary = "선생님 알림 활성화 여부 변경")
     @GetMapping("/teacher/alarm/{teacherId}")
     public ResponseEntity<?> changeTeacherAlarm(@PathVariable("teacherId") Long teacherId) {
         User user = authenticationService.getUserByAuthentication();
