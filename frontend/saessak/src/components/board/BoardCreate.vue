@@ -288,49 +288,49 @@ const newBoard = ref({
 // 증감 버튼 함수 ////////////////////////////////////
 const incrementTemp = () => {
 	newBoard.value.boardTemperature = parseFloat(
-		(newBoard.value.boardTemperature + 0.1).toFixed(1),
+		parseFloat(newBoard.value.boardTemperature + 0.1).toFixed(1),
 	);
 };
 
 const decrementTemp = () => {
 	newBoard.value.boardTemperature = parseFloat(
-		(newBoard.value.boardTemperature - 0.1).toFixed(1),
+		parseFloat(newBoard.value.boardTemperature - 0.1).toFixed(1),
 	);
 };
 
 const incrementSleep = () => {
 	newBoard.value.boardSleepTime = parseFloat(
-		(newBoard.value.boardSleepTime + 0.5).toFixed(1),
+		parseFloat(newBoard.value.boardSleepTime + 0.5).toFixed(1),
 	);
 };
 
 const decrementSleep = () => {
 	newBoard.value.boardSleepTime = parseFloat(
-		(newBoard.value.boardSleepTime - 0.5).toFixed(1),
+		parseFloat(newBoard.value.boardSleepTime - 0.5).toFixed(1),
 	);
 };
 
 const incrementTall = () => {
 	newBoard.value.boardTall = parseFloat(
-		(newBoard.value.boardTall + 0.1).toFixed(1),
+		parseFloat(newBoard.value.boardTall + 0.1).toFixed(1),
 	);
 };
 
 const decrementTall = () => {
 	newBoard.value.boardTall = parseFloat(
-		(newBoard.value.boardTall - 0.1).toFixed(1),
+		parseFloat(newBoard.value.boardTall - 0.1).toFixed(1),
 	);
 };
 
 const incrementWeight = () => {
 	newBoard.value.boardWeight = parseFloat(
-		(newBoard.value.boardWeight + 0.1).toFixed(1),
+		parseFloat(newBoard.value.boardWeight + 0.1).toFixed(1),
 	);
 };
 
 const decrementWeight = () => {
 	newBoard.value.boardWeight = parseFloat(
-		(newBoard.value.boardWeight - 0.1).toFixed(1),
+		parseFloat(newBoard.value.boardWeight - 0.1).toFixed(1),
 	);
 };
 /////////////////////////////////////////////////
@@ -365,6 +365,7 @@ const buttonClass = button => {
 // 알림장 등록 요청
 const registBoard = () => {
 	createBoard(newBoard.value);
+	router.push({ name: 'BoardList' });
 };
 </script>
 

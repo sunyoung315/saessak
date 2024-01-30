@@ -1,5 +1,5 @@
 <template>
-	<div class="view-frame">
+	<div class="view-frame p-4">
 		<!-- Teacher Version -->
 		<template v-if="isTeacher">
 			<div class="book-flex">
@@ -94,18 +94,18 @@ onMounted(async () => {
 	@apply flex flex-wrap justify-start;
 }
 .book-frame {
-	@apply bg-[url('@/assets/BoardFrame.png')] bg-72 inline-block w-[18rem] h-[21.5rem] p-6 mx-7 my-4 bg-white rounded-lg hover:bg-yellow-50 hover:bg-opacity-65;
+	@apply bg-[url('@/assets/BoardFrame.png')] bg-book inline-block w-[13.77rem] h-[16.4rem] mx-3 my-4 bg-white rounded-lg hover:bg-yellow-50 hover:bg-opacity-65;
 }
 .book-title-teacher {
-	@apply relative left-[6.7rem] top-[1rem] font-extrabold text-base;
+	@apply relative left-[5.8rem] top-[1.77rem] font-semibold text-base;
 }
 .book-title-parent {
-	@apply relative left-[5.4rem] top-[1.1rem] font-extrabold text-base;
+	@apply relative left-[5.05rem] top-[1.9rem] mb-1 font-semibold text-sm;
 }
 .book-photo-position {
-	@apply relative left-[1.8rem] top-[3.1rem];
+	@apply relative left-[2.5rem] top-[3.1rem];
 }
 .book-photo-size {
-	@apply w-[17rem] h-[16.5rem];
+	@apply w-[9.8rem] h-[9.5rem] border border-yellow-400 border-4;
 }
 </style>

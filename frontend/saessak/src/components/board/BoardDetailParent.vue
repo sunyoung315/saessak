@@ -34,7 +34,7 @@
 							<input
 								:value="inputValue"
 								v-on="inputEvents"
-								class="datepicker-input"
+								class="datepicker-input text"
 							/>
 						</div>
 					</template>

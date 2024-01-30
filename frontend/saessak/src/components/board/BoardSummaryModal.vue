@@ -45,6 +45,7 @@
 										:value="inputValue"
 										v-on="inputEvents"
 										class="border border-gray-300 text-gray-900 text-sm font-bold rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-40 ps-10 p-2.5"
+										placeholder="시작 날짜"
 									/>
 								</div>
 							</template>
@@ -91,14 +92,17 @@
 										:value="inputValue"
 										v-on="inputEvents"
 										class="border border-gray-300 text-gray-900 text-sm font-bold rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-40 ps-10 p-2.5"
+										placeholder="종료 날짜"
 									/>
 								</div>
 							</template>
 						</VDatePicker>
+						<!-- 완료될 때까지 버튼 비활성화 해놓음! -->
 						<button
 							type="button"
-							@click="getGPTResponse()"
+							@click="getSummaryBoard(kidId, { startDate, endDate })"
 							class="ml-2 text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-gray-600 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800"
+							disabled
 						>
 							조회
 						</button>
@@ -124,13 +128,10 @@
 
 			<!-- content -->
 			<div class="mx-20 my-5">
-				<div>
-					<h1 class="font-extrabold text-xl">본문</h1>
-				</div>
-				<div class="whitespace-pre-line">{{ content }}</div>
-				<br />
-				<div>
-					<h1 class="font-extrabold text-xl">요약</h1>
+				<div
+					class="inline-block h-36 w-36 mx-4 px-4 py-12 border rounded-full bg-orange-300"
+				>
+					<span class="loader"></span>
 				</div>
 				<div class="whitespace-pre-line">{{ summary }}</div>
 			</div>
@@ -140,6 +141,7 @@
 
 <script setup>
 import { ref, watch } from 'vue';
+import { useBoardStore } from '@/store/board';
 import OpenAI from 'openai';
 
 // Modal
@@ -155,11 +157,13 @@ const closeModal = () => {
 defineExpose({ openModal });
 
 // VDatePicker
-const startDate = ref(null);
-const endDate = ref(null);
+const startDate = ref('');
+const endDate = ref('');
 
+// datepicker 선택 날짜 색상 지정
 const selectAttribute = ref({ highlight: 'yellow' });
 
+// 미래날짜 비활성화
 const today = new Date();
 const tomorrow = new Date(today);
 tomorrow.setDate(tomorrow.getDate() + 1);
@@ -170,6 +174,7 @@ const disabledStartDates = ref([
 	},
 ]);
 
+// 시작 날짜 추적, 시작일자로부터 7일만 활성화
 watch(startDate, () => {
 	const start = startDate.value;
 	const pastDates = [];
@@ -191,6 +196,7 @@ watch(startDate, () => {
 	disabledEndDates.value = [...pastDates, ...futureDates];
 });
 
+// 선택한 시작날짜로부터 7일이후 날짜 비활성화
 const startSevenDays = new Date(startDate.value);
 startSevenDays.setDate(startSevenDays.getDate() + 7);
 const disabledEndDates = ref([
@@ -200,39 +206,15 @@ const disabledEndDates = ref([
 	},
 ]);
 
-// OpenAI 요약
-const API_KEY = import.meta.env.VITE_OPENAI_API_KEY;
+const kidId = ref(1);
 
-// Data
-const boardList = [
-	{
-		boardDate: '2024-01-14',
-		boardContent:
-			'안녕하세요? 오늘은 성남시립식물원으로 현장학습에 다녀왔어요. 아침에 비가 내려 우리 친구들이 다칠까 걱정했었는데, 다행히 출발하기 전 비가 그쳐 안전하게 다녀올 수 있었습니다. 친구들이 씩씩하게 선생님 손과 친구들 손을 잡고 차가 멈춘 후 차례차례 줄 서서 횡단보도를 건너서 식물원에 갔습니다. 처음 보는 나무들과 식물들에 관심을 가지며 이름을 물어보기도 하고 열대관에서 자라는 식물들과 나무들의 특성들도 알아보았답니다~!! 마지막에는 다양한 씨앗들을 구경하며 신기해하였어요^^ 어린이집에 돌아와서는 어린이집 안에서 할 수 있는 여러 가지 식물 보호 방법을 생각해보고, 실천해보기로 약속했답니다!',
-	},
-	{
-		boardDate: '2024-01-15',
-		boardContent:
-			'안녕하세요? 이번주에는 즐거운 운동과 휴식이라는 주제로 한주를 보냈습니다. 여름에 하면 더 즐거운 운동에 대해 알아보는 시간을 가졌어요.  또 물놀이를 하기 전 해야할 것과 물놀이를 할 때 주의해야할 행동도 알아보는 시간을 가졌습니다. 활동을 확장하여 더운 여름을 이겨낼 수 있는 방법에 대해 그림으로 표현해 보는 시간도 가졌는데, 지수는 지난 주에 다녀온 물놀이가 즐거웠는지, 아주 멋진 작풉을 완성하였습니다.',
-	},
-	{
-		boardDate: '2024-01-16',
-		boardContent:
-			'제일 먼저 오는 친구가 거북이 밥을 주는데, 요즘  지수가 1등으로 출석해서 거북이 밥을 매일 주고 있습니다. 다른 친구들보다 일찍 오는 편이라 아침에 관찰하는 시간을 많이 가지고 있어요. 거북이 뿐만 아니라 교실에서 키우고 있는 식물에도 관심이 많아요. 어제보다 얼마나 자랐는지, 저번 주 보다 얼마나 자랐는지.. 저는 잘 느끼지 못하는 부분을 지수가 말해 줄때 얼마나 대견한지 몰라요. 지수의 뛰어난 관찰력, 칭찬 많이 해주세요^^',
-	},
-];
-
-// boardContent 하나의 String으로 연결
-let content = '';
-for (let i = 0; i < boardList.length; i++) {
-	content +=
-		boardList[i].boardDate +
-		' 의 알림장 :  \n' +
-		boardList[i].boardContent +
-		'\n';
-}
+const store = useBoardStore();
 
 const summary = ref('');
+let content = ref('');
+
+// OpenAI 요약
+const API_KEY = import.meta.env.VITE_OPENAI_API_KEY;
 
 const getGPTResponse = async () => {
 	try {
@@ -241,7 +223,7 @@ const getGPTResponse = async () => {
 			dangerouslyAllowBrowser: true,
 		});
 
-		const prompt = `${boardList.length}일치의 알림장인 ${content} 를 날짜별로 150자 정도로 유치원 선생님 말투로 요약해줘.`;
+		const prompt = `${store.boardList.length}일치의 알림장인 ${content.value} 를 전부 합쳐서 날짜 ':'으로 구분하지 말고 자연스럽게 이어서 150자 정도로 유치원 선생님 말투로 요약해줘.`;
 
 		const response = await openai.chat.completions.create({
 			messages: [
@@ -258,6 +240,22 @@ const getGPTResponse = async () => {
 		console.log('에러 발생 : ', error);
 	}
 };
+
+const getSummaryBoard = async (kidId, { startDate, endDate }) => {
+	await store.getSummaryBoard(kidId, { startDate, endDate });
+
+	// boardContent 하나의 String으로 연결
+
+	for (let i = 0; i < store.boardList.length; i++) {
+		content.value +=
+			store.boardList[i].boardDate +
+			' 의 알림장 :  \n' +
+			store.boardList[i].boardContent +
+			'\n';
+	}
+
+	getGPTResponse();
+};
 </script>
 
 <style scoped>
@@ -265,5 +263,75 @@ const getGPTResponse = async () => {
 	width: 60rem;
 	height: 35rem;
 	max-width: none;
+}
+.loader {
+	position: relative;
+	width: 108px;
+	display: flex;
+	justify-content: space-between;
+}
+.loader::after,
+.loader::before {
+	content: '';
+	display: inline-block;
+	width: 48px;
+	height: 48px;
+	background-color: #fff;
+	background-image: radial-gradient(circle 14px, #0d161b 100%, transparent 0);
+	background-repeat: no-repeat;
+	border-radius: 50%;
+	animation:
+		eyeMove 10s infinite,
+		blink 10s infinite;
+}
+@keyframes eyeMove {
+	0%,
+	10% {
+		background-position: 0px 0px;
+	}
+	13%,
+	40% {
+		background-position: -15px 0px;
+	}
+	43%,
+	70% {
+		background-position: 15px 0px;
+	}
+	73%,
+	90% {
+		background-position: 0px 15px;
+	}
+	93%,
+	100% {
+		background-position: 0px 0px;
+	}
+}
+@keyframes blink {
+	0%,
+	10%,
+	12%,
+	20%,
+	22%,
+	40%,
+	42%,
+	60%,
+	62%,
+	70%,
+	72%,
+	90%,
+	92%,
+	98%,
+	100% {
+		height: 48px;
+	}
+	11%,
+	21%,
+	41%,
+	61%,
+	71%,
+	91%,
+	99% {
+		height: 18px;
+	}
 }
 </style>

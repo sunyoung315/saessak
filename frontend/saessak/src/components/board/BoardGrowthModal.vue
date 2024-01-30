@@ -31,16 +31,57 @@
 					</svg>
 				</button>
 			</div>
-			<!-- datepicker -->
 
-			<!-- content -->
+			<!-- Tall -->
+			<Chart
+				:size="{ width: 800, height: 400 }"
+				:data="data"
+				:margin="margin"
+				:direction="direction"
+				:axis="axis"
+			>
+				<template #layers>
+					<Line
+						:dataKeys="['numberOfMonth', 'top3']"
+						:lineStyle="{ stroke: 'lightgray' }"
+					/>
+					<Line
+						:dataKeys="['numberOfMonth', 'top50']"
+						:lineStyle="{ stroke: 'lightgray' }"
+					/>
+					<Line
+						:dataKeys="['numberOfMonth', 'top97']"
+						:lineStyle="{ stroke: 'lightgray' }"
+					/>
+					<Line
+						:dataKeys="['numberOfMonth', 'myTall']"
+						:lineStyle="{ stroke: 'red' }"
+					/>
+				</template>
+
+				<template #widgets>
+					<Tooltip
+						borderColor="black"
+						:config="{
+							tallId: { hide: true },
+							gender: { hide: true },
+							numberOfMonth: { label: '개월수', color: 'black' },
+							myTall: { hide: false, label: '내아이 키', color: 'red' },
+							top3: { label: '3th', color: 'gray' },
+							top50: { label: '50th', color: 'gray' },
+							top97: { label: '97th', color: 'gray' },
+						}"
+					/>
+				</template>
+			</Chart>
 		</div>
 	</div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 
+// Modal //////////////////
 const isOpen = ref(false);
 
 const openModal = () => {
@@ -52,6 +93,77 @@ const closeModal = () => {
 };
 
 defineExpose({ openModal });
+////////////////////////////
+
+// chartjs //////////////////////////////////////////////
+import { Chart, Line, Tooltip } from 'vue3-charts';
+import { useBoardStore } from '@/store/board';
+
+// 임시 kidId
+const kidId = ref(1);
+const gender = ref('F');
+const store = useBoardStore();
+
+const tallList = ref([]);
+const weightList = ref([]);
+const myKidBoard = ref({});
+
+const getGrowthList = async kidId => {
+	await store.getGrowthList();
+	await store.getCurrentBoard(kidId);
+	tallList.value = store.tallList;
+	weightList.value = store.weightList;
+	myKidBoard.value = store.oneBoard;
+	// console.log(tallList.value);
+	// console.log(store.weightList);
+};
+
+const data = ref(tallList.value);
+
+onMounted(async () => {
+	await getGrowthList(kidId.value);
+	data.value = tallList.value;
+	for (let i = 0; i < data.value.length; i++) {
+		// 아이의 개월수에 맞는 데이터 찾기
+		if (data.value[i].numberOfMonth === 40) {
+			// 최근 키 데이터에 넣기
+			data.value[i].myTall = 100;
+			break;
+		}
+	}
+});
+
+const axis = ref({
+	primary: {
+		type: 'band',
+		format: val => {
+			// 여자아이 + 개월수가 일치할 때
+			if (val == 40 && gender.value === 'F') {
+				return '👧';
+				// 남자이아 + 개월수가 일치할 때
+			} else if (val === 40 && gender.value === 'M') {
+				return '🧑';
+				// 10개월 단위
+			} else if (val % 10 === 0 && val != 100) {
+				return val;
+			}
+			return '';
+		},
+	},
+	secondary: {
+		domain: [45, 150],
+		type: 'linear',
+		ticks: 8,
+	},
+});
+
+const direction = ref('horizontal');
+const margin = ref({
+	left: 140,
+	top: 20,
+	right: 0,
+	bottom: 0,
+});
 </script>
 
 <style scoped>

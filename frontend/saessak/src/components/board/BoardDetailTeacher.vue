@@ -195,8 +195,8 @@ const disabledDates = ref([
 ]);
 
 // datepicker 날짜 변화 감지
-watch(date, (newVal, oldVal) => {
-	if (newVal && newVal !== oldVal) {
+watch(date, newVal => {
+	if (newVal) {
 		const newValue = new Date(newVal);
 		const year = newValue.getFullYear();
 		const month = ('0' + (newValue.getMonth() + 1)).slice(-2);

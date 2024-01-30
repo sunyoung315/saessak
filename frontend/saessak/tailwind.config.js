@@ -26,7 +26,7 @@ module.exports = {
 				'book-pattern': "url('@/assets/BoardFrame.png')",
 			},
 			backgroundSize: {
-				72: '18rem',
+				book: '13.77rem',
 			},
 		},
 	},
