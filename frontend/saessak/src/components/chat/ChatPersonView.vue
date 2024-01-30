@@ -44,7 +44,7 @@ import { addNewChat } from '@/api/chat'
 import { ref, onMounted } from 'vue'
 
 onMounted(() => {
-  getPersonList()
+  // getPersonList()
 })
 
 const userId = ref(3);
@@ -53,7 +53,7 @@ const userFlag = ref(false)
 
 const getPersonList = () => {
   if (!userFlag.value) {
-    console.log('선생님 - 반 아이 조회')
+    // console.log('선생님 - 반 아이 조회')
     getClassKids(
       classroomId.value,
       ({ data }) => {
