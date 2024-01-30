@@ -5,9 +5,9 @@ import axios from 'axios';
 const REST_USER_API = 'http://localhost:8080/api/user';
 
 export const useUserStore = defineStore('user', () => {
-	const kidList = ref([]);
+	const kidsList = ref([]);
 
-	let getKidList = async function (classroomId) {
+	let getKidsList = async classroomId => {
 		await axios({
 			url: `${REST_USER_API}/kid/${classroomId}`,
 			method: 'GET',
@@ -15,9 +15,9 @@ export const useUserStore = defineStore('user', () => {
 				'Content-Type': 'application/json',
 			},
 		}).then(resp => {
-			kidList.value = resp.data;
+			kidsList.value = resp.data.data;
 		});
 	};
 
-	return { kidList, getKidList };
+	return { kidsList, getKidsList };
 });

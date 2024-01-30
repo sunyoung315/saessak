@@ -5,6 +5,10 @@ import router from './router/index.js';
 import 'tailwindcss/tailwind.css';
 import { setupCalendar, Calendar, DatePicker } from 'v-calendar';
 import 'v-calendar/style.css';
+import VueCal from 'vue-cal';
+import 'vue-cal/dist/vuecal.css';
+import '@/assets/style.css';
+import '@/assets/tailwind.css';
 
 const app = createApp(App);
 
@@ -17,4 +21,5 @@ app.use(createPinia());
 // Use the components
 app.component('VCalendar', Calendar);
 app.component('VDatePicker', DatePicker);
+app.component('VueCal', VueCal);
 app.mount('#app');

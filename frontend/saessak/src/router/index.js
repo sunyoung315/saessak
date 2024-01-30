@@ -23,7 +23,8 @@ import ChatDetail from '@/components/chat/ChatDetailView.vue';
 import SettingView from '@/components/setting/SettingView.vue';
 import BoardCreate from '@/components/board/BoardCreate.vue';
 import BoardList from '@/components/board/BoardList.vue';
-import BoardDetail from '@/components/board/BoardDetail.vue';
+import BoardDetailTeacher from '@/components/board/BoardDetailTeacher.vue';
+import BoardDetailParent from '@/components/board/BoardDetailParent.vue';
 
 const routes = [
 	{ path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFoundView },
@@ -59,8 +60,13 @@ const routes = [
 			},
 			{
 				path: ':id',
-				name: 'BoardDetail',
-				component: BoardDetail,
+				name: 'BoardDetailParent',
+				component: BoardDetailParent,
+			},
+			{
+				path: 'kid/:id',
+				name: 'BoardDetailTeacher',
+				component: BoardDetailTeacher,
 			},
 		],
 	},
