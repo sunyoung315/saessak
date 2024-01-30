@@ -10,42 +10,74 @@ from deepface.modules import (
     detection,
     realtime,
 )
-from deepface.commons import functions
-
-img_url = "image/image10.jpg"
-
-img = cv2.imread(img_url)
-detector_backend = ['opencv', 'retinaface',
-            'mtcnn', 'ssd']
-
-#mtcnn 성능 좋다. 이거써야할듯?
+from deepface.commons import functions, distance as dst
+import time
 
 
+
+# img_url = "image/image10.jpg"
+
+# img = cv2.imread(img_url)
+detector_backend = ['opencv']
+
+# mtcnn 
 
 img_list = []
-for _ in detector_backend :
-    img_list.append(img.copy())
+for i in range(1,10) :
+    img_url = f"image/kid{i}.png"
+    
+    img_list.append(cv2.imread(img_url,cv2.IMREAD_COLOR))        
+
+# represent detect
+start_time = time.time()
+
+embedding_list = dict()
+for i in range(len(img_list)):
 
 
-np_array1 = np.array(img,np.uint8)
-# np_array2 = np.array(cv2.imread(img2), np.uint8)
-
-# face detect
-for i in range(len(detector_backend)):
-
-
-    extracted_face = DeepFace.extract_faces(
+    extracted_face = DeepFace.represent(
         img_path=img_list[i],
+        model_name="VGG-Face",
+        align=True,
         enforce_detection=False,
-        detector_backend=detector_backend[i]        
+        normalization="VGGFace",
+        detector_backend="opencv"        
     )
+    embedding_list [i] = []
     for face in extracted_face :
-        image_region = face["facial_area"]
-        x = image_region["x"]
-        y = image_region["y"]
-        w = image_region["w"]
-        h = image_region["h"]
-        cv2.rectangle(img=img_list[i],rec=(x,y,w,h),color=(0,255,0),thickness=1)
+        embedding_list[i].append(face["embedding"])        
 
-    cv2.imshow(detector_backend[i], img_list[i])
-cv2.waitKey()
+end_time = time.time()
+
+print("read image" , end_time- start_time)
+    
+# for key ,embedding in embedding_list.items() :
+#     print(key)
+#     for e in embedding :
+#         print(e[:10])
+
+for key1, embedding_list1 in embedding_list.items() :
+    for key2, embedding_list2 in embedding_list.items() :
+
+        for img1_representation in embedding_list1 :
+            for img2_representation in embedding_list2 :
+
+                distance_cosine = dst.findCosineDistance(img1_representation, img2_representation)
+                distance_euclidean = dst.findEuclideanDistance(img1_representation, img2_representation)
+                distance_euclidean_l2 = dst.findEuclideanDistance(
+                    dst.l2_normalize(img1_representation), dst.l2_normalize(img2_representation)
+                )
+
+                threshold_cosine = dst.findThreshold(model_name="VGG-Face",distance_metric="cosine")
+                threshold_euclidean = dst.findThreshold(model_name="VGG-Face",distance_metric="euclidean")
+                threshold_euclidean_l2 = dst.findThreshold(model_name="VGG-Face",distance_metric="euclidean_l2")
+
+                # print(f"img{key1} and img{key2} result :     ")
+                # print(f"cosine [{True if distance_cosine <= threshold_cosine else False}]")
+                # print(f"eculidean [{True if distance_euclidean <= threshold_euclidean else False}]")
+                # print(f"eculidean_l2 [{True if distance_euclidean_l2 <= threshold_euclidean_l2 else False}]")
+                # print()
+
+toc = time.time() 
+
+print("calculate" , toc - end_time)
