@@ -4,10 +4,11 @@
 		<div v-if="isTeacher">
 			<div v-for="kid in recentAlbumList" :key="kid.kidId">
 				<div v-if="kid.albumResponseDto">
-					<img src="@/assets/film.png" alt="필름" />
+					<img class="px-2" src="@/assets/film.png" alt="필름" />
 					<Carousel
 						:items-to-show="5"
 						:wrap-around="true"
+						:autoplay="2000"
 						v-if="kid.albumResponseDto"
 					>
 						<Slide
@@ -17,7 +18,7 @@
 						>
 							<div class="carousel__item">
 								<img
-									class="album"
+									class="album px-2"
 									:src="`${file.filePath}`"
 									:for="kid.albumResponseDto.albumId"
 									alt="image"
@@ -28,7 +29,7 @@
 							<Navigation />
 						</template>
 					</Carousel>
-					<img src="@/assets/film.png" alt="필름" />
+					<img class="px-2" src="@/assets/film.png" alt="필름" />
 					<div class="flex justify-between">
 						<button
 							class="bg-nav-green m-4 text-black font-bold py-2 px-4 rounded-full"
@@ -68,7 +69,6 @@
 					>
 						{{ album.albumId }}
 					</button>
-					<!-- <span>{{ album.albumId }}</span> -->
 					<span>전체 조회</span>
 				</div>
 			</div>

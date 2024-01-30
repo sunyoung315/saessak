@@ -26,6 +26,7 @@
 					class="block ml-32 mt-2 shadow appearance-none border rounded w-5/12 py-2 px-3 text-gray-700 leading-tight"
 					rows="6"
 					placeholder="제목을 입력해주세요."
+					v-model="title"
 				/>
 			</label>
 		</div>
@@ -59,16 +60,16 @@
 			</div>
 			<!-- DatePicker 끝-->
 		</div>
-		<div>
-			<span class="content-title">첨부파일 (사진, 동영상 0 / 10)</span>
-			<div class="w-32 ml-36 h-32 border-2 border-dotted border-blue-500 mb-4">
-				<div v-if="images" class="w-full h-full flex items-center">
-					<img :src="images" alt="image" />
-				</div>
+
+		<span class="content-title">첨부파일 (사진, 동영상: {{ count }}EA)</span>
+		<div class="flex items-center ml-32 w-full">
+			<label
+				class="flex flex-col justify-center w-4/5 h-64 mb-8 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+			>
 				<div
-					v-else
-					class="w-full h-full flex items-center justify-center cursor-pointer hover:bg-pink-100"
-					@click="clickInputTag()"
+					class="flex flex-col items-center justify-center pt-5 pb-6"
+					@dragover.prevent
+					@drop="onDrop"
 				>
 					<input
 						ref="image"
@@ -81,23 +82,42 @@
 						@change="uploadImage()"
 					/>
 					<svg
-						class="w-8 h-8"
+						class="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
+						aria-hidden="true"
 						xmlns="http://www.w3.org/2000/svg"
 						fill="none"
-						viewBox="0 0 24 24"
-						stroke="currentColor"
+						viewBox="0 0 20 16"
 					>
 						<path
+							stroke="currentColor"
 							stroke-linecap="round"
 							stroke-linejoin="round"
 							stroke-width="2"
-							d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+							d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
 						/>
 					</svg>
+					<p class="mb-2 text-sm text-gray-500 dark:text-gray-400">
+						<span class="font-semibold">Click to upload</span> or drag and drop
+					</p>
+					<p class="text-xs text-gray-500 dark:text-gray-400">
+						SVG, PNG, JPG or GIF (MAX. 800x400px)
+					</p>
 				</div>
-			</div>
+				<hr />
+				<p class="mb-2 text-sm text-gray-500 dark:text-gray-400">
+					<span class="font-semibold m-3">업로드 파일</span>
+				</p>
+				<div class="flex flex-wrap">
+					<span
+						class="flex-wrap flex-row m-2"
+						v-for="(fileName, index) in uploadedFileNames"
+						:key="index"
+					>
+						{{ fileName }}
+					</span>
+				</div>
+			</label>
 		</div>
-		<div></div>
 	</div>
 </template>
 
@@ -106,54 +126,58 @@ import router from '@/router';
 import axios from 'axios';
 import { ref, onMounted } from 'vue';
 
+const title = ref('');
+const date = ref(new Date());
+
+// 임시 데이터
+const classroomId = 2;
+
 // 이미지 업로드
-let images = ref();
-const imageRef = ref(null);
+let count = ref(0);
+let uploadedFileNames = ref([]);
+
+let images = ref([]);
+let imageRef = ref(null);
+let form = new FormData();
 
 const uploadImage = () => {
-	let form = new FormData();
-	let imageFile = imageRef.value.files[0];
+	let imageFiles = imageRef.value.files;
 
-	form.append('image', imageFile);
+	// 업로드 파일명 출력 및 카운트
+	count.value += imageFiles.length; // 업로드된 파일 수만큼 카운트 증가
 
-	// 이미지 미리보기
-	let reader = new FileReader();
-	reader.onload = e => {
-		images.value = e.target.result;
-	};
-	reader.readAsDataURL(imageFile);
-
-	// 업로드 파일명 출력
-	console.log('업로드 파일명:', imageFile.name);
-
-	// post 경로 변경 필요함.
-	axios
-		.post('/upload', form, {
-			headers: { 'Content-Type': 'multipart/form-data' },
-		})
-		.then(({ data }) => {
-			images.value = data;
-		})
-		.catch(err => console.log(err));
-};
-
-const clickInputTag = () => {
-	if (imageRef.value) {
-		imageRef.value.click();
+	for (let i = 0; i < imageFiles.length; i++) {
+		// console.log('업로드 파일명:', imageFiles[i].name);
+		form.append('images', imageFiles[i]); // 각 파일을 폼에 추가
+		uploadedFileNames.value.push(imageFiles[i].name); // 업로드한 파일 이름 저장
 	}
 };
 
-const date = ref(new Date());
-
 onMounted(() => {
-	// DOM이 마운트된 후 실행될 코드
 	imageRef.value = document.getElementById('input');
 });
 // 이미지 업로드 끝
 
 // 버튼 기능
 function registAlbum() {
-	console.log('regist');
+	// 앨범 정보 추가
+	form.append('albumTitle', title.value);
+	form.append('albumDate', date.value);
+
+	// post 경로 변경 필요함.
+	axios
+		.post('/ai/album/' + classroomId, form, {
+			headers: { 'Content-Type': 'multipart/form-data' },
+		})
+		.then(({ data }) => {
+			images.value.push(...data);
+		})
+		.catch(err => console.log(err));
+
+	// console.log('제목: ' + title.value);
+	// console.log('날짜: ' + date.value);
+
+	// 앨범 생성 후 목록 돌아가기
 	router.push({
 		name: 'AlbumList',
 	});
@@ -162,6 +186,12 @@ function registAlbum() {
 function goBack() {
 	router.go(-1);
 }
+
+const onDrop = event => {
+	event.preventDefault();
+	imageRef.value.files = event.dataTransfer.files;
+	uploadImage();
+};
 // 버튼 기능 끝
 </script>
 

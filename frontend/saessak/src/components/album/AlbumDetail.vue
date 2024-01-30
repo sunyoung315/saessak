@@ -86,6 +86,11 @@ const router = useRouter();
 const checked = ref([]);
 const albumStore = useAlbumStore();
 
+const props = defineProps({
+	showStatus: Boolean,
+	isTeacher: Boolean,
+});
+
 const myKidAlbumDateList = ref([]);
 
 onMounted(async () => {
@@ -93,13 +98,11 @@ onMounted(async () => {
 	// route.params.id = kidId
 	await albumStore.getkidAlbumDateList(route.params.id, date.value);
 	myKidAlbumDateList.value = albumStore.myKidAlbumDateList;
-	console.log('onMounted');
-	console.log(myKidAlbumDateList.value);
 });
 
 // datePicker
 const date = ref(new Date());
-// 날짜 같은지 확인
+// 같은 날짜 체크
 function isSameDate(albumDate, date) {
 	const albumDateObj = new Date(albumDate);
 	return (
@@ -112,16 +115,8 @@ function isSameDate(albumDate, date) {
 watch(date, async newDate => {
 	await albumStore.getkidAlbumDateList(route.params.id, newDate);
 	myKidAlbumDateList.value = albumStore.myKidAlbumDateList;
-	console.log('watch');
-	console.log(myKidAlbumDateList.value);
-	console.log('date: ' + date.value);
 });
-
-const props = defineProps({
-	showStatus: Boolean,
-	showToggle: Boolean,
-	isTeacher: Boolean,
-});
+// datePicker 및 날짜 선택 시 데이터 연동 확인 끝
 
 // 버튼
 function goBack() {

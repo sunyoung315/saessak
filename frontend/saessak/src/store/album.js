@@ -4,7 +4,7 @@ import router from '@/router';
 import axios from 'axios';
 
 const REST_ALBUM_API = `http://localhost:8080/api/album`;
-// const REST_ALBUM_API = `http://i10a706.p.ssafy.io:8081/api/album`;
+// const REST_ALBUM_API = `https://i10a706.p.ssafy.io/api/album`;
 
 export const useAlbumStore = defineStore('album', () => {
 	// 반 전체 앨범 조회
@@ -45,8 +45,8 @@ export const useAlbumStore = defineStore('album', () => {
 			.post(`${REST_ALBUM_API}/kid/${kidId}`, { albumDate })
 			.then(response => {
 				myKidAlbumDateList.value = response.data.data;
-				console.log('myKidAlbumDateList: ' + myKidAlbumDateList.value);
-				console.log(myKidAlbumDateList.value[0]);
+				// console.log('myKidAlbumDateList: ' + myKidAlbumDateList.value);
+				// console.log(myKidAlbumDateList.value[0]);
 			});
 	};
 

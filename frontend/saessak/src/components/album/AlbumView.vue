@@ -29,6 +29,7 @@
 		<div class="flex justify-end ml-auto">
 			<div v-if="isTeacher">
 				<button
+					v-if="isAdding"
 					type="button"
 					@click="registAlbum()"
 					class="mt-6 mr-6 text-white hover:text-dark-navy border border-dark-navy bg-dark-navy hover:bg-white focus:outline-none font-medium rounded-lg text-sm px-3 py-1.5 text-center me-2 mb-2"
@@ -47,11 +48,7 @@
 			</div>
 		</div>
 	</div>
-	<RouterView
-		:showStatus="showStatus"
-		:isTeacher="isTeacher"
-		:showToggle="showToggle"
-	/>
+	<RouterView :showStatus="showStatus" :isTeacher="isTeacher" />
 </template>
 
 <script setup>
@@ -61,22 +58,40 @@ import axios from 'axios';
 
 const router = useRouter();
 
+const isTeacher = ref(true);
 // showStatus: true = all, false = 아이별
 const showStatus = ref(false);
 const showToggle = ref(true);
-const isTeacher = ref(true);
-
-// datePicker
-// const date = ref(new Date());
+const isAdding = ref(true);
 
 // Btn
 function registAlbum() {
 	showToggle.value = false;
+	isAdding.value = false;
 	router.push({
 		name: 'AlbumCreate',
 	});
 }
 // Btn
+
+// 페이지 이동 전에 showToggle 값 변경
+router.beforeEach((to, from, next) => {
+	if (to.name === 'AlbumDetail') {
+		showToggle.value = false;
+	} else if (to.name === 'AlbumCreate') {
+		showToggle.value = false;
+	} else {
+		showToggle.value = true;
+	}
+	next();
+});
+
+// 페이지 이동 후에 isAdding 값 변경
+router.afterEach((to, from) => {
+	if (to.name != 'AlbumCreate') {
+		isAdding.value = true;
+	}
+});
 
 // File Download 시작
 const download = async () => {
