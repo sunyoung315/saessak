@@ -3,6 +3,7 @@ import { createPinia } from 'pinia';
 import App from './App.vue';
 import router from './router/index.js';
 import 'tailwindcss/tailwind.css';
+import piniaPersist from "pinia-plugin-persistedstate";
 import { setupCalendar, Calendar, DatePicker } from 'v-calendar';
 import 'v-calendar/style.css';
 
@@ -12,7 +13,9 @@ app.use(router);
 // Use plugin defaults (optional)
 app.use(setupCalendar, {});
 // pinia
-app.use(createPinia());
+const pinia = createPinia();
+pinia.use(piniaPersist);
+app.use(pinia);
 
 // Use the components
 app.component('VCalendar', Calendar);
