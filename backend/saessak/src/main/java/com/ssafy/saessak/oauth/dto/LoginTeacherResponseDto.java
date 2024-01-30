@@ -9,10 +9,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public class LoginTeacherResponseDto {
 
-    private Long teacherId;
     private String teacherName;
     private Boolean isTeacher;
-    private Long classroomId;
     private String accessToken;
     private String refreshToken;
 }

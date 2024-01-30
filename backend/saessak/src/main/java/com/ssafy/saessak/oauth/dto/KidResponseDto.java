@@ -9,8 +9,6 @@ import lombok.Getter;
 @AllArgsConstructor
 public class KidResponseDto {
 
-    private Long classroomId;
-    private Long parentId;
     private Long kidId;
     private String kidName;
 

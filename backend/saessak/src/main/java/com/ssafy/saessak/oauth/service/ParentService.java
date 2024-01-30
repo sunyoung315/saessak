@@ -58,8 +58,6 @@ public class ParentService {
         List<Kid> kidList = kidRepository.findAllByParent(parent);
         for(Kid kid : kidList) {
             KidResponseDto kidResponseDto = KidResponseDto.builder()
-                    .classroomId(kid.getClassroom().getClassroomId())
-                    .parentId(kid.getParent().getId())
                     .kidId(kid.getId())
                     .kidName(kid.getNickname())
                     .build();
