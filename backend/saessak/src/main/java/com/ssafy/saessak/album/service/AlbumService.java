@@ -57,7 +57,7 @@ public class AlbumService {
             Optional<Album> album = albumRepository.findFirstByKidOrderByAlbumDateDesc(kid);
             KidAlbumResponseDto kidAlbumResponseDto = KidAlbumResponseDto.builder()
                     .kidId(kid.getId())
-                    .kidName(kid.getKidName())
+                    .kidName(kid.getNickname())
                     .albumResponseDto(album.isPresent()? makeAlbumResponseDto(album.get()) : null)
                     .build();
             albumList.add(kidAlbumResponseDto);
