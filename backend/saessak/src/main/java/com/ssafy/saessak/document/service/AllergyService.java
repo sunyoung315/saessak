@@ -3,8 +3,10 @@ package com.ssafy.saessak.document.service;
 import com.ssafy.saessak.document.dto.AllergyDetailResponseDto;
 import com.ssafy.saessak.document.dto.AllergyRequestDto;
 import com.ssafy.saessak.document.dto.AllergyResponseDto;
+import com.ssafy.saessak.oauth.service.AuthenticationService;
 import com.ssafy.saessak.user.domain.Classroom;
 import com.ssafy.saessak.user.domain.Kid;
+import com.ssafy.saessak.user.domain.User;
 import com.ssafy.saessak.user.repository.ClassroomRepository;
 import com.ssafy.saessak.user.repository.KidRepository;
 import jakarta.transaction.Transactional;
@@ -22,6 +24,7 @@ public class AllergyService {
 
     private final KidRepository kidRepository;
     private final ClassroomRepository classroomRepository;
+    private final AuthenticationService authenticationService;
 
     @Transactional
     public void insert(AllergyRequestDto requestDto) {
@@ -29,8 +32,9 @@ public class AllergyService {
         kid.setAllergy(requestDto.getKidAllergy(), requestDto.getKidAllergySignature(), LocalDate.now());
     }
 
-    public List<AllergyResponseDto> list(Long classroomId) {
-        Classroom classroom = classroomRepository.findById(classroomId).get();
+    public List<AllergyResponseDto> list() {
+        User user = authenticationService.getUserByAuthentication();
+        Classroom classroom = user.getClassroom();
         List<Kid> kidList = kidRepository.findAllByClassroom(classroom);
 
         List<AllergyResponseDto> allgeryResponseDtoList = new ArrayList<>();

@@ -18,23 +18,18 @@ import org.springframework.web.bind.annotation.*;
 public class AllergyController {
 
     private final AllergyService allergyService;
-    private final AuthenticationService authenticationService;
 
     @Operation(summary = "식품 알레르기 동의서 입력")
     @PostMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResultResponse> insert(@RequestBody AllergyRequestDto allergyRequestDto) {
-        User user = authenticationService.getUserByAuthentication();
-        authenticationService.AuthenticationByObject(user, allergyRequestDto.getKidId());
         allergyService.insert(allergyRequestDto);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS));
     }
 
     @Operation(summary = "선생님 식품 알레르기 동의서 목록 조회")
-    @GetMapping(value = "/list/{classroomId}")
-    public ResponseEntity<ResultResponse> list(@PathVariable("classroomId") Long classroomId) {
-        User user = authenticationService.getUserByAuthentication();
-        authenticationService.AuthenticationByObject(user, classroomId);
-        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, allergyService.list(classroomId)));
+    @GetMapping(value = "/list")
+    public ResponseEntity<ResultResponse> list() {
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, allergyService.list()));
     }
 
     @Operation(summary = "식품 알레르기 동의서 세부 내용 조회")

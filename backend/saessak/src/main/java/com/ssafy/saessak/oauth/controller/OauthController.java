@@ -1,5 +1,6 @@
 package com.ssafy.saessak.oauth.controller;
 
+import com.ssafy.saessak.oauth.dto.AccessTokenGetSuccess;
 import com.ssafy.saessak.oauth.dto.LoginSuccessResponseDto;
 import com.ssafy.saessak.oauth.dto.RegistRequestDto;
 import com.ssafy.saessak.oauth.dto.kakao.KakaoUserResponse;
@@ -90,10 +91,11 @@ public class OauthController {
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS));
     }
 
-//    @GetMapping("/token-refresh")
-//    public ResponseEntity<ResultResponse> refreshToken(@RequestParam final String refreshToken) {
-//        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, parentService.refreshToken(refreshToken)));
-//    }
+    @GetMapping("/refreshtoken")
+    public ResponseEntity<ResultResponse> refreshToken(@RequestParam final String refreshToken) {
+        AccessTokenGetSuccess accessTokenGetSuccess = kakaoUserService.refreshToken(refreshToken);
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, kakaoUserService.refreshToken(refreshToken)));
+    }
 
     @Operation(summary = "로그아웃")
     @PostMapping("/logout")

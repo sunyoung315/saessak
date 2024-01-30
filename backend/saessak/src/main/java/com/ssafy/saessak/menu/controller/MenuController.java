@@ -23,9 +23,9 @@ public class MenuController {
     private final MenuService menuService;
 
     @Operation(summary = "자유로운 식단표 입력")
-    @PostMapping(value = "/{daycardId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResultResponse> insert(@PathVariable Long daycardId, @RequestBody List<MenuRequestDto> menuRequestDtoList) {
-        menuService.insert(daycardId, menuRequestDtoList);
+    @PostMapping(value = "/{daycareId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResultResponse> insert(@PathVariable Long daycareId, @RequestBody List<MenuRequestDto> menuRequestDtoList) {
+        menuService.insert(daycareId, menuRequestDtoList);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS));
     }
 

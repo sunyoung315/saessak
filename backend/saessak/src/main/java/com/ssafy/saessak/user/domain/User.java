@@ -27,4 +27,8 @@ public class User {
     public void mapping_classroom(Classroom classroom) {
         this.classroom = classroom;
     }
+
+    public void uploadProfile(String profile) {
+        this.profile = profile;
+    }
 }

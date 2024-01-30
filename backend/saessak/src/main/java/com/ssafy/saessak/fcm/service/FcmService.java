@@ -1,6 +1,5 @@
 package com.ssafy.saessak.fcm.service;
 
-import ch.qos.logback.classic.model.processor.LogbackClassicDefaultNestedComponentRules;
 import com.ssafy.saessak.alarm.domain.Alarm;
 import com.ssafy.saessak.alarm.dto.AlarmRequestDto;
 import com.ssafy.saessak.alarm.repository.AlarmRepository;
@@ -11,10 +10,8 @@ import com.ssafy.saessak.menu.domain.Food;
 import com.ssafy.saessak.menu.domain.Menu;
 import com.ssafy.saessak.menu.repository.FoodRepository;
 import com.ssafy.saessak.menu.repository.MenuRepository;
-import com.ssafy.saessak.user.domain.Classroom;
-import com.ssafy.saessak.user.domain.Kid;
-import com.ssafy.saessak.user.domain.Parent;
-import com.ssafy.saessak.user.domain.Teacher;
+import com.ssafy.saessak.oauth.service.AuthenticationService;
+import com.ssafy.saessak.user.domain.*;
 import com.ssafy.saessak.user.repository.KidRepository;
 import com.ssafy.saessak.user.repository.ParentRepository;
 import com.ssafy.saessak.user.repository.TeacherRepository;
@@ -30,8 +27,8 @@ import com.google.firebase.messaging.Notification;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 
-import static java.awt.SystemColor.menu;
 
 @Service
 @RequiredArgsConstructor
@@ -45,32 +42,37 @@ public class FcmService {
     private final FoodRepository foodRepository;
     private final AlarmRepository alarmRepository;
     private final TeacherRepository teacherRepository;
-
+    private final AuthenticationService authenticationService;
 
     @Transactional
-    public void saveParentToken(FcmTokenRequestDto requestDto) {
-        Parent parent = parentRepository.findById(requestDto.getId()).get();
-        parent.setToken(requestDto.getToken());
+    public void saveToken(FcmTokenRequestDto requestDto) {
+        User user = authenticationService.getUserByAuthentication();
+
+        Optional<Teacher> teacher = teacherRepository.findById(user.getId());
+        if(teacher.isPresent()) {
+            teacher.get().setToken(requestDto.getToken());
+        }
+
+        Optional<Parent> parent = parentRepository.findById(user.getId());
+        if(parent.isPresent()) {
+            parent.get().setToken(requestDto.getToken());
+        }
     }
 
     @Transactional
-    public void saveTeacherToken(FcmTokenRequestDto requestDto) {
-        Teacher teacher = teacherRepository.findById(requestDto.getId()).get();
-        teacher.setToken(requestDto.getToken());
-    }
+    public void changeAlarm() {
+        User user = authenticationService.getUserByAuthentication();
 
-    @Transactional
-    public void changeParentAlarm(Long parentId) {
-        Parent parent = parentRepository.findById(parentId).get();
-        parent.setAlarm();
-    }
+        Optional<Teacher> teacher = teacherRepository.findById(user.getId());
+        if(teacher.isPresent()) {
+            teacher.get().setAlarm();
+        }
 
-    @Transactional
-    public void changeTeacherAlarm(Long teacherId) {
-        Teacher teacher = teacherRepository.findById(teacherId).get();
-        teacher.setAlarm();
+        Optional<Parent> parent = parentRepository.findById(user.getId());
+        if(parent.isPresent()) {
+            parent.get().setAlarm();
+        }
     }
-
 
     public void sendNotification(FcmNotificationRequestDto requestDto) {
         try {

@@ -28,7 +28,6 @@ public class AttendanceController {
     private final UserService userService;
     private final FcmService fcmService;
     private final AlarmService alarmService;
-    private final AuthenticationService authenticationService;
 
     @Operation(summary = "등원 여부 입력")
     @PostMapping(value = "/in/{kidId}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -110,16 +109,12 @@ public class AttendanceController {
     @Operation(summary = "주간 출석부 조회(선생님)")
     @PostMapping(value = "/teacher/list", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResultResponse> listOfteacher(@RequestBody AttendanceRequestDto attendanceRequestDto) {
-        User user = authenticationService.getUserByAuthentication();
-        authenticationService.AuthenticationByObject(user, attendanceRequestDto.getClassroomId());
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, attendanceService.listOfteacher(attendanceRequestDto)));
     }
 
     @Operation(summary = "아이 출석부 조회(학부모)")
     @GetMapping(value = "/parent/list/{kidId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResultResponse> listOfParent(@PathVariable("kidId") Long kidId) {
-        User user = authenticationService.getUserByAuthentication();
-        authenticationService.AuthenticationByObject(user, kidId);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, attendanceService.listOfParent(kidId)));
     }
 
