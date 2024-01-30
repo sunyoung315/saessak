@@ -5,8 +5,10 @@ import com.ssafy.saessak.attendance.dto.*;
 import com.ssafy.saessak.attendance.repository.AttendanceRepository;
 import com.ssafy.saessak.document.domain.Replacement;
 import com.ssafy.saessak.document.repository.ReplacementRepository;
+import com.ssafy.saessak.oauth.service.AuthenticationService;
 import com.ssafy.saessak.user.domain.Classroom;
 import com.ssafy.saessak.user.domain.Kid;
+import com.ssafy.saessak.user.domain.User;
 import com.ssafy.saessak.user.repository.ClassroomRepository;
 import com.ssafy.saessak.user.repository.KidRepository;
 import jakarta.transaction.Transactional;
@@ -27,9 +29,9 @@ import java.util.Optional;
 public class AttendanceService {
 
     private final AttendanceRepository attendanceRepository;
-    private final ClassroomRepository classroomRepository;
     private final KidRepository kidRepository;
     private final ReplacementRepository replacementRepository;
+    private final AuthenticationService authenticationService;
 
     @Transactional
     public AttendanceTimeResponseDto inTime(Long kidId) {
@@ -66,8 +68,10 @@ public class AttendanceService {
     }
 
     public List<AttendanceKidListResponseDto> listOfteacher(AttendanceRequestDto requestDto) {
+        // 유저(accessToken)의 classroom 찾기
+        User user = authenticationService.getUserByAuthentication();
+        Classroom classroom = user.getClassroom();
         // 반에서 아이 찾기
-        Classroom classroom = classroomRepository.findById(requestDto.getClassroomId()).get();
         List<Kid> kidList = kidRepository.findAllByClassroom(classroom);
         LocalDate startDate = null;
         LocalDate endDate = null;

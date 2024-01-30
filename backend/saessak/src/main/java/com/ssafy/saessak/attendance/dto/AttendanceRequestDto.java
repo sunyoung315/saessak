@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AttendanceRequestDto {
 
-    private Long classroomId;
     private int year;
     private int month;
     private int week;

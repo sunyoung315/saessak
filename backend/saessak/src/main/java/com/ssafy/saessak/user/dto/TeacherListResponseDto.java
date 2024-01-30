@@ -7,10 +7,12 @@ import lombok.Getter;
 @Builder
 @Getter
 @AllArgsConstructor
-public class TeacherListReponseDto {
+public class TeacherListResponseDto {
+
     private Long teacherId;
     private String teacherName;
     private Long kidId;
     private String kidName;
     private String className;
+
 }

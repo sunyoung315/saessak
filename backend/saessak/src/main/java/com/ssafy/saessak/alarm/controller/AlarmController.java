@@ -22,17 +22,13 @@ public class AlarmController {
     @Operation(summary = "모든 알림 조회(학부모)")
     @GetMapping(value = "/kid/{kidId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResultResponse> kidAlarmList(@PathVariable("kidId") Long kidId) {
-        User user = authenticationService.getUserByAuthentication();
-        authenticationService.AuthenticationByObject(user, kidId);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, alarmService.kidAlarmList(kidId)));
     }
 
     @Operation(summary = "모든 알림 조회(선생님)")
-    @GetMapping(value = "/classroom/{classroomId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResultResponse> classroomAlarmList(@PathVariable("classroomId") Long classroomId) {
-        User user = authenticationService.getUserByAuthentication();
-        authenticationService.AuthenticationByObject(user, classroomId);
-        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, alarmService.classroomAlarmList(classroomId)));
+    @GetMapping(value = "/classroom", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResultResponse> classroomAlarmList() {
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, alarmService.classroomAlarmList()));
     }
 
     @Operation(summary = "알림 삭제")

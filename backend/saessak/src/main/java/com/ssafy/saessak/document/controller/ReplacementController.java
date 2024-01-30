@@ -29,13 +29,10 @@ public class ReplacementController {
     private final ReplacementService replacementService;
     private final FcmService fcmService;
     private final AlarmService alarmService;
-    private final AuthenticationService authenticationService;
 
     @Operation(summary = "대리인 귀가 동의서 입력")
     @PostMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResultResponse> insert(@RequestBody ReplacementRequestDto replacementRequestDto) {
-        User user = authenticationService.getUserByAuthentication();
-        authenticationService.AuthenticationByObject(user, replacementRequestDto.getKidId());
         ReplacementAlarmResponseDto responseDto = replacementService.insert(replacementRequestDto);
         List<String> teacherDeviceList = responseDto.getTeacherAlarmDeviceList();
         for (String teacherDevice : teacherDeviceList) {
@@ -62,17 +59,13 @@ public class ReplacementController {
     @Operation(summary = "대리인 귀가 동의서 목록 조회(학부모)")
     @GetMapping(value = "/list/kid/{kidId}")
     public ResponseEntity<ResultResponse> listOfkidId(@PathVariable("kidId") Long kidId) {
-        User user = authenticationService.getUserByAuthentication();
-        authenticationService.AuthenticationByObject(user, kidId);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, replacementService.listOfkidId(kidId)));
     }
 
     @Operation(summary = "대리인 귀가 동의서 목록 조회(선생님)")
-    @GetMapping(value = "/list/classroom/{classroomId}")
-    public ResponseEntity<ResultResponse> listOfclassroomId(@PathVariable("classroomId") Long classroomId) {
-        User user = authenticationService.getUserByAuthentication();
-        authenticationService.AuthenticationByObject(user, classroomId);
-        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, replacementService.listOfclassroomId(classroomId)));
+    @GetMapping(value = "/list/classroom")
+    public ResponseEntity<ResultResponse> listOfclassroomId() {
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, replacementService.listOfclassroomId()));
     }
 
     @Operation(summary = "대리인 귀가 동의서 세부내용 조회")

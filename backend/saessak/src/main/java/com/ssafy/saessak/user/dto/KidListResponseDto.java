@@ -17,7 +17,6 @@ public class KidListResponseDto {
     private String kidAllergy;
     private String kidProfile; // s3 url 예정
     private String kidAllergySignature;
-    private String kidInviteLink;
     private LocalDate kidAllergyDate;
     private Long parentId;
     private Long classroomId;

@@ -14,6 +14,4 @@ public class KidRegistRequestDto {
     private String kidName;
     private LocalDate kidBirthday;
 
-//    private String kidProfile; // s3 url 예정
-
 }

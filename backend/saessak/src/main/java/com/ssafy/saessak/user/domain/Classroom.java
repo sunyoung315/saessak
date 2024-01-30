@@ -6,7 +6,6 @@ import com.ssafy.saessak.board.domain.Board;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -33,6 +32,6 @@ public class Classroom {
 
     @JsonIgnore
     @OneToMany(mappedBy = "classroom", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    private final List<Board> baordList = new ArrayList<>();
+    private List<Board> boardList;
 
 }

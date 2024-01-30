@@ -31,9 +31,6 @@ public class Kid extends User {
     @Column(name = "kid_allergy_signature")
     private String kidAllergySignature;
 
-    @Column(name = "kid_invite_code")
-    private String kidInviteCode;
-
     @Column(name = "kid_allergy_check")
     private Boolean kidAllergyCheck; // 확인 여부
 
@@ -74,5 +71,9 @@ public class Kid extends User {
 
     public void mapping_parent(Parent parent) {
         this.parent = parent;
+    }
+
+    public void uploadProfile(String kidProfile) {
+        super.uploadProfile(kidProfile);
     }
 }

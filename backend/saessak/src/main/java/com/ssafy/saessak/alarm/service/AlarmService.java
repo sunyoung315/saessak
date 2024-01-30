@@ -4,8 +4,10 @@ import com.ssafy.saessak.alarm.domain.Alarm;
 import com.ssafy.saessak.alarm.dto.AlarmRequestDto;
 import com.ssafy.saessak.alarm.dto.AlarmResponseDto;
 import com.ssafy.saessak.alarm.repository.AlarmRepository;
+import com.ssafy.saessak.oauth.service.AuthenticationService;
 import com.ssafy.saessak.user.domain.Classroom;
 import com.ssafy.saessak.user.domain.Kid;
+import com.ssafy.saessak.user.domain.User;
 import com.ssafy.saessak.user.repository.ClassroomRepository;
 import com.ssafy.saessak.user.repository.KidRepository;
 import jakarta.transaction.Transactional;
@@ -21,7 +23,7 @@ public class AlarmService {
 
     private final AlarmRepository alarmRepository;
     private final KidRepository kidRepository;
-    private final ClassroomRepository classroomRepository;
+    private final AuthenticationService authenticationService;
 
     @Transactional
     public Long insertAlarm(AlarmRequestDto requestDto) {
@@ -58,8 +60,9 @@ public class AlarmService {
         return responseDtoList;
     }
 
-    public List<AlarmResponseDto> classroomAlarmList(Long classroomId) {
-        Classroom classroom = classroomRepository.findById(classroomId).get();
+    public List<AlarmResponseDto> classroomAlarmList() {
+        User user = authenticationService.getUserByAuthentication();
+        Classroom classroom = user.getClassroom();
         List<Kid> kidList = kidRepository.findAllByClassroom(classroom);
 
         List<AlarmResponseDto> responseDtoList = new ArrayList<>();
