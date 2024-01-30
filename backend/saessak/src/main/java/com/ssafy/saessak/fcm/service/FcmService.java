@@ -3,6 +3,9 @@ package com.ssafy.saessak.fcm.service;
 import com.ssafy.saessak.alarm.domain.Alarm;
 import com.ssafy.saessak.alarm.dto.AlarmRequestDto;
 import com.ssafy.saessak.alarm.repository.AlarmRepository;
+import com.ssafy.saessak.alarm.service.AlarmService;
+import com.ssafy.saessak.attendance.dto.AttendanceTimeResponseDto;
+import com.ssafy.saessak.attendance.dto.ReplacementResponseDto;
 import com.ssafy.saessak.fcm.dto.FcmNotificationRequestDto;
 import com.ssafy.saessak.fcm.dto.FcmTokenRequestDto;
 import com.ssafy.saessak.fcm.util.FirebaseInit;
@@ -15,6 +18,7 @@ import com.ssafy.saessak.user.domain.*;
 import com.ssafy.saessak.user.repository.KidRepository;
 import com.ssafy.saessak.user.repository.ParentRepository;
 import com.ssafy.saessak.user.repository.TeacherRepository;
+import com.ssafy.saessak.user.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -43,6 +47,9 @@ public class FcmService {
     private final AlarmRepository alarmRepository;
     private final TeacherRepository teacherRepository;
     private final AuthenticationService authenticationService;
+    private final UserService userService;
+    private final AlarmService alarmService;
+
 
     @Transactional
     public void saveToken(FcmTokenRequestDto requestDto) {
@@ -74,6 +81,78 @@ public class FcmService {
         }
     }
 
+    public void sendInTime(AttendanceTimeResponseDto responseDto, Long kidId) {
+        String TITLE = "등원 알림";
+        String parentToken = userService.getParentToken(kidId);
+
+        FcmNotificationRequestDto.Notification notification = FcmNotificationRequestDto.Notification.builder()
+                .token(parentToken)
+                .title(TITLE)
+                .body(responseDto.getKidName()+" 어린이가 "+ responseDto.getAttendanceDate()+"일 "+responseDto.getAttendanceTime()+"에 등원했습니다")
+                .build();
+        FcmNotificationRequestDto fcmRequestDto = FcmNotificationRequestDto.builder()
+                .notification(notification)
+                .build();
+        System.out.println(notification.getBody());
+
+        AlarmRequestDto alarmRequestDto = AlarmRequestDto.builder()
+                .kidId(kidId)
+                .alarmType(TITLE)
+                .alarmDate(responseDto.getAttendanceDate())
+                .alarmContent(responseDto.getAttendanceTime())
+                .build();
+
+        sendNotification(fcmRequestDto);
+        alarmService.insertAlarm(alarmRequestDto);
+    }
+
+    public void sendOutTime(AttendanceTimeResponseDto responseDto, Long kidId) {
+        String TITLE = "하원 알림";
+        String parentToken = userService.getParentToken(kidId);
+
+        FcmNotificationRequestDto.Notification notification = FcmNotificationRequestDto.Notification.builder()
+                .token(parentToken)
+                .title(TITLE)
+                .body(responseDto.getKidName() + " 어린이가 " + responseDto.getAttendanceDate() + "일 " + responseDto.getAttendanceTime() + "에 하원했습니다")
+                .build();
+        FcmNotificationRequestDto fcmRequestDto = FcmNotificationRequestDto.builder()
+                .notification(notification)
+                .build();
+
+        AlarmRequestDto alarmRequestDto = AlarmRequestDto.builder()
+                .kidId(kidId)
+                .alarmType(TITLE)
+                .alarmDate(responseDto.getAttendanceDate())
+                .alarmContent(responseDto.getAttendanceTime())
+                .build();
+
+        sendNotification(fcmRequestDto);
+        alarmService.insertAlarm(alarmRequestDto);
+    }
+
+    public void sendReplacement(ReplacementResponseDto replacementResponseDto, Long kidId) {
+        String TITLE = "대리인 알림";
+        String parentToken = userService.getParentToken(kidId);
+
+        FcmNotificationRequestDto.Notification notification = FcmNotificationRequestDto.Notification.builder()
+                .token(parentToken)
+                .title(TITLE)
+                .body(replacementResponseDto.getReplacementRelationship()+
+                        "("+replacementResponseDto.getReplacementName()+") 님이 "+replacementResponseDto.getKidName()+" 어린이와 함께 귀가했습니다")
+                .build();
+        FcmNotificationRequestDto fcmRequestDto = FcmNotificationRequestDto.builder()
+                .notification(notification)
+                .build();
+
+        AlarmRequestDto alarmRequestDto = AlarmRequestDto.builder()
+                .kidId(kidId)
+                .alarmType(TITLE)
+                .build();
+
+        sendNotification(fcmRequestDto);
+        alarmService.insertAlarm(alarmRequestDto);
+    }
+
     public void sendNotification(FcmNotificationRequestDto requestDto) {
         try {
             // Firebase Admin SDK 초기화
@@ -88,11 +167,9 @@ public class FcmService {
                             .build())
                     .build();
 
-            // 알림 보내기
-            FirebaseMessaging.getInstance().send(message);
+            FirebaseMessaging.getInstance().send(message); // 알림 보내기
 
         } catch (Exception e) {
-            // 실패 시 오류 로그 찍고
             e.printStackTrace();
         }
     }
