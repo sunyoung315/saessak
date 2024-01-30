@@ -40,6 +40,10 @@ public class Kid extends User {
     @Column(name = "kid_allergy_date")
     private LocalDate kidAllergyDate;
 
+    @Enumerated(value = EnumType.STRING)
+    @Column
+    private Gender gender;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="parent_id")
     private Parent parent;
@@ -55,7 +59,6 @@ public class Kid extends User {
 
     @OneToMany(mappedBy = "kid" ,fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Board> boardList;
-
 
     public Kid updateParent(Parent parent){
         this.parent = parent;
