@@ -52,10 +52,8 @@ public class TeacherService {
     public LoginTeacherResponseDto login(LoginSuccessResponseDto loginSuccessResponseDto) {
         Teacher teacher = teacherRepository.findById(loginSuccessResponseDto.getUserId()).get();
         LoginTeacherResponseDto loginTeacherResponseDto = LoginTeacherResponseDto.builder()
-                .teacherId(teacher.getId())
                 .teacherName(teacher.getNickname())
                 .isTeacher(true)
-                .classroomId(teacher.getClassroom().getClassroomId())
                 .accessToken(loginSuccessResponseDto.getAccessToken())
                 .refreshToken(loginSuccessResponseDto.getRefreshToken())
                 .build();

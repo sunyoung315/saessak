@@ -6,7 +6,6 @@ import com.ssafy.saessak.s3.S3Upload;
 import com.ssafy.saessak.user.domain.*;
 import com.ssafy.saessak.user.dto.KidListResponseDto;
 import com.ssafy.saessak.user.dto.KidMappingRequestDto;
-import com.ssafy.saessak.user.repository.ClassroomRepository;
 import com.ssafy.saessak.user.repository.KidRepository;
 import com.ssafy.saessak.user.repository.ParentRepository;
 import jakarta.transaction.Transactional;
@@ -28,7 +27,6 @@ public class UserService {
     private final AuthenticationService authenticationService;
     private final ParentService parentService;
     private final S3Upload s3Upload;
-    private final ClassroomRepository classroomRepository;
 
     @Transactional
     public void mapping(KidMappingRequestDto mappingRequestDto) {

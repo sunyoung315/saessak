@@ -20,7 +20,6 @@ import java.time.LocalDate;
 public class UserController {
 
     private final UserService userService;
-    private final ParentService parentService;
 
 
     @Operation(summary = "아이와 부모 매핑")
