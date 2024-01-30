@@ -14,6 +14,7 @@ import com.ssafy.saessak.result.ResultResponse;
 import com.ssafy.saessak.user.domain.Parent;
 import com.ssafy.saessak.user.domain.Teacher;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -42,6 +43,29 @@ public class OauthController {
     @GetMapping("/kakao/login")
     public String getKakaologin() {
         return kakaoSocialService.getKakaoLogin();
+    }
+    
+    @Operation(summary = "백엔드 로그인")
+    @GetMapping("/kakao/callback/backend")
+    public ResponseEntity<ResultResponse> backendLogin(HttpServletRequest request) {
+        KakaoUserResponse kakaoUserResponse = kakaoSocialService.login(request.getParameter("code"));
+        if(kakaoUserService.checkUser(kakaoUserResponse)) {
+
+            Optional<Parent> parent = parentService.isParent(kakaoUserResponse);
+            if(parent.isPresent()){
+                LoginSuccessResponseDto loginSuccessResponseDto = kakaoUserService.getTokenByUserId(parent.get().getId());
+                return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS,parentService.login(loginSuccessResponseDto)));
+            }
+
+            Optional<Teacher> teacher = teacherService.isTeacher(kakaoUserResponse);
+            if(teacher.isPresent()) {
+                LoginSuccessResponseDto loginSuccessResponseDto = kakaoUserService.getTokenByUserId(teacher.get().getId());
+                return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS,teacherService.login(loginSuccessResponseDto)));
+            }
+        } else {
+            return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, kakaoUserService.registUser(kakaoUserResponse)));
+        }
+        return null;
     }
 
     @Operation(summary = "사용자 검증 (로그인 or 회원가입)")

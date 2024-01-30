@@ -59,7 +59,8 @@ public class KakaoSocialService {
         return getUserInfo(accessToken);
     }
 
-    private String getOAuth2Authentication (final String authorizationCode) {
+
+    public String getOAuth2Authentication (final String authorizationCode) {
         CompletableFuture<KakaoAccessTokenResponse> future = CompletableFuture.supplyAsync(
                 () -> kakaoAuthApiClient.getOAuth2AccessToken(
                         AUTH_CODE,
