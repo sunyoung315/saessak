@@ -1,25 +1,18 @@
-// const loginUser = localStorage.getItem('loginUser');
-// const teacher = {
-// 	flag: true,
-// 	teacherName: '꽃잎반 담임',
-// 	teacherId: '1',
-// 	classroomId: '1',
-// };
+import axios from 'axios';
 
-// const parent = {
-// 	flag: false,
-// 	kidList: [
-// 		{
-// 			classroomId: '1',
-// 			parentId: '10',
-// 			kidId: '1',
-// 			kidName: '박나은',
-// 		},
-// 		{
-// 			classroomId: '2',
-// 			parentId: '10',
-// 			kidId: '2',
-// 			kidName: '박건후',
-// 		},
-// 	],
-// };
+const LOCAL_API = 'http://localhost:8080/api/board';
+// const REST_BOARD_API = 'https://i10a706.p.ssafy.io/api%EB%A1%9C';
+
+const createBoard = async data => {
+	await axios({
+		url: `${LOCAL_API}`,
+		// url: `${REST_BOARD_API}`,
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		data,
+	});
+};
+
+export { createBoard };
