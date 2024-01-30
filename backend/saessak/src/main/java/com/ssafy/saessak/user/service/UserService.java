@@ -6,8 +6,6 @@ import com.ssafy.saessak.s3.S3Upload;
 import com.ssafy.saessak.user.domain.*;
 import com.ssafy.saessak.user.dto.KidListResponseDto;
 import com.ssafy.saessak.user.dto.KidMappingRequestDto;
-import com.ssafy.saessak.user.dto.KidRegistRequestDto;
-import com.ssafy.saessak.user.dto.TeacherListResponseDto;
 import com.ssafy.saessak.user.repository.ClassroomRepository;
 import com.ssafy.saessak.user.repository.KidRepository;
 import com.ssafy.saessak.user.repository.ParentRepository;
@@ -18,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 import java.util.*;
 
 @Service
@@ -43,12 +42,12 @@ public class UserService {
     }
 
     @Transactional
-    public Long registKid(KidRegistRequestDto requestDto, MultipartFile kidProfile) {
+    public Long registKid(String kidName, LocalDate kidBirthday, MultipartFile kidProfile) {
         User user = authenticationService.getUserByAuthentication();
         Classroom classroom = user.getClassroom();
         Kid kid = Kid.builder()
-                .nickname(requestDto.getKidName())
-                .kidBirthday(requestDto.getKidBirthday())
+                .nickname(kidName)
+                .kidBirthday(kidBirthday)
                 .classroom(classroom)
                 .kidAllergyCheck(false)
                 .build();

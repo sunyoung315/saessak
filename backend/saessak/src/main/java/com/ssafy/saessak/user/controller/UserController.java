@@ -3,7 +3,6 @@ package com.ssafy.saessak.user.controller;
 import com.ssafy.saessak.oauth.service.ParentService;
 import com.ssafy.saessak.result.ResultCode;
 import com.ssafy.saessak.result.ResultResponse;
-import com.ssafy.saessak.user.dto.KidRegistRequestDto;
 import com.ssafy.saessak.user.dto.KidMappingRequestDto;
 import com.ssafy.saessak.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -12,6 +11,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.time.LocalDate;
 
 @RequestMapping("/api/user")
 @RequiredArgsConstructor
@@ -30,9 +31,9 @@ public class UserController {
     }
 
     @Operation(summary = "선생님이 반아이 등록")
-    @PostMapping(value = "/kid/regist", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResultResponse> registKid(@RequestBody KidRegistRequestDto requestDto, @RequestPart("MultipartFile") MultipartFile kidProfile) {
-        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, userService.registKid(requestDto, kidProfile)));
+    @PostMapping(value = "/kid/regist", produces = MediaType.APPLICATION_JSON_VALUE, consumes = "multipart/form-data")
+    public ResponseEntity<ResultResponse> registKid(@RequestParam String kidName, @RequestParam LocalDate kidBirthday, @RequestPart("MultipartFile") MultipartFile kidProfile) {
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, userService.registKid(kidName, kidBirthday, kidProfile)));
     }
 
     @Operation(summary = "반 아이 목록 조회")
