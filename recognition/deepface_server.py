@@ -22,7 +22,7 @@ import os
 ## db 설정
 album_table = table_info.get_album_table()
 file_table = table_info.get_file_table()
-kid_table = table_info.get_kid_table()
+user_table = table_info.get_user_table()
 engine = db_util.get_engine()
 
 # s3 설정
@@ -35,11 +35,50 @@ app = Flask(__name__)
 
 CORS(app, origins="*")
 
+def get_represent_obj (img ): 
+    represent_objs = DeepFace.represent(
+        img_path=img,
+        detector_backend="opencv",
+        enforce_detection=False,
+        model_name="VGG-Face",
+        normalization="VGGFACE2"
+    )
+    embedding_list = []
+    
+    for face in represent_objs :
+        embedding_list.append(face["embedding"])
+
+    return embedding_list
+
+
 def secure_file(file_name):
     # secure_filename 함수를 사용하여 파일 이름을 안전하게 변환
     secured_filename = secure_filename(file_name)
     
     return secured_filename
+@app.route("/ai/album/refactoring/<classroomId>" , methods=["POST"])
+def refactor(classroomId):
+    
+    try : 
+        with engine.connect() as conn :
+            result = conn.execute(
+                select(user_table).where(user_table.c.classroom_id == classroomId)
+            )
+            kid_dict = dict()
+            for r in result.mappings():
+                kid_id = r["id"]
+                kid_profile= r["profile"]
+                if kid_profile is None : 
+                    continue
+                else :
+                    kid_dict[kid_id] = kid_profile
+
+        return jsonify({"data" : kid_dict})
+
+    except Exception as e :
+        return jsonify({"error" : str(e)})
+
+
 
 @app.route("/ai/album/<classroomId>", methods=["POST"])
 def uploadAlbum(classroomId):
@@ -49,20 +88,20 @@ def uploadAlbum(classroomId):
         album_date = request.form.get("albumDate")
         album_title = request.form.get("albumTitle")
 
-        base_url = ""
+        
         with engine.connect() as conn : 
             # 반의 아이들을 모두 가져오자
             result = conn.execute(
-                select(kid_table).where(kid_table.c.classroom_id == classroomId)
+                select(user_table).where(user_table.c.classroom_id == classroomId)
             )
 
             kid_dict = dict()
             kid_album = dict()
             for r in result.mappings() :
-                kid_id = r["kid_id"]
-                url = r["kid_profile"] 
-                if not url : continue
-                
+                kid_id = r["id"]
+                url = r["profile"] 
+                if url is None : continue
+                base_url = "profile/"
                 kid_dict[kid_id] = url
                 
                 url_parser = url.split("/")
@@ -75,7 +114,8 @@ def uploadAlbum(classroomId):
                 kid_dict[kid_id] = img
                 kid_album[kid_id] = []
             
-            ### 반 아이들의 np array 추출
+            ### 반 아이들의 np array 추출 
+            ## >> 반 아이들의 특징 obj 추출
             
 
             s3_key_list = [] 
@@ -92,7 +132,7 @@ def uploadAlbum(classroomId):
                 file_name, file_extension = os.path.splitext(image.filename)
 
                 file_uuid = str(uuid.uuid4())
-                path = "class/" + file_uuid+ "." + file_extension
+                path = "album/" + file_uuid+ "." + file_extension
                 s3_key_list.append(path)
                 s3_content_type.append(content_type)
                 add_object = {
@@ -160,53 +200,56 @@ def uploadAlbum(classroomId):
             for i, image in enumerate(image_list) :
                 s3.upload_fileobj(image, s3_bucket_name, s3_key_list[i], ExtraArgs={'ContentType': s3_content_type[i]}  )
             
-
-
             conn.commit()
-            return jsonify({"albumid" : created_albumid})
+            return jsonify({"status": HTTPStatus.CREATED,"message":"성공하였습니다." ,"data" : {"albumid" : created_albumid}})
     except SQLAlchemyError as e :
         conn.rollback()
         return jsonify({"error" : str(e)})
     except Exception as e:
         return jsonify({"error" : str(e)})
 
-@app.route("/s3/upload/<classroomId>", methods=["POST"])
+@app.route("/ai/album/upload/<classroomId>", methods=["POST"])
 def uploadS3(classroomId) :
     if(request.method == "POST") :
-        files = request.files.getlist("images")
-        size = len(files)
-        with engine.connect() as conn : 
-            result = conn.execute(
-                insert(album_table),
-                {
-                    "album_date" : "2024-01-27",
-                    "classroom_id" : classroomId,
-                    "album_title" : "1월 27일 엘범 테스트"
-                }
-            )
-            album_id = result.inserted_primary_key[0]
-            photo = []
-            for file in files :
-                file_name, file_extension = os.path.splitext(file.filename)
+        try : 
+            album_date = request.form.get("albumDate")
+            album_title= request.form.get("albumTitle")
+            files = request.files.getlist("images")
+            with engine.connect() as conn : 
+                result = conn.execute(
+                    insert(album_table),
+                    {
+                        "album_date" : album_date,
+                        "classroom_id" : classroomId,
+                        "album_title" : album_title
+                    }
+                )
+                album_id = result.inserted_primary_key[0]
+                photo = []
+                for file in files :
+                    file_name, file_extension = os.path.splitext(file.filename)
 
-                file_uuid = str(uuid.uuid4())
-                path = "test/" + file_uuid + "." + file_extension
-                s3.upload_fileobj(file.stream, s3_bucket_name, path)
-                photo.append({
-                    "album_id" : album_id,
-                    "file_name" : file_name,
-                    "file_path" : db_base_url + path,
-                })
-            conn.execute(
-                insert(file_table),
-                photo
-            ) 
+                    file_uuid = str(uuid.uuid4())
+                    path = "album/" + file_uuid + "." + file_extension
+                    s3.upload_fileobj(file.stream, s3_bucket_name, path)
+                    photo.append({
+                        "album_id" : album_id,
+                        "file_name" : file_name,
+                        "file_path" : db_base_url + path,
+                    })
+                conn.execute(
+                    insert(file_table),
+                    photo
+                ) 
 
-            conn.commit()
-            # db 저장 url 
-            return jsonify({"status" : 200 , "message" : "upload success", "data" : {"size" : size}} )
-    
-    return jsonify({"status" : 500 , "message" : "internal server error"})
+                conn.commit()
+                # db 저장 url 
+                return jsonify({"status" : HTTPStatus.OK , "message" : "upload success", "data" : {"albumId" : album_id}} )
+        except SQLAlchemyError as sqlerror:
+            print(str(sqlerror))
+            return jsonify({"status" : HTTPStatus.INTERNAL_SERVER_ERROR , "message" : "interner server error"})
+        except Exception as e:
+            return jsonify({"status" : HTTPStatus.BAD_REQUEST , "message" : "internal server error"})
 
 models = [
   "VGG-Face", 
