@@ -17,12 +17,14 @@ import numpy as np
 import cv2
 import requests
 import os
-
-
+import unicodedata
+from deepface.commons import distance as dst 
 ## db 설정
 album_table = table_info.get_album_table()
 file_table = table_info.get_file_table()
 user_table = table_info.get_user_table()
+kid_table = table_info.get_kid_table()
+teacher_table = table_info.get_teacher_table()
 engine = db_util.get_engine()
 
 # s3 설정
@@ -35,13 +37,13 @@ app = Flask(__name__)
 
 CORS(app, origins="*")
 
-def get_represent_obj (img ): 
+def get_face_embeddings (img ): 
     represent_objs = DeepFace.represent(
         img_path=img,
         detector_backend="opencv",
         enforce_detection=False,
         model_name="VGG-Face",
-        normalization="VGGFACE2"
+        normalization="VGGFace2"
     )
     embedding_list = []
     
@@ -50,34 +52,157 @@ def get_represent_obj (img ):
 
     return embedding_list
 
-
-def secure_file(file_name):
-    # secure_filename 함수를 사용하여 파일 이름을 안전하게 변환
-    secured_filename = secure_filename(file_name)
-    
-    return secured_filename
 @app.route("/ai/album/refactoring/<classroomId>" , methods=["POST"])
 def refactor(classroomId):
     
     try : 
-        with engine.connect() as conn :
+        images = request.files.getlist("images")
+        album_date = request.form.get("albumDate")
+        album_title = request.form.get("albumTitle")
+
+        
+        with engine.connect() as conn : 
+            # 반의 아이들을 모두 가져오자
             result = conn.execute(
-                select(user_table).where(user_table.c.classroom_id == classroomId)
+                select(user_table)
+                .join(kid_table)
+                .where(user_table.c.classroom_id == classroomId)
             )
             kid_dict = dict()
-            for r in result.mappings():
+            kid_embeddings = dict()
+            kid_album = dict()
+            for r in result.mappings() :
                 kid_id = r["id"]
-                kid_profile= r["profile"]
-                if kid_profile is None : 
-                    continue
-                else :
-                    kid_dict[kid_id] = kid_profile
+                url = r["profile"] 
+                if url is None : continue
+                base_url = "profile/"
+                kid_dict[kid_id] = url
+                kid_album[kid_id] = []
 
-        return jsonify({"data" : kid_dict})
 
-    except Exception as e :
+                url_parser = url.split("/")
+                url = base_url + url_parser[-1]
+                response = s3.get_object(Bucket = s3_bucket_name, Key= url)
+                data = response["Body"].read()
+                encoded_img = np.frombuffer(data, dtype = np.uint8)
+                img = cv2.imdecode(encoded_img,cv2.IMREAD_COLOR)
+                
+                embedding = get_face_embeddings(img)
+                kid_embeddings[kid_id] = embedding
+
+
+            class_album = []
+            s3_data= []
+            # ### 파일들을 순회한다.
+
+            for image in images : 
+                
+                content_type = image.content_type
+                file_name, file_extension = os.path.splitext(image.filename)
+
+                file_uuid = str(uuid.uuid4())
+                path = "album/" + file_uuid+ "." + file_extension
+
+                add_object = {
+                    "file_name" : file_name,
+                    "file_path" : db_base_url + path,
+                }
+                #반은 일단 저장
+                class_album.append(add_object)
+            
+
+            # return jsonify({"data" : class_album})
+                file_byte = np.frombuffer(image.read(),np.uint8)
+                decoded_image = cv2.imdecode(file_byte, cv2.IMREAD_COLOR)
+                file_obj = BytesIO(file_byte)
+                s3_data.append({
+                    "path":path,
+                    "content_type": content_type,
+                    "file_obj": file_obj
+                })
+                # #아이 분류
+                image_embeddings = get_face_embeddings(decoded_image)
+
+
+                for kid_id, kid_embedding in kid_embeddings.items() : 
+                    
+                    for kid_embed in kid_embedding :
+                        
+                        for image_embed in image_embeddings : 
+                            # 유사한 사진이 있는지?
+                            # distance_cosine = dst.findCosineDistance(kid_embed, image_embed)
+                            # distance_euclidean = dst.findEuclideanDistance(kid_embed, image_embed)
+                            distance_euclidean_l2 = dst.findEuclideanDistance(
+                                dst.l2_normalize(kid_embed), dst.l2_normalize(image_embed)
+                            )
+
+                            # threshold_cosine = dst.findThreshold(model_name="VGG-Face",distance_metric="cosine")
+                            # threshold_euclidean = dst.findThreshold(model_name="VGG-Face",distance_metric="euclidean")
+                            threshold_euclidean_l2 = dst.findThreshold(model_name="VGG-Face",distance_metric="euclidean_l2")
+
+                            if distance_euclidean_l2 <= threshold_euclidean_l2 :
+                                kid_album[kid_id](add_object.copy())
+                                break
+                        
+
+            ## 분류 완료 
+            # 반엘범 생성
+            created_albumid = []
+            result = conn.execute(
+                insert(album_table),
+                {
+                    "album_date" : album_date,
+                    "classroom_id" : classroomId,
+                    "album_title" : album_title
+                }
+            )
+            album_id = result.inserted_primary_key[0]
+            created_albumid.append(album_id)
+            for row in class_album : 
+                row["album_id"] = album_id
+            
+            conn.execute(
+                insert(file_table),
+                class_album
+            )
+            # 아이앨범 생성
+            for key, value in kid_album.items() :
+                if len(value) == 0 : continue
+                
+                result = conn.execute(
+                    insert(album_table),
+                    {
+                        "kid_id" : key, 
+                        "album_date" : album_date,
+                        "classroom_id" : classroomId,
+                        "album_title" : album_title
+                    }
+                )
+                album_id = result.inserted_primary_key[0]
+                created_albumid.append(album_id)
+
+                for row in value : 
+                    row["album_id"] = album_id
+                conn.execute(
+                    insert(file_table),
+                    value
+                )
+            
+            for data in s3_data : 
+                print(data)
+            # ## s3업로드
+            # for data in s3_data :
+            #     s3.upload_fileobj(data["file_obj"], s3_bucket_name, data["path"], ExtraArgs={'ContentType': data["content_type"]}  )
+            
+            conn.rollback()
+            return jsonify({"status": HTTPStatus.CREATED,"message":"성공하였습니다." ,"data" : {"albumid" : created_albumid}})
+    except SQLAlchemyError as e :
+        conn.rollback()
         return jsonify({"error" : str(e)})
+    # except Exception as e:
+    #     return jsonify({"error" : str(e)})
 
+        
 
 
 @app.route("/ai/album/<classroomId>", methods=["POST"])
@@ -92,9 +217,10 @@ def uploadAlbum(classroomId):
         with engine.connect() as conn : 
             # 반의 아이들을 모두 가져오자
             result = conn.execute(
-                select(user_table).where(user_table.c.classroom_id == classroomId)
+                select(user_table)
+                .join(kid_table)
+                .where(user_table.c.classroom_id == classroomId)
             )
-
             kid_dict = dict()
             kid_album = dict()
             for r in result.mappings() :
@@ -128,7 +254,6 @@ def uploadAlbum(classroomId):
             for image in images : 
                 
                 content_type = image.content_type
-                secure_file(image.filename)
                 file_name, file_extension = os.path.splitext(image.filename)
 
                 file_uuid = str(uuid.uuid4())
