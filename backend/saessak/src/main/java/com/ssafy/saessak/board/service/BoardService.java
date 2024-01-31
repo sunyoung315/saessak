@@ -6,8 +6,10 @@ import com.ssafy.saessak.album.repository.AlbumRepository;
 import com.ssafy.saessak.board.domain.Board;
 import com.ssafy.saessak.board.dto.*;
 import com.ssafy.saessak.board.repository.BoardRepository;
+import com.ssafy.saessak.oauth.service.AuthenticationService;
 import com.ssafy.saessak.user.domain.Classroom;
 import com.ssafy.saessak.user.domain.Kid;
+import com.ssafy.saessak.user.domain.User;
 import com.ssafy.saessak.user.repository.ClassroomRepository;
 import com.ssafy.saessak.user.repository.KidRepository;
 import jakarta.transaction.Transactional;
@@ -29,11 +31,14 @@ public class BoardService {
     private final KidRepository kidRepository;
     private final ClassroomRepository classroomRepository;
     private final AlbumRepository albumRepository;
+    private final AuthenticationService authenticationService;
+
     // crud
     @Transactional
     public Board saveBoard(BoardRequestDto boardRequestDto){
         Kid kid = kidRepository.findById(boardRequestDto.getKidId()).get();
-        Classroom classroom = classroomRepository.findById(boardRequestDto.getClassroomId()).get();
+        User user = authenticationService.getUserByAuthentication();
+        Classroom classroom = user.getClassroom();
 
         Board saveBoard = Board.builder()
                 .kid(kid)

@@ -11,7 +11,6 @@ import java.util.Date;
 public class BoardRequestDto {
     Long boardId;
     Long kidId;
-    Long classroomId;
     Date boardDate;
     String boardContent;
     String boardTemperature;
