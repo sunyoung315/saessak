@@ -38,7 +38,7 @@ kid_table = Table(
 teacher_table = Table(
     "teacher",
     metadata,
-    Column("id", ForeignKey(""))
+    Column("id", ForeignKey("user.id"), nullable=False)
 )
 
 user_table = Table(
