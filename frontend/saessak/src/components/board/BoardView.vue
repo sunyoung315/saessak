@@ -1,6 +1,6 @@
 <template>
 	<!-- Parent Version -->
-	<div v-if="!isTeacher" class="view-container">
+	<div v-if="!isTeacher" class="view-header">
 		<div class="view-title-parent">
 			<span class="nav-title">알림장</span>
 			<div class="group-btn">
@@ -21,7 +21,7 @@
 	</div>
 
 	<!-- Teacher Version -->
-	<div v-else class="view-container">
+	<div v-else class="view-header">
 		<div class="view-title-teacher">
 			<span class="nav-title">알림장</span>
 			<template v-if="path !== 'create'">
@@ -30,7 +30,7 @@
 		</div>
 	</div>
 
-	<RouterView />
+	<RouterView :loginStore="loginStore" />
 </template>
 
 <script setup>
@@ -42,15 +42,20 @@ import BoardGrowthModal from '@/components/board/BoardGrowthModal.vue';
 const router = useRouter();
 const route = useRoute();
 
+// 요약레포트 Modal
 const summaryModal = ref();
+// 성장기록확인 Modal
 const growthModal = ref();
 
-const isTeacher = ref(false);
+// 로그인 유저 확인
+const loginStore = JSON.parse(localStorage.getItem('loginStore'));
+const isTeacher = loginStore.isTeacher;
 
 const goCreateBoard = () => {
 	router.push({ name: 'BoardCreate' });
 };
 
+// 작성 화면에서는 '작성' 버튼이 보이지 않게 하기 위해 path 확인
 const path = computed(() => {
 	return route.path.substr(7);
 });

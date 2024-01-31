@@ -2,8 +2,7 @@ import { ref } from 'vue';
 import axios from 'axios';
 import { defineStore } from 'pinia';
 
-const LOCAL_API = 'http://localhost:8080/api/board';
-// const REST_BOARD_API = 'https://i10a706.p.ssafy.io/api';
+const REST_BOARD_API = 'https://i10a706.p.ssafy.io/api/board';
 
 export const useBoardStore = defineStore('board', () => {
 	// 학부모ver 내 아이 알림장 리스트
@@ -12,11 +11,11 @@ export const useBoardStore = defineStore('board', () => {
 	// 학부모ver 내 아이 알림장 리스트 요청
 	const getMyKidBoards = async kidId => {
 		await axios({
-			url: `${LOCAL_API}/${kidId}`,
-			// url: `${REST_BOARD_API}/${kidId}`,
+			url: `${REST_BOARD_API}/${kidId}`,
 			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json',
+				Authorization: 'Bearer ' + sessionStorage.getItem('accessToken'),
 			},
 		}).then(resp => {
 			myKidBoards.value = resp.data.data;
@@ -33,8 +32,7 @@ export const useBoardStore = defineStore('board', () => {
 	// 알림장 상세보기(boardId)
 	const getOneBoard = async boardId => {
 		await axios({
-			url: `${LOCAL_API}/detail/${boardId}`,
-			// url: `${REST_BOARD_API}/detail/${boardId}`,
+			url: `${REST_BOARD_API}/detail/${boardId}`,
 			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json',
@@ -47,8 +45,7 @@ export const useBoardStore = defineStore('board', () => {
 	// 알림장 상세보기(date)
 	const getOneBoardByDate = async kidId => {
 		await axios({
-			url: `${LOCAL_API}/day/${kidId}`,
-			// url: `${REST_BOARD_API}/day/${kidId}`,
+			url: `${REST_BOARD_API}/day/${kidId}`,
 			method: 'POST',
 			data: {
 				boardDate: date.value,
@@ -72,8 +69,7 @@ export const useBoardStore = defineStore('board', () => {
 	// 알림장 상세보기(kidId, 최신 알림장)
 	const getCurrentBoard = async kidId => {
 		await axios({
-			url: `${LOCAL_API}/current/${kidId}`,
-			// url: `${REST_BOARD_API}/current/${kidId}`,
+			url: `${REST_BOARD_API}/current/${kidId}`,
 			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json',
@@ -96,8 +92,7 @@ export const useBoardStore = defineStore('board', () => {
 	const boardList = ref([]);
 	const getSummaryBoard = async (kidId, { startDate, endDate }) => {
 		await axios({
-			url: `${LOCAL_API}/summary/${kidId}`,
-			// url: `${REST_BOARD_API}/summary/${kidId}`,
+			url: `${REST_BOARD_API}/summary/${kidId}`,
 			method: 'POST',
 			data: { startDate, endDate },
 			headers: {
@@ -115,7 +110,7 @@ export const useBoardStore = defineStore('board', () => {
 	const weightList = ref([]);
 	const getGrowthList = async () => {
 		await axios({
-			url: 'http://i10a706.p.ssafy.io:8081/api/growth',
+			url: 'https://i10a706.p.ssafy.io/api/growth',
 			method: 'POST',
 			data: {
 				gender: gender.value,

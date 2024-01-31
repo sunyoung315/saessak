@@ -110,7 +110,7 @@ const myKidBoard = ref({});
 
 const getGrowthList = async kidId => {
 	await store.getGrowthList();
-	await store.getCurrentBoard(kidId);
+	// await store.getCurrentBoard(kidId);
 	tallList.value = store.tallList;
 	weightList.value = store.weightList;
 	myKidBoard.value = store.oneBoard;

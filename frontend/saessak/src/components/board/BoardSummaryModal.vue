@@ -206,12 +206,12 @@ const disabledEndDates = ref([
 	},
 ]);
 
-const kidId = ref(1);
-
 const store = useBoardStore();
 
-const summary = ref('');
+// 선택 기간의 알림장 1줄 string으로 변환된 정보
 let content = ref('');
+// OpenAI로 요약한 정보
+const summary = ref('');
 
 // OpenAI 요약
 const API_KEY = import.meta.env.VITE_OPENAI_API_KEY;
@@ -245,7 +245,6 @@ const getSummaryBoard = async (kidId, { startDate, endDate }) => {
 	await store.getSummaryBoard(kidId, { startDate, endDate });
 
 	// boardContent 하나의 String으로 연결
-
 	for (let i = 0; i < store.boardList.length; i++) {
 		content.value +=
 			store.boardList[i].boardDate +

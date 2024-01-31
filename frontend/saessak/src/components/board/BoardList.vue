@@ -1,7 +1,7 @@
 <template>
 	<div class="view-frame p-4">
 		<!-- Teacher Version -->
-		<template v-if="isTeacher">
+		<template v-if="props.loginStore.isTeacher">
 			<div class="book-flex">
 				<div v-for="kid in kidsList" :key="kid.kidId">
 					<RouterLink
@@ -16,7 +16,7 @@
 						</div>
 						<div class="book-photo-position">
 							<img
-								:src="`src/assets/${kid.kidProfile}`"
+								:src="kid.kidProfile"
 								alt="profile"
 								class="book-photo-size"
 							/>
@@ -42,7 +42,7 @@
 						</div>
 						<div class="book-photo-position">
 							<img
-								:src="`src/assets/${board.boardPath}`"
+								:src="board.boardPath"
 								alt="profile"
 								class="book-photo-size"
 							/>
@@ -59,10 +59,15 @@ import { ref, onMounted } from 'vue';
 import { useBoardStore } from '@/store/board';
 import { useUserStore } from '@/store/user';
 
-// 임시 user 변수
-const isTeacher = ref(false);
-const classroomId = ref(2);
-const kidId = ref(1);
+// 로그인 유저
+const props = defineProps({
+	loginStore: Object,
+});
+
+// const kidId = props.loginStore.isTeacher ? undefined : props.loginStore.curKid;
+const kidId = props.loginStore.isTeacher
+	? undefined
+	: props.loginStore.kidList[0].kidId;
 
 const boardStore = useBoardStore();
 const userStore = useUserStore();
@@ -70,8 +75,8 @@ const userStore = useUserStore();
 // 선생님ver 반 아이들 리스트
 const kidsList = ref([]);
 
-const getKidsList = async classroomId => {
-	await userStore.getKidsList(classroomId);
+const getKidsList = async () => {
+	await userStore.getKidsList();
 	kidsList.value = userStore.kidsList;
 };
 
@@ -84,8 +89,14 @@ const getMyKidBoards = async kidId => {
 };
 
 onMounted(async () => {
-	await getMyKidBoards(kidId.value);
-	await getKidsList(classroomId.value);
+	if (!props.loginStore.isTeacher) {
+		await getMyKidBoards(kidId);
+		return;
+	}
+	if (props.loginStore.isTeacher) {
+		await getKidsList();
+		return;
+	}
 });
 </script>
 
@@ -103,9 +114,9 @@ onMounted(async () => {
 	@apply relative left-[5.05rem] top-[1.9rem] mb-1 font-semibold text-sm;
 }
 .book-photo-position {
-	@apply relative left-[2.5rem] top-[3.1rem];
+	@apply relative left-[2.5rem] top-[3.2rem];
 }
 .book-photo-size {
-	@apply w-[9.8rem] h-[9.5rem] border border-yellow-400 border-4;
+	@apply w-[9.8rem] h-[9.4rem];
 }
 </style>
