@@ -6,16 +6,24 @@
 			hide-view-selector
 			selected-date="2024-01-27"
 			:disable-views="['years', 'year', 'week', 'day']"
-			hide-weekends
 			show-all-day-events="true"
 			events-on-month-view="true"
 			:events="events"
 			:locale="'ko'"
+			startWeekOnSunday
 		>
 			<template #title="{ view }">
 				<span v-if="view.id === 'month'"
 					>{{ view.startDate.format('MMMM YYYY') }}년</span
 				>
+			</template>
+			<template #cell-date="{ date, view }">
+				<div v-if="view === 'month'">
+					{{ date.getDate() }}
+					<span class="tooltip">
+						{{ date.toISOString() }}
+					</span>
+				</div>
 			</template>
 		</vue-cal>
 	</div>
@@ -29,10 +37,14 @@ const store = useAttendanceStore();
 
 const oneKidList = ref([]);
 
-// 임시data
-const kidId = 1;
-
 const events = ref([]);
+
+const loginStore = JSON.parse(localStorage.getItem('loginStore'));
+
+// 추후에 학부모가 현재 보고 있는 아이의 kidId가 curKid에 들어갈 예정!!!
+// const kidId = loginStore.curKid;
+const kidId = loginStore.kidList[0].kidId;
+////////////////////////////////////////////////////////////////////
 
 // 내 아이의 출석부 비동기 호출
 const getList = async () => {
@@ -108,8 +120,8 @@ onMounted(async () => {
 :deep(.vuecal__heading) {
 	@apply bg-nav-purple bg-opacity-30  font-bold text-base;
 }
-/* red & blue version 
-:deep(.vuecal__event.in-event) {
+/* red & blue version  */
+/* :deep(.vuecal__event.in-event) {
 	@apply border-x border-t border-white rounded-t bg-nav-blue bg-opacity-50 font-bold text-gray-900 pt-2;
 }
 :deep(.vuecal__event.out-event) {
@@ -139,9 +151,12 @@ onMounted(async () => {
 	@apply h-28;
 }
 :deep(.vuecal__cell--selected) {
-	@apply bg-nav-purple bg-opacity-40;
+	@apply bg-nav-purple bg-opacity-10;
 }
 :deep(.vuecal__cell-date) {
 	@apply mb-1;
+}
+:deep(.vuecal__cell--today) {
+	@apply bg-nav-purple bg-opacity-50;
 }
 </style>

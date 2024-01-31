@@ -214,13 +214,8 @@ let weekly = computed(() => {
 
 const store = useAttendanceStore();
 
-// 임시 반 데이터
-const classroomId = 2;
-////////////////
-
 // 주차별 출석부 요청 data
 const listData = ref({
-	classroomId,
 	year,
 	month,
 	week: weekOfMonth.value,

@@ -7,6 +7,7 @@
 	</template>
 	<template v-else>
 		<AttendanceCalendar />
+		<!-- <OriginalCalendar /> -->
 	</template>
 </template>
 
@@ -16,7 +17,9 @@ import AttendanceTable from '@/components/attendance/AttendanceTable.vue';
 import AttendanceCalendar from '@/components/attendance/AttendanceCalendar.vue';
 // import OriginalCalendar from '@/components/attendance/OriginalCalendar.vue';
 
-const isTeacher = ref(true);
+const loginStore = localStorage.getItem('loginStore');
+
+const isTeacher = ref(JSON.parse(loginStore).isTeacher);
 </script>
 
 <style scoped></style>
