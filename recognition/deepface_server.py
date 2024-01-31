@@ -141,7 +141,7 @@ def refactor(classroomId):
                             threshold_euclidean_l2 = dst.findThreshold(model_name="VGG-Face",distance_metric="euclidean_l2")
 
                             if distance_euclidean_l2 <= threshold_euclidean_l2 :
-                                kid_album[kid_id](add_object.copy())
+                                kid_album[kid_id].append(add_object.copy())
                                 break
                         
 
@@ -199,8 +199,8 @@ def refactor(classroomId):
     except SQLAlchemyError as e :
         conn.rollback()
         return jsonify({"error" : str(e)})
-    # except Exception as e:
-    #     return jsonify({"error" : str(e)})
+    except Exception as e:
+        return jsonify({"error" : str(e)})
 
         
 
@@ -325,7 +325,7 @@ def uploadAlbum(classroomId):
             for i, image in enumerate(image_list) :
                 s3.upload_fileobj(image, s3_bucket_name, s3_key_list[i], ExtraArgs={'ContentType': s3_content_type[i]}  )
             
-            conn.commit()
+            conn.rollback()
             return jsonify({"status": HTTPStatus.CREATED,"message":"성공하였습니다." ,"data" : {"albumid" : created_albumid}})
     except SQLAlchemyError as e :
         conn.rollback()
