@@ -1,5 +1,5 @@
 <template>
-	<div class="view-container">
+	<div class="view-header">
 		<span class="nav-title">출석부</span>
 	</div>
 	<template v-if="isTeacher">

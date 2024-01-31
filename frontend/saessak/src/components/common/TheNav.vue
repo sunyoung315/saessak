@@ -1,7 +1,7 @@
 <template>
 	<aside
 		id="default-sidebar"
-		class="top-0 left-0 z-40 w-64 h-screen min-h-full transition-transform -translate-x-full sm:translate-x-0"
+		class="top-0 left-0 z-40 w-64 h-auto min-h-full transition-transform -translate-x-full sm:translate-x-0"
 		aria-label="Sidebar"
 	>
 		<div
@@ -28,7 +28,7 @@
 						<span class="ms-3">Home</span>
 					</RouterLink>
 				</li>
-				
+
 				<li v-if="flag == true" @click="changeNavColor('bg-nav-orange')">
 					<RouterLink
 						:to="{ name: 'Notice' }"
@@ -48,7 +48,7 @@
 						<span class="flex-1 ms-3 whitespace-nowrap">공지사항</span>
 					</RouterLink>
 				</li>
-				<li v-if="flag == true"  @click="changeNavColor('bg-nav-yellow')">
+				<li v-if="flag == true" @click="changeNavColor('bg-nav-yellow')">
 					<RouterLink
 						:to="{ name: 'BoardList' }"
 						class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 focus:bg-gray-100 dark:hover:bg-gray-700 group"
@@ -155,11 +155,11 @@ import { onMounted, ref, watch } from 'vue';
 const navColor = ref(localStorage.getItem('navColor') || 'bg-nav-red');
 const flag = ref(false); // 로그인 여부 저장
 onMounted(() => {
-    // 로그인 여부 판단하기
-    const token = sessionStorage.getItem("accessToken");
-    flag.value = token == null ? false : true;
-    // console.log(flag);
-})
+	// 로그인 여부 판단하기
+	const token = sessionStorage.getItem('accessToken');
+	flag.value = token == null ? false : true;
+	// console.log(flag);
+});
 
 // navColor가 변경될 때 Local Storage에 저장
 watch(navColor, newColor => {
