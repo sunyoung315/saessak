@@ -1,11 +1,11 @@
 <template>
 	<aside
 		id="default-sidebar"
-		class="top-0 left-0 z-40 w-64 h-auto min-h-full transition-transform -translate-x-full sm:translate-x-0"
+		class="top-0 left-0 z-40 w-64 h-screen min-h-full transition-transform -translate-x-full sm:translate-x-0"
 		aria-label="Sidebar"
 	>
 		<div
-			class="h-auto min-h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800"
+			class="h-full min-h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800"
 			:class="navColor"
 		>
 			<ul class="space-y-5 space-x-3 font-bold text-base">
@@ -28,7 +28,8 @@
 						<span class="ms-3">Home</span>
 					</RouterLink>
 				</li>
-				<li @click="changeNavColor('bg-nav-orange')">
+				
+				<li v-if="flag == true" @click="changeNavColor('bg-nav-orange')">
 					<RouterLink
 						:to="{ name: 'Notice' }"
 						class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 focus:bg-gray-100 dark:hover:bg-gray-700 group"
@@ -47,7 +48,7 @@
 						<span class="flex-1 ms-3 whitespace-nowrap">공지사항</span>
 					</RouterLink>
 				</li>
-				<li @click="changeNavColor('bg-nav-yellow')">
+				<li v-if="flag == true"  @click="changeNavColor('bg-nav-yellow')">
 					<RouterLink
 						:to="{ name: 'BoardList' }"
 						class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 focus:bg-gray-100 dark:hover:bg-gray-700 group"
@@ -66,7 +67,7 @@
 						<span class="flex-1 ms-3 whitespace-nowrap">알림장</span>
 					</RouterLink>
 				</li>
-				<li @click="changeNavColor('bg-nav-green')">
+				<li v-if="flag == true" @click="changeNavColor('bg-nav-green')">
 					<RouterLink
 						:to="{ name: 'Album' }"
 						class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 focus:bg-gray-100 dark:hover:bg-gray-700 group"
@@ -85,7 +86,7 @@
 						<span class="flex-1 ms-3 whitespace-nowrap">앨범</span>
 					</RouterLink>
 				</li>
-				<li @click="changeNavColor('bg-nav-blue')">
+				<li v-if="flag == true" @click="changeNavColor('bg-nav-blue')">
 					<RouterLink
 						:to="{ name: 'DocumentList' }"
 						class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 focus:bg-gray-100 dark:hover:bg-gray-700 group"
@@ -104,7 +105,7 @@
 						<span class="flex-1 ms-3 whitespace-nowrap">동의서</span>
 					</RouterLink>
 				</li>
-				<li @click="changeNavColor('bg-nav-navy')">
+				<li v-if="flag == true" @click="changeNavColor('bg-nav-navy')">
 					<RouterLink
 						:to="{ name: 'Menu' }"
 						class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 focus:bg-gray-100 dark:hover:bg-gray-700 group"
@@ -123,7 +124,7 @@
 						<span class="flex-1 ms-3 whitespace-nowrap">식단표</span>
 					</RouterLink>
 				</li>
-				<li @click="changeNavColor('bg-nav-purple')">
+				<li v-if="flag == true" @click="changeNavColor('bg-nav-purple')">
 					<RouterLink
 						:to="{ name: 'Attendance' }"
 						class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 focus:bg-gray-100 dark:hover:bg-gray-700 group"
@@ -148,10 +149,17 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 
 // Local Storage에서 색상을 가져와서 설정 or 기본으로 bg-nav-red로 설정
 const navColor = ref(localStorage.getItem('navColor') || 'bg-nav-red');
+const flag = ref(false); // 로그인 여부 저장
+onMounted(() => {
+    // 로그인 여부 판단하기
+    const token = sessionStorage.getItem("accessToken");
+    flag.value = token == null ? false : true;
+    // console.log(flag);
+})
 
 // navColor가 변경될 때 Local Storage에 저장
 watch(navColor, newColor => {

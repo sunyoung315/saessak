@@ -6,6 +6,7 @@ import LoginView from '@/views/LoginView.vue';
 import UserView from '@/components/user/UserView.vue';
 import BoardView from '@/components/board/BoardView.vue';
 import AlbumView from '@/components/album/AlbumView.vue';
+import JoinView from '@/views/JoinView.vue';
 import AlbumCreate from '@/components/album/albumItems/AlbumCreate.vue';
 import NoticeView from '@/components/notice/NoticeView.vue';
 import DocumentView from '@/components/document/DocumentView.vue';
@@ -34,6 +35,11 @@ const routes = [
 		path: '/login',
 		name: 'Login',
 		component: LoginView,
+	},	
+	{
+		path: '/join',
+		name: 'Join',
+		component: JoinView,
 	},
 	{
 		path: '/user',

@@ -4,8 +4,9 @@
     <div class="flex justify-between items-center">
       <RouterLink to="/">Logo</RouterLink>
       <div>
-        <RouterLink to="/setting">설정</RouterLink>
+        <RouterLink v-if="isLogin == true" to="/setting">설정</RouterLink>
         <button
+          v-if="isLogin == true"
           class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
           type="button"
           data-drawer-target="drawer-right-example"
@@ -15,79 +16,173 @@
         >
           채팅
         </button>
-        <RouterLink to="/alram">알람</RouterLink>
+        <RouterLink v-if="isLogin == true" to="/alram">알람</RouterLink>
+
+        <button
+          v-if="isLogin == false"
+          class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+          type="button"
+          @click="login()"
+        >
+          로그인
+        </button>
+        <button
+          v-if="isLogin == true && isTeacher == true"
+          class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+          type="button"
+          @click="logout()"
+        >
+          로그아웃
+        </button>
+
+        <!-- Dropdown button -->
+        <button
+          v-if="isLogin == true && isTeacher == false"
+          id="dropdownDividerButton"
+          data-dropdown-toggle="dropdownDivider"
+          class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          type="button"
+        >
+          {{ kidList[0].kidName }} 학부모
+          <svg
+            class="w-2.5 h-2.5 ms-3"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 10 6"
+          >
+            <path
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="m1 1 4 4 4-4"
+            />
+          </svg>
+          <!-- Dropdown menu (아이들 목록 보여주기)-->
+          <div
+            id="dropdownDivider"
+            class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600"
+          >
+            <ul v-for="(kid, idx) in kidList" :key="idx"
+              class="py-2 text-sm text-gray-700 dark:text-gray-200"
+              aria-labelledby="dropdownDividerButton"
+            >
+              <li v-if="idx > 0">
+                <a
+                  href="#"
+                  class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                  >{{ kidList[idx].kidName }}</a
+                >
+              </li>
+            </ul>
+            <div class="py-2">
+              <a
+                @click="logout()"
+                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                >로그아웃</a
+              >
+            </div>
+          </div>
+          <!-- Dropdown menu -->
+        </button>
       </div>
     </div>
   </div>
-
-
 
   <!-- drawer component -->
   <div
     id="drawer-right-example"
-    class="scrollbar-hide fixed top-0 right-0 z-40 h-screen p-4 overflow-y-auto transition-transform translate-x-full  bg-yellow-50 w-1/3 dark:bg-gray-800"
+    class="scrollbar-hide fixed top-0 right-0 z-40 h-screen p-4 overflow-y-auto transition-transform translate-x-full bg-yellow-50 w-1/3 dark:bg-gray-800"
     tabindex="-1"
     aria-labelledby="drawer-right-label"
   >
-   
     <div
-    class="flex flex-col justify-between h-screen  p-8 mx-auto my-auto overflow-y-scroll bg-white border border-gray-200 rounded-lg shadow scrollbar-hide sm:p-8 dark:bg-gray-800 dark:border-gray-700"
-  >
-    <component :is="chatSwitch" @chatEvent="chatEvent" :roomInfo="roomInfo"></component>
-    <!-- <div
-      class="fixed bottom-0 right-0 flex items-end justify-between mt-auto left-3"
-    ></div> -->
-    <div class="fixed w-1/3 bottom-0 right-0 p-3 bg-yellow-50">
-      <div class="flex items-center justify-evenly">
-        <button @click="showChat(ChatPersonView)">
+      class="flex flex-col justify-between h-screen p-8 mx-auto my-auto overflow-y-scroll bg-white border border-gray-200 rounded-lg shadow scrollbar-hide sm:p-8 dark:bg-gray-800 dark:border-gray-700"
+    >
+      <component :is="chatSwitch" @chatEvent="chatEvent" :roomInfo="roomInfo"></component>
+      <div class="fixed w-1/3 bottom-0 right-0 p-3 bg-yellow-50">
+        <div class="flex items-center justify-evenly">
+          <button @click="showChat(ChatPersonView)">
             학부모목록
-          <!-- <img class="flex-none" src="@/assets/학부모목록.png" width="50px" /> -->
-        </button>
-        <button @click="showChat(ChatListView)">
+          </button>
+          <button @click="showChat(ChatListView)">
             채팅목록
-          <!-- <img class="flex-none" src="@/assets/채팅목록.png" width="50px" /> -->
-        </button>
+          </button>
+        </div>
       </div>
-      <!-- <div class="flex items-center justify-between">
-        <a href="#" class="text-lg font-bold">홈</a>
-        <a href="#" class="text-lg font-bold">서비스</a>
-        <a href="#" class="text-lg font-bold">프로필</a>
-      </div> -->
     </div>
-  </div>
-    
   </div>
 </template>
 
 <script setup>
-import { onMounted, shallowRef, ref, watch } from 'vue';
-import { initFlowbite } from 'flowbite';
-import ChatListView from "@/components/chat/ChatListView.vue";
-import ChatPersonView from "@/components/chat/ChatPersonView.vue";
-import ChatDetailView from '../chat/ChatDetailView.vue';
+import { onMounted, shallowRef, ref, watch } from 'vue'
+import { initFlowbite } from 'flowbite'
+import { kakaoLogin } from '@/api/oauth'
+import { storeToRefs } from 'pinia'
+import { useRouter } from 'vue-router'
+import { loginStore } from '@/store/loginStore'
+import ChatListView from '@/components/chat/ChatListView.vue'
+import ChatPersonView from '@/components/chat/ChatPersonView.vue'
+import ChatDetailView from '../chat/ChatDetailView.vue'
 
+const store = loginStore()
+const router = useRouter()
+// const isLogin = ref(false)
+// const isTeacher = ref(false)
+// const kidList = ref([])
+
+const {isLogin, isTeacher, kidList, } = storeToRefs(store);
+const {setlogin, setlogout, setKidlist, setTeacherFlag} = store;
 onMounted(() => {
-    initFlowbite();
+  initFlowbite()
+  // 로그인 여부 판단하기
+  const token = sessionStorage.getItem('accessToken')
+  // isLogin = token == null ? false : true
+  // isTeacher = store.isTeacher;//sTeacher
+  // console.log('나는 선생님인가? ' + isTeacher)
+  if (isLogin) {
+    if (!isTeacher) {
+      kidList.value = JSON.parse(sessionStorage.getItem('kidList'))
+    }
+  }
+  // console.log(isLogin)
 })
 
-const roomInfo = ref([]);
-// watch(chatId, (newValue) =>{
-//   console.log("change");
-//   console.log(newValue);
-// });
+const roomInfo = ref([])
 const chatEvent = (data) => {
-  console.log("change");
-  console.log(data);
-  roomInfo.value = data;
-  chatSwitch.value = ChatDetailView;
+  // console.log('change')
+  // console.log(data)
+  roomInfo.value = data
+  chatSwitch.value = ChatDetailView
 }
 
-const chatSwitch = shallowRef(ChatPersonView);
+const chatSwitch = shallowRef(ChatPersonView)
 
 const showChat = (name) => {
-  chatSwitch.value = name;
-  console.log(chatSwitch.value);
-};
+  chatSwitch.value = name
+  // console.log(chatSwitch.value)
+}
+
+const login = () => {
+  kakaoLogin(({ data }) => {
+    // console.log('로그인 가즈아')
+    // console.log(data)
+    window.location.href = data
+  })
+}
+
+const logout = () => {
+  sessionStorage.removeItem('accessToken')
+  sessionStorage.removeItem('refreshToken')
+  if (!store.isTeacher) {
+    setKidlist("");
+  }
+  // console.log("로그아웃 드가자")
+  setlogout();
+  setTeacherFlag(false);
+  window.location.href = '/'
+}
 </script>
 
 <style scoped>
