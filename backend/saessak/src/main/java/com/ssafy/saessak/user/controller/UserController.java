@@ -41,9 +41,9 @@ public class UserController {
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, userService.getClassKid()));
     }
 
-//    @Operation(summary = "학부모가 자신의 선생님 목록 확인")
-//    @GetMapping(value = "/teacher", produces = MediaType.APPLICATION_JSON_VALUE)
-//    public ResponseEntity<ResultResponse> getParentTeacher() {
-//        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, userService.getParentTeacher()));
-//    }
+    @Operation(summary = "학부모가 자신의 선생님 목록 확인")
+    @GetMapping(value = "/teacher", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResultResponse> getParentTeacher() {
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, userService.getParentTeacher()));
+    }
 }
