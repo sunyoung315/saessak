@@ -54,6 +54,7 @@ public class TeacherService {
         LoginTeacherResponseDto loginTeacherResponseDto = LoginTeacherResponseDto.builder()
                 .teacherName(teacher.getNickname())
                 .isTeacher(true)
+                .teacherProfile(teacher.getProfile())
                 .accessToken(loginSuccessResponseDto.getAccessToken())
                 .refreshToken(loginSuccessResponseDto.getRefreshToken())
                 .build();

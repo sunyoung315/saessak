@@ -60,6 +60,7 @@ public class ParentService {
             KidResponseDto kidResponseDto = KidResponseDto.builder()
                     .kidId(kid.getId())
                     .kidName(kid.getNickname())
+                    .kidProfile(kid.getProfile())
                     .build();
             kidResponseDtoList.add(kidResponseDto);
         }
