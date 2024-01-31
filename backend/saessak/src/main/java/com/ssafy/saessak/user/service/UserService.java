@@ -55,7 +55,7 @@ public class UserService {
         kidRepository.save(kid);
         // 프로필 S3 업로드
         try {
-            String filePath = s3Upload.upload(kidProfile);
+            String filePath = s3Upload.upload(kidProfile, "profile");
             kid.uploadProfile(filePath);
         } catch (IOException e) {
             throw new RuntimeException(e);

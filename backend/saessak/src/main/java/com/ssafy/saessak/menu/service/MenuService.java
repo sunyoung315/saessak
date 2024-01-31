@@ -111,7 +111,7 @@ public class MenuService {
     public void insertPhoto(Long menuId, MultipartFile menuFile) throws IOException {
         Menu menu = menuRepository.findById(menuId).get();
         // AWS S3 사진 upload
-        String filePath = s3Uploader.upload(menuFile);
+        String filePath = s3Uploader.upload(menuFile, "menu");
         menu.uploadPhoto(filePath);
     }
 }
