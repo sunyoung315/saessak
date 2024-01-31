@@ -1,27 +1,19 @@
 <template>
-	<div class="container p-6 flex items-center">
-		<div v-if="showStatus === true">
-			<AlbumCardListItem />
-		</div>
-		<div v-else>
-			<div>
-				<AlbumCarouselListItem />
-			</div>
-		</div>
+	<div v-if="isTeacher">
+		<AlbumListTeacher></AlbumListTeacher>
+	</div>
+	<div v-else>
+		<AlbumListParent></AlbumListParent>
 	</div>
 </template>
 
 <script setup>
-import { ref, defineProps } from 'vue';
-import AlbumCardListItem from '@/components/album/albumItems/AlbumCardListItem.vue';
-import AlbumCarouselListItem from '@/components/album/albumItems/AlbumCarouselListItem.vue';
+import AlbumListParent from '@/components/album/AlbumListParent.vue';
+import AlbumListTeacher from '@/components/album/AlbumListTeacher.vue';
 
-// showStatus: true = all, false = 아이별
-
-const props = defineProps({
-	showStatus: Boolean,
-	isTeacher: Boolean,
-});
+let loginStore = JSON.parse(localStorage.getItem('loginStore'));
+loginStore = JSON.parse(localStorage.getItem('loginStore'));
+let isTeacher = loginStore.isTeacher;
 </script>
 
 <style scoped></style>

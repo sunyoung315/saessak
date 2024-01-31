@@ -34,14 +34,14 @@
 			</button>
 		</div>
 		<!-- DatePicker 끝-->
-		<div class="flex items-center" v-if="myKidAlbumDateList.length > 0">
-			<div class="w-full">
+		<div class="flex items-center mt-8" v-if="myKidAlbumDateList.length > 0">
+			<div class="border p-4 rounded-lg">
 				<div v-for="album in myKidAlbumDateList" :key="album.albumId">
 					<div
 						class="my-2 flex flex-wrap"
 						v-if="isSameDate(album.albumDate, date)"
 					>
-						<p class="w-full">{{ album.albumTitle }}</p>
+						<p class="w-full text-2xl font-bold m-2">{{ album.albumTitle }}</p>
 						<div
 							v-for="file in album.fileResponseDtoList"
 							:key="file.fileId"
@@ -52,7 +52,6 @@
 								:id="file.fileId"
 								:value="`${file.fileId}`"
 								class="hidden peer"
-								v-model="checked"
 							/>
 							<label
 								:for="file.fileId"
@@ -68,28 +67,20 @@
 						</div>
 					</div>
 				</div>
-				<!-- 학부모 추가 -->
 			</div>
 			<br />
 		</div>
 	</div>
-	<span>Check 이미지 : {{ checked }}</span>
 </template>
 
 <script setup>
-import { ref, onMounted, watch, defineProps } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useAlbumStore } from '@/store/album';
 
 const route = useRoute();
 const router = useRouter();
-const checked = ref([]);
 const albumStore = useAlbumStore();
-
-const props = defineProps({
-	showStatus: Boolean,
-	isTeacher: Boolean,
-});
 
 const myKidAlbumDateList = ref([]);
 
@@ -126,7 +117,7 @@ function goBack() {
 
 <style scoped>
 .album {
-	width: 100%;
-	height: auto;
+	width: 300px;
+	height: 250px;
 }
 </style>

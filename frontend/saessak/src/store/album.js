@@ -3,8 +3,8 @@ import { defineStore } from 'pinia';
 import router from '@/router';
 import axios from 'axios';
 
-const REST_ALBUM_API = `http://localhost:8080/api/album`;
-// const REST_ALBUM_API = `https://i10a706.p.ssafy.io/api/album`;
+// const REST_ALBUM_API = `http://localhost:8080/api/album`;
+const REST_ALBUM_API = `https://i10a706.p.ssafy.io/api/album`;
 
 export const useAlbumStore = defineStore('album', () => {
 	// 반 전체 앨범 조회
@@ -20,9 +20,9 @@ export const useAlbumStore = defineStore('album', () => {
 	};
 	// 반 앨범 날짜 조회(Carousel - 학부모)
 	const albumDateAllList = ref([]);
-	const getAlbumDateAllList = async function (classroomId) {
+	const getAlbumDateAllList = async function (classroomId, albumDate) {
 		await axios
-			.post(`${REST_ALBUM_API}/classroom/${classroomId}`)
+			.post(`${REST_ALBUM_API}/classroom/${classroomId}`, { albumDate })
 			.then(response => {
 				getAlbumDateAllList.value = response.data.data;
 				// console.log(getAlbumDateAllList.value[1].fileResponseDtoList);

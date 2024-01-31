@@ -1,6 +1,6 @@
 <template>
 	<div
-		class="container ml-12 mr-16 w-11/12 border border-gray-200 shadow rounded-lg"
+		class="container mt-8 ml-12 mr-16 w-11/12 border border-gray-200 shadow rounded-lg"
 	>
 		<div class="flex justify-end items-center">
 			<button
@@ -166,10 +166,16 @@ function registAlbum() {
 
 	// post 경로 변경 필요함.
 	axios
-		.post('/ai/album/' + classroomId, form, {
-			headers: { 'Content-Type': 'multipart/form-data' },
-		})
-		.then(({ data }) => {
+		.post(
+			`http://i10a706.p.ssafy.io:5000/ai/album/upload/${classroomId}`,
+			form,
+			{
+				headers: { 'Content-Type': 'multipart/form-data' },
+			},
+		)
+		.then(({ data, res }) => {
+			console.log(res);
+			console.log('data: ' + data);
 			images.value.push(...data);
 		})
 		.catch(err => console.log(err));
