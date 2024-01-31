@@ -6,8 +6,10 @@ import com.ssafy.saessak.s3.S3Upload;
 import com.ssafy.saessak.user.domain.*;
 import com.ssafy.saessak.user.dto.KidListResponseDto;
 import com.ssafy.saessak.user.dto.KidMappingRequestDto;
+import com.ssafy.saessak.user.dto.TeacherListResponseDto;
 import com.ssafy.saessak.user.repository.KidRepository;
 import com.ssafy.saessak.user.repository.ParentRepository;
+import com.ssafy.saessak.user.repository.TeacherRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,6 +26,7 @@ public class UserService {
 
     private final ParentRepository parentRepository;
     private final KidRepository kidRepository;
+    private final TeacherRepository teacherRepository;
     private final AuthenticationService authenticationService;
     private final ParentService parentService;
     private final S3Upload s3Upload;
@@ -86,35 +89,34 @@ public class UserService {
         return kidListResponseDtoList;
     }
 
-//    // 채팅용, 부모로 채팅 가능한 모든 선생님 조회
-//    public List<TeacherListResponseDto> getParentTeacher() {
-//        User user = authenticationService.getUserByAuthentication();
-//
-//        Map<Long, List<Teacher>> teacherList = new HashMap<>();
-//
-//        List<Kid> kidList = kidRepository.findAllByParent((Parent) user);
-//        for(Kid k : kidList){
-//            teacherRepository.fin
-//            teacherList.put(k.getId(), k.getClassroom().getTeacherList());
-//        }
-//
-//        List<TeacherListResponseDto> teacherListReponseDtoList = new ArrayList<>();
-//        for(Long kidId : teacherList.keySet()) {
-//            List<Teacher> tlist = teacherList.get(kidId);
-//            Kid k = kidRepository.findById(kidId).get();
-//            for (Teacher t : tlist) {
-//                TeacherListResponseDto teacherListReponseDto = TeacherListResponseDto.builder()
-//                        .teacherId(t.getId())
-//                        .teacherName(t.getNickname())
-//                        .className(t.getClassroom().getClassroomName())
-//                        .kidId(k.getId())
-//                        .kidName(k.getNickname())
-//                        .build();
-//                teacherListReponseDtoList.add(teacherListReponseDto);
-//            }
-//        }
-//        return teacherListReponseDtoList;
-//    }
+    // 채팅용, 부모로 채팅 가능한 모든 선생님 조회
+    public List<TeacherListResponseDto> getParentTeacher() {
+
+        User user = authenticationService.getUserByAuthentication();
+        Map<Long, List<Teacher>> teacherList = new HashMap<>();
+
+        List<Kid> kidList = kidRepository.findAllByParent((Parent) user);
+        for(Kid k : kidList){
+            teacherList.put(k.getId(), teacherRepository.findAllByClassroom(k.getClassroom()));
+        }
+
+        List<TeacherListResponseDto> teacherListReponseDtoList = new ArrayList<>();
+        for(Long kidId : teacherList.keySet()) {
+            List<Teacher> tlist = teacherList.get(kidId);
+            Kid k = kidRepository.findById(kidId).get();
+            for (Teacher t : tlist) {
+                TeacherListResponseDto teacherListReponseDto = TeacherListResponseDto.builder()
+                        .teacherId(t.getId())
+                        .teacherName(t.getNickname())
+                        .className(t.getClassroom().getClassroomName())
+                        .kidId(k.getId())
+                        .kidName(k.getNickname())
+                        .build();
+                teacherListReponseDtoList.add(teacherListReponseDto);
+            }
+        }
+        return teacherListReponseDtoList;
+    }
 
     public String getParentToken(Long kidId) {
         Kid kid = kidRepository.findById(kidId).get();
