@@ -29,9 +29,14 @@ file_table = Table(
     Column("file_path", String)
 )
 
-
-
 kid_table = Table(
+    "kid",
+    metadata,
+    Column ("id", ForeignKey("user.id"), nullable=False)
+)
+
+
+user_table = Table(
     "user",
     metadata,
     Column("id",Integer, primary_key=True),
@@ -40,7 +45,7 @@ kid_table = Table(
 )
 
 def get_user_table() :
-    return kid_table
+    return user_table
 
 def get_album_table() :
     return album_table
@@ -48,3 +53,5 @@ def get_album_table() :
 def get_file_table() : 
     return file_table
 
+def get_kid_table():
+    return kid_table
