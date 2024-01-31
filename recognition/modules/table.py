@@ -35,6 +35,11 @@ kid_table = Table(
     Column ("id", ForeignKey("user.id"), nullable=False)
 )
 
+teacher_table = Table(
+    "teacher",
+    metadata,
+    Column("id", ForeignKey(""))
+)
 
 user_table = Table(
     "user",
@@ -55,3 +60,6 @@ def get_file_table() :
 
 def get_kid_table():
     return kid_table
+
+def get_teacher_table():
+    return teacher_table

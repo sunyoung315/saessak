@@ -24,6 +24,7 @@ album_table = table_info.get_album_table()
 file_table = table_info.get_file_table()
 user_table = table_info.get_user_table()
 kid_table = table_info.get_kid_table()
+teacher_table = table_info.get_teacher_table()
 engine = db_util.get_engine()
 
 # s3 설정
