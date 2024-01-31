@@ -22,12 +22,12 @@
             alt="Bonnie image"
           />
           <h5 class="text-xl font-medium text-gray-900 dark:text-white">
-            {{ userFlag == false ? person.kidName : person.teacherName}} {{ userFlag == false ? "학부모" : "선생님" }}
+            {{ isTeacher == true ? person.kidName : person.teacherName}} {{ isTeacher == true ? "학부모" : "선생님" }}
           </h5>
-          <span class="mb-0 text-sm text-gray-500 dark:text-gray-400">{{ userFlag == false ? "" : person.kidName }}</span>
+          <span class="mb-0 text-sm text-gray-500 dark:text-gray-400">{{ isTeacher == true ? "" : person.kidName }}</span>
           <div class="flex mt-3 mb-2">
             <button
-             @click="addChat(userFlag == false ? person.kidId : [person.teacherId, person.kidId])"
+             @click="addChat(isTeacher == true ? person.kidId : person.teacherId)"
               class="inline-flex items-center px-4 py-2 text-center text-white bg-lime-500 rounded-lg font -medium mt-0text-sm hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
               >TALK</button
             >
@@ -40,22 +40,25 @@
 
 <script setup>
 import { getClassKids, getMyTeacher } from '@/api/user'
-import { addNewChat } from '@/api/chat'
+import { teacherNewChat, parentNewChat } from '@/api/chat'
 import { ref, onMounted } from 'vue'
+import { storeToRefs } from 'pinia'
+import { loginStore } from '@/store/loginStore'
 
 onMounted(() => {
-  // getPersonList()
+  getPersonList()
 })
-
+const store = loginStore()
 const userId = ref(3);
 const classroomId = ref(1);
-const userFlag = ref(false)
+const {isTeacher} = storeToRefs(store)
 
 const getPersonList = () => {
-  if (!userFlag.value) {
-    // console.log('선생님 - 반 아이 조회')
+  console.log("선생님이니?")
+  console.log(isTeacher.value);
+  if (isTeacher.value) {
+    console.log('선생님 - 반 아이 조회')
     getClassKids(
-      classroomId.value,
       ({ data }) => {
         console.log(data.data)
         Person.value = data.data
@@ -67,7 +70,6 @@ const getPersonList = () => {
   } else {
     console.log('학부모 - 선생님 조회');
     getMyTeacher(
-      userId.value,
       ({data}) => {
         console.log(data.data);
         Person.value = data.data;
@@ -86,19 +88,33 @@ const emit = defineEmits(["chatEvent"]); // CHAT 버튼 눌렀을 때 채팅방�
 const addChat = (input) => {
   console.log("addChat 실행");
   console.log(input);
-  let tId = userFlag.value == false ? userId.value : input[0] ; // 선생님 화면일때 : 학부모 화면일때
-  let kId = userFlag.value == false ? input : input[1]; 
+  let tId = isTeacher.value == false ? userId.value : input[0] ; // 선생님 화면일때 : 학부모 화면일때
+  let kId = isTeacher.value == false ? input : input[1]; 
   console.log(tId + "/" + kId);
-  addNewChat(
-    tId, kId, ({data}) => {
-      console.log(data.data);
-      const roomInfo = {roomId : data.data, senderId : userFlag.value == false ? tId : kId, receiverId : userFlag.value == false ? kId : tId};
+  if(isTeacher.value){
+    console.log("선생님 드가자")
+    teacherNewChat(input,
+    ({data}) => {
+      console.log(data);
+      const roomInfo = {roomId : data.data, senderId : isTeacher == true ? tId : kId, receiverId : isTeacher.value == false ? kId : tId};
       emit("chatEvent", roomInfo);
     },
     (error) => {
       console.log(error);
-    }
-  )
+    })
+  }else{
+    console.log("학부모 드가자")
+    console.log(input);
+    parentNewChat(input,
+    ({data}) => {
+      console.log(data);      
+      const roomInfo = {roomId : data.data, senderId : isTeacher == true ? tId : kId, receiverId : isTeacher.value == false ? kId : tId};
+      emit("chatEvent", roomInfo);
+    },
+    (error) => {
+      console.log(error);
+    })
+  }
 }
 </script>
 <style></style>

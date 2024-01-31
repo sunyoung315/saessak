@@ -22,8 +22,8 @@ function getClassKids(sucess, fail){
 }
 
 // (학부모) 나의 아이 담당 선생님 조회하기
-function getMyTeacher(parentId, sucess, fail){
-    local.get(`${url}/teacher/${parentId}`).then(sucess).catch(fail);
+function getMyTeacher(sucess, fail){
+    local.get(`${url}/teacher`, config).then(sucess).catch(fail);
 }
 
 export {

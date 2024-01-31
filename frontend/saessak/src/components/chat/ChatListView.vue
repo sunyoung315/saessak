@@ -69,19 +69,21 @@
 <script setup>
 import { chatListParent, chatListTeacher } from '@/api/chat'
 import { ref, onMounted } from 'vue'
+import { storeToRefs } from 'pinia'
+import { loginStore } from '@/store/loginStore'
 
 onMounted(() => {
   getChatList()
 })
 
-const userFlag = ref(false)
+const store = loginStore()
+const {isTeacher} = storeToRefs(store);
 const userId = ref(3)
 const getChatList = () => {
   console.log('채팅 리스트 조회')
-  if (!userFlag.value) {
+  if (isTeacher) {
     // 선생님 조회
     chatListTeacher(
-      userId.value,
       ({ data }) => {
         console.log('선생님 조회')
         console.log(data.data)
@@ -95,7 +97,6 @@ const getChatList = () => {
   } else {
     // 학부모 조회
     chatListParent(
-      userId.value,
       ({ data }) => {
         console.log('학부모 조회')
         console.log(data.data)

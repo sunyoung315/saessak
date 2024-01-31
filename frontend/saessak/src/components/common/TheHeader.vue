@@ -181,6 +181,7 @@ const logout = () => {
   // console.log("로그아웃 드가자")
   setlogout();
   setTeacherFlag(false);
+  setTeacherName("");
   window.location.href = '/'
 }
 </script>

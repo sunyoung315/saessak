@@ -42,16 +42,18 @@
       </div>
     </div>
     <!-- end message(오른쪽) -->
-    <div class="h-7 w-7 ml-auto mr-2.5 border rounded-full bg-neutral-500">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-        <path
-          fill="#ffffff"
-          fill-rule="evenodd"
-          d="M14 7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7Zm2 9.387 4.684 1.562A1 1 0 0 0 22 17V7a1 1 0 0 0-1.316-.949L16 7.613v8.774Z"
-          clip-rule="evenodd"
-        />
-      </svg>
-    </div>
+    <button type="button" @click="discon">
+      <div class="h-7 w-7 ml-auto mr-2.5 border rounded-full bg-neutral-500">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <path
+            fill="#ffffff"
+            fill-rule="evenodd"
+            d="M14 7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7Zm2 9.387 4.684 1.562A1 1 0 0 0 22 17V7a1 1 0 0 0-1.316-.949L16 7.613v8.774Z"
+            clip-rule="evenodd"
+          />
+        </svg>
+      </div>
+    </button>
 
     <!-- <div   
         class="fixed bottom-0 right-0 flex items-end justify-between mt-auto left-3"
@@ -96,7 +98,7 @@
 
 <script setup>
 import { ref, nextTick, onMounted } from 'vue'
-import {loadChat} from '@/api/chat'
+import { loadChat } from '@/api/chat'
 import Stomp from 'webstomp-client' // 채팅 라이브러리 import
 //채팅메시지 = {room_id, chat_content, sender_id, receiver_id}
 const props = defineProps({
@@ -110,14 +112,13 @@ const props = defineProps({
   }
 })
 
-
-onMounted(() => { // 접속하면 이전 채팅 load
-  loadChat(props.roomInfo.roomId,
-  ({data}) => {
-    console.log("채팅 내역 조회")
-    console.log(data);
-    recvList.value = data.data;
-    downScroll();
+onMounted(() => {
+  // 접속하면 이전 채팅 load
+  loadChat(props.roomInfo.roomId, ({ data }) => {
+    console.log('채팅 내역 조회')
+    console.log(data)
+    recvList.value = data.data
+    downScroll()
   })
 })
 
@@ -129,22 +130,28 @@ console.log(props.roomInfo)
 const roomId = props.roomInfo.roomId // 채팅방 번호
 const connected = ref(false) // 소켓 연결 여부
 const socket = new WebSocket('ws://i10a706.p.ssafy.io:8081/chat')
+let options = { debug: false, protocols: Stomp.VERSIONS.supportedProtocols() }
 const recvList = ref([])
 const msg = ref('')
-const stomp = Stomp.over(socket)
+const stomp = Stomp.over(socket, options)
 
 const downScroll = () => {
   nextTick(() => {
-        if (chatbox.value) {
-          chatbox.value.scrollTo(0, chatbox.value.scrollHeight)
-        }
-      })
+    if (chatbox.value) {
+      chatbox.value.scrollTo(0, chatbox.value.scrollHeight)
+    }
+  })
 }
 
+let headers = { Authorization: 'Bearer ' + sessionStorage.getItem('accessToken') }
+
 console.log('소켓 연결 시작')
+console.log('roomId : ' + roomId)
+// chat 메세지 정보에서 리시버id 안받을거임 / 백에서는 내가 보낸 토큰으로 senderid 지정함
+// 그럼 내가 받을땐? 
 // console.log(roomId);
 stomp.connect(
-  {},
+  headers,
   (frame) => {
     // 소켓 연결 성공
     console.log('after frame')
@@ -152,19 +159,23 @@ stomp.connect(
     console.log('소켓 연결 성공', frame)
     // 서버의 메시지 전송 endpoint를 구독합니다.
     // 이런형태를 pub sub 구조라고 합니다.
-    stomp.subscribe('/sub/room/' + roomId, (res) => {
-      console.log('구독으로 받은 메시지 입니다.', res.body)
+    stomp.subscribe(
+      '/sub/room/' + roomId,
+      (res) => {
+        console.log('구독으로 받은 메시지 입니다.', res.body)
 
-      // 받은 데이터를 json으로 파싱하고 리스트에 넣어줍니다.
-      recvList.value.push(JSON.parse(res.body))
-      
-    downScroll();
-      // nextTick(() => {
-      //   if (chatbox.value) {
-      //     chatbox.value.scrollTo(0, chatbox.value.scrollHeight)
-      //   }
-      // })
-    })
+        // 받은 데이터를 json으로 파싱하고 리스트에 넣어줍니다.
+        recvList.value.push(JSON.parse(res.body))
+
+        downScroll()
+        // nextTick(() => {
+        //   if (chatbox.value) {
+        //     chatbox.value.scrollTo(0, chatbox.value.scrollHeight)
+        //   }
+        // })
+      },
+      headers
+    )
   },
   (error) => {
     // 소켓 연결 실패
@@ -196,7 +207,6 @@ const send = () => {
     addZero(currentDate.getSeconds()) +
     '.' +
     currentDate.getMilliseconds()
-
   if (stomp && stomp.connected) {
     const sendMsg = {
       roomId: props.roomInfo.roomId,
@@ -205,9 +215,14 @@ const send = () => {
       chatContent: msg.value,
       chatTime: formattedDate
     }
-    stomp.send('/pub/message', JSON.stringify(sendMsg), {})
+    stomp.send('/pub/message', JSON.stringify(sendMsg), headers)
     msg.value = ''
   }
+}
+
+const discon = () => {
+  console.log("discon 실행");
+  stomp.disconnect((res) => {console.log(res)}, headers)
 }
 </script>
 
