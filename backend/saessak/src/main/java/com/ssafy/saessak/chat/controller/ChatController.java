@@ -23,16 +23,16 @@ public class ChatController {
 
 
     @Operation(summary = "학부모에 해당하는 채팅방 전체 조회")
-    @GetMapping(value = "/parent/list/{parentId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResultResponse> parentList(@PathVariable("parentId") Long parentId) {
-        List<RoomResponseDto> roomResponseDtoList = chatService.getRoomByParent(parentId);
+    @GetMapping(value = "/parent/list", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResultResponse> parentList() {
+        List<RoomResponseDto> roomResponseDtoList = chatService.getRoomByParent();
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, roomResponseDtoList));
     }
 
     @Operation(summary = "선생님이 관리하는 채팅방 전체 조회")
-    @GetMapping(value = "/teacher/list/{teacherId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResultResponse> teacherList(@PathVariable("teacherId") Long teacherId) {
-        List<RoomResponseDto> roomResponseDtoList = chatService.getRoomByTeacher(teacherId);
+    @GetMapping(value = "/teacher/list", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResultResponse> teacherList() {
+        List<RoomResponseDto> roomResponseDtoList = chatService.getRoomByTeacher();
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, roomResponseDtoList));
     }
 
@@ -43,9 +43,16 @@ public class ChatController {
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, roomResponseDtoList));
     }
 
-    @Operation(summary = "채팅방 생성")
-    @PostMapping(value = "/add/{teacherId}/{kidId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResultResponse> createRoom(@PathVariable("teacherId") Long teacherId, @PathVariable("kidId") Long kidId) {
-        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, chatService.addRoom(teacherId, kidId)));
+    @Operation(summary = "선생님이 채팅방 생성")
+    @PostMapping(value = "/add/teacher/{kidId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResultResponse> createTeacherRoom(@PathVariable("kidId") Long kidId) {
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, chatService.addTeacherRoom(kidId)));
     }
+
+    @Operation(summary = "학부모가 채팅방 생성")
+    @PostMapping(value = "/add/parent/{teacherId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResultResponse> createParentRoom(@PathVariable("teacherId") Long teacherId) {
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, chatService.addParentRoom(teacherId)));
+    }
+
 }

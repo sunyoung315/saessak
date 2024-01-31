@@ -7,10 +7,8 @@ import com.ssafy.saessak.chat.dto.ChatMessageResponse;
 import com.ssafy.saessak.chat.dto.RoomResponseDto;
 import com.ssafy.saessak.chat.repository.ChatRepository;
 import com.ssafy.saessak.chat.repository.RoomRepository;
-import com.ssafy.saessak.user.domain.Classroom;
-import com.ssafy.saessak.user.domain.Kid;
-import com.ssafy.saessak.user.domain.Parent;
-import com.ssafy.saessak.user.domain.Teacher;
+import com.ssafy.saessak.oauth.service.AuthenticationService;
+import com.ssafy.saessak.user.domain.*;
 import com.ssafy.saessak.user.repository.KidRepository;
 import com.ssafy.saessak.user.repository.ParentRepository;
 import com.ssafy.saessak.user.repository.TeacherRepository;
@@ -27,14 +25,16 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ChatService {
 
+    private final AuthenticationService authenticationService;
     private final ParentRepository parentRepository;
     private final TeacherRepository teacherRepository;
     private final KidRepository kidRepository;
     private final RoomRepository roomRepository;
     private final ChatRepository chatRepository;
 
-    public List<RoomResponseDto> getRoomByParent(Long parentId) {
-        Parent parent = parentRepository.findById(parentId).get();
+    public List<RoomResponseDto> getRoomByParent() {
+        User user = authenticationService.getUserByAuthentication();
+        Parent parent = parentRepository.findById(user.getId()).get();
         List<Room> roomList = new ArrayList<>();
         for(Kid k : parent.getKidList()){
             List<Room> tmpList = roomRepository.findAllByKid(k);
@@ -43,8 +43,9 @@ public class ChatService {
         return getRoomResponseDtos(roomList);
     }
 
-    public List<RoomResponseDto> getRoomByTeacher(Long teacherId) {
-        Teacher teacher = teacherRepository.findById(teacherId).get();
+    public List<RoomResponseDto> getRoomByTeacher() {
+        User user = authenticationService.getUserByAuthentication();
+        Teacher teacher = teacherRepository.findById(user.getId()).get();
         List<Room> roomList = roomRepository.findAllByTeacher(teacher);
         return getRoomResponseDtos(roomList);
     }
@@ -80,9 +81,39 @@ public class ChatService {
                 .build();
     }
 
-    // 채팅방 생성
-    public Long addRoom(Long teacherId, Long kidId) {
+    // 채팅방 학부모 생성
+    public Long addParentRoom(Long teacherId) {
+
+        User user = authenticationService.getUserByAuthentication(); // 학부모
         Teacher teacher = teacherRepository.findById(teacherId).get();
+
+        List<Kid> kidList1 = kidRepository.findAllByParent((Parent) user);
+        List<Kid> kidList2 = kidRepository.findAllByClassroom(teacher.getClassroom());
+
+        Kid kid = null;
+        for (Kid k : kidList2) {
+            if (kidList1.contains(k)) {
+                kid = k;
+            }
+        }
+
+        Room room = roomRepository.findByKidAndTeacher(kid, teacher);
+        if(room == null){
+            room = roomRepository.save(Room.builder()
+                    .kid(kid)
+                    .teacher(teacher)
+                    .lastVisitTime(LocalDateTime.now())
+                    .build());
+        }
+        return room.getRoomId();
+    }
+
+
+    // 채팅방 선생님 생성
+    public Long addTeacherRoom(Long kidId) {
+        User user = authenticationService.getUserByAuthentication(); //선생님
+
+        Teacher teacher = teacherRepository.findById(user.getId()).get();
         Kid kid = kidRepository.findById(kidId).get();
         Room room = roomRepository.findByKidAndTeacher(kid, teacher);
 
