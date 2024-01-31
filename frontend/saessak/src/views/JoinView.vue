@@ -46,8 +46,8 @@ const { setUserid, setlogin, setTeacherFlag, setKidlist, setTeachername} = store
 const joinCode = ref('') // 가입 인증 코드
 onMounted(() => {
   if (userId != 0) {
-    console.log('전송받은 userId : ');
-    console.log(userId.value)
+    // console.log('전송받은 userId : ');
+    // console.log(userId.value)
   }
 })
 

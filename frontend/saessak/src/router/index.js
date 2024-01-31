@@ -7,7 +7,9 @@ import UserView from '@/components/user/UserView.vue';
 import BoardView from '@/components/board/BoardView.vue';
 import AlbumView from '@/components/album/AlbumView.vue';
 import JoinView from '@/views/JoinView.vue';
-import AlbumCreate from '@/components/album/albumItems/AlbumCreate.vue';
+import AlbumList from '@/components/album/AlbumList.vue';
+import AlbumCreate from '@/components/album/AlbumCreate.vue';
+import AlbumDetail from '@/components/album/AlbumDetail.vue';
 import NoticeView from '@/components/notice/NoticeView.vue';
 import DocumentView from '@/components/document/DocumentView.vue';
 import DocumentList from '@/components/document/DocumentList.vue';
@@ -22,7 +24,8 @@ import ChatDetail from '@/components/chat/ChatDetailView.vue';
 import SettingView from '@/components/setting/SettingView.vue';
 import BoardCreate from '@/components/board/BoardCreate.vue';
 import BoardList from '@/components/board/BoardList.vue';
-import BoardDetail from '@/components/board/BoardDetail.vue';
+import BoardDetailTeacher from '@/components/board/BoardDetailTeacher.vue';
+import BoardDetailParent from '@/components/board/BoardDetailParent.vue';
 
 const routes = [
 	{ path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFoundView },
@@ -63,8 +66,13 @@ const routes = [
 			},
 			{
 				path: ':id',
-				name: 'BoardDetail',
-				component: BoardDetail,
+				name: 'BoardDetailParent',
+				component: BoardDetailParent,
+			},
+			{
+				path: 'kid/:id',
+				name: 'BoardDetailTeacher',
+				component: BoardDetailTeacher,
 			},
 		],
 	},
@@ -74,9 +82,19 @@ const routes = [
 		component: AlbumView,
 		children: [
 			{
+				path: '',
+				name: 'AlbumList',
+				component: AlbumList,
+			},
+			{
 				path: 'create',
 				name: 'AlbumCreate',
 				component: AlbumCreate,
+			},
+			{
+				path: ':id',
+				name: 'AlbumDetail',
+				component: AlbumDetail,
 			},
 		],
 	},

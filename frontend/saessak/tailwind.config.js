@@ -2,12 +2,13 @@
 module.exports = {
 	// purge: [],
 	purge: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
-	darkMode: false, // or 'media' or 'class'    
-	content: [
-        "./node_modules/flowbite/**/*.js"
-    ],
+	darkMode: false, // or 'media' or 'class'
+	content: ['./node_modules/flowbite/**/*.js'],
 	theme: {
 		extend: {
+			fontFamily: {
+				sans: ['Pretendard-Regular', 'Arial', 'sans-serif'],
+			},
 			colors: {
 				'nav-red': '#D7A2A0',
 				'nav-orange': '#E8C8A0',
@@ -24,12 +25,14 @@ module.exports = {
 			backgroundImage: {
 				'book-pattern': "url('@/assets/BoardFrame.png')",
 			},
+			backgroundSize: {
+				book: '13.77rem',
+			},
 		},
 	},
 	variants: {
 		extend: {},
 	},
-	content: ['./node_modules/flowbite/**/*.js'],
 	plugins: [
 		require('tailwind-scrollbar-hide', '@tailwindcss/forms', 'flowbite/plugin'),
 	],
