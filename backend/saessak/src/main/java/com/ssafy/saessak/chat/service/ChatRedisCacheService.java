@@ -71,14 +71,22 @@ public class ChatRedisCacheService {
 
         // 마지막 chat 가져오기
         ChatMessage recentChatMessage = null;
-        if(zSetOperations == null){
+        Long size = zSetOperations.size(CHAT_SORTED_SET_ + room.getRoomId()); // Caching 데이터에서 가장 마지막 값
+        if(size == 0){
             Chat chat = chatRepository.findFirstByRoomOrderByChatTimeDesc(room); // 아니라면 db에서 찾아오기
-            recentChatMessage = ChatMessage.builder()
-                    .chatContent(chat.getChatContent())
-                    .chatTime(chat.getChatTime())
-                    .build();
+            if(chat == null){
+                recentChatMessage = ChatMessage.builder()
+                        .chatContent(null)
+                        .chatTime(null)
+                        .build();
+            }else{
+                recentChatMessage = ChatMessage.builder()
+                        .chatContent(chat.getChatContent())
+                        .chatTime(chat.getChatTime())
+                        .build();
+            }
+
         } else {
-            Long size = zSetOperations.size(CHAT_SORTED_SET_ + room.getRoomId()); // Caching 데이터에서 가장 마지막 값
             recentChatMessage = zSetOperations.range(CHAT_SORTED_SET_ + room.getRoomId(), size - 1, size).iterator().next();
         }
 
