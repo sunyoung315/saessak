@@ -1,8 +1,14 @@
 package com.ssafy.saessak.chat.service;
 
+import com.ssafy.saessak.chat.domain.Chat;
+import com.ssafy.saessak.chat.domain.Room;
+import com.ssafy.saessak.chat.domain.Visit;
 import com.ssafy.saessak.chat.dto.ChatMessage;
+import com.ssafy.saessak.chat.dto.RoomResponseDto;
 import com.ssafy.saessak.chat.repository.ChatRepository;
 import com.ssafy.saessak.chat.repository.RoomRepository;
+import com.ssafy.saessak.chat.repository.VisitRepository;
+import com.ssafy.saessak.user.domain.User;
 import com.ssafy.saessak.user.repository.ParentRepository;
 import com.ssafy.saessak.user.repository.TeacherRepository;
 import com.ssafy.saessak.user.repository.UserRepository;
@@ -25,11 +31,10 @@ public class ChatRedisCacheService {
     //  채팅 내역과 채팅방에 해당하는 채팅 내역
     private final RedisTemplate<String, Object> redisTemplate;
     private ZSetOperations<String, ChatMessage> zSetOperations;
-    private ChatRepository chatRepository;
-    private final ParentRepository parentRepository;
-    private final TeacherRepository teacherRepository;
-    private final RoomRepository roomRepository;
+
+    private final ChatRepository chatRepository;
     private final UserRepository userRepository;
+    private final VisitRepository visitRepository;
 
     // Redis의 Chatting data caching 처리
     // 채팅 등록
@@ -49,6 +54,47 @@ public class ChatRedisCacheService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss.SSS");
         LocalDateTime localDateTime = LocalDateTime.parse(createdAt, formatter);
         return ((Long) localDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()).doubleValue();
+    }
+
+
+    // 채팅방 정보 조회 + 마지막 채팅 읽었는지 여부 판단
+    public RoomResponseDto roomInfoToDto(Long userId, Room room) {
+
+        User user = userRepository.findById(userId).get();
+        Visit visit = visitRepository.findByUserAndRoom(user, room);
+
+        // 마지막 chat 가져오기
+        ChatMessage recentChatMessage = null;
+        Long size = zSetOperations.size(CHAT_SORTED_SET_ + room.getRoomId()); // Caching 데이터에서 가장 마지막 값
+        if(size == 0){
+            Chat chat = chatRepository.findFirstByRoomOrderByChatTimeDesc(room); // 아니라면 db에서 찾아오기
+            recentChatMessage = ChatMessage.builder()
+                    .chatContent(chat.getChatContent())
+                    .chatTime(chat.getChatTime())
+                    .build();
+        } else recentChatMessage = zSetOperations.range(CHAT_SORTED_SET_ + room.getRoomId(), size - 1, size).iterator().next();
+
+        if(recentChatMessage == null){
+            return RoomResponseDto.builder()
+                    .roomId(room.getRoomId())
+                    .kidId(room.getKid().getId())
+                    .kidName(room.getKid().getNickname())
+                    .teacherName(room.getTeacher().getNickname())
+                    .flag(false)
+                    .build();
+        }
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss.SSS");
+        LocalDateTime localDateTime = LocalDateTime.parse(recentChatMessage.getChatTime(), formatter);
+
+        boolean isChatTimeBeforeLastVisitTime = localDateTime.isBefore(visit.getVisitTime());
+        return RoomResponseDto.builder()
+                .roomId(room.getRoomId())
+                .kidId(room.getKid().getId())
+                .kidName(room.getKid().getNickname())
+                .lastChat(recentChatMessage.getChatContent())
+                .flag(isChatTimeBeforeLastVisitTime)
+                .build();
     }
 
 }

@@ -1,6 +1,7 @@
 package com.ssafy.saessak.chat.handler;
 
 
+import com.ssafy.saessak.chat.service.ChatService;
 import com.ssafy.saessak.oauth.jwt.JwtTokenProvider;
 import com.ssafy.saessak.oauth.jwt.JwtValidationType;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Component;
 public class StompHandler implements ChannelInterceptor {
 
     private final JwtTokenProvider jwtProvider;
+    private final ChatService chatService;
 
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
@@ -43,8 +45,11 @@ public class StompHandler implements ChannelInterceptor {
 
         // DISCONNECT 명령 처리
         if (accessor.getCommand() == StompCommand.DISCONNECT) {
-            String username = accessor.getUser().getName();
-            System.out.println(username);
+            Long roomId = Long.parseLong(accessor.getFirstNativeHeader("roomId"));
+            Long userId = Long.parseLong(accessor.getFirstNativeHeader("userId"));
+            System.out.println(roomId + " " + userId);
+            chatService.setLastVisit(roomId, userId);
+            System.out.println("closed");
         }
     }
 

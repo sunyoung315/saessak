@@ -29,9 +29,6 @@ public class Room {
     @JoinColumn(name = "teacher_id")
     private Teacher teacher;
 
-    @Column(name = "room_time")
-    private LocalDateTime lastVisitTime;
-
     @OneToMany(mappedBy = "room", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     List<Chat> chatList;
 
