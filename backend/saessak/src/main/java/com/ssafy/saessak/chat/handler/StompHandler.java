@@ -31,26 +31,14 @@ public class StompHandler implements ChannelInterceptor {
             if(jwtProvider.validateToken(token) != JwtValidationType.VALID_JWT) {
                 throw new RuntimeException("Not Valid Token");
             }
-        }
-        return message;
-    }
-
-    @Override
-    public void postSend(Message<?> message, MessageChannel channel, boolean sent) {
-        StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
-
-        if (accessor.getCommand() == null) {
-            return;  // 메시지에 STOMP 명령이 없는 경우는 무시
-        }
-
-        // DISCONNECT 명령 처리
-        if (accessor.getCommand() == StompCommand.DISCONNECT) {
+        } else if (accessor.getCommand() == StompCommand.DISCONNECT) {
             Long roomId = Long.parseLong(accessor.getFirstNativeHeader("roomId"));
             Long userId = Long.parseLong(accessor.getFirstNativeHeader("userId"));
             System.out.println(roomId + " " + userId);
             chatService.setLastVisit(roomId, userId);
             System.out.println("closed");
         }
+        return message;
     }
 
 }
