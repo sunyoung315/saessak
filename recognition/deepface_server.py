@@ -55,33 +55,33 @@ def get_face_embeddings (img ):
 
     return embedding_list
 
-@app.route("/ai/auth" , methods=["POST"])
-def refactor():
-    ## 토큰 유효성 검사
-    auth_header = request.headers.get('Authorization')
-    if not auth_header : return jsonify({"status" : HTTPStatus.UNAUTHORIZED,"code" : "A105"})
-    if auth_header.startswith("Bearer ") :
-        # 헤더에 Bearer 토큰이 있을 때
-        access_token = auth_header.split(' ')[1]
-        result = token_validator.validate_token(access_token)
-        data = result["data"]
-        classroomId = data["classroom_id"]
-        if not result["isValid"] :
-            return jsonify(result)
+# @app.route("/ai/auth" , methods=["POST"])
+# def refactor():
+#     ## 토큰 유효성 검사
+#     auth_header = request.headers.get('Authorization')
+#     if not auth_header : return jsonify({"status" : HTTPStatus.UNAUTHORIZED,"code" : "A105"})
+#     if auth_header.startswith("Bearer ") :
+#         # 헤더에 Bearer 토큰이 있을 때
+#         access_token = auth_header.split(' ')[1]
+#         result = token_validator.validate_token(access_token)
+#         data = result["data"]
+#         classroomId = data["classroom_id"]
+#         if not result["isValid"] :
+#             return jsonify(result)
         
-    else :
-        # 헤더에 Bearer 토큰이 없을 떄
-        return jsonify({"status" : HTTPStatus.UNAUTHORIZED , "code": "A104"})
+#     else :
+#         # 헤더에 Bearer 토큰이 없을 떄
+#         return jsonify({"status" : HTTPStatus.UNAUTHORIZED , "code": "A104"})
 
-    try : 
-        images = request.files.getlist("images")
-        album_date = request.form.get("albumDate")
-        album_title = request.form.get("albumTitle")
+#     try : 
+#         images = request.files.getlist("images")
+#         album_date = request.form.get("albumDate")
+#         album_title = request.form.get("albumTitle")
         
 
-        return jsonify({"status" : HTTPStatus.CREATED, "message" : "success"})
-    except Exception as e:
-        return jsonify({"error" : str(e)})
+#         return jsonify({"status" : HTTPStatus.CREATED, "message" : "success"})
+#     except Exception as e:
+#         return jsonify({"error" : str(e)})
 
 @app.route("/ai/album" , methods=["POST"])
 def verifyAlbum():
