@@ -33,7 +33,7 @@ public class StompHandler implements ChannelInterceptor {
             if(jwtProvider.validateToken(token) != JwtValidationType.VALID_JWT) {
                 throw new RuntimeException("Not Valid Token");
             }
-        } else if (accessor.getCommand() == StompCommand.DISCONNECT) {
+        } else if (accessor.getCommand() == StompCommand.UNSUBSCRIBE) {
 //            Long roomId = Long.parseLong(Objects.requireNonNull(accessor.getFirstNativeHeader("roomId")));
 //            Long userId = Long.parseLong(accessor.getFirstNativeHeader("userId"));
 //            System.out.println(roomId + " " + userId);
