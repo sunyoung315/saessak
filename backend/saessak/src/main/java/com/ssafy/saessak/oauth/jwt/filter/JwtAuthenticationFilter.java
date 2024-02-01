@@ -1,7 +1,9 @@
 package com.ssafy.saessak.oauth.jwt.filter;
 
+import com.ssafy.saessak.exception.code.ExceptionCode;
 import com.ssafy.saessak.oauth.authentication.UserAuthentication;
 import com.ssafy.saessak.oauth.jwt.JwtTokenProvider;
+import com.ssafy.saessak.oauth.jwt.JwtValidationType;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,7 +18,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-import static com.ssafy.saessak.oauth.jwt.JwtValidationType.VALID_JWT;
+import static com.ssafy.saessak.oauth.jwt.JwtValidationType.*;
 
 @Slf4j
 @Component
@@ -28,27 +30,58 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
 
+    private String[] AUTH_WHITELIST = {
+            "/api/oauth/",
+            "/api/test/",
+            "/api/v1/urls/",
+            "/api/v2/urls/",
+            "/swagger-ui/",
+            "/v3/api-docs",
+            "/swagger-resources/",
+    };
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        try {
-            final String token = getJwtFromRequest(request);
-            if (jwtTokenProvider.validateToken(token) == VALID_JWT) {
-                Long userId = jwtTokenProvider.getUserFromJwt(token);
-                // authentication 객체 생성 -> principal에 유저정보를 담는다.
-                UserAuthentication authentication = new UserAuthentication(userId.toString(), null, null);
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-            }
-        } catch (Exception exception) {
-            try {
-                throw new Exception();
-            } catch (Exception e) {
-                throw new RuntimeException(e);
+        String requestUrl = request.getRequestURI();
+        String token = getJwtFromRequest(request);
+
+        for(String url : AUTH_WHITELIST) {
+            if(requestUrl.startsWith(url)) {
+                filterChain.doFilter(request, response);
+                return;
             }
         }
-        // 다음 필터로 요청 전달
-        filterChain.doFilter(request, response);
+
+        if (token != null && jwtTokenProvider.validateToken(token) == VALID_JWT_TOKEN) {
+            Long userId = jwtTokenProvider.getUserFromJwt(token);
+
+            UserAuthentication authentication = new UserAuthentication(userId.toString(), null, null);
+            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            filterChain.doFilter(request, response);
+
+        } else {
+            JwtValidationType type = jwtTokenProvider.validateToken(token);
+            if(type.equals(INVALID_JWT_TOKEN)) sendError(ExceptionCode.INVALID_JWT_ACCESS_TOKEN, response);
+            if(type.equals(EXPIRED_JWT_TOKEN)) sendError(ExceptionCode.ACCESS_TOKEN_EXPIRED, response);
+            if(type.equals(UNSUPPORTED_JWT_TOKEN)) sendError(ExceptionCode.UNSUPPORTED_JWT_ACCESS_TOKEN, response);
+            if(type.equals(EMPTY_JWT_TOKEN)) sendError(ExceptionCode.EMPTY_JWT_TOKEN, response);
+            return;
+        }
+
+    }
+
+    private void sendError(ExceptionCode exceptionCode, HttpServletResponse response) throws IOException {
+        response.setStatus(exceptionCode.getStatus());
+        response.setHeader("Content-Type", "application/xml");
+        response.setContentType("application/json;charset=UTF-8");
+        response.setCharacterEncoding("utf-8");
+
+        String code = exceptionCode.getCode();
+        String message = exceptionCode.getMessage();
+        String jsonErrorResponse = String.format("{\"code\": \"%s\", \"message\": \"%s\"}", code, message);
+        response.getWriter().write(jsonErrorResponse);
     }
 
     private String getJwtFromRequest(HttpServletRequest request) {

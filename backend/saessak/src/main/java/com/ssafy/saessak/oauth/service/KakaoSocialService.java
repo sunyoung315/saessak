@@ -4,8 +4,8 @@ import com.ssafy.saessak.oauth.client.KakaoApiClient;
 import com.ssafy.saessak.oauth.client.KakaoAuthApiClient;
 import com.ssafy.saessak.oauth.dto.kakao.KakaoAccessTokenResponse;
 import com.ssafy.saessak.oauth.dto.kakao.KakaoUserResponse;
-import com.ssafy.saessak.oauth.exception.BadRequestException;
-import com.ssafy.saessak.oauth.exception.ErrorMessage;
+import com.ssafy.saessak.exception.BadRequestException;
+import com.ssafy.saessak.exception.code.ExceptionCode;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,8 +24,6 @@ public class KakaoSocialService {
 
     private final KakaoApiClient kakaoApiClient;
     private final KakaoAuthApiClient kakaoAuthApiClient;
-    private final ParentService parentService;
-    private final TeacherService teacherService;
 
     @Value("${kakao.client.id}")
     private String KAKAO_CLIENT_ID;
@@ -53,7 +51,7 @@ public class KakaoSocialService {
             // 인가 코드로 Access Token + Refresh Token 받아오기
             accessToken = getOAuth2Authentication(authorizationCode);
         } catch (FeignException e) {
-            throw new BadRequestException(ErrorMessage.AUTHENTICATION_CODE_EXPIRED);
+            throw new BadRequestException(ExceptionCode.AUTHENTICATION_CODE_EXPIRED);
         }
         // Access Token으로 유저 정보 불러오기
         return getUserInfo(accessToken);
