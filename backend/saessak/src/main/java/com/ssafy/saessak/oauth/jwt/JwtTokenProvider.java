@@ -65,7 +65,7 @@ public class JwtTokenProvider {
     public JwtValidationType validateToken(String token) {
         try {
             final Claims claims = getBody(token);
-            return JwtValidationType.VALID_JWT;
+            return JwtValidationType.VALID_JWT_TOKEN;
         } catch (MalformedJwtException ex) {
             return JwtValidationType.INVALID_JWT_TOKEN;
         } catch (ExpiredJwtException ex) {
@@ -73,7 +73,7 @@ public class JwtTokenProvider {
         } catch (UnsupportedJwtException ex) {
             return JwtValidationType.UNSUPPORTED_JWT_TOKEN;
         } catch (IllegalArgumentException ex) {
-            return JwtValidationType.EMPTY_JWT;
+            return JwtValidationType.EMPTY_JWT_TOKEN;
         }
     }
 

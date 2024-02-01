@@ -4,7 +4,6 @@ import com.ssafy.saessak.oauth.authentication.CustomAccessDeniedHandler;
 import com.ssafy.saessak.oauth.authentication.CustomJwtAuthenticationEntryPoint;
 import com.ssafy.saessak.oauth.jwt.filter.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
-import org.apache.http.auth.AUTH;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,7 +18,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-
 @Configuration
 @RequiredArgsConstructor
 @EnableWebSecurity
@@ -54,7 +52,7 @@ public class WebSecurityConfig {
                 })
                 .authorizeRequests(authorizeRequests ->
                         authorizeRequests
-                                .requestMatchers(new AntPathRequestMatcher("/api/auth/**")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/api/oauth/**")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/api/test/**")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/api/v1/urls/**")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/api/v2/urls/**")).permitAll()
@@ -67,4 +65,5 @@ public class WebSecurityConfig {
 
         return http.build();
     }
+
 }
