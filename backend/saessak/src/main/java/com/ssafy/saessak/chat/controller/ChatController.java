@@ -55,4 +55,9 @@ public class ChatController {
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, chatService.addParentRoom(teacherId)));
     }
 
+    @Operation(summary = "채팅 들어올 때 JWT 검증")
+    @GetMapping(value = "/isVaild", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResultResponse> isVaild() {
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS,  chatService.isValid()));
+    }
 }

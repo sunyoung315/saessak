@@ -159,4 +159,9 @@ public class ChatService {
         }
         return chatMessageResponseList;
     }
+
+    public Long isValid() {
+        User user = authenticationService.getUserByAuthentication();
+        return user.getId();
+    }
 }
