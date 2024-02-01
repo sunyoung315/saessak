@@ -1,6 +1,6 @@
 package com.ssafy.saessak.chat.domain;
 
-import com.ssafy.saessak.user.domain.Teacher;
+import com.ssafy.saessak.user.domain.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -11,27 +11,23 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder(toBuilder = true)
-@Table(name="chat")
-public class Chat {
-
+@Table(name="visit")
+public class Visit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long chatId;
+    private Long visitId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id")
     private Room room;
 
-    @Column(name = "chat_content")
-    private String chatContent;
+    private LocalDateTime visitTime;
 
-    @Column(name = "sender_id")
-    private Long senderId;
-
-    @Column(name = "receiver_id")
-    private Long receiverId;
-
-    @Column(name = "chat_time")
-    private String chatTime;
-
+    public void updateVisitTime(LocalDateTime visitTime){
+        this.visitTime = visitTime;
+    }
 }

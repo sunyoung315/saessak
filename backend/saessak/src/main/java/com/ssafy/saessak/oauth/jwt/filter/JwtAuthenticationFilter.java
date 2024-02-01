@@ -50,8 +50,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
-
     }
+
 
     private void sendError(ExceptionCode exceptionCode, HttpServletResponse response) throws IOException {
         response.setStatus(exceptionCode.getStatus());

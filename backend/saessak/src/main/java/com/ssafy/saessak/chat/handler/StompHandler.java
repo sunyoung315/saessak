@@ -1,6 +1,7 @@
 package com.ssafy.saessak.chat.handler;
 
 
+import com.ssafy.saessak.chat.service.ChatService;
 import com.ssafy.saessak.oauth.jwt.JwtTokenProvider;
 import com.ssafy.saessak.oauth.jwt.JwtValidationType;
 import lombok.RequiredArgsConstructor;
@@ -11,11 +12,15 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.stereotype.Component;
 
+import java.util.Objects;
+import java.util.Optional;
+
 @Component
 @RequiredArgsConstructor
 public class StompHandler implements ChannelInterceptor {
 
     private final JwtTokenProvider jwtProvider;
+    private final ChatService chatService;
 
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
@@ -29,23 +34,21 @@ public class StompHandler implements ChannelInterceptor {
             if(jwtProvider.validateToken(token) != JwtValidationType.VALID_JWT_TOKEN) {
                 throw new RuntimeException("Not Valid Token");
             }
+        } else if (accessor.getCommand() == StompCommand.UNSUBSCRIBE) {
+
+            String roomId = Optional.ofNullable(
+                    (String) message.getHeaders().get("roomId")
+            ).orElse(null);
+
+            String userId = Optional.ofNullable(
+                    (String) message.getHeaders().get("userId")
+            ).orElse(null);
+
+            System.out.println(Long.parseLong(roomId) + " " + Long.parseLong(userId));
+            chatService.setLastVisit(Long.parseLong(roomId), Long.parseLong(userId));
+            System.out.println("closed");
         }
         return message;
-    }
-
-    @Override
-    public void postSend(Message<?> message, MessageChannel channel, boolean sent) {
-        StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
-
-        if (accessor.getCommand() == null) {
-            return;  // 메시지에 STOMP 명령이 없는 경우는 무시
-        }
-
-        // DISCONNECT 명령 처리
-        if (accessor.getCommand() == StompCommand.DISCONNECT) {
-            String username = accessor.getUser().getName();
-            System.out.println(username);
-        }
     }
 
 }
