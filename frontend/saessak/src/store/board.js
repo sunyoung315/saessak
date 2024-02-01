@@ -74,17 +74,15 @@ export const useBoardStore = defineStore('board', () => {
 			headers: {
 				'Content-Type': 'application/json',
 			},
-		})
-			.then(resp => {
+		}).then(resp => {
+			if (resp.data.data) {
 				noContent.value = '';
 				oneBoard.value = resp.data.data;
 				date.value = oneBoard.value.boardDate;
-			})
-			.catch(error => {
-				if (error.response.status === 500) {
-					noContent.value = '등록된 알림장이 없습니다.';
-				}
-			});
+			} else {
+				noContent.value = '등록된 알림장이 없습니다.';
+			}
+		});
 	};
 
 	// 선택 기간의 알림장 조회
