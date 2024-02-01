@@ -2,8 +2,7 @@ import { ref } from 'vue';
 import axios from 'axios';
 import { defineStore } from 'pinia';
 
-const LOCAL_API = 'http://localhost:8080/api/board';
-// const REST_BOARD_API = 'https://i10a706.p.ssafy.io/api';
+const REST_BOARD_API = 'https://i10a706.p.ssafy.io/api/board';
 
 export const useBoardStore = defineStore('board', () => {
 	// 학부모ver 내 아이 알림장 리스트
@@ -12,11 +11,11 @@ export const useBoardStore = defineStore('board', () => {
 	// 학부모ver 내 아이 알림장 리스트 요청
 	const getMyKidBoards = async kidId => {
 		await axios({
-			url: `${LOCAL_API}/${kidId}`,
-			// url: `${REST_BOARD_API}/${kidId}`,
+			url: `${REST_BOARD_API}/${kidId}`,
 			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json',
+				Authorization: 'Bearer ' + sessionStorage.getItem('accessToken'),
 			},
 		}).then(resp => {
 			myKidBoards.value = resp.data.data;
@@ -33,8 +32,7 @@ export const useBoardStore = defineStore('board', () => {
 	// 알림장 상세보기(boardId)
 	const getOneBoard = async boardId => {
 		await axios({
-			url: `${LOCAL_API}/detail/${boardId}`,
-			// url: `${REST_BOARD_API}/detail/${boardId}`,
+			url: `${REST_BOARD_API}/detail/${boardId}`,
 			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json',
@@ -47,8 +45,7 @@ export const useBoardStore = defineStore('board', () => {
 	// 알림장 상세보기(date)
 	const getOneBoardByDate = async kidId => {
 		await axios({
-			url: `${LOCAL_API}/day/${kidId}`,
-			// url: `${REST_BOARD_API}/day/${kidId}`,
+			url: `${REST_BOARD_API}/day/${kidId}`,
 			method: 'POST',
 			data: {
 				boardDate: date.value,
@@ -72,8 +69,7 @@ export const useBoardStore = defineStore('board', () => {
 	// 알림장 상세보기(kidId, 최신 알림장)
 	const getCurrentBoard = async kidId => {
 		await axios({
-			url: `${LOCAL_API}/current/${kidId}`,
-			// url: `${REST_BOARD_API}/current/${kidId}`,
+			url: `${REST_BOARD_API}/current/${kidId}`,
 			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json',
@@ -96,8 +92,7 @@ export const useBoardStore = defineStore('board', () => {
 	const boardList = ref([]);
 	const getSummaryBoard = async (kidId, { startDate, endDate }) => {
 		await axios({
-			url: `${LOCAL_API}/summary/${kidId}`,
-			// url: `${REST_BOARD_API}/summary/${kidId}`,
+			url: `${REST_BOARD_API}/summary/${kidId}`,
 			method: 'POST',
 			data: { startDate, endDate },
 			headers: {
@@ -108,19 +103,17 @@ export const useBoardStore = defineStore('board', () => {
 		});
 	};
 
-	// 임시 성별
-	const gender = ref('M');
 	// 성장도표 조회
 	const tallList = ref([]);
 	const weightList = ref([]);
-	const getGrowthList = async () => {
+	const getGrowthList = async (gender, myKidMonths) => {
 		await axios({
-			url: 'http://i10a706.p.ssafy.io:8081/api/growth',
+			url: 'https://i10a706.p.ssafy.io/api/growth',
 			method: 'POST',
 			data: {
-				gender: gender.value,
-				startMonth: 0,
-				endMonth: 100,
+				gender,
+				startMonth: myKidMonths - 48,
+				endMonth: myKidMonths + 12,
 			},
 			headers: {
 				'Content-Type': 'application/json',
@@ -133,6 +126,21 @@ export const useBoardStore = defineStore('board', () => {
 			.catch(err => {
 				console.log(err);
 			});
+	};
+
+	// 선택기간 아이의 성장 기록 조회
+	const myKidGrowthList = ref({});
+	const getMyKidGrowthList = async (kidId, period) => {
+		await axios({
+			url: `${REST_BOARD_API}/physical/${kidId}`,
+			method: 'POST',
+			data: period,
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		}).then(resp => {
+			myKidGrowthList.value = resp.data.data;
+		});
 	};
 
 	return {
@@ -150,5 +158,7 @@ export const useBoardStore = defineStore('board', () => {
 		tallList,
 		weightList,
 		getGrowthList,
+		myKidGrowthList,
+		getMyKidGrowthList,
 	};
 });

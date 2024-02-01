@@ -15,10 +15,9 @@
 					<select
 						id="name"
 						class="datepicker-input px-5 text-[18px]"
-						v-model="newBoard.kidId"
+						v-model="kidId"
 						required
 					>
-						<option selected :value="0">이름을 선택해주세요.</option>
 						<template v-for="kid in userStore.kidsList" :key="kid.kidId">
 							<option :value="kid.kidId">{{ kid.kidName }}</option>
 						</template>
@@ -252,30 +251,30 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { createBoard } from '@/api/board';
 import { useUserStore } from '@/store/user';
+import { useBoardStore } from '@/store/board';
 
 const router = useRouter();
 const userStore = useUserStore();
-
-// 임시 data(로그인한 선생님 정보에서 가져올 data)
-const classroomId = ref(2);
-
-onMounted(async () => {
-	await userStore.getKidsList(classroomId.value);
-});
+const boardStore = useBoardStore();
 
 // '목록'으로 라우팅
 const goBoardList = () => {
 	router.push({ name: 'BoardList' });
 };
 
+// 작성할 수 있는 반 아이 리스트
+onMounted(async () => {
+	await userStore.getKidsList();
+});
+
+const kidId = ref(0);
 // 새로운 알림장 변수
 const newBoard = ref({
-	kidId: 0,
-	classroomId: classroomId.value,
+	kidId,
 	boardDate: new Date(),
 	boardContent: '',
 	boardTemperature: 0.0,
@@ -283,6 +282,18 @@ const newBoard = ref({
 	boardPoopStatus: '',
 	boardTall: 0.0,
 	boardWeight: 0.0,
+});
+
+// 아이 선택하면 최근 키/체중 가져오기
+watch(kidId, async newVal => {
+	await boardStore.getCurrentBoard(newVal);
+	if (!boardStore.noContent) {
+		newBoard.value.boardTall = boardStore.oneBoard.boardTall;
+		newBoard.value.boardWeight = boardStore.oneBoard.boardWeight;
+	} else {
+		newBoard.value.boardTall = 0;
+		newBoard.value.boardWeight = 0;
+	}
 });
 
 // 증감 버튼 함수 ////////////////////////////////////

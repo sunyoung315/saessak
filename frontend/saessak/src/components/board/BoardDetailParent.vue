@@ -155,8 +155,15 @@ import { ref, onMounted, watch } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useBoardStore } from '@/store/board';
 
-// 임시 data
-const kidId = ref(1);
+// 로그인 유저
+const props = defineProps({
+	loginStore: Object,
+});
+
+// const kidId = props.loginStore.isTeacher ? undefined : props.loginStore.curKid;
+const kidId = props.loginStore.isTeacher
+	? undefined
+	: props.loginStore.kidList[0].kidId;
 
 const router = useRouter();
 const route = useRoute();
@@ -204,7 +211,7 @@ watch(date, (newVal, oldVal) => {
 		const newDate = `${year}-${month}-${day}`;
 		// 알림장 상세조회(date)
 		store.date = newDate;
-		store.getOneBoardByDate(kidId.value);
+		store.getOneBoardByDate(kidId);
 	}
 });
 
