@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -107,7 +108,7 @@ public class BoardService {
         return boardResponseDtoList;
     }
 
-    public BoardDetailDto findByKidAndDate (Long kidId, Date date){
+    public BoardDetailDto findByKidAndDate (Long kidId, LocalDate date){
         Kid kid = kidRepository.findById(kidId).get();
         Optional<List<Board>> result = boardRepository.findByKidAndBoardDate(kid,date);
         if (result.isPresent()){
@@ -133,40 +134,55 @@ public class BoardService {
     // 아이의 가장 최근 엘범
     public BoardDetailDto getKidCurrentBoard( Long kidId){
         Kid kid = kidRepository.findById(kidId).get();
-        Board board = boardRepository.findFirstByKidOrderByBoardDateDesc(kid).get();
+        Optional<Board> result = boardRepository.findFirstByKidOrderByBoardDateDesc(kid);
+        Board board = null;
 
-        return BoardDetailDto.builder()
-                .kidId(kidId)
-                .classroomId(kid.getClassroom().getClassroomId())
-                .boardDate(board.getBoardDate())
-                .boardTemperature(board.getBoardTemperature())
-                .boardDate(board.getBoardDate())
-                .boardWeight(board.getBoardWeight())
-                .boardPoopStatus(board.getBoardPoopStatus())
-                .boardTall(board.getBoardTall())
-                .boardId(board.getBoardId())
-                .boardSleepTime(board.getBoardSleepTime())
-                .boardContent(board.getBoardContent())
-                .build();
+        if(result.isPresent()){
+            board = result.get();
+            return BoardDetailDto.builder()
+                    .kidId(kidId)
+                    .classroomId(kid.getClassroom().getClassroomId())
+                    .boardDate(board.getBoardDate())
+                    .boardTemperature(board.getBoardTemperature())
+                    .boardDate(board.getBoardDate())
+                    .boardWeight(board.getBoardWeight())
+                    .boardPoopStatus(board.getBoardPoopStatus())
+                    .boardTall(board.getBoardTall())
+                    .boardId(board.getBoardId())
+                    .boardSleepTime(board.getBoardSleepTime())
+                    .boardContent(board.getBoardContent())
+                    .build();
+        }
+        else{
+            return null;
+        }
+
     }
-    public List<PhysicalResponseDto> getPhysicalList (Long kidId, Date startDate,Date endDate){
+    public PhysicalResponseDto getPhysicalList (Long kidId, LocalDate startDate,LocalDate endDate){
         Kid kid = kidRepository.findById(kidId).get();
-        List<PhysicalResponseDto> physicalResponseDtoList= new ArrayList<>();
+        List<PhysicalDto> physicalDtoList= new ArrayList<>();
 
         List<Board> result = boardRepository.findByKidAndBoardDateBetween(kid,startDate, endDate).get();
         for( Board board : result){
-            PhysicalResponseDto physicalResponseDto = PhysicalResponseDto.builder()
+            PhysicalDto physicalDto = PhysicalDto.builder()
                     .boardDate(board.getBoardDate())
                     .boardWeight(board.getBoardWeight())
                     .boardTall(board.getBoardTall())
                     .build();
-            physicalResponseDtoList.add(physicalResponseDto);
+            physicalDtoList.add(physicalDto);
         }
+        PhysicalResponseDto physicalResponseDto = PhysicalResponseDto.builder()
+                .kidId(kid.getId())
+                .gender(kid.getGender())
+                .kidBirthday(kid.getKidBirthday())
+                .physicalDtoList(physicalDtoList)
+                .kidName(kid.getNickname())
+                .build();
 
-        return physicalResponseDtoList;
+        return physicalResponseDto;
     }
 
-    public List<ContentResponseDto> getContentList (Long kidId, Date startDate, Date endDate){
+    public List<ContentResponseDto> getContentList (Long kidId, LocalDate startDate, LocalDate endDate){
         List<ContentResponseDto> contentResponseDtoList = new ArrayList<>();
         Kid kid = kidRepository.findById(kidId).get();
         List<Board> result = boardRepository.findByKidAndBoardDateBetween(kid,startDate,endDate).get();

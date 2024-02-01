@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 public class AlbumResponseDto {
     private Long albumId;
-    private Date albumDate;
+    private LocalDate albumDate;
     private String albumTitle;
     private List<FileResponseDto> fileResponseDtoList;
 }

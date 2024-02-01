@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Getter
@@ -25,7 +26,7 @@ public class Board {
 
     @Column
     @Temporal(TemporalType.DATE)
-    private Date boardDate;
+    private LocalDate boardDate;
 
     @Column(length = 1000)
     private String boardContent;

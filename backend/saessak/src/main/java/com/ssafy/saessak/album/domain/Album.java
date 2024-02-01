@@ -7,6 +7,7 @@ import com.ssafy.saessak.user.domain.Kid;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -27,7 +28,7 @@ public class Album {
 
     @Column
     @Temporal(TemporalType.DATE)
-    private Date albumDate;
+    private LocalDate albumDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "classroom_id")
