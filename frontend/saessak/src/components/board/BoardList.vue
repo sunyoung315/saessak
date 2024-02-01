@@ -108,7 +108,7 @@ onMounted(async () => {
 	@apply bg-[url('@/assets/BoardFrame.png')] bg-book inline-block w-[13.77rem] h-[16.4rem] mx-3 my-4 bg-white rounded-lg hover:bg-yellow-50 hover:bg-opacity-65;
 }
 .book-title-teacher {
-	@apply relative left-[5.8rem] top-[1.77rem] font-semibold text-base;
+	@apply relative left-[4.4rem] top-[1.8rem] font-semibold text-base w-24 text-center;
 }
 .book-title-parent {
 	@apply relative left-[5.05rem] top-[1.9rem] mb-1 font-semibold text-sm;

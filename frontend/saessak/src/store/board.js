@@ -103,19 +103,17 @@ export const useBoardStore = defineStore('board', () => {
 		});
 	};
 
-	// 임시 성별
-	const gender = ref('M');
 	// 성장도표 조회
 	const tallList = ref([]);
 	const weightList = ref([]);
-	const getGrowthList = async () => {
+	const getGrowthList = async (gender, myKidMonths) => {
 		await axios({
 			url: 'https://i10a706.p.ssafy.io/api/growth',
 			method: 'POST',
 			data: {
-				gender: gender.value,
-				startMonth: 0,
-				endMonth: 100,
+				gender,
+				startMonth: myKidMonths - 48,
+				endMonth: myKidMonths + 12,
 			},
 			headers: {
 				'Content-Type': 'application/json',
@@ -128,6 +126,21 @@ export const useBoardStore = defineStore('board', () => {
 			.catch(err => {
 				console.log(err);
 			});
+	};
+
+	// 선택기간 아이의 성장 기록 조회
+	const myKidGrowthList = ref({});
+	const getMyKidGrowthList = async (kidId, period) => {
+		await axios({
+			url: `${REST_BOARD_API}/physical/${kidId}`,
+			method: 'POST',
+			data: period,
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		}).then(resp => {
+			myKidGrowthList.value = resp.data.data;
+		});
 	};
 
 	return {
@@ -145,5 +158,7 @@ export const useBoardStore = defineStore('board', () => {
 		tallList,
 		weightList,
 		getGrowthList,
+		myKidGrowthList,
+		getMyKidGrowthList,
 	};
 });

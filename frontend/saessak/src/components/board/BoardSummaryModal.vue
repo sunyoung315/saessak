@@ -128,12 +128,16 @@
 
 			<!-- content -->
 			<div class="mx-20 my-5">
-				<div
-					class="inline-block h-36 w-36 mx-4 px-4 py-12 border rounded-full bg-orange-300"
-				>
-					<span class="loader"></span>
-				</div>
-				<div class="whitespace-pre-line">{{ summary }}</div>
+				<template v-if="!summary">
+					<div
+						class="inline-block h-[25rem] w-[50rem] px-4 py-12 border border-gray-200 shadow rounded-lg flex justify-center items-center"
+					>
+						<span class="loader"></span>
+					</div>
+				</template>
+				<template v-else>
+					<div class="whitespace-pre-line">{{ summary }}</div>
+				</template>
 			</div>
 		</div>
 	</div>
@@ -260,7 +264,7 @@ const getSummaryBoard = async (kidId, { startDate, endDate }) => {
 <style scoped>
 .flowbit-modal__container {
 	width: 60rem;
-	height: 35rem;
+	height: 40rem;
 	max-width: none;
 }
 .loader {
@@ -278,6 +282,7 @@ const getSummaryBoard = async (kidId, { startDate, endDate }) => {
 	background-color: #fff;
 	background-image: radial-gradient(circle 14px, #0d161b 100%, transparent 0);
 	background-repeat: no-repeat;
+	border: black solid 3px;
 	border-radius: 50%;
 	animation:
 		eyeMove 10s infinite,
