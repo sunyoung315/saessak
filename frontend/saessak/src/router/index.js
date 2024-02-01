@@ -5,11 +5,12 @@ import NotFoundView from '@/views/NotFoundView.vue';
 import LoginView from '@/views/LoginView.vue';
 import UserView from '@/components/user/UserView.vue';
 import BoardView from '@/components/board/BoardView.vue';
-import AlbumView from '@/components/album/AlbumView.vue';
 import JoinView from '@/views/JoinView.vue';
+import AlbumView from '@/components/album/AlbumView.vue';
 import AlbumList from '@/components/album/AlbumList.vue';
+import AlbumDetailParent from '@/components/album/AlbumDetailParent.vue';
+import AlbumDetailTeacher from '@/components/album/AlbumDetailTeacher.vue';
 import AlbumCreate from '@/components/album/AlbumCreate.vue';
-import AlbumDetail from '@/components/album/AlbumDetail.vue';
 import NoticeView from '@/components/notice/NoticeView.vue';
 import DocumentView from '@/components/document/DocumentView.vue';
 import DocumentList from '@/components/document/DocumentList.vue';
@@ -38,7 +39,7 @@ const routes = [
 		path: '/login',
 		name: 'Login',
 		component: LoginView,
-	},	
+	},
 	{
 		path: '/join',
 		name: 'Join',
@@ -93,8 +94,13 @@ const routes = [
 			},
 			{
 				path: ':id',
-				name: 'AlbumDetail',
-				component: AlbumDetail,
+				name: 'AlbumDetailParent',
+				component: AlbumDetailParent,
+			},
+			{
+				path: ':id',
+				name: 'AlbumDetailTeacher',
+				component: AlbumDetailTeacher,
 			},
 		],
 	},
