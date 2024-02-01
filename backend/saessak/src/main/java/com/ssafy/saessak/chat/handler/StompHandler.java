@@ -13,6 +13,7 @@ import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -34,10 +35,17 @@ public class StompHandler implements ChannelInterceptor {
                 throw new RuntimeException("Not Valid Token");
             }
         } else if (accessor.getCommand() == StompCommand.UNSUBSCRIBE) {
-            Long roomId = Long.parseLong(Objects.requireNonNull(accessor.getFirstNativeHeader("roomId")));
-            Long userId = Long.parseLong(accessor.getFirstNativeHeader("userId"));
-            System.out.println(roomId + " " + userId);
-            chatService.setLastVisit(roomId, userId);
+
+            String roomId = Optional.ofNullable(
+                    (String) message.getHeaders().get("roomId")
+            ).orElse(null);
+
+            String userId = Optional.ofNullable(
+                    (String) message.getHeaders().get("userId")
+            ).orElse(null);
+
+            System.out.println(Long.parseLong(roomId) + " " + Long.parseLong(userId));
+            chatService.setLastVisit(Long.parseLong(roomId), Long.parseLong(userId));
             System.out.println("closed");
         }
         return message;
