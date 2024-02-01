@@ -22,7 +22,7 @@ onMounted(() => {
   if (code.value != null) {
     // console.log(code.value)
     axios
-      .get('https://i10a706.p.ssafy.io/api/oauth/kakao/callback/' + code.value)
+      .get('http://i10a706.p.ssafy.io:8081/api/oauth/kakao/callback/' + code.value)
       // 발급된 코드를 갖고 신규/기존 회원 여부 판별하는 axios 호출
       .then(({ data }) => {
         // console.log('카카오 로그인 전')

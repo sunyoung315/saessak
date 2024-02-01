@@ -28,15 +28,29 @@
 </template>
 
 <script setup>
-import { shallowRef, ref } from "vue";
+import { onMounted, shallowRef, ref } from "vue";
 import ChatListView from "./ChatListView.vue";
 import ChatPersonView from "./ChatPersonView.vue";
 
 const chatSwitch = shallowRef(ChatPersonView);
 
+const props = defineProps({
+  size : {
+    type : Object,
+    default : () => ({
+      width : 0,
+      height : 0
+    })
+  }
+})
+onMounted(() => {
+  // console.log("사이즈 받아왔니")
+  // console.log(props.size)
+})
+
 const showChat = (name) => {
   chatSwitch.value = name;
-  console.log(chatSwitch.value);
+  // console.log(chatSwitch.value);
 };
 </script>
 <style scoped>
