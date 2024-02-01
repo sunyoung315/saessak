@@ -3,21 +3,22 @@ package com.ssafy.saessak.board.dto;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 
 @Builder
 @Getter
 public class BoardDetailDto {
-    Long boardId;
-    Long kidId;
-    Long classroomId;
-    Date boardDate;
-    String boardContent;
-    String boardTemperature;
-    Float boardSleepTime;
-    String boardPoopStatus;
-    Float boardTall;
-    Float boardWeight;
-    String boardPath;
+    private Long boardId;
+    private Long kidId;
+    private Long classroomId;
+    private LocalDate boardDate;
+    private String boardContent;
+    private String boardTemperature;
+    private Float boardSleepTime;
+    private String boardPoopStatus;
+    private Float boardTall;
+    private Float boardWeight;
+    private String boardPath;
 }

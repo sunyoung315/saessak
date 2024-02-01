@@ -13,7 +13,7 @@ import java.io.IOException;
 public class CustomAccessDeniedHandler implements AccessDeniedHandler {
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
-        setResponse(response);
+
     }
 
     private void setResponse(HttpServletResponse response) {

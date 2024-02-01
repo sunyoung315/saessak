@@ -79,7 +79,7 @@ public class BoardController {
     public ResponseEntity<ResultResponse> getPhysicalList(@PathVariable (name= "kidId") Long kidId,
                                                           @RequestBody DateBetweenRequestDto dateBetweenRequestDto){
         log.debug("받은 날짜 데이터 : {} ~ {} ", dateBetweenRequestDto.getStartDate(), dateBetweenRequestDto.getEndDate());
-        List<PhysicalResponseDto> result = boardService.getPhysicalList(kidId,
+        PhysicalResponseDto result = boardService.getPhysicalList(kidId,
                 dateBetweenRequestDto.getStartDate(), dateBetweenRequestDto.getEndDate());
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, result));
     }

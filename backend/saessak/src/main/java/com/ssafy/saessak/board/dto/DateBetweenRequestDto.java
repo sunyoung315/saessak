@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 
@@ -12,8 +13,8 @@ import java.util.Date;
 @NoArgsConstructor
 public class DateBetweenRequestDto {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    Date startDate;
+    private LocalDate startDate;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    Date endDate;
+    private LocalDate endDate;
 
 }

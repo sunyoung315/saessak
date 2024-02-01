@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -35,7 +36,7 @@ public class AlbumController {
     public ResponseEntity<ResultResponse> getClassAlbum
             (@PathVariable(name = "classroomId") Long classroomId, @RequestBody AlbumRequestDto albumRequestDto){
         log.debug("controller requestBody  : {}", albumRequestDto);
-        Date albumDate = albumRequestDto.getAlbumDate();
+        LocalDate albumDate = albumRequestDto.getAlbumDate();
         List<AlbumResponseDto> albumResponseDtoList = albumService.getClassAlbum(classroomId, albumDate);
 
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS,albumResponseDtoList));
@@ -52,7 +53,7 @@ public class AlbumController {
     @PostMapping("/kid/{kidId}")
     public ResponseEntity<ResultResponse> getKidAlbum
             (@PathVariable(name = "kidId") Long kidId, @RequestBody AlbumRequestDto albumRequestDto){
-        Date albumDate = albumRequestDto.getAlbumDate();
+        LocalDate albumDate = albumRequestDto.getAlbumDate();
         List<AlbumResponseDto> albumResponseDtoList =  albumService.getKidAlbum(kidId, albumDate);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, albumResponseDtoList));
     }
