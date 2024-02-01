@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -46,7 +47,7 @@ public class AlbumService {
         return makeAlbumResponseDtoList(albumList);
     }
 
-    public List<AlbumResponseDto> getKidAlbum(Long kidId, Date date){
+    public List<AlbumResponseDto> getKidAlbum(Long kidId, LocalDate date){
         Kid kid = kidRepository.findById(kidId).get();
         List<Album> albumList = albumRepository.findByKidAndAlbumDate(kid,date).get();
         return makeAlbumResponseDtoList(albumList);
@@ -71,7 +72,7 @@ public class AlbumService {
     }
 
 
-    public List<AlbumResponseDto> getClassAlbum(Long classroomId, Date date){
+    public List<AlbumResponseDto> getClassAlbum(Long classroomId, LocalDate date){
         Classroom classroom = classroomRepository.findById(classroomId).get();
         List<Album> albumList = albumRepository.findByClassroomAndAlbumDateAndKidIsNull(classroom, date).get();
         return makeAlbumResponseDtoList(albumList);
