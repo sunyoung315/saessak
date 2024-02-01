@@ -39,6 +39,100 @@ public class ChatService {
     private final UserRepository userRepository;
     private final ChatRedisCacheService chatRedisCacheService;
 
+
+
+
+
+    // 채팅방 학부모 생성
+    public Long addParentRoom(Long teacherId) {
+
+        User user = authenticationService.getUserByAuthentication(); // 학부모
+        Teacher teacher = teacherRepository.findById(teacherId).get();
+
+        List<Kid> kidList1 = kidRepository.findAllByParent((Parent) user);
+        List<Kid> kidList2 = kidRepository.findAllByClassroom(teacher.getClassroom());
+
+        Kid kid = null;
+        for (Kid k : kidList2) {
+            if (kidList1.contains(k)) {
+                kid = k;
+            }
+        }
+
+        Room room = roomRepository.findByKidAndTeacher(kid, teacher);
+        if(room == null){
+            room = roomRepository.save(Room.builder()
+                    .kid(kid)
+                    .teacher(teacher)
+                    .build());
+            Visit visit1 = Visit.builder()
+                    .room(room)
+                    .user(user)
+                    .build();
+            Visit visit2 = Visit.builder()
+                    .room(room)
+                    .user(teacher)
+                    .build();
+            visitRepository.save(visit1);
+            visitRepository.save(visit2);
+        }
+        return room.getRoomId();
+    }
+    // 채팅방 선생님 생성
+    public Long addTeacherRoom(Long kidId) {
+        User user = authenticationService.getUserByAuthentication(); //선생님
+
+        Teacher teacher = teacherRepository.findById(user.getId()).get();
+        Kid kid = kidRepository.findById(kidId).get();
+        Room room = roomRepository.findByKidAndTeacher(kid, teacher);
+
+        if(room == null){
+            room = roomRepository.save(Room.builder()
+                    .kid(kid)
+                    .teacher(teacher)
+                    .build());
+            Visit visit1 = Visit.builder()
+                .room(room)
+                .user(user)
+                .build();
+            Visit visit2 = Visit.builder()
+                    .room(room)
+                    .user(kid)
+                    .build();
+            visitRepository.save(visit1);
+            visitRepository.save(visit2);
+        }
+        return room.getRoomId();
+    }
+
+    public List<ChatMessageResponse> getAllChat(Long roomId) {
+        Room room = roomRepository.findById(roomId).get();
+
+        List<ChatMessageResponse> chatMessageResponseList = new ArrayList<>();
+        for(Chat c : room.getChatList()){
+            ChatMessageResponse chatMessageResponse = ChatMessageResponse.builder()
+                    .senderId(c.getSenderId())
+                    .receiverId(c.getReceiverId())
+                    .chatContent(c.getChatContent())
+                    .chatTime(c.getChatTime().toString())
+                    .build();
+            chatMessageResponseList.add(chatMessageResponse);
+        }
+        return chatMessageResponseList;
+    }
+
+    public Long isValid() {
+        User user = authenticationService.getUserByAuthentication();
+        return user.getId();
+    }
+    @Transactional
+    public void setLastVisit(Long roomId, Long userId){
+        Room room = roomRepository.findById(roomId).get();
+        User user = userRepository.findById(userId).get();
+        Visit visit = visitRepository.findByUserAndRoom(user, room);
+        visit.updateVisitTime(LocalDateTime.now());
+    }
+
     public List<RoomResponseDto> getRoomByParent() {
         User user = authenticationService.getUserByAuthentication();
         Parent parent = parentRepository.findById(user.getId()).get();
@@ -66,87 +160,6 @@ public class ChatService {
         }
         return roomResponseDtoList;
     }
-
-
-
-    // 채팅방 학부모 생성
-    public Long addParentRoom(Long teacherId) {
-
-        User user = authenticationService.getUserByAuthentication(); // 학부모
-        Teacher teacher = teacherRepository.findById(teacherId).get();
-
-        List<Kid> kidList1 = kidRepository.findAllByParent((Parent) user);
-        List<Kid> kidList2 = kidRepository.findAllByClassroom(teacher.getClassroom());
-
-        Kid kid = null;
-        for (Kid k : kidList2) {
-            if (kidList1.contains(k)) {
-                kid = k;
-            }
-        }
-
-        Room room = roomRepository.findByKidAndTeacher(kid, teacher);
-        if(room == null){
-            room = roomRepository.save(Room.builder()
-                    .kid(kid)
-                    .teacher(teacher)
-                    .build());
-        }
-        return room.getRoomId();
-    }
-
-
-    // 채팅방 선생님 생성
-    public Long addTeacherRoom(Long kidId) {
-        User user = authenticationService.getUserByAuthentication(); //선생님
-
-        Teacher teacher = teacherRepository.findById(user.getId()).get();
-        Kid kid = kidRepository.findById(kidId).get();
-        Room room = roomRepository.findByKidAndTeacher(kid, teacher);
-
-        if(room == null){
-            room = roomRepository.save(Room.builder()
-                    .kid(kid)
-                    .teacher(teacher)
-                    .build());
-        }
-        return room.getRoomId();
-    }
-
-    public List<ChatMessageResponse> getAllChat(Long roomId) {
-        Room room = roomRepository.findById(roomId).get();
-
-        List<ChatMessageResponse> chatMessageResponseList = new ArrayList<>();
-        for(Chat c : room.getChatList()){
-            ChatMessageResponse chatMessageResponse = ChatMessageResponse.builder()
-                    .senderId(c.getSenderId())
-                    .receiverId(c.getReceiverId())
-                    .chatContent(c.getChatContent())
-                    .chatTime(c.getChatTime().toString())
-                    .build();
-            chatMessageResponseList.add(chatMessageResponse);
-        }
-        return chatMessageResponseList;
-    }
-
-    public Long isValid() {
-        User user = authenticationService.getUserByAuthentication();
-        return user.getId();
-    }
-
-
-    @Transactional
-    public void setLastVisit(Long roomId, Long userId){
-        Room room = roomRepository.findById(roomId).get();
-        User user = userRepository.findById(userId).get();
-
-        Visit visit = Visit.builder()
-                .visitTime(LocalDateTime.now())
-                .room(room)
-                .user(user)
-                .visitTime(LocalDateTime.now())
-                .build();
-        Visit saved = visitRepository.save(visit);
-        System.out.println(saved.getRoom() + " " + saved.getVisitTime());
-    }
 }
+
+

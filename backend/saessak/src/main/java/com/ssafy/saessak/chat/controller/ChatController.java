@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+
 @RequestMapping("/api/chat")
 @RequiredArgsConstructor
 @RestController
@@ -58,6 +59,13 @@ public class ChatController {
     @Operation(summary = "채팅 들어올 때 JWT 검증")
     @GetMapping(value = "/isVaild", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResultResponse> isVaild() {
-        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS,  chatService.isValid()));
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, chatService.isValid()));
+    }
+
+    @Operation(summary = "마지막 접속 시간 기록")
+    @GetMapping(value = "/disconnect", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResultResponse> disconnect(Long roomId, Long userId) {
+        chatService.setLastVisit(roomId, userId);
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS));
     }
 }

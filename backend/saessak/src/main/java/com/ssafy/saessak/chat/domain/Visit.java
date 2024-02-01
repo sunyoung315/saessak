@@ -26,4 +26,8 @@ public class Visit {
     private Room room;
 
     private LocalDateTime visitTime;
+
+    public void updateVisitTime(LocalDateTime visitTime){
+        this.visitTime = visitTime;
+    }
 }

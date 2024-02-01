@@ -18,6 +18,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -30,7 +31,12 @@ public class ChatRedisCacheService {
     public static final String CHAT_SORTED_SET_ = "CHAT_SORTED_SET_";
     //  채팅 내역과 채팅방에 해당하는 채팅 내역
     private final RedisTemplate<String, Object> redisTemplate;
+    private final RedisTemplate<String, ChatMessage> chatRedisTemplate;
     private ZSetOperations<String, ChatMessage> zSetOperations;
+    @PostConstruct
+    private void init() {
+        zSetOperations = chatRedisTemplate.opsForZSet();
+    }
 
     private final ChatRepository chatRepository;
     private final UserRepository userRepository;
@@ -65,14 +71,16 @@ public class ChatRedisCacheService {
 
         // 마지막 chat 가져오기
         ChatMessage recentChatMessage = null;
-        Long size = zSetOperations.size(CHAT_SORTED_SET_ + room.getRoomId()); // Caching 데이터에서 가장 마지막 값
-        if(size == 0){
+        if(zSetOperations == null){
             Chat chat = chatRepository.findFirstByRoomOrderByChatTimeDesc(room); // 아니라면 db에서 찾아오기
             recentChatMessage = ChatMessage.builder()
                     .chatContent(chat.getChatContent())
                     .chatTime(chat.getChatTime())
                     .build();
-        } else recentChatMessage = zSetOperations.range(CHAT_SORTED_SET_ + room.getRoomId(), size - 1, size).iterator().next();
+        } else {
+            Long size = zSetOperations.size(CHAT_SORTED_SET_ + room.getRoomId()); // Caching 데이터에서 가장 마지막 값
+            recentChatMessage = zSetOperations.range(CHAT_SORTED_SET_ + room.getRoomId(), size - 1, size).iterator().next();
+        }
 
         if(recentChatMessage == null){
             return RoomResponseDto.builder()
@@ -87,11 +95,12 @@ public class ChatRedisCacheService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss.SSS");
         LocalDateTime localDateTime = LocalDateTime.parse(recentChatMessage.getChatTime(), formatter);
 
-        boolean isChatTimeBeforeLastVisitTime = localDateTime.isBefore(visit.getVisitTime());
+        boolean isChatTimeBeforeLastVisitTime = localDateTime.isAfter(visit.getVisitTime());
         return RoomResponseDto.builder()
                 .roomId(room.getRoomId())
                 .kidId(room.getKid().getId())
                 .kidName(room.getKid().getNickname())
+                .teacherName(room.getTeacher().getNickname())
                 .lastChat(recentChatMessage.getChatContent())
                 .flag(isChatTimeBeforeLastVisitTime)
                 .build();
