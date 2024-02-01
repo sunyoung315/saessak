@@ -1,10 +1,12 @@
 package com.ssafy.saessak.user.domain;
 
+import com.ssafy.saessak.menu.domain.Menu;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
+
 @Getter
 @Builder(toBuilder = true)
 @AllArgsConstructor
@@ -20,5 +22,8 @@ public class Daycare {
     private String daycareName;
 
     @OneToMany(mappedBy = "daycare", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    private final List<Classroom> classroomList = new ArrayList<>();
+    private List<Classroom> classroomList;
+
+    @OneToMany(mappedBy = "daycare", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private List<Menu> menuList;
 }
