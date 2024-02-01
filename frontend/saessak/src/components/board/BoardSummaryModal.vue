@@ -128,12 +128,16 @@
 
 			<!-- content -->
 			<div class="mx-20 my-5">
-				<div
-					class="inline-block h-36 w-36 mx-4 px-4 py-12 border rounded-full bg-orange-300"
-				>
-					<span class="loader"></span>
-				</div>
-				<div class="whitespace-pre-line">{{ summary }}</div>
+				<template v-if="!summary">
+					<div
+						class="inline-block h-[25rem] w-[50rem] px-4 py-12 border border-gray-200 shadow rounded-lg flex justify-center items-center"
+					>
+						<span class="loader"></span>
+					</div>
+				</template>
+				<template v-else>
+					<div class="whitespace-pre-line">{{ summary }}</div>
+				</template>
 			</div>
 		</div>
 	</div>
@@ -206,12 +210,12 @@ const disabledEndDates = ref([
 	},
 ]);
 
-const kidId = ref(1);
-
 const store = useBoardStore();
 
-const summary = ref('');
+// 선택 기간의 알림장 1줄 string으로 변환된 정보
 let content = ref('');
+// OpenAI로 요약한 정보
+const summary = ref('');
 
 // OpenAI 요약
 const API_KEY = import.meta.env.VITE_OPENAI_API_KEY;
@@ -245,7 +249,6 @@ const getSummaryBoard = async (kidId, { startDate, endDate }) => {
 	await store.getSummaryBoard(kidId, { startDate, endDate });
 
 	// boardContent 하나의 String으로 연결
-
 	for (let i = 0; i < store.boardList.length; i++) {
 		content.value +=
 			store.boardList[i].boardDate +
@@ -261,7 +264,7 @@ const getSummaryBoard = async (kidId, { startDate, endDate }) => {
 <style scoped>
 .flowbit-modal__container {
 	width: 60rem;
-	height: 35rem;
+	height: 40rem;
 	max-width: none;
 }
 .loader {
@@ -279,6 +282,7 @@ const getSummaryBoard = async (kidId, { startDate, endDate }) => {
 	background-color: #fff;
 	background-image: radial-gradient(circle 14px, #0d161b 100%, transparent 0);
 	background-repeat: no-repeat;
+	border: black solid 3px;
 	border-radius: 50%;
 	animation:
 		eyeMove 10s infinite,

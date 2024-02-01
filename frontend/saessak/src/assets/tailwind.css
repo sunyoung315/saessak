@@ -4,7 +4,7 @@
 
 
 @layer components {
-  .view-container {
+  .view-header {
     @apply container p-6;
   }
   .nav-title {

@@ -34,7 +34,7 @@
 				<span>: 결석</span>
 			</div>
 		</div>
-		<VCalendar :attributes="attributes" expanded :rows="2" class="p-8">
+		<VCalendar :attributes="attributes" expanded :rows="1" class="p-8">
 			<template #day="{ date, attributes }">
 				<div class="v-day">
 					<div>{{ date.day }}</div>
@@ -117,5 +117,8 @@ const attributes = ref([...attendedDates, ...absentDates]);
 <style scoped>
 .vc-day-content {
 	height: 100px !important;
+}
+:deep(.vc-week) {
+	padding: 40px;
 }
 </style>

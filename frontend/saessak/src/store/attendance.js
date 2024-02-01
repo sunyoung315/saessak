@@ -3,8 +3,7 @@ import { defineStore } from 'pinia';
 import axios from 'axios';
 import { format } from 'date-fns';
 
-const LOCAL_API = 'http://localhost:8080/api/attendance';
-// const REST_ATTENDANCE_API = 'http://i10a706.p.ssafy.io:8081/api/attendance';
+const REST_ATTENDANCE_API = 'https://i10a706.p.ssafy.io/api/attendance';
 
 export const useAttendanceStore = defineStore('attendance', () => {
 	// 선생님ver 주차별 출석부
@@ -21,12 +20,12 @@ export const useAttendanceStore = defineStore('attendance', () => {
 	// 선생님ver 주차별 출석부 조회
 	const getWeeklyList = async data => {
 		await axios({
-			// url: `${REST_ATTENDANCE_API}/teacher/list`,
-			url: `${LOCAL_API}/teacher/list`,
+			url: `${REST_ATTENDANCE_API}/teacher/list`,
 			method: 'POST',
 			data,
 			headers: {
 				'Content-Type': 'application/json',
+				Authorization: 'Bearer ' + sessionStorage.getItem('accessToken'),
 			},
 		}).then(resp => {
 			weeklyList.value = resp.data.data;
@@ -56,7 +55,7 @@ export const useAttendanceStore = defineStore('attendance', () => {
 					const attendance = kid.attendance.find(
 						oneday => oneday.attendanceDate === today.value,
 					);
-					if (attendance) {
+					if (attendance && attendance.attendanceInTime) {
 						return { kidId: kid.kidId, inTime: attendance.attendanceInTime };
 					}
 				})
@@ -67,7 +66,7 @@ export const useAttendanceStore = defineStore('attendance', () => {
 					const attendance = kid.attendance.find(
 						oneday => oneday.attendanceDate === today.value,
 					);
-					if (attendance) {
+					if (attendance && attendance.attendanceOutTime) {
 						return { kidId: kid.kidId, outTime: attendance.attendanceOutTime };
 					}
 				})
@@ -81,8 +80,7 @@ export const useAttendanceStore = defineStore('attendance', () => {
 	// 학부모ver 내 아이의 출석부 조회
 	const getOneKidList = async kidId => {
 		await axios({
-			// url: `${REST_ATTENDANCE_API}/parent/list/${kidId}`,
-			url: `${LOCAL_API}/parent/list/${kidId}`,
+			url: `${REST_ATTENDANCE_API}/parent/list/${kidId}`,
 			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json',
@@ -111,11 +109,11 @@ export const useAttendanceStore = defineStore('attendance', () => {
 	// 등원 알람 요청
 	const kidIn = async kidId => {
 		await axios({
-			// url: `${REST_ATTENDANCE_API}/in/${kidId}`,
-			url: `${LOCAL_API}/in/${kidId}`,
+			url: `${REST_ATTENDANCE_API}/in/${kidId}`,
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
+				Authorization: 'Bearer ' + sessionStorage.getItem('accessToken'),
 			},
 		}).then(resp => {
 			let time = resp.data.data.attendanceTime;
@@ -129,11 +127,11 @@ export const useAttendanceStore = defineStore('attendance', () => {
 	// 하원 알랑 요청
 	const kidOut = async kidId => {
 		await axios({
-			// url: `${REST_ATTENDANCE_API}/out/${kidId}`,
-			url: `${LOCAL_API}/out/${kidId}`,
+			url: `${REST_ATTENDANCE_API}/out/${kidId}`,
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
+				Authorization: 'Bearer ' + sessionStorage.getItem('accessToken'),
 			},
 		}).then(resp => {
 			let time = resp.data.data.attendanceTime;
