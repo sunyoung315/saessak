@@ -9,19 +9,22 @@
 					v-model="showToggle"
 				/>
 				<div
-					class="w-12 h-7 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-dark-navy peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-6 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-dark-navy"
+					class="w-12 h-7 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-nav-green peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-6 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-nav-green"
 				></div>
 				<span
 					class="text-xl m-5 font-extrabold inline-block text-gray-900 dark:text-gray-300"
 				>
-					{{ showToggle ? '전체 보기' : '아이별 보기' }}</span
+					{{ showToggle ? '전체 보기' : '내 아이 보기' }}</span
 				>
 			</label>
 		</div>
 		<!-- 반 전체 보기 -->
 		<div v-if="showToggle">
 			<div v-for="album in albumAllList" :key="album.albumId">
-				<div class="flex justify-start items-center">
+				<div
+					class="flex justify-start items-center"
+					v-if="album.fileResponseDtoList.length != 0"
+				>
 					<button
 						disabled
 						class="bg-nav-green m-4 text-black font-bold py-2 px-4 rounded-full"
@@ -30,7 +33,7 @@
 					</button>
 					<p class="text-2xl font-bold ml-4">{{ album.albumTitle }}</p>
 				</div>
-				<div v-if="album.fileResponseDtoList">
+				<div v-if="album.fileResponseDtoList.length != 0">
 					<img class="px-2" src="@/assets/film.png" alt="필름" />
 					<Carousel :items-to-show="5" :wrap-around="true" :autoplay="2000">
 						<Slide v-for="file in album.fileResponseDtoList" :key="file.fileId">
@@ -60,7 +63,10 @@
 		<!-- 내 아이만 보기 -->
 		<div v-else>
 			<div v-for="album in kidAlbumList" :key="album.albumId">
-				<div class="flex justify-start items-center">
+				<div
+					class="flex justify-start items-center"
+					v-if="album.fileResponseDtoList.length != 0"
+				>
 					<button
 						disabled
 						class="bg-nav-green m-4 text-black font-bold py-2 px-4 rounded-full"
@@ -69,7 +75,7 @@
 					</button>
 					<p class="text-2xl font-bold ml-4">{{ album.albumTitle }}</p>
 				</div>
-				<div v-if="album.fileResponseDtoList">
+				<div v-if="album.fileResponseDtoList.length != 0">
 					<img class="px-2" src="@/assets/film.png" alt="필름" />
 					<Carousel :items-to-show="5" :wrap-around="true" :autoplay="2000">
 						<Slide v-for="file in album.fileResponseDtoList" :key="file.fileId">

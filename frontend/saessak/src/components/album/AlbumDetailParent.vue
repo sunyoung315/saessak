@@ -9,12 +9,12 @@
 					v-model="showToggle"
 				/>
 				<div
-					class="w-12 h-7 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-dark-navy peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-6 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-dark-navy"
+					class="w-12 h-7 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-nav-green peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-6 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-nav-green"
 				></div>
 				<span
 					class="text-xl m-5 font-extrabold inline-block text-gray-900 dark:text-gray-300"
 				>
-					{{ showToggle ? '전체 보기' : '아이별 보기' }}</span
+					{{ showToggle ? '전체 보기' : '내 아이 보기' }}</span
 				>
 			</label>
 		</div>
@@ -56,7 +56,7 @@
 				<button
 					type="button"
 					@click="goBack()"
-					class="mt-6 mr-6 text-white hover:text-dark-navy border border-dark-navy bg-dark-navy hover:bg-white focus:outline-none font-medium rounded-lg text-sm px-3 py-1.5 text-center me-2 mb-2"
+					class="text-white bg-gradient-to-r from-nav-green via-nav-green to-nav-green hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
 				>
 					목록
 				</button>
@@ -70,7 +70,10 @@
 					<div v-for="album in albumAllList" :key="album.albumId">
 						<div
 							class="my-2 flex flex-wrap"
-							v-if="isSameDate(album.albumDate, date)"
+							v-if="
+								isSameDate(album.albumDate, date) &&
+								album.fileResponseDtoList.length > 0
+							"
 						>
 							<p class="w-full text-2xl font-bold ml-4">
 								{{ album.albumTitle }}
@@ -112,7 +115,10 @@
 					<div v-for="album in myKidAlbumDateList" :key="album.albumId">
 						<div
 							class="my-2 flex flex-wrap"
-							v-if="isSameDate(album.albumDate, date)"
+							v-if="
+								isSameDate(album.albumDate, date) &&
+								album.fileResponseDtoList.length > 0
+							"
 						>
 							<p class="w-full text-2xl font-bold ml-4">
 								{{ album.albumTitle }}

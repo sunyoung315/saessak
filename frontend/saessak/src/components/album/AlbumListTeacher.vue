@@ -9,19 +9,19 @@
 					v-model="showToggle"
 				/>
 				<div
-					class="w-12 h-7 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-dark-navy peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-6 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-dark-navy"
+					class="w-12 h-7 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-nav-green peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-6 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-nav-green"
 				></div>
 				<span
 					class="text-xl m-5 font-extrabold inline-block text-gray-900 dark:text-gray-300"
 				>
-					{{ showToggle ? '전체 보기' : '아이별 보기' }}</span
+					{{ showToggle ? '아이별 보기' : '전체 보기' }}</span
 				>
 			</label>
 			<div>
 				<button
 					type="button"
 					@click="registAlbum()"
-					class="mt-6 mr-6 text-white hover:text-dark-navy border border-dark-navy bg-dark-navy hover:bg-white focus:outline-none font-medium rounded-lg text-sm px-3 py-1.5 text-center me-2 mb-2"
+					class="text-white bg-gradient-to-r from-nav-green via-nav-green to-nav-green hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
 				>
 					추가
 				</button>
@@ -30,7 +30,7 @@
 		<!-- 아이 이름별 보기 -->
 		<div v-if="showToggle">
 			<div v-for="kid in recentAlbumList" :key="kid.kidId">
-				<div v-if="kid.albumResponseDto">
+				<div v-if="kid.albumResponseDto.length > 0">
 					<img class="px-2" src="@/assets/film.png" alt="필름" />
 					<Carousel
 						:items-to-show="5"
@@ -98,7 +98,10 @@
 			<div v-for="album in albumAllList" :key="album.albumId">
 				<div
 					class="my-2 flex flex-wrap"
-					v-if="isSameDate(album.albumDate, date)"
+					v-if="
+						isSameDate(album.albumDate, date) &&
+						album.fileResponseDtoList.length > 0
+					"
 				>
 					<p class="w-full text-2xl font-bold m-2">{{ album.albumTitle }}</p>
 					<div
@@ -142,9 +145,10 @@ const showToggle = ref(true);
 
 const recentAlbumList = ref([]);
 const albumAllList = ref([]);
+
 onMounted(async () => {
-	// 반 아이들 최신 앨범 리스트 조회 (Carousel), 번호: classRoomId
-	await albumStore.getRecentAlbumList(1);
+	// 반 아이들 최신 앨범 리스트 조회 (Carousel)
+	await albumStore.getRecentAlbumList;
 	recentAlbumList.value = albumStore.recentAlbumList;
 	// 반 전체 앨범 조회 (Card), 번호: classRoomId
 	await albumStore.getAlbumAllList(1);
@@ -176,7 +180,7 @@ function registAlbum() {
 		name: 'AlbumCreate',
 	});
 }
-// Btn
+// Btn 끝
 
 // datePicker
 const date = ref(new Date());

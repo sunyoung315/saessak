@@ -6,14 +6,14 @@
 			<button
 				type="button"
 				@click="registAlbum()"
-				class="mt-8 mr-6 text-white hover:text-dark-navy border border-dark-navy bg-dark-navy hover:bg-white focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+				class="text-white bg-gradient-to-r m-4 from-nav-green via-nav-green to-nav-green hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
 			>
 				등록
 			</button>
 			<button
 				type="button"
 				@click="goBack()"
-				class="mt-8 mr-8 text-white hover:text-dark-navy border border-dark-navy bg-dark-navy hover:bg-white focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+				class="text-white bg-gradient-to-r m-4 mr-8 from-nav-green via-nav-green to-nav-green hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
 			>
 				목록
 			</button>
@@ -128,17 +128,15 @@ import { ref, onMounted } from 'vue';
 
 const title = ref('');
 const date = ref(new Date());
-
-// 임시 데이터
-const classroomId = 2;
+const formattedDate = formatDate(date.value);
 
 // 이미지 업로드
 let count = ref(0);
 let uploadedFileNames = ref([]);
 
+let form = new FormData();
 let images = ref([]);
 let imageRef = ref(null);
-let form = new FormData();
 
 const uploadImage = () => {
 	let imageFiles = imageRef.value.files;
@@ -149,6 +147,7 @@ const uploadImage = () => {
 	for (let i = 0; i < imageFiles.length; i++) {
 		// console.log('업로드 파일명:', imageFiles[i].name);
 		form.append('images', imageFiles[i]); // 각 파일을 폼에 추가
+		images.value.append = imageFiles[i];
 		uploadedFileNames.value.push(imageFiles[i].name); // 업로드한 파일 이름 저장
 	}
 };
@@ -160,28 +159,28 @@ onMounted(() => {
 
 // 버튼 기능
 function registAlbum() {
+	// console.log('제목: ' + title.value);
+	// console.log('날짜: ' + formattedDate);
 	// 앨범 정보 추가
 	form.append('albumTitle', title.value);
-	form.append('albumDate', date.value);
+	form.append('albumDate', formattedDate);
+	form.append('images', images.value);
+
+	// console.log(form);
+	const token = sessionStorage.getItem('accessToken');
 
 	// post 경로 변경 필요함.
 	axios
-		.post(
-			`http://i10a706.p.ssafy.io:5000/ai/album/upload/${classroomId}`,
-			form,
-			{
-				headers: { 'Content-Type': 'multipart/form-data' },
+		.post(`http://i10a706.p.ssafy.io:5000/ai/album`, form, {
+			headers: {
+				'Content-Type': 'multipart/form-data',
+				Authorization: 'Bearer ' + token,
 			},
-		)
-		.then(({ data, res }) => {
-			console.log(res);
-			console.log('data: ' + data);
-			images.value.push(...data);
+		})
+		.then(response => {
+			console.log(response);
 		})
 		.catch(err => console.log(err));
-
-	// console.log('제목: ' + title.value);
-	// console.log('날짜: ' + date.value);
 
 	// 앨범 생성 후 목록 돌아가기
 	router.push({
@@ -199,6 +198,14 @@ const onDrop = event => {
 	uploadImage();
 };
 // 버튼 기능 끝
+
+// 날짜 포맷 변경
+function formatDate(date) {
+	const year = date.getFullYear();
+	const month = ('0' + (date.getMonth() + 1)).slice(-2);
+	const day = ('0' + date.getDate()).slice(-2);
+	return `${year}-${month}-${day}`;
+}
 </script>
 
 <style scoped>
