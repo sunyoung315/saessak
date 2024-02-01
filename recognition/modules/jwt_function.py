@@ -7,7 +7,7 @@ from modules.db_connect import get_engine
 from modules.table import get_teacher_table, get_user_table
 from sqlalchemy import select
 from sqlalchemy.exc import MultipleResultsFound, NoResultFound
-from jwt.exceptions import ExpiredSignatureError, InvalidTokenError
+from jwt.exceptions import InvalidTokenError, ExpiredSignatureError
 ## db
 engine = get_engine()
 
@@ -56,8 +56,7 @@ class Validator :
                     "status" : HTTPStatus.OK,
                     "isValid" : True,
                     "message" : "유효한 토큰 입니다.",
-                    "data" : row_dict,
-                    "code" : "A101"
+                    "data" : row_dict
                 }
 
             else:
@@ -65,35 +64,34 @@ class Validator :
                     "status" : HTTPStatus.UNAUTHORIZED,
                     "isValid" : False,
                     "message" : "만료된 토큰 입니다.",
-                    "code" : "A103"
+                    "code" : "A102"
                 }
         except MultipleResultsFound :
             return {
                 "status" : HTTPStatus.UNAUTHORIZED,
                 "isValid" : False,
                 "message" : "유효하지 않는 토큰입니다.", 
-                "code" : "A102"
+                "code" : "A101"
             }
         except NoResultFound :
             return {
                 "status" : HTTPStatus.FORBIDDEN,
                 "isValid" : False,
                 "message" : "권한이 없습니다.",
-                "code" : "A106"
             }
         except ExpiredSignatureError:
             return {
                 "status" : HTTPStatus.UNAUTHORIZED,
                 "isValid" : False,
                 "message" : "서명이 만료되었습니다.",
-                "code" : "A102"
+                "code" : "A101"
             }
         except InvalidTokenError:
             return {
                 "status" : HTTPStatus.UNAUTHORIZED,
                 "isValid" : False,
                 "message" : "유효하지 않는 토큰입니다.",
-                "code" : "A102" 
+                "code" : "A101" 
             }
         except Exception as e:
             return {
