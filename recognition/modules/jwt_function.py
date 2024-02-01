@@ -7,6 +7,7 @@ from modules.db_connect import get_engine
 from modules.table import get_teacher_table, get_user_table
 from sqlalchemy import select
 from sqlalchemy.exc import MultipleResultsFound, NoResultFound
+from jwt.exceptions import ExpiredSignatureError, InvalidTokenError
 ## db
 engine = get_engine()
 
@@ -80,17 +81,23 @@ class Validator :
                 "message" : "권한이 없습니다.",
                 "code" : "A106"
             }
-        except jwt.ExpiredSignatureError:
+        except ExpiredSignatureError:
             return {
                 "status" : HTTPStatus.UNAUTHORIZED,
                 "isValid" : False,
                 "message" : "서명이 만료되었습니다.",
                 "code" : "A102"
             }
-        except jwt.InvalidTokenError:
+        except InvalidTokenError:
             return {
                 "status" : HTTPStatus.UNAUTHORIZED,
                 "isValid" : False,
                 "message" : "유효하지 않는 토큰입니다.",
                 "code" : "A102" 
+            }
+        except Exception as e:
+            return {
+                "status" : HTTPStatus.INTERNAL_SERVER_ERROR,
+                "isValid" : False,
+                "message" : "internal server error"
             }

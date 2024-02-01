@@ -94,7 +94,7 @@ def verifyAlbum():
         access_token = auth_header.split(' ')[1]
         token_info = token_validator.validate_token(access_token)
         
-        if not result["isValid"] :
+        if not token_info["isValid"] :
             return jsonify(token_info)
         
     else :
@@ -107,6 +107,7 @@ def verifyAlbum():
         album_title = request.form.get("albumTitle")
         user_data = token_info["data"]
         classroomId = user_data["classroom_id"]
+        if(len(images) == 0) : return jsonify({"status":HTTPStatus.BAD_REQUEST , "message" : "image가 없습니다."})
         with engine.connect() as conn : 
             # 반의 아이들을 모두 가져오자
             result = conn.execute(
