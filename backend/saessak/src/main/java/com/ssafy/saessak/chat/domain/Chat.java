@@ -32,6 +32,6 @@ public class Chat {
     private Long receiverId;
 
     @Column(name = "chat_time")
-    private LocalDateTime chatTime;
+    private String chatTime;
 
 }

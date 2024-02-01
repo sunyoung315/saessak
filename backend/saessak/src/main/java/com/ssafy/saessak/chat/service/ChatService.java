@@ -2,7 +2,7 @@ package com.ssafy.saessak.chat.service;
 
 import com.ssafy.saessak.chat.domain.Chat;
 import com.ssafy.saessak.chat.domain.Room;
-import com.ssafy.saessak.chat.dto.ChatMessageRequest;
+import com.ssafy.saessak.chat.dto.ChatMessage;
 import com.ssafy.saessak.chat.dto.ChatMessageResponse;
 import com.ssafy.saessak.chat.dto.RoomResponseDto;
 import com.ssafy.saessak.chat.repository.ChatRepository;
@@ -71,7 +71,8 @@ public class ChatService {
                     .build();
         }
 
-        boolean isChatTimeBeforeLastVisitTime = chat.getChatTime().isBefore(r.getLastVisitTime());
+        //boolean isChatTimeBeforeLastVisitTime = chat.getChatTime().isBefore(r.getLastVisitTime());
+        boolean isChatTimeBeforeLastVisitTime = false;
         return RoomResponseDto.builder()
                 .roomId(r.getRoomId())
                 .kidId(r.getKid().getId())
@@ -125,23 +126,6 @@ public class ChatService {
                     .build());
         }
         return room.getRoomId();
-    }
-
-
-    // 채팅 저장
-    public void saveMessage(ChatMessageRequest message){
-        String dateString = message.getChatTime();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
-        LocalDateTime dateTime = LocalDateTime.parse(dateString, formatter);
-
-        Chat chatMessage = Chat.builder()
-                .senderId(message.getSenderId())
-                .receiverId(message.getReceiverId())
-                .chatContent(message.getChatContent())
-                .chatTime(dateTime)
-                .room(roomRepository.findById(message.getRoomId()).get())
-                .build();
-        chatRepository.save(chatMessage);
     }
 
     public List<ChatMessageResponse> getAllChat(Long roomId) {
