@@ -23,16 +23,22 @@ public class MenuController {
     private final MenuService menuService;
 
     @Operation(summary = "자유로운 식단표 입력")
-    @PostMapping(value = "/{daycareId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResultResponse> insert(@PathVariable Long daycareId, @RequestBody List<MenuRequestDto> menuRequestDtoList) {
-        menuService.insert(daycareId, menuRequestDtoList);
+    @PostMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResultResponse> insert(@RequestBody List<MenuRequestDto> menuRequestDtoList) {
+        menuService.insert(menuRequestDtoList);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS));
     }
 
-    @Operation(summary = "주간 식단표 조회")
-    @PostMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResultResponse> list(@RequestBody MenuWeekRequestDto menuWeekRequestDto) {
-        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, menuService.list(menuWeekRequestDto)));
+    @Operation(summary = "주간 식단표 조회 (선생님)")
+    @PostMapping(value = "/teacher/list", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResultResponse> listofTeacher(@RequestBody MenuWeekRequestDto menuWeekRequestDto) {
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, menuService.listofTeacher(menuWeekRequestDto)));
+    }
+
+    @Operation(summary = "주간 식단표 조회 (학부모)")
+    @PostMapping(value = "/parent/list/{kidId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResultResponse> listofParent(@PathVariable("kidId") Long kidId, @RequestBody MenuWeekRequestDto menuWeekRequestDto) {
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, menuService.listofParent(kidId, menuWeekRequestDto)));
     }
 
     @Operation(summary = "식단 메인 사진 추가")
