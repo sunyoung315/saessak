@@ -5,8 +5,8 @@ import com.ssafy.saessak.oauth.dto.AccessTokenGetSuccess;
 import com.ssafy.saessak.oauth.dto.LoginSuccessResponseDto;
 import com.ssafy.saessak.oauth.dto.RegistResponseDto;
 import com.ssafy.saessak.oauth.dto.kakao.KakaoUserResponse;
-import com.ssafy.saessak.oauth.exception.ErrorMessage;
-import com.ssafy.saessak.oauth.exception.UnAuthorizedException;
+import com.ssafy.saessak.exception.code.ExceptionCode;
+import com.ssafy.saessak.exception.UnAuthorizedException;
 import com.ssafy.saessak.oauth.jwt.JwtTokenProvider;
 import com.ssafy.saessak.oauth.token.service.RefreshTokenService;
 import com.ssafy.saessak.user.domain.User;
@@ -60,7 +60,7 @@ public class KakaoUserService {
     public AccessTokenGetSuccess refreshToken(final String refreshToken ) {
         Long userId = jwtTokenProvider.getUserFromJwt(refreshToken);
         if (!userId.equals(refreshTokenService.findIdByRefreshToken(refreshToken))) {
-            throw new UnAuthorizedException(ErrorMessage.TOKEN_INCORRECT_ERROR);
+            throw new UnAuthorizedException(ExceptionCode.TOKEN_INCORRECT_ERROR);
         }
         UserAuthentication userAuthentication = new UserAuthentication(userId, null, null);
         return new AccessTokenGetSuccess(

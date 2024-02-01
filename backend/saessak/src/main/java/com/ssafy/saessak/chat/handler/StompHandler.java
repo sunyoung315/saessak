@@ -31,7 +31,7 @@ public class StompHandler implements ChannelInterceptor {
         System.out.println("authorization " + authorization);
 
         if(accessor.getCommand() == StompCommand.CONNECT) {
-            if(jwtProvider.validateToken(token) != JwtValidationType.VALID_JWT) {
+            if(jwtProvider.validateToken(token) != JwtValidationType.VALID_JWT_TOKEN) {
                 throw new RuntimeException("Not Valid Token");
             }
         } else if (accessor.getCommand() == StompCommand.UNSUBSCRIBE) {
