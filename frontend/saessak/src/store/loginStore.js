@@ -1,6 +1,7 @@
 import { kakaoLogin } from "@/api/oauth";
 import { defineStore } from "pinia";
 import { ref, computed } from 'vue';
+import createPersistedState from 'pinia-plugin-persistedstate';
 
 export const loginStore = defineStore("loginStore", () => {
     const isLogin = ref(false);
@@ -40,18 +41,6 @@ export const loginStore = defineStore("loginStore", () => {
 
     return {isLogin, isTeacher, teacherName, kidList, curKid, userId,
         setCurkid, setKidlist, setTeacherFlag, setTeachername, setUserid, setlogin, setlogout};
-    // state: () => ({
-    //     isLogin : false,
-    //     isTeacher : false,
-    //     teacherName : "",
-    //     kidList : [],
-    //     curKid : -1, // 학부모의 현재 아이 버전
-    //     userId : 0, // 회원가입할때 joinview로 갖고 가기 위한 값
-    // }),
-    // actions: {
-    //     setLogin() {
-    //       this.isLogin = true;
-    //       console.log("setLogin" + isLogin);
-    //     },
-    // },
-}, {persist : true})
+}, {persist : true,
+    strategies: [{ storage: sessionStorage }],
+});

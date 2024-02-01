@@ -64,7 +64,9 @@
             id="dropdownDivider"
             class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600"
           >
-            <ul v-for="(kid, idx) in kidList" :key="idx"
+            <ul
+              v-for="(kid, idx) in kidList"
+              :key="idx"
               class="py-2 text-sm text-gray-700 dark:text-gray-200"
               aria-labelledby="dropdownDividerButton"
             >
@@ -95,20 +97,23 @@
     id="drawer-right-example"
     class="scrollbar-hide fixed top-0 right-0 z-40 h-screen p-4 overflow-y-auto transition-transform translate-x-full bg-yellow-50 w-1/3 dark:bg-gray-800"
     tabindex="-1"
+    ref="drawer"
     aria-labelledby="drawer-right-label"
   >
     <div
       class="flex flex-col justify-between h-screen p-8 mx-auto my-auto overflow-y-scroll bg-white border border-gray-200 rounded-lg shadow scrollbar-hide sm:p-8 dark:bg-gray-800 dark:border-gray-700"
     >
-      <component :is="chatSwitch" @chatEvent="chatEvent" :roomInfo="roomInfo"></component>
+      <component
+        :is="chatSwitch"
+        @chatEvent="chatEvent"
+        @exitChat="exitChat"
+        :size="size"
+        :roomInfo="roomInfo"
+      ></component>
       <div class="fixed w-1/3 bottom-0 right-0 p-3 bg-yellow-50">
         <div class="flex items-center justify-evenly">
-          <button @click="showChat(ChatPersonView)">
-            학부모목록
-          </button>
-          <button @click="showChat(ChatListView)">
-            채팅목록
-          </button>
+          <button @click="showChat(ChatPersonView)">학부모목록</button>
+          <button @click="showChat(ChatListView)">채팅목록</button>
         </div>
       </div>
     </div>
@@ -116,7 +121,7 @@
 </template>
 
 <script setup>
-import { onMounted, shallowRef, ref, watch } from 'vue'
+import { onMounted, nextTick, shallowRef, ref, watch } from 'vue'
 import { initFlowbite } from 'flowbite'
 import { kakaoLogin } from '@/api/oauth'
 import { storeToRefs } from 'pinia'
@@ -132,8 +137,19 @@ const router = useRouter()
 // const isTeacher = ref(false)
 // const kidList = ref([])
 
-const {isLogin, isTeacher, kidList, } = storeToRefs(store);
-const {setlogin, setlogout, setKidlist, setTeacherFlag} = store;
+const drawer = ref(null)
+const size = ref([])
+
+const getSizeOfDrawer = () => {
+  const width = drawer.value.offsetWidth
+  const height = drawer.value.offsetHeight
+  // console.log(`Drawer size: ${width}px x ${height}px`)
+  // console.log(drawer.value)
+  size.value = { width: width, height: height }
+}
+
+const { isLogin, isTeacher, kidList } = storeToRefs(store)
+const { setlogin, setlogout, setKidlist, setTeacherFlag, setTeachername } = store
 onMounted(() => {
   initFlowbite()
   // 로그인 여부 판단하기
@@ -146,6 +162,7 @@ onMounted(() => {
       kidList.value = JSON.parse(sessionStorage.getItem('kidList'))
     }
   }
+  getSizeOfDrawer()
   // console.log(isLogin)
 })
 
@@ -155,6 +172,12 @@ const chatEvent = (data) => {
   // console.log(data)
   roomInfo.value = data
   chatSwitch.value = ChatDetailView
+}
+
+const exitChat = (flag) => {
+  if (flag) {
+    chatSwitch.value = ChatListView
+  }
 }
 
 const chatSwitch = shallowRef(ChatPersonView)
@@ -176,12 +199,12 @@ const logout = () => {
   sessionStorage.removeItem('accessToken')
   sessionStorage.removeItem('refreshToken')
   if (!store.isTeacher) {
-    setKidlist("");
+    setKidlist('')
   }
   // console.log("로그아웃 드가자")
-  setlogout();
-  setTeacherFlag(false);
-  setTeacherName("");
+  setlogout()
+  setTeacherFlag(false)
+  setTeachername('')
   window.location.href = '/'
 }
 </script>

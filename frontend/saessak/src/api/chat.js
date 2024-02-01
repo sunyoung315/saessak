@@ -47,6 +47,11 @@ function loadChat(roomId, sucess, fail){
     local.get(`${url}/room/list/${roomId}`).then(sucess).catch(fail);
 }
 
+// 8. (공통) 채팅방 진입 전 userId 받아오기
+function isVaild(success, fail){
+    local.get(`${url}/isVaild`, config).then(success).catch(fail);
+}
+
 
 export {
     chatListParent,
@@ -54,5 +59,6 @@ export {
     detailChat,
     teacherNewChat,
     parentNewChat,
-    loadChat
+    loadChat,
+    isVaild
 }
