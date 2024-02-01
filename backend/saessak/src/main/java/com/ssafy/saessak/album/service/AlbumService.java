@@ -8,8 +8,10 @@ import com.ssafy.saessak.album.dto.FileResponseDto;
 import com.ssafy.saessak.album.dto.KidAlbumResponseDto;
 import com.ssafy.saessak.album.repository.AlbumRepository;
 import com.ssafy.saessak.album.repository.FileRepository;
+import com.ssafy.saessak.oauth.service.AuthenticationService;
 import com.ssafy.saessak.user.domain.Classroom;
 import com.ssafy.saessak.user.domain.Kid;
+import com.ssafy.saessak.user.domain.User;
 import com.ssafy.saessak.user.repository.ClassroomRepository;
 import com.ssafy.saessak.user.repository.KidRepository;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +31,7 @@ public class AlbumService {
     private final AlbumRepository albumRepository;
     private final ClassroomRepository classroomRepository;
     private final KidRepository kidRepository;
+    private final AuthenticationService authenticationService;
 
     //엘범 조회
     public List<AlbumResponseDto> getClassAlbumList (Long classroomId){
@@ -48,9 +51,10 @@ public class AlbumService {
         List<Album> albumList = albumRepository.findByKidAndAlbumDate(kid,date).get();
         return makeAlbumResponseDtoList(albumList);
     }
-
-    public List<KidAlbumResponseDto> getKidsCurrentAlbum (Long classroomId){
-        Classroom classroom = classroomRepository.findById(classroomId).get();
+    // 선생
+    public List<KidAlbumResponseDto> getKidsCurrentAlbum (){
+        User user = authenticationService.getUserByAuthentication();
+        Classroom classroom = user.getClassroom();
         List<Kid> kids = kidRepository.findAllByClassroom(classroom);
         List<KidAlbumResponseDto> albumList = new ArrayList<>();
         for(Kid kid : kids){

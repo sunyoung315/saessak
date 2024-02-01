@@ -58,9 +58,9 @@ public class AlbumController {
     }
 
     @Operation(summary = "반 아이들의 가장 최근 앨범리스트")
-    @GetMapping("/classroom/kid/{classroomId}")
-    public ResponseEntity<ResultResponse> getKidsCurrentAlbumList(@PathVariable(name = "classroomId") Long classroomId){
-        List<KidAlbumResponseDto> kidAlbumResponseDtoList = albumService.getKidsCurrentAlbum(classroomId);
+    @GetMapping("/classroom/kid")
+    public ResponseEntity<ResultResponse> getKidsCurrentAlbumList(){
+        List<KidAlbumResponseDto> kidAlbumResponseDtoList = albumService.getKidsCurrentAlbum();
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, kidAlbumResponseDtoList));
     }
 

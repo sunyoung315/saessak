@@ -29,6 +29,7 @@ import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -49,6 +50,8 @@ public class FcmService {
     private final AuthenticationService authenticationService;
     private final UserService userService;
     private final AlarmService alarmService;
+
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 
 
     @Transactional
@@ -88,7 +91,7 @@ public class FcmService {
         FcmNotificationRequestDto.Notification notification = FcmNotificationRequestDto.Notification.builder()
                 .token(parentToken)
                 .title(TITLE)
-                .body(responseDto.getKidName()+" 어린이가 "+ responseDto.getAttendanceDate()+"일 "+responseDto.getAttendanceTime()+"에 등원했습니다")
+                .body(responseDto.getKidName()+" 어린이가 "+ responseDto.getAttendanceDate()+"일 "+ responseDto.getAttendanceTime().format(formatter) + "에 등원했습니다")
                 .build();
         FcmNotificationRequestDto fcmRequestDto = FcmNotificationRequestDto.builder()
                 .notification(notification)
@@ -113,7 +116,7 @@ public class FcmService {
         FcmNotificationRequestDto.Notification notification = FcmNotificationRequestDto.Notification.builder()
                 .token(parentToken)
                 .title(TITLE)
-                .body(responseDto.getKidName() + " 어린이가 " + responseDto.getAttendanceDate() + "일 " + responseDto.getAttendanceTime() + "에 하원했습니다")
+                .body(responseDto.getKidName() + " 어린이가 " + responseDto.getAttendanceDate() + "일 " + responseDto.getAttendanceTime().format(formatter) + "에 하원했습니다")
                 .build();
         FcmNotificationRequestDto fcmRequestDto = FcmNotificationRequestDto.builder()
                 .notification(notification)
