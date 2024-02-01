@@ -3,7 +3,7 @@ from deepface import DeepFace
 img_url = "/app/modules/image/image1.png"
 
 result = DeepFace.represent(
-    img1_path=img_url,
+    img_path=img_url,
     align=True,
     detector_backend="opencv",
     enforce_detection=False,
