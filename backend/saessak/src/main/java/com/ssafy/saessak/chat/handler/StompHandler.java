@@ -34,10 +34,10 @@ public class StompHandler implements ChannelInterceptor {
                 throw new RuntimeException("Not Valid Token");
             }
         } else if (accessor.getCommand() == StompCommand.UNSUBSCRIBE) {
-//            Long roomId = Long.parseLong(Objects.requireNonNull(accessor.getFirstNativeHeader("roomId")));
-//            Long userId = Long.parseLong(accessor.getFirstNativeHeader("userId"));
-//            System.out.println(roomId + " " + userId);
-//            chatService.setLastVisit(roomId, userId);
+            Long roomId = Long.parseLong(Objects.requireNonNull(accessor.getFirstNativeHeader("roomId")));
+            Long userId = Long.parseLong(accessor.getFirstNativeHeader("userId"));
+            System.out.println(roomId + " " + userId);
+            chatService.setLastVisit(roomId, userId);
             System.out.println("closed");
         }
         return message;
