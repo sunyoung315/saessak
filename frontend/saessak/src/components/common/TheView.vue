@@ -1,15 +1,9 @@
 <template>
-	<div id="view-layout">
-		<h2>View</h2>
-		<router-view></router-view>
+	<div class="w-3/4">
+		<RouterView></RouterView>
 	</div>
 </template>
 
 <script setup></script>
 
-<style scoped>
-#view-layout {
-	border: solid 1px black;
-	width: 75%;
-}
-</style>
+<style scoped></style>

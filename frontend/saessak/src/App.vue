@@ -1,6 +1,6 @@
 <template>
 	<TheHeader />
-	<div id="nav-view">
+	<div class="flex">
 		<TheNav />
 		<TheView />
 	</div>
@@ -14,8 +14,4 @@ import TheView from '@/components/common/TheView.vue';
 import TheFooter from '@/components/common/TheFooter.vue';
 </script>
 
-<style scoped>
-#nav-view {
-	display: flex;
-}
-</style>
+<style scoped></style>

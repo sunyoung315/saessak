@@ -5,13 +5,28 @@ import NotFoundView from '@/views/NotFoundView.vue';
 import LoginView from '@/views/LoginView.vue';
 import UserView from '@/components/user/UserView.vue';
 import BoardView from '@/components/board/BoardView.vue';
+import JoinView from '@/views/JoinView.vue';
 import AlbumView from '@/components/album/AlbumView.vue';
+import AlbumList from '@/components/album/AlbumList.vue';
+import AlbumDetailParent from '@/components/album/AlbumDetailParent.vue';
+import AlbumDetailTeacher from '@/components/album/AlbumDetailTeacher.vue';
+import AlbumCreate from '@/components/album/AlbumCreate.vue';
 import NoticeView from '@/components/notice/NoticeView.vue';
 import DocumentView from '@/components/document/DocumentView.vue';
+import DocumentList from '@/components/document/DocumentList.vue';
+import DocumentReplaceDetail from '@/components/document/DocumentReplaceDetail.vue';
+import DocumentAllergyDetail from '@/components/document/DocumentAllergyDetail.vue';
+import DocumentReplaceCreate from '@/components/document/DocumentReplaceCreate.vue';
+import DocumentAllergyCreate from '@/components/document/DocumentAllergyCreate.vue';
 import MenuView from '@/components/menu/MenuView.vue';
 import AttendanceView from '@/components/attendance/AttendanceView.vue';
 import ChatView from '@/components/chat/ChatView.vue';
+import ChatDetail from '@/components/chat/ChatDetailView.vue';
 import SettingView from '@/components/setting/SettingView.vue';
+import BoardCreate from '@/components/board/BoardCreate.vue';
+import BoardList from '@/components/board/BoardList.vue';
+import BoardDetailTeacher from '@/components/board/BoardDetailTeacher.vue';
+import BoardDetailParent from '@/components/board/BoardDetailParent.vue';
 
 const routes = [
 	{ path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFoundView },
@@ -26,6 +41,11 @@ const routes = [
 		component: LoginView,
 	},
 	{
+		path: '/join',
+		name: 'Join',
+		component: JoinView,
+	},
+	{
 		path: '/user',
 		name: 'User',
 		component: UserView,
@@ -34,11 +54,55 @@ const routes = [
 		path: '/board',
 		name: 'Board',
 		component: BoardView,
+		children: [
+			{
+				path: '',
+				name: 'BoardList',
+				component: BoardList,
+			},
+			{
+				path: 'create',
+				name: 'BoardCreate',
+				component: BoardCreate,
+			},
+			{
+				path: ':id',
+				name: 'BoardDetailParent',
+				component: BoardDetailParent,
+			},
+			{
+				path: 'kid/:id',
+				name: 'BoardDetailTeacher',
+				component: BoardDetailTeacher,
+			},
+		],
 	},
 	{
 		path: '/album',
 		name: 'Album',
 		component: AlbumView,
+		children: [
+			{
+				path: '',
+				name: 'AlbumList',
+				component: AlbumList,
+			},
+			{
+				path: 'create',
+				name: 'AlbumCreate',
+				component: AlbumCreate,
+			},
+			{
+				path: ':id',
+				name: 'AlbumDetailParent',
+				component: AlbumDetailParent,
+			},
+			{
+				path: ':id',
+				name: 'AlbumDetailTeacher',
+				component: AlbumDetailTeacher,
+			},
+		],
 	},
 	{
 		path: '/notice',
@@ -49,6 +113,33 @@ const routes = [
 		path: '/document',
 		name: 'Document',
 		component: DocumentView,
+		children: [
+			{
+				path: '',
+				name: 'DocumentList',
+				component: DocumentList,
+			},
+			{
+				path: 'replacement/:replacementId',
+				name: 'DocumentReplaceDetail',
+				component: DocumentReplaceDetail,
+			},
+			{
+				path: 'allgery/:kidId',
+				name: 'DocumentAllergyDetail',
+				component: DocumentAllergyDetail,
+			},
+			{
+				path: 'replace/create',
+				name: 'DocumentReplaceCreate',
+				component: DocumentReplaceCreate,
+			},
+			{
+				path: 'allery/create',
+				name: 'DocumentAllergyCreate',
+				component: DocumentAllergyCreate,
+			},
+		],
 	},
 	{
 		path: '/menu',
@@ -65,6 +156,10 @@ const routes = [
 		name: 'Chat',
 		component: ChatView,
 	},
+	{
+		path: '/chat/:id',
+		component: ChatDetail,
+	}, // /chat/:id에 대한 동적 라우트
 	{
 		path: '/setting',
 		name: 'Setting',

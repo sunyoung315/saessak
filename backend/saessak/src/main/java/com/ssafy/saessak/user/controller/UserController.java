@@ -46,4 +46,9 @@ public class UserController {
     public ResponseEntity<ResultResponse> getParentTeacher() {
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, userService.getParentTeacher()));
     }
+
+    @GetMapping(value = "/teacher/{parentId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResultResponse> getParentTeacher(@PathVariable("parentId") Long parentId) {
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, userService.getParentTeacher(parentId)));
+    }
 }

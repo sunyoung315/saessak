@@ -1,5 +1,7 @@
 <template>
-	<div>DocumentView</div>
+	<div>
+		<h2>Replace Create</h2>
+	</div>
 </template>
 
 <script setup></script>

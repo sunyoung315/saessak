@@ -1,9 +1,7 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
-    "jsx": "preserve", // vue3를 위한 컴파일 옵션
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["./src/*"]
     }
   },
   "exclude": ["node_modules", "dist"]

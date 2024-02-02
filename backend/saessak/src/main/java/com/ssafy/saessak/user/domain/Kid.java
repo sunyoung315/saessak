@@ -57,6 +57,15 @@ public class Kid extends User {
     @OneToMany(mappedBy = "kid" ,fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Board> boardList;
 
+    @OneToMany(mappedBy = "kid", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private List<Attendance> attendanceList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "kid", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private List<Replacement> replacementList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "kid")
+    private List<Album> albums = new ArrayList<>();
+
     public Kid updateParent(Parent parent){
         this.parent = parent;
         return this;
