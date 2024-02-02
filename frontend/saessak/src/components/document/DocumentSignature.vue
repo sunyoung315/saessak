@@ -20,6 +20,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 
+// 전자서명
 const canvas = ref(null);
 let ctx = null;
 let drawing = ref(false);
@@ -56,14 +57,16 @@ const stopDrawing = () => {
 
 const saveSignature = () => {
 	const dataUrl = canvas.value.toDataURL();
+	// 서명 데이터 이벤트 전달
+	emit('signature-saved', dataUrl);
 	console.log(dataUrl);
 
 	// File Download
-	// const image = canvas.value.toDataURL('image/png');
-	// const link = document.createElement('a');
-	// link.href = image;
-	// link.download = 'signature';
-	// link.click();
+	const image = canvas.value.toDataURL('image/png');
+	const link = document.createElement('a');
+	link.href = image;
+	link.download = 'signature';
+	link.click();
 
 	// const svgData =
 	// 	'<svg xmlns="http://www.w3.org/2000/svg" width="500" height="200">' +
