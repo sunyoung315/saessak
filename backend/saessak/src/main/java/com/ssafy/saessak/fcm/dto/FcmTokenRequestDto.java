@@ -7,6 +7,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class FcmTokenRequestDto {
 
-    private Long id;
     private String token;
+
 }

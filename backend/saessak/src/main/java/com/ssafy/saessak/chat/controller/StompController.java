@@ -1,16 +1,17 @@
 package com.ssafy.saessak.chat.controller;
 
-import com.ssafy.saessak.chat.domain.Chat;
-import com.ssafy.saessak.chat.dto.ChatMessageRequest;
+import com.ssafy.saessak.chat.dto.ChatMessage;
+import com.ssafy.saessak.chat.service.ChatRedisCacheService;
 import com.ssafy.saessak.chat.service.ChatService;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @RestController
 @Slf4j
@@ -19,29 +20,19 @@ import org.springframework.web.bind.annotation.RestController;
 public class StompController {
 
     private final SimpMessageSendingOperations sendingOperations;
-    private final ChatService chatService;
+    private final ChatRedisCacheService chatRedisCacheService;
 
-    // /receive를 메시지를 받을 endpoint로 설정합니다.
-    @MessageMapping("/receive")
+    @MessageMapping("/message")     // 클라이언트에서 /pub/message 로 메시지를 발행한다.
+    public void message(ChatMessage message) {
 
-    // /send로 메시지를 반환합니다.
-    @SendTo("/send")
-    public Chat SocketHandler(Chat chat){
-        Long senderId = chat.getSenderId();
-        Long receiverId = chat.getReceiverId();
-        String chatContent = chat.getChatContent();
+//        로그인 정보 기반으로 sender 설정 -> 로그인 구현 후 추가
+//        String token = JwtHeaderUtil.getAccessToken(request);
+//        message.setSenderId(authService.getAuthId(token));
 
-        Chat result = new Chat();
+        message.setChatTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss.SSS")));
+        chatRedisCacheService.addChat(message);
+        // 메시지에 정의된 채널 id에 메시지를 보낸다.
+        // /sub/room/방아이디 에 구독중인 쿨라이언트에게 메시지를 보낸다.
+        sendingOperations.convertAndSend("/sub/room/"+message.getRoomId(), message);
     }
-//            chatService.saveMessage(message);
-//    public void message(HttpServletRequest request, ChatMessageRequest message) {
-//
-////        로그인 정보 기반으로 sender 설정 -> 로그인 구현 후 추가
-////        String token = JwtHeaderUtil.getAccessToken(request);
-////        message.setSenderId(authService.getAuthId(token));
-//
-//        // 메시지에 정의된 채널 id에 메시지를 보낸다.
-//        // /sub/room/방아이디 에 구독중인 쿨라이언트에게 메시지를 보낸다.
-//        sendingOperations.convertAndSend("/room/"+message.getRoomId(), message);
-//    }
 }

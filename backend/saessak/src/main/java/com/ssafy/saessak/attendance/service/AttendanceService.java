@@ -5,8 +5,10 @@ import com.ssafy.saessak.attendance.dto.*;
 import com.ssafy.saessak.attendance.repository.AttendanceRepository;
 import com.ssafy.saessak.document.domain.Replacement;
 import com.ssafy.saessak.document.repository.ReplacementRepository;
+import com.ssafy.saessak.oauth.service.AuthenticationService;
 import com.ssafy.saessak.user.domain.Classroom;
 import com.ssafy.saessak.user.domain.Kid;
+import com.ssafy.saessak.user.domain.User;
 import com.ssafy.saessak.user.repository.ClassroomRepository;
 import com.ssafy.saessak.user.repository.KidRepository;
 import jakarta.transaction.Transactional;
@@ -27,9 +29,9 @@ import java.util.Optional;
 public class AttendanceService {
 
     private final AttendanceRepository attendanceRepository;
-    private final ClassroomRepository classroomRepository;
     private final KidRepository kidRepository;
     private final ReplacementRepository replacementRepository;
+    private final AuthenticationService authenticationService;
 
     @Transactional
     public AttendanceTimeResponseDto inTime(Long kidId) {
@@ -44,7 +46,7 @@ public class AttendanceService {
         kid.getAttendanceList().add(attendance);
 
         return AttendanceTimeResponseDto.builder()
-                .kidName(kid.getKidName())
+                .kidName(kid.getNickname())
                 .attendanceId(savedAttendance.getAttendanceId())
                 .attendanceDate(savedAttendance.getAttendanceDate())
                 .attendanceTime(savedAttendance.getAttendanceInTime())
@@ -58,16 +60,18 @@ public class AttendanceService {
 
         Attendance savedAttendance = attendance.outTime();
         return AttendanceTimeResponseDto.builder()
-                .kidName(kid.getKidName())
+                .kidName(kid.getNickname())
                 .attendanceId(savedAttendance.getAttendanceId())
                 .attendanceDate(savedAttendance.getAttendanceDate())
                 .attendanceTime(savedAttendance.getAttendanceOutTime())
                 .build();
     }
 
-    public List<AttendanceKidListResponseDto> list(AttendanceRequestDto requestDto) {
+    public List<AttendanceKidListResponseDto> listOfteacher(AttendanceRequestDto requestDto) {
+        // 유저(accessToken)의 classroom 찾기
+        User user = authenticationService.getUserByAuthentication();
+        Classroom classroom = user.getClassroom();
         // 반에서 아이 찾기
-        Classroom classroom = classroomRepository.findById(requestDto.getClassroomId()).get();
         List<Kid> kidList = kidRepository.findAllByClassroom(classroom);
         LocalDate startDate = null;
         LocalDate endDate = null;
@@ -92,8 +96,8 @@ public class AttendanceService {
                 attendanceKidResponseDtoList.add(attendanceKidResponseDto);
             }
             AttendanceKidListResponseDto attendanceKidListResponseDto = AttendanceKidListResponseDto.builder()
-                    .kidId(k.getKidId())
-                    .kidName(k.getKidName())
+                    .kidId(k.getId())
+                    .kidName(k.getNickname())
                     .attendance(attendanceKidResponseDtoList)
                     .build();
 
@@ -101,6 +105,24 @@ public class AttendanceService {
         }
 
         return attendanceKidListResponseDtoList;
+    }
+
+    public List<AttendanceKidResponseDto> listOfParent(Long kidId) {
+        Kid kid = kidRepository.findById(kidId).get();
+        List<Attendance> attendanceList = attendanceRepository.findAllByKid(kid);
+        List<AttendanceKidResponseDto> responseDtoList = new ArrayList<>();
+        for(Attendance attendance : attendanceList) {
+            AttendanceKidResponseDto attendanceKidResponseDto = AttendanceKidResponseDto.builder()
+                    .attendanceId(attendance.getAttendanceId())
+                    .attendanceDate(attendance.getAttendanceDate())
+                    .attendanceInTime(attendance.getAttendanceInTime())
+                    .attendanceOutTime(attendance.getAttendanceOutTime())
+                    .build();
+
+            responseDtoList.add(attendanceKidResponseDto);
+        }
+
+        return responseDtoList;
     }
 
     // 해당 주차의 시작일을 계산
@@ -124,7 +146,7 @@ public class AttendanceService {
                 long timegap = ChronoUnit.MINUTES.between(replacementTime, LocalTime.now());
                 if(Math.abs(timegap) <= 15) {
                     ReplacementResponseDto replacementResponseDto = ReplacementResponseDto.builder()
-                            .kidName(kid.getKidName())
+                            .kidName(kid.getNickname())
                             .replacementName(replacement.getReplacementName())
                             .replacementRelationship(replacement.getReplacementRelationship())
                             .build();

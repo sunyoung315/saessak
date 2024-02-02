@@ -1,11 +1,13 @@
 package com.ssafy.saessak.chat.domain;
 
+import com.ssafy.saessak.menu.domain.Food;
 import com.ssafy.saessak.user.domain.Kid;
 import com.ssafy.saessak.user.domain.Teacher;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -27,8 +29,8 @@ public class Room {
     @JoinColumn(name = "teacher_id")
     private Teacher teacher;
 
-    @Column(name = "room_time")
-    private LocalDateTime lastVisitTime;
+    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    List<Chat> chatList;
 
 
 }

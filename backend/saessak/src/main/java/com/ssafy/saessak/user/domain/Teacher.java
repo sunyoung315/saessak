@@ -3,43 +3,28 @@ package com.ssafy.saessak.user.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuperBuilder
 @Getter
-@Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name="teacher")
-public class Teacher {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long teacherId;
-
-    @ManyToOne
-    @JoinColumn(name = "classroom_id")
-    private Classroom classroom;
-
-    @Column(name = "teacher_name")
-    private String teacherName;
-
-    @Column(name = "teacher_email")
-    private String teacherEmail;
-
-    @Column(name = "teacher_password")
-    private String teacherPassword;
+public class Teacher extends User {
 
     @Column(name = "teacher_device")
     private String teacherDevice;
 
-    @Column(name = "teacher_profile")
-    private String teacherProfile;
-
-    @Column(name = "teacher_alarm")
+    @Column(name = "teacher_alarm", nullable = false)
     private boolean teacherAlarm;
+
+    @Column(name = "teacher_alarm_timestamp")
+    private LocalDateTime teacherAlarmTimestamp;
 
     public void setToken(String token){
         this.teacherDevice = token;
@@ -51,6 +36,10 @@ public class Teacher {
         } else {
             this.teacherAlarm = false;
         }
+    }
+
+    public void mapping_classroom(Classroom classroom) {
+        super.mapping_classroom(classroom);
     }
 
 }

@@ -2,22 +2,27 @@ package com.ssafy.saessak.chat.service;
 
 import com.ssafy.saessak.chat.domain.Chat;
 import com.ssafy.saessak.chat.domain.Room;
-import com.ssafy.saessak.chat.dto.ChatMessageRequest;
+import com.ssafy.saessak.chat.domain.Visit;
+import com.ssafy.saessak.chat.dto.ChatMessage;
+import com.ssafy.saessak.chat.dto.ChatMessageResponse;
 import com.ssafy.saessak.chat.dto.RoomResponseDto;
 import com.ssafy.saessak.chat.repository.ChatRepository;
 import com.ssafy.saessak.chat.repository.RoomRepository;
-import com.ssafy.saessak.user.domain.Classroom;
-import com.ssafy.saessak.user.domain.Kid;
-import com.ssafy.saessak.user.domain.Parent;
-import com.ssafy.saessak.user.domain.Teacher;
+import com.ssafy.saessak.chat.repository.VisitRepository;
+import com.ssafy.saessak.oauth.service.AuthenticationService;
+import com.ssafy.saessak.user.domain.*;
 import com.ssafy.saessak.user.repository.KidRepository;
 import com.ssafy.saessak.user.repository.ParentRepository;
 import com.ssafy.saessak.user.repository.TeacherRepository;
+import com.ssafy.saessak.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,63 +30,59 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ChatService {
 
+    private final AuthenticationService authenticationService;
     private final ParentRepository parentRepository;
     private final TeacherRepository teacherRepository;
     private final KidRepository kidRepository;
     private final RoomRepository roomRepository;
-    private final ChatRepository chatRepository;
+    private final VisitRepository visitRepository;
+    private final UserRepository userRepository;
+    private final ChatRedisCacheService chatRedisCacheService;
 
-    public List<RoomResponseDto> getRoomByParent(Long parentId) {
-        Parent parent = parentRepository.findById(parentId).get();
-        List<Room> roomList = new ArrayList<>();
-        for(Kid k : parent.getKidList()){
-            List<Room> tmpList = roomRepository.findAllByKid(k);
-            roomList.addAll(tmpList);
-        }
-        return getRoomResponseDtos(roomList);
-    }
 
-    public List<RoomResponseDto> getRoomByTeacher(Long teacherId) {
+
+
+
+    // 채팅방 학부모 생성
+    public Long addParentRoom(Long teacherId) {
+
+        User user = authenticationService.getUserByAuthentication(); // 학부모
         Teacher teacher = teacherRepository.findById(teacherId).get();
-        List<Room> roomList = roomRepository.findAllByTeacher(teacher);
-        return getRoomResponseDtos(roomList);
-    }
 
-    @NotNull
-    private List<RoomResponseDto> getRoomResponseDtos(List<Room> roomList) {
-        List<RoomResponseDto> roomResponseDtoList = new ArrayList<>();
-        for(Room r : roomList){
-            RoomResponseDto roomResponseDto = roomInfoToDto(r);
-            roomResponseDtoList.add(roomResponseDto);
+        List<Kid> kidList1 = kidRepository.findAllByParent((Parent) user);
+        List<Kid> kidList2 = kidRepository.findAllByClassroom(teacher.getClassroom());
+
+        Kid kid = null;
+        for (Kid k : kidList2) {
+            if (kidList1.contains(k)) {
+                kid = k;
+            }
         }
-        return roomResponseDtoList;
-    }
 
-        private RoomResponseDto roomInfoToDto(Room r) {
-        Chat chat = chatRepository.findFirstByRoomOrderByChatTimeDesc(r);
-
-        if(chat == null){
-            return RoomResponseDto.builder()
-                    .roomId(r.getRoomId())
-                    .kidId(r.getKid().getKidId())
-                    .kidName(r.getKid().getKidName())
-                    .flag(false)
+        Room room = roomRepository.findByKidAndTeacher(kid, teacher);
+        if(room == null){
+            room = roomRepository.save(Room.builder()
+                    .kid(kid)
+                    .teacher(teacher)
+                    .build());
+            Visit visit1 = Visit.builder()
+                    .room(room)
+                    .user(user)
                     .build();
+            Visit visit2 = Visit.builder()
+                    .room(room)
+                    .user(teacher)
+                    .build();
+            visitRepository.save(visit1);
+            visitRepository.save(visit2);
         }
-
-        boolean isChatTimeBeforeLastVisitTime = chat.getChatTime().isBefore(r.getLastVisitTime());
-        return RoomResponseDto.builder()
-                .roomId(r.getRoomId())
-                .kidId(r.getKid().getKidId())
-                .kidName(r.getKid().getKidName())
-                .lastChat(chat.getChatContent())
-                .flag(isChatTimeBeforeLastVisitTime)
-                .build();
+        return room.getRoomId();
     }
+    // 채팅방 선생님 생성
+    public Long addTeacherRoom(Long kidId) {
+        User user = authenticationService.getUserByAuthentication(); //선생님
 
-    // 채팅방 생성
-    public Long addRoom(Long teacherId, Long kidId) {
-        Teacher teacher = teacherRepository.findById(teacherId).get();
+        Teacher teacher = teacherRepository.findById(user.getId()).get();
         Kid kid = kidRepository.findById(kidId).get();
         Room room = roomRepository.findByKidAndTeacher(kid, teacher);
 
@@ -89,22 +90,76 @@ public class ChatService {
             room = roomRepository.save(Room.builder()
                     .kid(kid)
                     .teacher(teacher)
-                    .lastVisitTime(LocalDateTime.now())
                     .build());
+            Visit visit1 = Visit.builder()
+                .room(room)
+                .user(user)
+                .build();
+            Visit visit2 = Visit.builder()
+                    .room(room)
+                    .user(kid)
+                    .build();
+            visitRepository.save(visit1);
+            visitRepository.save(visit2);
         }
         return room.getRoomId();
     }
 
+    public List<ChatMessageResponse> getAllChat(Long roomId) {
+        Room room = roomRepository.findById(roomId).get();
 
-    // 채팅 저장
-    public void saveMessage(ChatMessageRequest message){
-        Chat chatMessage = Chat.builder()
-                .senderId(message.getSenderId())
-                .receiverId(message.getReceiverId())
-                .chatContent(message.getChatContent())
-                .chatTime(message.getChatTime())
-                .room(roomRepository.findById(message.getRoomId()).get())
-                .build();
-        chatRepository.save(chatMessage);
+        List<ChatMessageResponse> chatMessageResponseList = new ArrayList<>();
+        for(Chat c : room.getChatList()){
+            ChatMessageResponse chatMessageResponse = ChatMessageResponse.builder()
+                    .senderId(c.getSenderId())
+                    .receiverId(c.getReceiverId())
+                    .chatContent(c.getChatContent())
+                    .chatTime(c.getChatTime().toString())
+                    .build();
+            chatMessageResponseList.add(chatMessageResponse);
+        }
+        return chatMessageResponseList;
+    }
+
+    public Long isValid() {
+        User user = authenticationService.getUserByAuthentication();
+        return user.getId();
+    }
+    @Transactional
+    public void setLastVisit(Long roomId, Long userId){
+        Room room = roomRepository.findById(roomId).get();
+        User user = userRepository.findById(userId).get();
+        Visit visit = visitRepository.findByUserAndRoom(user, room);
+        visit.updateVisitTime(LocalDateTime.now());
+    }
+
+    public List<RoomResponseDto> getRoomByParent() {
+        User user = authenticationService.getUserByAuthentication();
+        Parent parent = parentRepository.findById(user.getId()).get();
+        List<Room> roomList = new ArrayList<>();
+        for(Kid k : parent.getKidList()){
+            List<Room> tmpList = roomRepository.findAllByKid(k);
+            roomList.addAll(tmpList);
+        }
+        return getRoomResponseDtos(user.getId(), roomList);
+    }
+
+    public List<RoomResponseDto> getRoomByTeacher() {
+        User user = authenticationService.getUserByAuthentication();
+        Teacher teacher = teacherRepository.findById(user.getId()).get();
+        List<Room> roomList = roomRepository.findAllByTeacher(teacher);
+        return getRoomResponseDtos(user.getId(), roomList);
+    }
+
+    @NotNull
+    private List<RoomResponseDto> getRoomResponseDtos(Long userId, List<Room> roomList) {
+        List<RoomResponseDto> roomResponseDtoList = new ArrayList<>();
+        for(Room r : roomList){
+            RoomResponseDto roomResponseDto = chatRedisCacheService.roomInfoToDto(userId, r);
+            roomResponseDtoList.add(roomResponseDto);
+        }
+        return roomResponseDtoList;
     }
 }
+
+

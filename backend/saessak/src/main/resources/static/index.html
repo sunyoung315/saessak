@@ -14,6 +14,10 @@
 <span>제목</span><input type="text" id="title" /><br />
 <span>내용</span><input type="text" id="body" />
 <button onclick="sendNotification()">전송</button>
+
+<div>
+    <a href="/api/oauth/kakao/login">카카오로그인</a>
+</div>
 </body>
 <!--  -->
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase.js"></script>
@@ -34,13 +38,13 @@
 
     // 서비스 워커 등록
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/firebase-messaging-sw.js')
-        .then((registration) => {
-          console.log('Service Worker registered with scope:', registration.scope);
-        })
-        .catch((error) => {
-          console.error('Service Worker registration failed:', error);
-        });
+        navigator.serviceWorker.register('/firebase-messaging-sw.js')
+            .then((registration) => {
+                console.log('Service Worker registered with scope:', registration.scope);
+            })
+            .catch((error) => {
+                console.error('Service Worker registration failed:', error);
+            });
     }
 
     // Show Notification
@@ -63,31 +67,31 @@
                 console.log('푸시 알림 거부됨');
             }
         })
-        .catch((error) => {
-            console.error('Firebase 토큰 가져오기 실패:', error);
-        });
+            .catch((error) => {
+                console.error('Firebase 토큰 가져오기 실패:', error);
+            });
     });
 
 <!--    // RequestPermission 첫 어플 시작 시 알림 허용 or 불허를 사용자에게 안내합니다.-->
-<!--    // 허용하지 않을 시 알람 메시지는 가지 않습니다.-->
-<!--    messaging-->
-<!--      .requestPermission()-->
-<!--      .then(function () {-->
-<!--        // 알람이 허용되었을 때 토큰을 반환합니다.-->
-<!--        // 해당 토큰을 통해 FCM 특정 사용자에게 메시지를 보낼 수 있습니다.-->
-<!--        return messaging.getToken();-->
-<!--      })-->
-<!--      .then(async function (token) {-->
-<!--        userToken = token;-->
-<!--        console.log(token);-->
+    <!--    // 허용하지 않을 시 알람 메시지는 가지 않습니다.-->
+    <!--    messaging-->
+    <!--      .requestPermission()-->
+    <!--      .then(function () {-->
+    <!--        // 알람이 허용되었을 때 토큰을 반환합니다.-->
+    <!--        // 해당 토큰을 통해 FCM 특정 사용자에게 메시지를 보낼 수 있습니다.-->
+    <!--        return messaging.getToken();-->
+    <!--      })-->
+    <!--      .then(async function (token) {-->
+    <!--        userToken = token;-->
+    <!--        console.log(token);-->
 
-<!--        // 해당 onMessage는 데이터메시지로, 포그라운드인 상태에서-->
-<!--        // FCM 메시지를 전송하는 경우 콘솔에 표기하도록 작성된 코드입니다.-->
-<!--        messaging.onMessage((payload) => {-->
-<!--          console.log('포그라운드');-->
-<!--          console.log(payload);-->
-<!--        });-->
-<!--      });-->
+    <!--        // 해당 onMessage는 데이터메시지로, 포그라운드인 상태에서-->
+    <!--        // FCM 메시지를 전송하는 경우 콘솔에 표기하도록 작성된 코드입니다.-->
+    <!--        messaging.onMessage((payload) => {-->
+    <!--          console.log('포그라운드');-->
+    <!--          console.log(payload);-->
+    <!--        });-->
+    <!--      });-->
 
 
     messaging.onMessage((payload) => {
@@ -100,38 +104,38 @@
     });
 
     const sendNotification = () => {
-      const reqFcmNotificationDTO = {
-        // input에서 값을 가져와
-        notification: {
-          token: document.querySelector("#token").value,
-          title: document.querySelector("#title").value,
-          body: document.querySelector("#body").value,
-        },
-      };
+        const reqFcmNotificationDTO = {
+            // input에서 값을 가져와
+            notification: {
+                token: document.querySelector("#token").value,
+                title: document.querySelector("#title").value,
+                body: document.querySelector("#body").value,
+            },
+        };
 
-      // 잘 들어왔는 지 콘솔에 한 번 찍어보고
-      console.log(reqFcmNotificationDTO.notification);
+        // 잘 들어왔는 지 콘솔에 한 번 찍어보고
+        console.log(reqFcmNotificationDTO.notification);
 
-      // sendNotification으로 api 요청을 보낸다(구현 예정)
-      fetch("/api/v1/fcm/sendNotification", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(reqFcmNotificationDTO),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          console.log(data);
-          alert(data.message);
-          if (data.code == 0) {
-            location.reload();
-          }
+        // sendNotification으로 api 요청을 보낸다(구현 예정)
+        fetch("/api/v1/fcm/sendNotification", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(reqFcmNotificationDTO),
         })
-        .catch((error) => {
-          // 오류 처리
-          console.error("Error:", error);
-        });
+            .then((response) => response.json())
+            .then((data) => {
+                console.log(data);
+                alert(data.message);
+                if (data.code == 0) {
+                    location.reload();
+                }
+            })
+            .catch((error) => {
+                // 오류 처리
+                console.error("Error:", error);
+            });
     };
 </script>
 </html>

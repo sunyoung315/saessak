@@ -6,9 +6,11 @@ import com.ssafy.saessak.document.dto.ReplacementDetailResponseDto;
 import com.ssafy.saessak.document.dto.ReplacementRequestDto;
 import com.ssafy.saessak.document.dto.ReplacementResponseDto;
 import com.ssafy.saessak.document.repository.ReplacementRepository;
+import com.ssafy.saessak.oauth.service.AuthenticationService;
 import com.ssafy.saessak.user.domain.Classroom;
 import com.ssafy.saessak.user.domain.Kid;
 import com.ssafy.saessak.user.domain.Teacher;
+import com.ssafy.saessak.user.domain.User;
 import com.ssafy.saessak.user.repository.ClassroomRepository;
 import com.ssafy.saessak.user.repository.KidRepository;
 import com.ssafy.saessak.user.repository.ParentRepository;
@@ -29,6 +31,7 @@ public class ReplacementService {
     private final KidRepository kidRepository;
     private final ClassroomRepository classroomRepository;
     private final TeacherRepository teacherRepository;
+    private final AuthenticationService authenticationService;
 
     @Transactional
     public ReplacementAlarmResponseDto insert(ReplacementRequestDto requestDto) {
@@ -60,8 +63,8 @@ public class ReplacementService {
         ReplacementAlarmResponseDto replacementAlarmResponseDto = ReplacementAlarmResponseDto.builder()
                 .replacementId(savedReplacement.getReplacementId())
                 .teacherAlarmDeviceList(teacherDeviceList)
-                .kidId(savedReplacement.getKid().getKidId())
-                .kidName(savedReplacement.getKid().getKidName())
+                .kidId(savedReplacement.getKid().getId())
+                .kidName(savedReplacement.getKid().getNickname())
                 .build();
 
         return replacementAlarmResponseDto;
@@ -77,7 +80,7 @@ public class ReplacementService {
             ReplacementResponseDto replacementResponseDto = ReplacementResponseDto.builder()
                     .replacementId(replacement.getReplacementId())
                     .replacementDay(replacement.getReplacementDay())
-                    .kidName(kid.getKidName())
+                    .kidName(kid.getNickname())
                     .replacementCheck(replacement.isReplacementCheck())
                     .build();
 
@@ -87,8 +90,9 @@ public class ReplacementService {
         return replacementResponseDtoList;
     }
 
-    public List<ReplacementResponseDto> listOfclassroomId(Long classroomId) {
-        Classroom classroom = classroomRepository.findById(classroomId).get();
+    public List<ReplacementResponseDto> listOfclassroomId() {
+        User user = authenticationService.getUserByAuthentication();
+        Classroom classroom = user.getClassroom();
         List<Kid> kidList = kidRepository.findAllByClassroom(classroom);
 
         List<ReplacementResponseDto> replacementResponseDtoList = new ArrayList<>();
@@ -100,7 +104,7 @@ public class ReplacementService {
                 ReplacementResponseDto replacementResponseDto = ReplacementResponseDto.builder()
                         .replacementId(replacement.getReplacementId())
                         .replacementDay(replacement.getReplacementDay())
-                        .kidName(kid.getKidName())
+                        .kidName(kid.getNickname())
                         .replacementCheck(replacement.isReplacementCheck())
                         .build();
 
