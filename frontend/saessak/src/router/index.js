@@ -4,7 +4,6 @@ import HomeView from '@/views/HomeView.vue';
 import NotFoundView from '@/views/NotFoundView.vue';
 import LoginView from '@/views/LoginView.vue';
 import UserView from '@/components/user/UserView.vue';
-import BoardView from '@/components/board/BoardView.vue';
 import JoinView from '@/views/JoinView.vue';
 import AlbumView from '@/components/album/AlbumView.vue';
 import AlbumList from '@/components/album/AlbumList.vue';
@@ -18,15 +17,19 @@ import DocumentReplaceDetail from '@/components/document/DocumentReplaceDetail.v
 import DocumentAllergyDetail from '@/components/document/DocumentAllergyDetail.vue';
 import DocumentReplaceCreate from '@/components/document/DocumentReplaceCreate.vue';
 import DocumentAllergyCreate from '@/components/document/DocumentAllergyCreate.vue';
-import MenuView from '@/components/menu/MenuView.vue';
 import AttendanceView from '@/components/attendance/AttendanceView.vue';
 import ChatView from '@/components/chat/ChatView.vue';
 import ChatDetail from '@/components/chat/ChatDetailView.vue';
 import SettingView from '@/components/setting/SettingView.vue';
+import BoardView from '@/components/board/BoardView.vue';
 import BoardCreate from '@/components/board/BoardCreate.vue';
 import BoardList from '@/components/board/BoardList.vue';
 import BoardDetailTeacher from '@/components/board/BoardDetailTeacher.vue';
 import BoardDetailParent from '@/components/board/BoardDetailParent.vue';
+import MenuView from '@/components/menu/MenuView.vue';
+import MenuList from '@/components/menu/MenuList.vue';
+import MenuCreate from '@/components/menu/MenuCreate.vue';
+import MenuRegistPhoto from '@/components/menu/MenuRegistPhoto.vue';
 
 const routes = [
 	{ path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFoundView },
@@ -145,6 +148,23 @@ const routes = [
 		path: '/menu',
 		name: 'Menu',
 		component: MenuView,
+		children: [
+			{
+				path: '',
+				name: 'MenuList',
+				component: MenuList,
+			},
+			{
+				path: 'create',
+				name: 'MenuCreate',
+				component: MenuCreate,
+			},
+			{
+				path: 'photo',
+				name: 'MenuRegistPhoto',
+				component: MenuRegistPhoto,
+			},
+		],
 	},
 	{
 		path: '/attendance',
