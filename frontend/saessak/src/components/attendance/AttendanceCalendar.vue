@@ -1,5 +1,5 @@
 <template>
-	<div class="view-frame p-6">
+	<div class="view-frame">
 		<vue-cal
 			class="mx-5 my-3"
 			active-view="month"

@@ -12,12 +12,7 @@
 			<div class="block mb-5">
 				<span class="content-title">이름</span>
 				<div class="block mt-1 ml-32 mb-10">
-					<select
-						id="name"
-						class="datepicker-input px-5 text-[18px]"
-						v-model="kidId"
-						required
-					>
+					<select id="name" class="selection-input" v-model="kidId" required>
 						<template v-for="kid in userStore.kidsList" :key="kid.kidId">
 							<option :value="kid.kidId">{{ kid.kidName }}</option>
 						</template>

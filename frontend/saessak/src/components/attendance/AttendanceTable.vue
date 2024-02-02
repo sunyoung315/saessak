@@ -1,7 +1,7 @@
 <template>
-	<div class="view-frame p-6">
+	<div class="view-frame">
 		<!-- datepicker -->
-		<div class="flex justify-between items-center m-5">
+		<div class="datepicker">
 			<VDatePicker
 				:select-attribute="selectAttribute"
 				v-model="selectedDate"
@@ -27,7 +27,7 @@
 						<input
 							:value="inputValue"
 							v-on="inputEvents"
-							class="border border-gray-300 text-gray-900 text-sm font-bold rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5"
+							class="datepicker-input"
 						/>
 					</div>
 				</template>
@@ -280,7 +280,7 @@ onMounted(async () => {
 
 <style scoped>
 .table-box {
-	@apply relative overflow-x-auto min-h-screen m-5;
+	@apply relative overflow-x-auto min-h-screen m-3;
 }
 .table {
 	@apply w-full text-base text-left rtl:text-right text-gray-500 dark:text-gray-400;
