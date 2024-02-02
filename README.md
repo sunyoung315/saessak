@@ -132,7 +132,7 @@
 📌 선생님 화면
 ![Figma](/assets/teacherView.png)
 
-### [ERD](https://www.erdcloud.com/d/JxbmpusseeyRp5dsp)
+### [ERD](https://www.erdcloud.com/d/jzdAxd3ySZ8tXDa5n)
 
 ![ERD](/assets/ERD.png)
 
@@ -205,8 +205,12 @@
 
 - 김하은
   - 인프라 설정 완료
-  - WebSocket, Stomp를 사용한 채팅 서버 구현
-  - 채팅 기능에 Redis 캐싱 구현 중
+    - NginX Reverse Proxy 설정
+    - Jenkins-Gitlab Webhook 설정
+    - ssl 인증서 발급 후 https 연결
+  - 채팅 기능 구현
+    - WebSocket, Stomp를 사용한 채팅 서버 구현
+    - 채팅 내역 Redis 캐싱 구현 중
   - 공지사항 API 작성
   <hr>
 - 이민우
@@ -254,6 +258,7 @@ Test: 테스트 코드 작성
 <details>
 <summary>FE 폴더 구조</summary>
 <div markdown="1">
+
 ```
 📦frontend
  ┗ 📂saessak
@@ -279,12 +284,14 @@ Test: 테스트 코드 작성
  ┃ ┃ ┣ 📜App.vue
  ┃ ┃ ┗ 📜main.js
  ```
+
 </div>
 </details>
 
 <details>
 <summary>BE 폴더 구조</summary>
 <div markdown="1">
+
 ```
 📦backend
  ┗ 📂saessak
@@ -377,5 +384,6 @@ Test: 테스트 코드 작성
  ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📂service
  ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜SaessakApplication.java
  ```
+
 </div>
 </details>
