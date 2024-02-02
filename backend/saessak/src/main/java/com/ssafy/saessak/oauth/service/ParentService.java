@@ -1,5 +1,7 @@
 package com.ssafy.saessak.oauth.service;
 
+import com.ssafy.saessak.exception.code.ExceptionCode;
+import com.ssafy.saessak.exception.model.UserException;
 import com.ssafy.saessak.oauth.dto.KidResponseDto;
 import com.ssafy.saessak.oauth.dto.LoginParentResponseDto;
 import com.ssafy.saessak.oauth.dto.LoginSuccessResponseDto;
@@ -31,7 +33,9 @@ public class ParentService {
 
     @Transactional
     public Long registParent(Long userId) {
-        User user = userRepository.findById(userId).get();
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserException(ExceptionCode.USER_NOT_FOUND));
+
         Parent parent = Parent.builder()
                 .id(user.getId())
                 .email(user.getEmail())
@@ -44,17 +48,21 @@ public class ParentService {
     }
 
     public void mapping(Long parentId, Long kidId) {
-        Kid kid = kidRepository.findById(kidId).get();
-        Parent parent = parentRepository.findById(parentId).get();
+        Kid kid = kidRepository.findById(kidId)
+                .orElseThrow(() -> new UserException(ExceptionCode.KID_NOT_FOUND));
+        Parent parent = parentRepository.findById(parentId)
+                .orElseThrow(() -> new UserException(ExceptionCode.PARENT_NOT_FOUND));
         List<Kid> kidList = parent.getKidList();
         if(kidList == null) kidList = new ArrayList<>();
+
         kidList.add(kid);
         kid.mapping_parent(parent);
     }
 
     public LoginParentResponseDto login(LoginSuccessResponseDto loginSuccessResponseDto) {
         List<KidResponseDto> kidResponseDtoList = new ArrayList<>();
-        Parent parent = parentRepository.findById(loginSuccessResponseDto.getUserId()).get();
+        Parent parent = parentRepository.findById(loginSuccessResponseDto.getUserId())
+                .orElseThrow(() -> new UserException(ExceptionCode.PARENT_NOT_FOUND));
         List<Kid> kidList = kidRepository.findAllByParent(parent);
         for(Kid kid : kidList) {
             KidResponseDto kidResponseDto = KidResponseDto.builder()

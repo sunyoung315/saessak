@@ -6,20 +6,24 @@ import com.ssafy.saessak.document.dto.ReplacementDetailResponseDto;
 import com.ssafy.saessak.document.dto.ReplacementRequestDto;
 import com.ssafy.saessak.document.dto.ReplacementResponseDto;
 import com.ssafy.saessak.document.repository.ReplacementRepository;
+import com.ssafy.saessak.exception.code.ExceptionCode;
+import com.ssafy.saessak.exception.model.NotFoundException;
+import com.ssafy.saessak.exception.model.UserException;
+import com.ssafy.saessak.fcm.service.FcmService;
 import com.ssafy.saessak.oauth.service.AuthenticationService;
 import com.ssafy.saessak.user.domain.Classroom;
 import com.ssafy.saessak.user.domain.Kid;
 import com.ssafy.saessak.user.domain.Teacher;
 import com.ssafy.saessak.user.domain.User;
-import com.ssafy.saessak.user.repository.ClassroomRepository;
 import com.ssafy.saessak.user.repository.KidRepository;
-import com.ssafy.saessak.user.repository.ParentRepository;
 import com.ssafy.saessak.user.repository.TeacherRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,13 +33,14 @@ public class ReplacementService {
 
     private final ReplacementRepository replacementRepository;
     private final KidRepository kidRepository;
-    private final ClassroomRepository classroomRepository;
     private final TeacherRepository teacherRepository;
     private final AuthenticationService authenticationService;
+    private final FcmService fcmService;
 
     @Transactional
-    public ReplacementAlarmResponseDto insert(ReplacementRequestDto requestDto) {
-        Kid kid = kidRepository.findById(requestDto.getKidId()).get();
+    public Long insert(ReplacementRequestDto requestDto) {
+        Kid kid = kidRepository.findById(requestDto.getKidId())
+                .orElseThrow(() -> new UserException(ExceptionCode.KID_NOT_FOUND));
 
         Replacement replacement = Replacement.builder()
                 .kid(kid)
@@ -51,27 +56,27 @@ public class ReplacementService {
                 .build();
 
         Replacement savedReplacement = replacementRepository.save(replacement);
-
+        
+        // 입력과 동시에 아이의 반 선생님 모두에게 알림 전송
         Classroom classroom = kid.getClassroom();
         List<Teacher> teacherList = teacherRepository.findAllByClassroom(classroom);
 
-        List<String> teacherDeviceList = new ArrayList<>();
         for(Teacher teacher : teacherList) {
-            teacherDeviceList.add(teacher.getTeacherDevice());
+            ReplacementAlarmResponseDto replacementAlarmResponseDto = ReplacementAlarmResponseDto.builder()
+                    .replacementId(savedReplacement.getReplacementId())
+                    .teacherDevice(teacher.getTeacherDevice())
+                    .kidId(savedReplacement.getKid().getId())
+                    .kidName(savedReplacement.getKid().getNickname())
+                    .build();
+            fcmService.sendInsertReplacement(replacementAlarmResponseDto);
         }
 
-        ReplacementAlarmResponseDto replacementAlarmResponseDto = ReplacementAlarmResponseDto.builder()
-                .replacementId(savedReplacement.getReplacementId())
-                .teacherAlarmDeviceList(teacherDeviceList)
-                .kidId(savedReplacement.getKid().getId())
-                .kidName(savedReplacement.getKid().getNickname())
-                .build();
-
-        return replacementAlarmResponseDto;
+        return savedReplacement.getReplacementId();
     }
 
     public List<ReplacementResponseDto> listOfkidId(Long kidId) {
-        Kid kid = kidRepository.findById(kidId).get();
+        Kid kid = kidRepository.findById(kidId)
+                .orElseThrow(() -> new UserException(ExceptionCode.KID_NOT_FOUND));
         List<Replacement> replacementList = replacementRepository.findByKid(kid);
 
         List<ReplacementResponseDto> replacementResponseDtoList = new ArrayList<>();
@@ -116,7 +121,8 @@ public class ReplacementService {
     }
 
     public ReplacementDetailResponseDto detail(Long replacementId) {
-        Replacement replacement = replacementRepository.findById(replacementId).get();
+        Replacement replacement = replacementRepository.findById(replacementId)
+                .orElseThrow(() -> new NotFoundException(ExceptionCode.REPLACEMENT_NOT_FOUND));
 
         ReplacementDetailResponseDto replacementDetailResponseDto = ReplacementDetailResponseDto.builder()
                 .replacementId(replacement.getReplacementId())
@@ -132,6 +138,30 @@ public class ReplacementService {
                 .build();
 
         return replacementDetailResponseDto;
+    }
+
+    public com.ssafy.saessak.attendance.dto.ReplacementResponseDto checkReplacement(Long kidId) {
+        Kid kid = kidRepository.findById(kidId)
+                .orElseThrow(() -> new UserException(ExceptionCode.KID_NOT_FOUND));
+        List<Replacement> replacementList = replacementRepository.findByKid(kid);
+
+        boolean check = false;
+        for(Replacement replacement : replacementList) {
+            if(replacement.getReplacementDate()==LocalDate.now()) {
+                LocalTime replacementTime = LocalTime.parse(replacement.getReplacementTime());
+                long timegap = ChronoUnit.MINUTES.between(replacementTime, LocalTime.now());
+                if(Math.abs(timegap) <= 15) {
+                    com.ssafy.saessak.attendance.dto.ReplacementResponseDto replacementResponseDto = com.ssafy.saessak.attendance.dto.ReplacementResponseDto.builder()
+                            .kidName(kid.getNickname())
+                            .replacementName(replacement.getReplacementName())
+                            .replacementRelationship(replacement.getReplacementRelationship())
+                            .build();
+                    return replacementResponseDto;
+                }
+            }
+        }
+
+        return null;
     }
 
     @Transactional

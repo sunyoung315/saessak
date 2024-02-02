@@ -4,6 +4,8 @@ import com.ssafy.saessak.alarm.domain.Alarm;
 import com.ssafy.saessak.alarm.dto.AlarmRequestDto;
 import com.ssafy.saessak.alarm.dto.AlarmResponseDto;
 import com.ssafy.saessak.alarm.repository.AlarmRepository;
+import com.ssafy.saessak.exception.code.ExceptionCode;
+import com.ssafy.saessak.exception.model.UserException;
 import com.ssafy.saessak.oauth.service.AuthenticationService;
 import com.ssafy.saessak.user.domain.Classroom;
 import com.ssafy.saessak.user.domain.Kid;
@@ -27,7 +29,8 @@ public class AlarmService {
 
     @Transactional
     public Long insertAlarm(AlarmRequestDto requestDto) {
-        Kid findKid = kidRepository.findById(requestDto.getKidId()).get();
+        Kid findKid = kidRepository.findById(requestDto.getKidId())
+                .orElseThrow(() -> new UserException(ExceptionCode.KID_NOT_FOUND));
         Alarm alarm = Alarm.builder()
                 .kid(findKid)
                 .alarmType(requestDto.getAlarmType())
@@ -40,7 +43,8 @@ public class AlarmService {
     }
 
     public List<AlarmResponseDto> kidAlarmList(Long kidId) {
-        Kid kid = kidRepository.findById(kidId).get();
+        Kid kid = kidRepository.findById(kidId)
+                .orElseThrow(() -> new UserException(ExceptionCode.KID_NOT_FOUND));
         List<Alarm> alarmList = alarmRepository.findByKid(kid);
 
         List<AlarmResponseDto> responseDtoList = new ArrayList<>();

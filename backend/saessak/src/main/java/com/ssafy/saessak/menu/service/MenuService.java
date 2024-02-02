@@ -1,5 +1,8 @@
 package com.ssafy.saessak.menu.service;
 
+import com.ssafy.saessak.exception.code.ExceptionCode;
+import com.ssafy.saessak.exception.model.NotFoundException;
+import com.ssafy.saessak.exception.model.UserException;
 import com.ssafy.saessak.menu.domain.Food;
 import com.ssafy.saessak.menu.domain.Menu;
 import com.ssafy.saessak.menu.dto.*;
@@ -42,7 +45,8 @@ public class MenuService {
         User user = authenticationService.getUserByAuthentication();
         Classroom classroom = user.getClassroom();
         for(MenuRequestDto requestDto : menuRequestDtoList) {
-            Daycare daycare = daycareRepository.findById(classroom.getDaycare().getDaycareId()).get();
+            Daycare daycare = daycareRepository.findById(classroom.getDaycare().getDaycareId())
+                    .orElseThrow(() -> new UserException(ExceptionCode.DAYCARE_NOT_FOUND));
             Optional<Menu> result = menuRepository.findByDaycareAndMenuDateAndMenuType(daycare, requestDto.getMenuDate(), requestDto.getMenuType());
             if(result.isPresent()) { // 식단이 존재하는 경우
                 Menu menu = result.get();
@@ -130,7 +134,8 @@ public class MenuService {
 
     @Transactional
     public void insertPhoto(Long menuId, MultipartFile menuFile) throws IOException {
-        Menu menu = menuRepository.findById(menuId).get();
+        Menu menu = menuRepository.findById(menuId)
+                .orElseThrow(() -> new NotFoundException(ExceptionCode.MENU_NOT_FOUND));
         // AWS S3 사진 upload
         String filePath = s3Uploader.upload(menuFile, "menu");
         menu.uploadPhoto(filePath);

@@ -1,5 +1,7 @@
 package com.ssafy.saessak.oauth.service;
 
+import com.ssafy.saessak.exception.code.ExceptionCode;
+import com.ssafy.saessak.exception.model.UserException;
 import com.ssafy.saessak.oauth.dto.LoginSuccessResponseDto;
 import com.ssafy.saessak.oauth.dto.LoginTeacherResponseDto;
 import com.ssafy.saessak.oauth.dto.kakao.KakaoUserResponse;
@@ -31,7 +33,9 @@ public class TeacherService {
 
     @Transactional
     public Long registTeacher(Long userId) {
-        User user = userRepository.findById(userId).get();
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserException(ExceptionCode.USER_NOT_FOUND));
+
         Teacher teacher = Teacher.builder()
                 .id(user.getId())
                 .email(user.getEmail())
@@ -44,13 +48,16 @@ public class TeacherService {
     }
 
     public void mapping(Long teacherId, Long classroomId) {
-        Classroom classroom = classroomRepository.findById(classroomId).get();
-        Teacher teacher = teacherRepository.findById(teacherId).get();
+        Classroom classroom = classroomRepository.findById(classroomId)
+                .orElseThrow(() -> new UserException(ExceptionCode.CLASSROOM_NOT_FOUND));
+        Teacher teacher = teacherRepository.findById(teacherId)
+                        .orElseThrow(() -> new UserException(ExceptionCode.TEACHER_NOT_FOUND));
         teacher.mapping_classroom(classroom);
     }
 
     public LoginTeacherResponseDto login(LoginSuccessResponseDto loginSuccessResponseDto) {
-        Teacher teacher = teacherRepository.findById(loginSuccessResponseDto.getUserId()).get();
+        Teacher teacher = teacherRepository.findById(loginSuccessResponseDto.getUserId())
+                .orElseThrow(() -> new UserException(ExceptionCode.TEACHER_NOT_FOUND));
         LoginTeacherResponseDto loginTeacherResponseDto = LoginTeacherResponseDto.builder()
                 .teacherName(teacher.getNickname())
                 .isTeacher(true)
