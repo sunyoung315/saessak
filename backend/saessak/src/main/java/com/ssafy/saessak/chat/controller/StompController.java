@@ -22,7 +22,6 @@ import java.time.format.DateTimeFormatter;
 @RequestMapping
 @RequiredArgsConstructor
 public class StompController {
-
     private final SimpMessageSendingOperations sendingOperations;
     private final ChatRedisCacheService chatRedisCacheService;
 
@@ -35,25 +34,7 @@ public class StompController {
         message.setChatTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss.SSS")));
         chatRedisCacheService.addChat(message);
 
-        // 구독중인 사용자 수 로깅
-        int subscriberCount = getNumberOfUsersSubscribed("/sub/room/" + message.getRoomId());
-        log.info("Number of subscribers in room {}: {}", message.getRoomId(), subscriberCount);
-        System.out.println(subscriberCount);
-
         // 메시지에 정의된 채널 id에 메시지를 보낸다.
         sendingOperations.convertAndSend("/sub/room/"+message.getRoomId(), message);
-    }
-
-    // 특정 채널에 구독 중인 사용자 수를 계산하는 메소드
-    public int getNumberOfUsersSubscribed(String destination) {
-        int count = 0;
-        for (SimpUser user : simpUserRegistry.getUsers()) {
-            for (SimpSession session : user.getSessions()) {
-                if (session.getSubscriptions().stream().anyMatch(s -> s.getDestination().equals(destination))) {
-                    count++;
-                }
-            }
-        }
-        return count;
     }
 }
