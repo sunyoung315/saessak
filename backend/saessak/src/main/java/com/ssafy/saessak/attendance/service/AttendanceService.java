@@ -148,4 +148,24 @@ public class AttendanceService {
         return firstDayOfMonth.plusDays(daysToAdd);
     }
 
+    @Scheduled(cron = "0 0 23 ? * MON-FRI")
+    public void checkNoClick() {
+        List<Daycare> daycareList = daycareRepository.findAll();
+        for(Daycare daycare : daycareList) {
+            List<Classroom> classroomList = classroomRepository.findAllByDaycare(daycare);
+            for(Classroom classroom : classroomList) {
+                List<Kid> kidList = kidRepository.findAllByClassroom(classroom);
+                for(Kid kid : kidList) {
+                    if(!attendanceRepository.findByKidAndAttendanceDate(kid, LocalDate.now()).isPresent()) {
+                        Attendance attendance = Attendance.builder()
+                                .attendanceDate(LocalDate.now())
+                                .kid(kid)
+                                .build();
+                        attendanceRepository.save(attendance);
+                    }
+                }
+            }
+        }
+    }
+
 }
