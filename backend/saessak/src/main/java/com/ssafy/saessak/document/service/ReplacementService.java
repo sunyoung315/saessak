@@ -1,7 +1,8 @@
 package com.ssafy.saessak.document.service;
 
+import com.ssafy.saessak.attendance.dto.ReplacementParentAlarmResponseDto;
 import com.ssafy.saessak.document.domain.Replacement;
-import com.ssafy.saessak.document.dto.ReplacementAlarmResponseDto;
+import com.ssafy.saessak.document.dto.ReplacementTeacherAlarmResponseDto;
 import com.ssafy.saessak.document.dto.ReplacementDetailResponseDto;
 import com.ssafy.saessak.document.dto.ReplacementRequestDto;
 import com.ssafy.saessak.document.dto.ReplacementResponseDto;
@@ -44,7 +45,7 @@ public class ReplacementService {
 
         Replacement replacement = Replacement.builder()
                 .kid(kid)
-                .replacementDate(requestDto.getReplacementDate())
+                .replacementDate(LocalDate.parse(requestDto.getReplacementDate()))
                 .replacementTime(requestDto.getReplacementTime())
                 .replacementVehicle(requestDto.getReplacementVehicle())
                 .replacementRelationship(requestDto.getReplacementRelationship())
@@ -62,7 +63,7 @@ public class ReplacementService {
         List<Teacher> teacherList = teacherRepository.findAllByClassroom(classroom);
 
         for(Teacher teacher : teacherList) {
-            ReplacementAlarmResponseDto replacementAlarmResponseDto = ReplacementAlarmResponseDto.builder()
+            ReplacementTeacherAlarmResponseDto replacementAlarmResponseDto = ReplacementTeacherAlarmResponseDto.builder()
                     .replacementId(savedReplacement.getReplacementId())
                     .teacherDevice(teacher.getTeacherDevice())
                     .kidId(savedReplacement.getKid().getId())
@@ -140,7 +141,7 @@ public class ReplacementService {
         return replacementDetailResponseDto;
     }
 
-    public com.ssafy.saessak.attendance.dto.ReplacementResponseDto checkReplacement(Long kidId) {
+    public ReplacementParentAlarmResponseDto checkReplacement(Long kidId) {
         Kid kid = kidRepository.findById(kidId)
                 .orElseThrow(() -> new UserException(ExceptionCode.KID_NOT_FOUND));
         List<Replacement> replacementList = replacementRepository.findByKid(kid);
@@ -151,12 +152,12 @@ public class ReplacementService {
                 LocalTime replacementTime = LocalTime.parse(replacement.getReplacementTime());
                 long timegap = ChronoUnit.MINUTES.between(replacementTime, LocalTime.now());
                 if(Math.abs(timegap) <= 15) {
-                    com.ssafy.saessak.attendance.dto.ReplacementResponseDto replacementResponseDto = com.ssafy.saessak.attendance.dto.ReplacementResponseDto.builder()
+                    ReplacementParentAlarmResponseDto replacementParentAlarmResponseDto = ReplacementParentAlarmResponseDto.builder()
                             .kidName(kid.getNickname())
                             .replacementName(replacement.getReplacementName())
                             .replacementRelationship(replacement.getReplacementRelationship())
                             .build();
-                    return replacementResponseDto;
+                    return replacementParentAlarmResponseDto;
                 }
             }
         }

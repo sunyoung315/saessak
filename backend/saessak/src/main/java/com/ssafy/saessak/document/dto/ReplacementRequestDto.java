@@ -11,8 +11,7 @@ import java.time.LocalDate;
 public class ReplacementRequestDto {
 
     private Long kidId;
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate replacementDate;
+    private String replacementDate;
     private String replacementTime;
     private String replacementVehicle;
     private String replacementRelationship;

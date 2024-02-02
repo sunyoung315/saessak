@@ -10,8 +10,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class MenuRequestDto {
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate menuDate;
+    private String menuDate;
     private String menuType;
     private String foodName;
     private String foodAllergy;
