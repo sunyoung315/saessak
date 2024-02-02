@@ -25,10 +25,16 @@ public class AlbumController {
 
     private final AlbumService albumService;
 
-    @Operation(summary = "반 앨범 전체 조회")
-    @GetMapping("/classroom/{classroomId}")
-    public ResponseEntity<ResultResponse> getClassAlbumList(@PathVariable(name = "classroomId") Long classroomId) {
-        List<AlbumResponseDto> albumResponseDtoList = albumService.getClassAlbumList(classroomId);
+    @Operation(summary = "반 앨범 전체 조회(선생님)")
+    @GetMapping("/classroom")
+    public ResponseEntity<ResultResponse> getTeacherClassAlbumList() {
+        List<AlbumResponseDto> albumResponseDtoList = albumService.getTeacherClassAlbumList();
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS,albumResponseDtoList));
+    }
+    @Operation(summary = "반 앨범 전체 조회(학부모)")
+    @GetMapping("/classroom/{kidId}")
+    public ResponseEntity<ResultResponse> getParentClassAlbumList(@PathVariable(name = "kidId") Long kidId){
+        List<AlbumResponseDto> albumResponseDtoList = albumService.getParentClassAlbumList(kidId);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS,albumResponseDtoList));
     }
     @Operation(summary = "반 앨범 날짜별 조회")
