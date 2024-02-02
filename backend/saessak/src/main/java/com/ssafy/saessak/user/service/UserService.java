@@ -1,5 +1,7 @@
 package com.ssafy.saessak.user.service;
 
+import com.ssafy.saessak.exception.code.ExceptionCode;
+import com.ssafy.saessak.exception.model.UserException;
 import com.ssafy.saessak.oauth.service.AuthenticationService;
 import com.ssafy.saessak.oauth.service.ParentService;
 import com.ssafy.saessak.s3.S3Upload;
@@ -34,12 +36,14 @@ public class UserService {
     @Transactional
     public void mapping(KidMappingRequestDto mappingRequestDto) {
         User user = authenticationService.getUserByAuthentication();
-        Optional<Parent> parent = parentRepository.findById(user.getId());
-        if(parent.isPresent()) {
-            String registCode = new String(Base64.getDecoder().decode(mappingRequestDto.getRegistCode()), StandardCharsets.UTF_8);
-            Long mapping_kidId = Long.parseLong(registCode.substring(0, registCode.length()-3));
-            parentService.mapping(parent.get().getId(), mapping_kidId);
-        }
+
+        Parent parent = parentRepository.findById(user.getId())
+                .orElseThrow(() -> new UserException(ExceptionCode.PARENT_NOT_FOUND));
+
+        String registCode = new String(Base64.getDecoder().decode(mappingRequestDto.getRegistCode()), StandardCharsets.UTF_8);
+        Long mapping_kidId = Long.parseLong(registCode.substring(0, registCode.length()-3));
+
+        parentService.mapping(parent.getId(), mapping_kidId);
     }
 
     @Transactional
@@ -58,7 +62,7 @@ public class UserService {
             String filePath = s3Upload.upload(kidProfile, "profile");
             kid.uploadProfile(filePath);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new UserException(ExceptionCode.FAIL_KID_PROFILE_UPLOAD);
         }
         return kid.getId();
     }
@@ -103,7 +107,8 @@ public class UserService {
         List<TeacherListResponseDto> teacherListReponseDtoList = new ArrayList<>();
         for(Long kidId : teacherList.keySet()) {
             List<Teacher> tlist = teacherList.get(kidId);
-            Kid k = kidRepository.findById(kidId).get();
+            Kid k = kidRepository.findById(kidId)
+                    .orElseThrow(() -> new UserException(ExceptionCode.KID_NOT_FOUND));
             for (Teacher t : tlist) {
                 TeacherListResponseDto teacherListReponseDto = TeacherListResponseDto.builder()
                         .teacherId(t.getId())
@@ -116,11 +121,5 @@ public class UserService {
             }
         }
         return teacherListReponseDtoList;
-    }
-
-    public String getParentToken(Long kidId) {
-        Kid kid = kidRepository.findById(kidId).get();
-        Parent parent = kid.getParent();
-        return parent.getParentDevice();
     }
 }

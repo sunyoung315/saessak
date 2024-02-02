@@ -3,11 +3,12 @@ package com.ssafy.saessak.document.service;
 import com.ssafy.saessak.document.dto.AllergyDetailResponseDto;
 import com.ssafy.saessak.document.dto.AllergyRequestDto;
 import com.ssafy.saessak.document.dto.AllergyResponseDto;
+import com.ssafy.saessak.exception.code.ExceptionCode;
+import com.ssafy.saessak.exception.model.UserException;
 import com.ssafy.saessak.oauth.service.AuthenticationService;
 import com.ssafy.saessak.user.domain.Classroom;
 import com.ssafy.saessak.user.domain.Kid;
 import com.ssafy.saessak.user.domain.User;
-import com.ssafy.saessak.user.repository.ClassroomRepository;
 import com.ssafy.saessak.user.repository.KidRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -16,19 +17,18 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class AllergyService {
 
     private final KidRepository kidRepository;
-    private final ClassroomRepository classroomRepository;
     private final AuthenticationService authenticationService;
 
     @Transactional
     public void insert(AllergyRequestDto requestDto) {
-        Kid kid = kidRepository.findById(requestDto.getKidId()).get();
+        Kid kid = kidRepository.findById(requestDto.getKidId())
+                        .orElseThrow(() -> new UserException(ExceptionCode.KID_NOT_FOUND));
         kid.setAllergy(requestDto.getKidAllergy(), requestDto.getKidAllergySignature(), LocalDate.now());
     }
 
@@ -54,7 +54,8 @@ public class AllergyService {
     }
 
     public AllergyDetailResponseDto detail(Long kidId) {
-        Kid kid = kidRepository.findById(kidId).get();
+        Kid kid = kidRepository.findById(kidId)
+                .orElseThrow(() -> new UserException(ExceptionCode.KID_NOT_FOUND));
 
         AllergyDetailResponseDto allergyDetailResponseDto = AllergyDetailResponseDto.builder()
                 .kidId(kid.getId())
@@ -69,7 +70,8 @@ public class AllergyService {
 
     @Transactional
     public void changeCheck(Long kidId) {
-        Kid kid = kidRepository.findById(kidId).get();
+        Kid kid = kidRepository.findById(kidId)
+                        .orElseThrow(() -> new UserException(ExceptionCode.KID_NOT_FOUND));
         kid.changeCheck();
     }
 }

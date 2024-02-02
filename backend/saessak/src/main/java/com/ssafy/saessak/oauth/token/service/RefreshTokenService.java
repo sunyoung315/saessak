@@ -1,15 +1,13 @@
 package com.ssafy.saessak.oauth.token.service;
 
-import com.google.api.gax.rpc.NotFoundException;
+import com.ssafy.saessak.exception.code.ExceptionCode;
+import com.ssafy.saessak.exception.model.UnAuthorizedException;
 import com.ssafy.saessak.oauth.token.domain.Token;
 import com.ssafy.saessak.oauth.token.repository.TokenRepository;
 import lombok.RequiredArgsConstructor;
-import org.springdoc.api.ErrorMessage;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -24,17 +22,15 @@ public class RefreshTokenService {
     }
 
     public Long findIdByRefreshToken(final String refreshToken) {
-        Optional<Token> token = tokenRepository.findByRefreshToken(refreshToken);
-        if(token.isPresent()) {
-            return token.get().getTokenId();
-        } else {
-            return 0L;
-        }
+        return tokenRepository.findByRefreshToken(refreshToken)
+                .orElseThrow(() -> new UnAuthorizedException(ExceptionCode.TOKEN_INCORRECT_ERROR))
+                .getTokenId();
     }
 
     @Transactional
     public void deleteRefreshToken(final Long userId) {
-        Token token = tokenRepository.findById(userId).get();
+        Token token = tokenRepository.findById(userId)
+                        .orElseThrow(() -> new UnAuthorizedException(ExceptionCode.REFRESH_TOKEN_NOT_FOUND));
         tokenRepository.delete(token);
     }
 }
