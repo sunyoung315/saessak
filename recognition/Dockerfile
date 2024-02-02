@@ -2,6 +2,7 @@ FROM python:3.8.18
 COPY . /app
 
 RUN apt-get update
+RUN pip install --upgrade pip
 RUN apt-get install ffmpeg libsm6 libxext6 -y
 RUN apt-get install pkg-config libmariadb-dev-compat -y
 

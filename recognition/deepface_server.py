@@ -122,13 +122,11 @@ def verifyAlbum():
                 kid_id = r["id"]
                 url = r["profile"] 
                 if url is None : continue
-                base_url = "profile/"
                 kid_dict[kid_id] = url
                 kid_album[kid_id] = []
 
+                url = "/" + url.replace(db_base_url, "")
 
-                url_parser = url.split("/")
-                url = base_url + url_parser[-1]
                 response = s3.get_object(Bucket = s3_bucket_name, Key= url)
                 data = response["Body"].read()
                 encoded_img = np.frombuffer(data, dtype = np.uint8)
