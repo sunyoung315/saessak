@@ -47,7 +47,7 @@ public class MenuService {
         for(MenuRequestDto requestDto : menuRequestDtoList) {
             Daycare daycare = daycareRepository.findById(classroom.getDaycare().getDaycareId())
                     .orElseThrow(() -> new UserException(ExceptionCode.DAYCARE_NOT_FOUND));
-            Optional<Menu> result = menuRepository.findByDaycareAndMenuDateAndMenuType(daycare, requestDto.getMenuDate(), requestDto.getMenuType());
+            Optional<Menu> result = menuRepository.findByDaycareAndMenuDateAndMenuType(daycare, LocalDate.parse(requestDto.getMenuDate()), requestDto.getMenuType());
             if(result.isPresent()) { // 식단이 존재하는 경우
                 Menu menu = result.get();
                 Food food = Food.builder()
@@ -59,7 +59,7 @@ public class MenuService {
             } else {
                 Menu menu = Menu.builder()
                         .daycare(daycare)
-                        .menuDate(requestDto.getMenuDate())
+                        .menuDate(LocalDate.parse(requestDto.getMenuDate()))
                         .menuType(requestDto.getMenuType())
                         .build();
                 Menu savedMenu = menuRepository.save(menu);
@@ -98,7 +98,6 @@ public class MenuService {
         List<MenuResponseDto> menuResponseDtoList = new ArrayList<>();
 
         List<Menu> menuList = menuRepository.findByMenuDateBetween(startDate, endDate);
-        System.out.println(startDate+" "+endDate+" "+menuList.size());
         for(Menu menu : menuList) {
             List<Food> foodList = foodRepository.findByMenu(menu);
             List<FoodResponseDto> foodResponseDtoList = new ArrayList<>();
@@ -115,6 +114,7 @@ public class MenuService {
                     .menuDate(menu.getMenuDate())
                     .menuType(menu.getMenuType())
                     .menuPath(menu.getMenuPath())
+                    .foodList(foodResponseDtoList)
                     .build();
 
             menuResponseDtoList.add(menuResponseDto);

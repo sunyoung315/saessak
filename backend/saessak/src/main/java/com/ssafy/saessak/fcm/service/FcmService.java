@@ -5,8 +5,8 @@ import com.ssafy.saessak.alarm.dto.AlarmRequestDto;
 import com.ssafy.saessak.alarm.repository.AlarmRepository;
 import com.ssafy.saessak.alarm.service.AlarmService;
 import com.ssafy.saessak.attendance.dto.AttendanceTimeResponseDto;
-import com.ssafy.saessak.attendance.dto.ReplacementResponseDto;
-import com.ssafy.saessak.document.dto.ReplacementAlarmResponseDto;
+import com.ssafy.saessak.attendance.dto.ReplacementParentAlarmResponseDto;
+import com.ssafy.saessak.document.dto.ReplacementTeacherAlarmResponseDto;
 import com.ssafy.saessak.exception.code.ExceptionCode;
 import com.ssafy.saessak.exception.model.FcmException;
 import com.ssafy.saessak.exception.model.NotFoundException;
@@ -124,7 +124,7 @@ public class FcmService {
         alarmService.insertAlarm(alarmRequestDto);
     }
 
-    public void sendReplacement(ReplacementResponseDto replacementResponseDto, Long kidId) {
+    public void sendReplacement(ReplacementParentAlarmResponseDto replacementResponseDto, Long kidId) {
         String TITLE = "대리인 알림";
         String parentToken = getParentToken(kidId);
 
@@ -144,7 +144,7 @@ public class FcmService {
         alarmService.insertAlarm(alarmRequestDto);
     }
 
-    public void sendInsertReplacement(ReplacementAlarmResponseDto responseDto) {
+    public void sendInsertReplacement(ReplacementTeacherAlarmResponseDto responseDto) {
         String TITLE = "귀가동의서 알림";
         FcmResponseDto fcmResponseDto = FcmResponseDto.builder()
                 .token(responseDto.getTeacherDevice())

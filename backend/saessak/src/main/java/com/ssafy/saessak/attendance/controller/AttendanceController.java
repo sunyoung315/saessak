@@ -2,7 +2,7 @@ package com.ssafy.saessak.attendance.controller;
 
 import com.ssafy.saessak.attendance.dto.AttendanceRequestDto;
 import com.ssafy.saessak.attendance.dto.AttendanceTimeResponseDto;
-import com.ssafy.saessak.attendance.dto.ReplacementResponseDto;
+import com.ssafy.saessak.attendance.dto.ReplacementParentAlarmResponseDto;
 import com.ssafy.saessak.attendance.service.AttendanceService;
 import com.ssafy.saessak.document.service.ReplacementService;
 import com.ssafy.saessak.fcm.service.FcmService;
@@ -35,7 +35,7 @@ public class AttendanceController {
     @PostMapping(value = "/out/{kidId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResultResponse> outTime(@PathVariable("kidId") Long kidId) {
         AttendanceTimeResponseDto responseDto = attendanceService.outTime(kidId);
-        ReplacementResponseDto replacementResponseDto = replacementService.checkReplacement(kidId);
+        ReplacementParentAlarmResponseDto replacementResponseDto = replacementService.checkReplacement(kidId);
 
         if(replacementResponseDto != null) { // 대리인 귀가인 경우
             fcmService.sendReplacement(replacementResponseDto, kidId);

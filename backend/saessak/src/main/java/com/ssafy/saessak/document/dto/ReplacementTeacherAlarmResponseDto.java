@@ -9,7 +9,7 @@ import java.util.List;
 @Builder
 @Getter
 @AllArgsConstructor
-public class ReplacementAlarmResponseDto {
+public class ReplacementTeacherAlarmResponseDto {
 
     private Long replacementId;
     private String teacherDevice;
