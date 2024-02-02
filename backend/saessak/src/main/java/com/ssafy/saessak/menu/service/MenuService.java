@@ -98,6 +98,7 @@ public class MenuService {
         List<MenuResponseDto> menuResponseDtoList = new ArrayList<>();
 
         List<Menu> menuList = menuRepository.findByMenuDateBetween(startDate, endDate);
+        System.out.println(startDate+" "+endDate+" "+menuList.size());
         for(Menu menu : menuList) {
             List<Food> foodList = foodRepository.findByMenu(menu);
             List<FoodResponseDto> foodResponseDtoList = new ArrayList<>();
