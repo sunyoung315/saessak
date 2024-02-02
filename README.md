@@ -214,11 +214,14 @@
   - 공지사항 API 작성
   <hr>
 - 이민우
-  - deepface를 이용한 얼굴 사진 분류 api작성
+  - deepface를 이용한 얼굴 사진 분류 API작성
+    - 사진속 얼굴들을 찾고, 얼굴의 embedding을 추출하는 함수 작성
+    - 반 아이의 embedding과 사진속 embedding을 비교하여 아이별 엘범에 저장하는 API 작성
   - flask 서버 jwt 를 이용한 권한 관리
-  - 엘범 api 작성
-  - 게시판 api 작성
-  - 엘범, 게시판 프론트와 연동중..
+    - 헤더에서 받은 accessToken을 이용한 인증 관련 서비스 구현
+  - 엘범 API 작성
+  - 게시판 API 작성
+  - 엘범, 게시판 프론트와 연동중
   <hr>
 - 윤선아
   - FCM
