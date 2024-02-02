@@ -3,7 +3,9 @@
     class="flex flex-col w-full h-full max-w-md p-8 mx-auto my-autoborder border-gray-200 rounded-lg shadow bg-yellow-50 sm:p-8 dark:bg-gray-800 dark:border-gray-700"
   >
     <div class="fixed w-1/3 top-0 right-0 flex justify-between px-3 py-3 bg-yellow-50 pb-0 mx-auto">
-      <h3 class="mb-5 text-lg font-bold text-center left-1/2">{{ roomName }} {{ isTeacher == true ? '학부모' : '선생님' }}</h3>
+      <h3 class="mb-5 text-lg font-bold text-center left-1/2">
+        {{ roomName }} {{ isTeacher == true ? '학부모' : '선생님' }}
+      </h3>
       <button type="button" @click="discon()">
         <svg
           width="30"
@@ -60,7 +62,9 @@
       </div>
     </div>
     <!-- end message(오른쪽) -->
-    <button type="button" @click="discon">
+
+    <!-- 화상채팅 버튼 -->
+    <button @click="startFaceChat()" class="block text-white" type="button">
       <div class="h-7 w-7 ml-auto mr-2.5 border rounded-full bg-neutral-500">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
           <path
@@ -116,10 +120,11 @@
 
 <script setup>
 import { ref, nextTick, onMounted } from 'vue'
-import { loadChat, isVaild } from '@/api/chat'
-import { loginStore } from '@/store/loginStore';
+import { loadChat, isVaild, disconnect } from '@/api/chat'
+import { loginStore } from '@/store/loginStore'
+import { chatStore } from '@/store/chatStore'
 import Stomp from 'webstomp-client' // 채팅 라이브러리 import
-import { storeToRefs } from 'pinia';
+import { storeToRefs } from 'pinia'
 //채팅메시지 = {room_id, chat_content, sender_id, receiver_id}
 const props = defineProps({
   roomInfo: {
@@ -127,16 +132,27 @@ const props = defineProps({
     default: () => ({
       roomId: 0,
       roomName: '',
-      width : 0,
-      height : 0,
+      width: 0,
+      height: 0
       // senderId: 0,
       // receiverId: 0
     })
   }
 })
 
-const {isTeacher} = storeToRefs(loginStore);
+const { chatName, chatRoom, isOpen } = storeToRefs(chatStore)
+const { setChatname, setChatroom, setIsopen } = chatStore()
+const { isTeacher } = storeToRefs(loginStore)
+const faceChatModal = ref()
 
+const isShowModal = ref(false)
+
+function closeModal() {
+  isShowModal.value = false
+}
+function showModal() {
+  isShowModal.value = true
+}
 onMounted(() => {
   // 접속하면 1. userId 받아오기
   isVaild(({ data }) => {
@@ -158,17 +174,21 @@ onMounted(() => {
 })
 
 // 1. 커서에 메시지 정보 중 전송 시간 저장
-const cursor = ref(-1);
+const cursor = ref(-1)
 // 2. 불러온 이전 채팅 내역 중 가장 첫번째 채팅 시간을 커서에 저장
 // 3. 스크롤이 맨 위로 올라갔을 때 -> 이전 채팅 불러오기 -> 새로 불러온 채팅으로 커서 재설정
 
 const userId = ref(-1) // 채팅 유저 구분을 위한 현재 로그인한 userId
 const chatbox = ref(null)
-const emit = defineEmits(["exitChat"]); // 채팅방 퇴장 처리
+const emit = defineEmits(['exitChat']) // 채팅방 퇴장 처리
 
 // console.log(props.roomInfo)
 const roomId = props.roomInfo.roomId // 채팅방 번호
 const roomName = props.roomInfo.roomName
+setChatroom(roomId)
+setChatname(roomName)
+
+// 화상채팅 전달, 하단 메뉴 클릭 flag를 위한 스토어 저장
 const connected = ref(false) // 소켓 연결 여부
 const socket = new WebSocket('wss://i10a706.p.ssafy.io/chat')
 let options = { debug: false, protocols: Stomp.VERSIONS.supportedProtocols() }
@@ -184,12 +204,14 @@ const downScroll = () => {
   })
 }
 
+let headers = {
+  Authorization: 'Bearer ' + sessionStorage.getItem('accessToken'),
+  roomId: roomId,
+  userId: userId
+}
 
-let headers = { Authorization: 'Bearer ' + sessionStorage.getItem('accessToken'),
-        roomId : roomId, userId : userId }
-
-// console.log('소켓 연결 시작')
-// console.log('roomId : ' + roomId)
+console.log('소켓 연결 시작')
+console.log('roomId : ' + roomId)
 // chat 메세지 정보에서 리시버id 안받을거임 / 백에서는 내가 보낸 토큰으로 senderid 지정함
 // 그럼 내가 받을땐?
 // console.log(roomId);
@@ -197,16 +219,17 @@ stomp.connect(
   headers,
   (frame) => {
     // 소켓 연결 성공
-    // console.log('after frame')
+    console.log('after frame')
     connected.value = true
-    // console.log('소켓 연결 성공', frame)
-    // console.log(stomp);
+    setIsopen(true)
+    console.log('소켓 연결 성공', frame)
+    console.log(stomp)
     // 서버의 메시지 전송 endpoint를 구독합니다.
     // 이런형태를 pub sub 구조라고 합니다.
     stomp.subscribe(
       '/sub/room/' + roomId,
       (res) => {
-        // console.log('구독으로 받은 메시지 입니다.', res.body)
+        console.log('구독으로 받은 메시지 입니다.', res.body)
 
         // 받은 데이터를 json으로 파싱하고 리스트에 넣어줍니다.
         recvList.value.push(JSON.parse(res.body))
@@ -223,8 +246,9 @@ stomp.connect(
   },
   (error) => {
     // 소켓 연결 실패
-    // console.log('소켓 연결 실패', error)
+    console.log('소켓 연결 실패', error)
     connected.value = false
+    setIsopen(false)
   }
 )
 function addZero(value) {
@@ -264,11 +288,29 @@ const send = () => {
 }
 
 const discon = () => {
-  // console.log('discon 실행')
+  console.log('discon 실행')
+  const params = {
+    roomId: props.roomInfo.roomId,
+    userId: userId.value
+  }
+  disconnect(
+    params,
+    ({ response }) => {
+      console.log(response)
+    },
+    ({ error }) => {
+      console.log(error)
+    }
+  )
   //Theheader로 ChatListView로 바꾸겠다고 전송해야됨
   stomp.unsubscribe((res) => {}, headers)
   // console.log(stomp)
-  emit("exitChat", true);
+  emit('exitChat', true)
+}
+
+// 화상채팅 버튼 눌렀을 때 -> userName, roomId 갖고 FaceChatView로 이동
+const startFaceChat = () => {
+  window.open('/facechat', '_blank', 'width=720, height=720')
 }
 </script>
 

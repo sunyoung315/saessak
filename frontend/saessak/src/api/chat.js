@@ -52,6 +52,11 @@ function isVaild(success, fail){
     local.get(`${url}/isVaild`, config).then(success).catch(fail);
 }
 
+// 9. (공통) 채팅방 퇴장 시간 기록하기
+function disconnect(param, success, fail) {
+    local.get(`${url}/disconnect`, {params : param}).then(success).catch(fail);
+}
+
 
 export {
     chatListParent,
@@ -60,5 +65,6 @@ export {
     teacherNewChat,
     parentNewChat,
     loadChat,
-    isVaild
+    isVaild,
+    disconnect
 }
