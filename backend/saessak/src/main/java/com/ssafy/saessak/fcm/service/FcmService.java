@@ -177,7 +177,6 @@ public class FcmService {
                     .build();
             
             // 토큰이 없는경우 || 토큰 만료된 경우
-
             FirebaseMessaging.getInstance().send(message); // 알림 보내기
 
         } catch (Exception e) {
