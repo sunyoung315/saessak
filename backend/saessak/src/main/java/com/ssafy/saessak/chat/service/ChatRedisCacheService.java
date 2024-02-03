@@ -26,9 +26,7 @@ import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -156,6 +154,7 @@ public class ChatRedisCacheService {
         if (chatMessageDtoList.size() != 10) {
             findOtherChatDataInMysql(chatMessageDtoList, roomId, chatPagingDto.getCursor());
         }
+        Collections.reverse(chatMessageDtoList);
 
         return chatMessageDtoList;
     }
