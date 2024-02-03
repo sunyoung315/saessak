@@ -42,8 +42,8 @@ public class MenuController {
     }
 
     @Operation(summary = "식단 메인 사진 추가")
-    @PostMapping(value = "/photo", produces = MediaType.APPLICATION_JSON_VALUE, consumes = "multipart/form-data")
-    public ResponseEntity<ResultResponse> insertPhoto(@RequestParam("menuId") Long menuId,
+    @PostMapping(value = "/photo/{menuId}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = "multipart/form-data")
+    public ResponseEntity<ResultResponse> insertPhoto(@PathVariable("menuId") Long menuId,
                                                       @RequestPart("MultipartFile") MultipartFile menuFile) {
         try {
             menuService.insertPhoto(menuId, menuFile);
