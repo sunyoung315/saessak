@@ -34,9 +34,17 @@ public class AlbumService {
     private final KidRepository kidRepository;
     private final AuthenticationService authenticationService;
 
-    //엘범 조회
-    public List<AlbumResponseDto> getClassAlbumList (Long classroomId){
-        Classroom classroom = classroomRepository.findById(classroomId).get();
+    //엘범 조회W
+    public List<AlbumResponseDto> getTeacherClassAlbumList (){
+        User user = authenticationService.getUserByAuthentication();
+        Classroom classroom = user.getClassroom();
+        List<Album> albumList = albumRepository.findByClassroomAndKidIsNull(classroom).get();
+        return makeAlbumResponseDtoList(albumList);
+    }
+
+    public List<AlbumResponseDto> getParentClassAlbumList(Long kidId) {
+        Kid kid = kidRepository.findById(kidId).get();
+        Classroom classroom = kid.getClassroom();
         List<Album> albumList = albumRepository.findByClassroomAndKidIsNull(classroom).get();
         return makeAlbumResponseDtoList(albumList);
     }
