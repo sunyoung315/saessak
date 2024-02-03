@@ -22,9 +22,9 @@ public class RefreshTokenService {
     }
 
     public Long findIdByRefreshToken(final String refreshToken) {
-        return tokenRepository.findByRefreshToken(refreshToken)
-                .orElseThrow(() -> new UnAuthorizedException(ExceptionCode.TOKEN_INCORRECT_ERROR))
-                .getTokenId();
+        Token token = tokenRepository.findByRefreshToken(refreshToken)
+                .orElseThrow(() -> new UnAuthorizedException(ExceptionCode.TOKEN_INCORRECT_ERROR));
+        return token.getTokenId();
     }
 
     @Transactional

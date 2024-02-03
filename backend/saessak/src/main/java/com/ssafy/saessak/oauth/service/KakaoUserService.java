@@ -60,9 +60,9 @@ public class KakaoUserService {
 
     public AccessTokenGetSuccess refreshToken(final String refreshToken ) {
         Long userId = jwtTokenProvider.getUserFromJwt(refreshToken);
-        if (!userId.equals(refreshTokenService.findIdByRefreshToken(refreshToken))) {
-            throw new UnAuthorizedException(ExceptionCode.REFRESH_TOKEN_USER_MISMATCH);
-        }
+//        if (!userId.equals(refreshTokenService.findIdByRefreshToken(refreshToken))) {
+//            throw new UnAuthorizedException(ExceptionCode.REFRESH_TOKEN_USER_MISMATCH);
+//        }
         UserAuthentication userAuthentication = new UserAuthentication(userId, null, null);
         return new AccessTokenGetSuccess(
                 jwtTokenProvider.issueAccessToken(userAuthentication)
