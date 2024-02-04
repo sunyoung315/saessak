@@ -96,67 +96,34 @@ public class FcmService {
     public void sendInTime(AttendanceTimeResponseDto responseDto, Long kidId) {
         String TITLE = "등원 알림";
         String parentToken = getParentToken(kidId);
+        String messageBody = responseDto.getKidName()+" 어린이가 "+ responseDto.getAttendanceDate()+"일 "+ responseDto.getAttendanceTime().format(formatter) + "에 등원했습니다";
 
-        FcmResponseDto fcmResponseDto = FcmResponseDto.builder()
-                .token(parentToken)
-                .title(TITLE)
-                .body(responseDto.getKidName()+" 어린이가 "+ responseDto.getAttendanceDate()+"일 "+ responseDto.getAttendanceTime().format(formatter) + "에 등원했습니다")
-                .build();
-
-        AlarmRequestDto alarmRequestDto = AlarmRequestDto.builder()
-                .kidId(kidId)
-                .alarmType(TITLE)
-                .alarmDate(responseDto.getAttendanceDate())
-                .alarmContent(responseDto.getAttendanceTime())
-                .build();
-
-        sendNotification(fcmResponseDto);
-        alarmService.insertAlarm(alarmRequestDto);
+        sendNotification(FcmResponseDto.of(parentToken, TITLE, messageBody));
+        alarmService.insertAlarm(AlarmRequestDto.of(kidId, TITLE, responseDto.getAttendanceDate(), responseDto.getAttendanceTime()));
     }
 
     public void sendOutTime(AttendanceTimeResponseDto responseDto, Long kidId) {
         String TITLE = "하원 알림";
         String parentToken = getParentToken(kidId);
+        String messageBody = responseDto.getKidName() + " 어린이가 " + responseDto.getAttendanceDate() + "일 " + responseDto.getAttendanceTime().format(formatter) + "에 하원했습니다";
 
-        FcmResponseDto fcmResponseDto = FcmResponseDto.builder()
-                .token(parentToken)
-                .title(TITLE)
-                .body(responseDto.getKidName() + " 어린이가 " + responseDto.getAttendanceDate() + "일 " + responseDto.getAttendanceTime().format(formatter) + "에 하원했습니다")
-                .build();
-
-        AlarmRequestDto alarmRequestDto = AlarmRequestDto.builder()
-                .kidId(kidId)
-                .alarmType(TITLE)
-                .alarmDate(responseDto.getAttendanceDate())
-                .alarmContent(responseDto.getAttendanceTime())
-                .build();
-
-        sendNotification(fcmResponseDto);
-        alarmService.insertAlarm(alarmRequestDto);
+        sendNotification(FcmResponseDto.of(parentToken, TITLE, messageBody));
+        alarmService.insertAlarm(AlarmRequestDto.of(kidId, TITLE, responseDto.getAttendanceDate(), responseDto.getAttendanceTime()));
     }
 
     public void sendReplacement(ReplacementParentAlarmResponseDto replacementResponseDto, Long kidId) {
         String TITLE = "대리인 알림";
         String parentToken = getParentToken(kidId);
+        String messageBody = replacementResponseDto.getReplacementRelationship()+
+                "("+replacementResponseDto.getReplacementName()+") 님이 "+replacementResponseDto.getKidName()+" 어린이와 함께 귀가했습니다";
 
-        FcmResponseDto fcmResponseDto = FcmResponseDto.builder()
-                .token(parentToken)
-                .title(TITLE)
-                .body(replacementResponseDto.getReplacementRelationship()+
-                        "("+replacementResponseDto.getReplacementName()+") 님이 "+replacementResponseDto.getKidName()+" 어린이와 함께 귀가했습니다")
-                .build();
-
-        AlarmRequestDto alarmRequestDto = AlarmRequestDto.builder()
-                .kidId(kidId)
-                .alarmType(TITLE)
-                .build();
-
-        sendNotification(fcmResponseDto);
-        alarmService.insertAlarm(alarmRequestDto);
+        sendNotification(FcmResponseDto.of(parentToken, TITLE, messageBody));
+        alarmService.insertAlarm(AlarmRequestDto.of(kidId, TITLE, null, null));
     }
 
     public void sendInsertReplacement(ReplacementTeacherAlarmResponseDto responseDto) {
         String TITLE = "귀가동의서 알림";
+        String messageBody = responseDto.getKidName() + " 어린이의 대리인 귀가 동의서가 등록되었습니다";
 
         Classroom classroom = classroomRepository.findById(responseDto.getClassroomId())
                 .orElseThrow(() -> new UserException(ExceptionCode.CLASSROOM_NOT_FOUND));
@@ -164,22 +131,10 @@ public class FcmService {
         for(Teacher teacher : teacherList) {
             String teacherToken = getUserToken(teacher.getId());
 
-            FcmResponseDto fcmResponseDto = FcmResponseDto.builder()
-                    .token(teacherToken)
-                    .title(TITLE)
-                    .body(responseDto.getKidName() + " 어린이의 대리인 귀가 동의서가 등록되었습니다")
-                    .build();
-
-            sendNotification(fcmResponseDto);
+            sendNotification(FcmResponseDto.of(teacherToken, TITLE, messageBody));
         }
 
-        AlarmRequestDto alarmRequestDto = AlarmRequestDto.builder()
-                .kidId(responseDto.getKidId())
-                .alarmType(TITLE)
-                .alarmDate(LocalDate.now())
-                .build();
-
-        alarmService.insertAlarm(alarmRequestDto);
+        alarmService.insertAlarm(AlarmRequestDto.of(responseDto.getKidId(), TITLE, LocalDate.now(), null));
     }
 
     public void sendNotification(FcmResponseDto fcmResponseDto) {
@@ -195,8 +150,7 @@ public class FcmService {
                             .setBody(fcmResponseDto.getBody()) // 알림 내용
                             .build())
                     .build();
-            
-            // 토큰이 없는경우 || 토큰 만료된 경우
+
             FirebaseMessaging.getInstance().send(message); // 알림 보내기
 
         } catch (Exception e) {
@@ -222,8 +176,8 @@ public class FcmService {
             }
         }
 
-        for (String kidAllgery : kidAllergyList) {
-            if (set.contains(Integer.parseInt(kidAllgery))) {
+        for (String kidAllergy : kidAllergyList) {
+            if (set.contains(Integer.parseInt(kidAllergy))) {
                 return true;
             }
         }
@@ -234,47 +188,35 @@ public class FcmService {
     public void sendAllergyParent(Kid kid, String menuType) {
         String TITLE = "알러지 알림";
         String parentToken = getParentToken(kid.getId());
+        String messageBody = LocalDate.now() + "일에 " + menuType + "식단에 " + kid.getNickname() + " 어린이의 알러지를 유발하는 음식이 존재합니다";
 
-        FcmResponseDto fcmResponseDto = FcmResponseDto.builder()
-                .token(parentToken)
-                .title(TITLE)
-                .body(LocalDate.now() + "일에 " + menuType + "식단에 " + kid.getNickname() + " 어린이의 알러지를 유발하는 음식이 존재합니다")
-                .build();
-
-        sendNotification(fcmResponseDto);
+        sendNotification(FcmResponseDto.of(parentToken, TITLE, messageBody));
     }
 
     public void sendAllergyTeacher(Kid kid, String menuType) {
         String TITLE = "알러지 알림";
+        String messageBody = LocalDate.now() + "일에 " + menuType + "식단에 " + kid.getNickname() + " 어린이의 알러지를 유발하는 음식이 존재합니다";
+
         Classroom classroom = kid.getClassroom();
         List<Teacher> teacherList = teacherRepository.findAllByClassroom(classroom);
         for(Teacher teacher : teacherList) {
             String teacherToken = getUserToken(teacher.getId());
 
-            FcmResponseDto fcmResponseDto = FcmResponseDto.builder()
-                    .token(teacherToken)
-                    .title(TITLE)
-                    .body(LocalDate.now() + "일에 " + menuType + "식단에 " + kid.getNickname() + " 어린이의 알러지를 유발하는 음식이 존재합니다")
-                    .build();
-            sendNotification(fcmResponseDto);
+            sendNotification(FcmResponseDto.of(teacherToken, TITLE, messageBody));
         }
     }
 
     @Scheduled(cron = "0 0 12 * * ?")
     public void sendScheduledLunchAllergyNotification() {
         String menuType = "점심";
+        String TITLE = "알러지 알림";
         List<Kid> kidList = kidRepository.findAll();
         for(Kid kid : kidList) {
             if(checkKidAndAllergy(kid, menuType)) {
                 sendAllergyParent(kid, menuType);
                 sendAllergyTeacher(kid, menuType);
 
-                AlarmRequestDto alarmRequestDto = AlarmRequestDto.builder()
-                        .kidId(kid.getId())
-                        .alarmType("알러지 알림")
-                        .alarmDate(LocalDate.now())
-                        .build();
-                insertAlarm(alarmRequestDto);
+                insertAlarm(AlarmRequestDto.of(kid.getId(), TITLE, LocalDate.now(), null));
             }
         }
     }
@@ -282,18 +224,14 @@ public class FcmService {
     @Scheduled(cron = "0 0 15 * * ?")
     public void sendScheduledSnackAllergyNotification() {
         String menuType = "간식";
+        String TITLE = "알러지 알림";
         List<Kid> kidList = kidRepository.findAll();
         for(Kid kid : kidList) {
             if(checkKidAndAllergy(kid, menuType)) {
                 sendAllergyParent(kid, menuType);
                 sendAllergyTeacher(kid, menuType);
 
-                AlarmRequestDto alarmRequestDto = AlarmRequestDto.builder()
-                        .kidId(kid.getId())
-                        .alarmType("알러지 알림")
-                        .alarmDate(LocalDate.now())
-                        .build();
-                insertAlarm(alarmRequestDto);
+                insertAlarm(AlarmRequestDto.of(kid.getId(), TITLE, LocalDate.now(), null));
             }
         }
     }
