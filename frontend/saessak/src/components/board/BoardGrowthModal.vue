@@ -45,141 +45,26 @@
 
 			<!-- Tall -->
 			<template v-if="isTall">
-				<Chart
-					:size="{ width: 1000, height: 500 }"
-					:data="tallData"
-					:margin="margin"
-					:direction="direction"
-					:axis="tallAxis"
-				>
-					<template #layers>
-						<Line
-							:dataKeys="['numberOfMonth', 'top3']"
-							:lineStyle="{ stroke: 'lightgray', strokeWidth: 2 }"
-							:dotStyle="{ r: 2 }"
-						/>
-						<Line
-							:dataKeys="['numberOfMonth', 'top50']"
-							:lineStyle="{ stroke: 'lightgray', strokeWidth: 2 }"
-							:dotStyle="{ r: 2 }"
-						/>
-						<Line
-							:dataKeys="['numberOfMonth', 'top97']"
-							:lineStyle="{ stroke: 'lightgray', strokeWidth: 2 }"
-							:dotStyle="{ r: 2 }"
-						/>
-						<Line
-							:dataKeys="['numberOfMonth', 'myKidTall']"
-							:lineStyle="{ stroke: 'black', strokeWidth: 2 }"
-							:dotStyle="{ r: 4, stroke: 'black', strokeWidth: 2 }"
-						/>
-					</template>
-
-					<template #widgets>
-						<Tooltip
-							borderColor="b"
-							:config="{
-								tallId: { hide: true },
-								gender: { hide: true },
-								numberOfMonth: {
-									label: '개월수',
-									color: 'navy',
-									label: '만나이',
-									format: val => val + ' 개월',
-								},
-								myKidTall: {
-									label: `${kidName}`,
-									color: 'navy',
-									format: val => val.toFixed(1) + ' cm',
-								},
-								top3: {
-									label: '3th',
-									color: 'gray',
-									format: val => val.toFixed(1) + ' cm',
-								},
-								top50: {
-									label: '50th',
-									color: 'gray',
-									format: val => val.toFixed(1) + ' cm',
-								},
-								top97: {
-									label: '97th',
-									color: 'gray',
-									format: val => val.toFixed(1) + ' cm',
-								},
-							}"
-						/>
-					</template>
-				</Chart>
+				<apexchart
+					type="line"
+					height="480"
+					width="900"
+					:options="chartOptionsTall"
+					:series="seriesTall"
+					class="px-28 py-12"
+				></apexchart>
 			</template>
 
 			<!-- Weight -->
 			<template v-else>
-				<Chart
-					:size="{ width: 1000, height: 500 }"
-					:data="weightData"
-					:margin="margin"
-					:direction="direction"
-					:axis="weightAxis"
-				>
-					<template #layers>
-						<Line
-							:dataKeys="['numberOfMonth', 'top5']"
-							:lineStyle="{ stroke: 'lightgray', strokeWidth: 2 }"
-							:dotStyle="{ r: 2 }"
-						/>
-						<Line
-							:dataKeys="['numberOfMonth', 'top50']"
-							:lineStyle="{ stroke: 'lightgray', strokeWidth: 2 }"
-							:dotStyle="{ r: 2 }"
-						/>
-						<Line
-							:dataKeys="['numberOfMonth', 'top95']"
-							:lineStyle="{ stroke: 'lightgray', strokeWidth: 2 }"
-							:dotStyle="{ r: 2 }"
-						/>
-						<Line
-							:dataKeys="['numberOfMonth', 'myKidWeight']"
-							:lineStyle="{ stroke: 'black', strokeWidth: 2 }"
-							:dotStyle="{ r: 4, stroke: 'black', strokeWidth: 2 }"
-						/>
-					</template>
-
-					<template #widgets>
-						<Tooltip
-							borderColor="navy"
-							:config="{
-								weightId: { hide: true },
-								gender: { hide: true },
-								numberOfMonth: {
-									color: 'navy',
-									label: '만나이',
-									format: val => val + ' 개월',
-								},
-								myKidWeight: {
-									label: `${kidName}`,
-									color: 'navy',
-									format: val => val.toFixed(1) + ' kg',
-								},
-								top5: {
-									label: '5th',
-									color: 'gray',
-									format: val => val.toFixed(1) + ' kg',
-								},
-								top50: {
-									label: '50th',
-									color: 'gray',
-									format: val => val.toFixed(1) + ' kg',
-								},
-								top95: {
-									label: '95th',
-									color: 'gray',
-									format: val => val.toFixed(1) + ' kg',
-								},
-							}"
-						/>
-					</template>
-				</Chart>
+				<apexchart
+					type="line"
+					height="480"
+					width="900"
+					:options="chartOptionsWeight"
+					:series="seriesWeight"
+					class="px-28 py-12"
+				></apexchart>
 			</template>
 		</div>
 	</div>
@@ -202,8 +87,7 @@ const closeModal = () => {
 defineExpose({ openModal });
 ////////////////////////////
 
-// chartjs //////////////////////////////////////////////
-import { Chart, Line, Tooltip } from 'vue3-charts';
+// ApexChart //////////////////////////////////////////////
 import { useBoardStore } from '@/store/board';
 
 // 성장 기록 키/몸부게 화면 전환 이벤트
@@ -225,12 +109,6 @@ const store = useBoardStore();
 const tallList = ref([]);
 const weightList = ref([]);
 
-// 조회한 성장도표의 최대, 최소값
-const tallMin = ref(0);
-const tallMax = ref(0);
-const weightMin = ref(0);
-const weightMax = ref(0);
-
 // 아이의 성장 기록
 const myKidGrowthList = ref([]);
 
@@ -244,13 +122,10 @@ const myKidBirthday = ref(new Date(myKidGrowthList.value.kidBirthday));
 let myKidMonths = ref(0);
 
 const today = new Date();
-// 조회 기간
-const beforeOneYear = new Date(new Date().setMonth(new Date().getMonth() - 12));
 /////////////////////////////////////////////////////
 
-// 내 아이의 12개월치 성장 기록 조회
 const period = ref({
-	startDate: beforeOneYear,
+	startDate: 1,
 	endDate: today,
 });
 
@@ -275,139 +150,129 @@ const getMyKidGrowthList = async (kidId, period) => {
 	myKidMonths.value =
 		Math.abs(today.getFullYear() - myKidBirthday.value.getFullYear()) * 12 +
 		Math.abs(today.getMonth() - myKidBirthday.value.getMonth());
-	await getGrowthList(gender.value, myKidMonths.value);
+	await getGrowthList(gender.value);
 };
 
-// 성장 도표 데이터 (키/몸무게)
-const tallData = ref(tallList.value);
-const weightData = ref(weightList.value);
+// ref를 사용하여 반응형 변수 생성
+const seriesTall = ref([
+	{
+		name: '3th',
+		data: tallList.value.map(tall => tall.top3),
+	},
+	{
+		name: '50th',
+		data: tallList.value.map(tall => tall.top50),
+	},
+	{
+		name: '97th',
+		data: tallList.value.map(tall => tall.top97),
+	},
+]);
+const seriesWeight = ref([
+	{
+		name: '5th',
+		data: weightList.value.map(weight => weight.top5),
+	},
+	{
+		name: '50th',
+		data: weightList.value.map(weight => weight.top50),
+	},
+	{
+		name: '95th',
+		data: weightList.value.map(weight => weight.top95),
+	},
+]);
 
-const tallAxis = ref({
-	primary: {
-		type: 'band',
-		format: val => {
-			// 여자아이 + 개월수가 일치할 때
-			if (val == myKidMonths.value && gender.value === 'F') {
-				return '👧';
-				// 남자이아 + 개월수가 일치할 때
-			} else if (val === myKidMonths.value && gender.value === 'M') {
-				return '🧑';
-				// 10개월 단위
-			} else if (val % 10 === 0 && val != 100) {
-				return val;
-			}
-			return '';
+const chartOptionsTall = ref({
+	colors: ['#D3D3D3', '#A9A9A9', '#808080'],
+	chart: {
+		height: 350,
+		type: 'line',
+		fontFamily: 'Pretendard-Regular',
+	},
+	markers: {
+		size: 3,
+	},
+	dataLabels: {
+		enabled: false,
+	},
+	stroke: {
+		curve: 'straight',
+		width: 1,
+	},
+	xaxis: {
+		categories: tallList.value.map(tall => tall.numberOfMonth),
+		title: {
+			text: '개월수',
+		},
+		labels: {
+			rotate: 0,
 		},
 	},
-	secondary: {
-		domain: [tallMin.value, tallMax.value],
-		type: 'linear',
-		ticks: 8,
+	yaxis: {
+		title: {
+			text: '키(cm)',
+		},
+		min: 45,
+		max: 145,
 	},
 });
-
-const weightAxis = ref({
-	primary: {
-		type: 'band',
-		format: val => {
-			// 여자아이 + 개월수가 일치할 때
-			if (val == myKidMonths.value && gender.value === 'F') {
-				return '👧';
-				// 남자이아 + 개월수가 일치할 때
-			} else if (val === myKidMonths.value && gender.value === 'M') {
-				return '🧑';
-				// 10개월 단위
-			} else if (val % 10 === 0 && val != 100) {
-				return val;
-			}
-			return '';
+const chartOptionsWeight = ref({
+	colors: ['#D3D3D3', '#A9A9A9', '#808080'],
+	chart: {
+		height: 350,
+		type: 'line',
+		fontFamily: 'Pretendard-Regular',
+	},
+	markers: {
+		size: 3,
+	},
+	dataLabels: {
+		enabled: false,
+	},
+	stroke: {
+		curve: 'straight',
+		width: 1,
+	},
+	xaxis: {
+		categories: weightList.value.map(weight => weight.numberOfMonth),
+		title: {
+			text: '개월수',
+		},
+		labels: {
+			rotate: 0,
 		},
 	},
-	secondary: {
-		domain: [weightMin.value, weightMax.value],
-		type: 'linear',
-		ticks: 8,
+	yaxis: {
+		title: {
+			text: '몸무게(kg)',
+		},
+		min: 0,
+		max: 40,
 	},
-});
-
-const direction = ref('horizontal');
-const margin = ref({
-	left: 120,
-	top: 25,
-	right: 0,
-	bottom: 0,
 });
 
 onMounted(async () => {
 	await getMyKidGrowthList(kidId, period.value);
-	tallData.value = tallList.value;
-	weightData.value = weightList.value;
-
-	tallMin.value =
-		tallList.value[0].top3 - 5 >= 0 ? tallList.value[0].top3 - 2 : 0;
-	tallMax.value = tallList.value[tallList.value.length - 1].top97 + 2;
-	weightMin.value =
-		weightList.value[0].top5 - 5 >= 0 ? weightList.value[0].top5 - 2 : 0;
-	weightMax.value = weightList.value[weightList.value.length - 1].top95 + 2;
-
-	tallAxis.value.secondary.domain[0] = tallMin.value;
-	tallAxis.value.secondary.domain[1] = tallMax.value;
-	weightAxis.value.secondary.domain[0] = weightMin.value;
-	weightAxis.value.secondary.domain[1] = weightMax.value;
-
-	for (let j = 0; j < myKidGrowthList.value.physicalDtoList.length; j++) {
-		let calMonth =
-			Math.abs(
-				new Date(
-					myKidGrowthList.value.physicalDtoList[j].boardDate,
-				).getFullYear() - myKidBirthday.value.getFullYear(),
-			) *
-				12 +
-			Math.abs(
-				new Date(
-					myKidGrowthList.value.physicalDtoList[j].boardDate,
-				).getMonth() - myKidBirthday.value.getMonth(),
-			);
-		for (let i = 0; i < tallData.value.length; i++) {
-			// 아이의 개월수에 맞는 데이터 찾기
-			if (tallData.value[i].numberOfMonth === calMonth) {
-				// 최근 키 데이터에 넣기
-				tallData.value[i].myKidTall =
-					myKidGrowthList.value.physicalDtoList[j].boardTall;
-				break;
-			}
-		}
-	}
-	for (let j = 0; j < myKidGrowthList.value.physicalDtoList.length; j++) {
-		let calMonth =
-			Math.abs(
-				new Date(
-					myKidGrowthList.value.physicalDtoList[j].boardDate,
-				).getFullYear() - myKidBirthday.value.getFullYear(),
-			) *
-				12 +
-			Math.abs(
-				new Date(
-					myKidGrowthList.value.physicalDtoList[j].boardDate,
-				).getMonth() - myKidBirthday.value.getMonth(),
-			);
-		for (let i = 0; i < tallData.value.length; i++) {
-			// 아이의 개월수에 맞는 데이터 찾기
-			if (tallData.value[i].numberOfMonth === calMonth) {
-				// 최근 몸무게 데이터에 넣기
-				weightData.value[i].myKidWeight =
-					myKidGrowthList.value.physicalDtoList[j].boardWeight;
-				break;
-			}
-		}
-	}
+	seriesTall.value[0].data = tallList.value.map(tall => tall.top3);
+	seriesTall.value[1].data = tallList.value.map(tall => tall.top50);
+	seriesTall.value[2].data = tallList.value.map(tall => tall.top97);
+	seriesWeight.value[0].data = weightList.value.map(weight => weight.top5);
+	seriesWeight.value[1].data = weightList.value.map(weight => weight.top50);
+	seriesWeight.value[2].data = weightList.value.map(weight => weight.top95);
+	chartOptionsTall.value.xaxis.categories = tallList.value.map(
+		tall => tall.numberOfMonth,
+	);
+	chartOptionsWeight.value.xaxis.categories = weightList.value.map(
+		weight => weight.numberOfMonth,
+	);
 });
 </script>
 
 <style scoped>
 .flowbit-modal__container {
 	width: 70rem;
-	height: 40rem;
+	height: 42rem;
 	max-width: none;
 }
 :deep(.layer-axis-x) {

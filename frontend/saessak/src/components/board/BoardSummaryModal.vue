@@ -18,90 +18,78 @@
 						요약레포트
 					</div>
 					<!-- VDatePicker -->
-					<div class="flex justify-start mx-16 mt-3">
-						<VDatePicker
-							v-model="startDate"
-							:select-attribute="selectAttribute"
-							:disabled-dates="disabledStartDates"
-						>
+					<div class="report-period">
+						<VDatePicker v-model.range="range">
 							<template #default="{ inputValue, inputEvents }">
-								<div class="relative max-w-sm">
-									<div
-										class="absolute inset-y-0 start-0 flex items-center ps-3.5 pb-2 pointer-events-none"
-									>
+								<div class="flex justify-center items-center">
+									<div class="relative max-w-sm">
+										<div
+											class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none"
+										>
+											<svg
+												class="w-4 h-4 text-gray-900"
+												aria-hidden="true"
+												xmlns="http://www.w3.org/2000/svg"
+												fill="currentColor"
+												viewBox="0 0 20 20"
+											>
+												<path
+													d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"
+												/>
+											</svg>
+										</div>
+										<input
+											:value="inputValue.start"
+											v-on="inputEvents.start"
+											class="datepicker-input"
+										/>
+									</div>
+									<div class="p-2">
 										<svg
-											class="w-4 h-4 text-gray-900 dark:text-gray-400"
-											aria-hidden="true"
 											xmlns="http://www.w3.org/2000/svg"
-											fill="currentColor"
-											viewBox="0 0 20 20"
+											width="24"
+											height="24"
+											viewBox="0 0 24 24"
+											fill="none"
 										>
 											<path
-												d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"
+												fill-rule="evenodd"
+												clip-rule="evenodd"
+												d="M13.6129 6.2097C13.2206 5.90468 12.6534 5.93241 12.2929 6.29289L12.2097 6.3871C11.9047 6.77939 11.9324 7.34662 12.2929 7.70711L15.5852 11H5C4.44772 11 4 11.4477 4 12C4 12.5523 4.44772 13 5 13H15.5852L12.2929 16.2929L12.2097 16.3871C11.9047 16.7794 11.9324 17.3466 12.2929 17.7071C12.6834 18.0976 13.3166 18.0976 13.7071 17.7071L18.7071 12.7071L18.7903 12.6129C19.0953 12.2206 19.0676 11.6534 18.7071 11.2929L13.7071 6.29289L13.6129 6.2097Z"
+												fill="#000000"
 											/>
 										</svg>
 									</div>
-									<input
-										:value="inputValue"
-										v-on="inputEvents"
-										class="border border-gray-300 text-gray-900 text-sm font-bold rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-40 ps-10 p-2.5"
-										placeholder="시작 날짜"
-									/>
-								</div>
-							</template>
-						</VDatePicker>
-						<div class="p-2">
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								width="24"
-								height="24"
-								viewBox="0 0 24 24"
-								fill="none"
-							>
-								<path
-									fill-rule="evenodd"
-									clip-rule="evenodd"
-									d="M13.6129 6.2097C13.2206 5.90468 12.6534 5.93241 12.2929 6.29289L12.2097 6.3871C11.9047 6.77939 11.9324 7.34662 12.2929 7.70711L15.5852 11H5C4.44772 11 4 11.4477 4 12C4 12.5523 4.44772 13 5 13H15.5852L12.2929 16.2929L12.2097 16.3871C11.9047 16.7794 11.9324 17.3466 12.2929 17.7071C12.6834 18.0976 13.3166 18.0976 13.7071 17.7071L18.7071 12.7071L18.7903 12.6129C19.0953 12.2206 19.0676 11.6534 18.7071 11.2929L13.7071 6.29289L13.6129 6.2097Z"
-									fill="#000000"
-								/>
-							</svg>
-						</div>
-						<VDatePicker
-							v-model="endDate"
-							:select-attribute="selectAttribute"
-							:disabled-dates="disabledEndDates"
-						>
-							<template #default="{ inputValue, inputEvents }">
-								<div class="relative max-w-sm">
-									<div
-										class="absolute inset-y-0 start-0 flex items-center ps-3.5 pb-2 pointer-events-none"
-									>
-										<svg
-											class="w-4 h-4 text-gray-900 dark:text-gray-400"
-											aria-hidden="true"
-											xmlns="http://www.w3.org/2000/svg"
-											fill="currentColor"
-											viewBox="0 0 20 20"
+									<div class="relative max-w-sm">
+										<div
+											class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none"
 										>
-											<path
-												d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"
-											/>
-										</svg>
+											<svg
+												class="w-4 h-4 text-gray-900"
+												aria-hidden="true"
+												xmlns="http://www.w3.org/2000/svg"
+												fill="currentColor"
+												viewBox="0 0 20 20"
+											>
+												<path
+													d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"
+												/>
+											</svg>
+										</div>
+										<input
+											:value="inputValue.end"
+											v-on="inputEvents.end"
+											class="datepicker-input"
+										/>
 									</div>
-									<input
-										:value="inputValue"
-										v-on="inputEvents"
-										class="border border-gray-300 text-gray-900 text-sm font-bold rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-40 ps-10 p-2.5"
-										placeholder="종료 날짜"
-									/>
 								</div>
 							</template>
 						</VDatePicker>
 						<!-- 완료될 때까지 버튼 비활성화 해놓음! -->
 						<button
 							type="button"
-							@click="getSummaryBoard(kidId, { startDate, endDate })"
-							class="ml-2 text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-gray-600 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800"
+							@click="getSummaryBoard(kidId)"
+							class="btn m-0 ml-2"
 							disabled
 						>
 							조회
@@ -130,7 +118,7 @@
 			<div class="mx-20 my-5">
 				<template v-if="!summary">
 					<div
-						class="inline-block h-[25rem] w-[50rem] px-4 py-12 border border-gray-200 shadow rounded-lg flex justify-center items-center"
+						class="h-[25rem] w-[50rem] px-4 py-12 border border-gray-200 shadow rounded-lg flex justify-center items-center"
 					>
 						<span class="loader"></span>
 					</div>
@@ -144,11 +132,11 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue';
+import { ref } from 'vue';
 import { useBoardStore } from '@/store/board';
 import OpenAI from 'openai';
 
-// Modal
+// Modal//////////////////////////
 const isOpen = ref(false);
 
 const openModal = () => {
@@ -159,56 +147,12 @@ const closeModal = () => {
 };
 
 defineExpose({ openModal });
+///////////////////////////////////
 
-// VDatePicker
-const startDate = ref('');
-const endDate = ref('');
-
-// datepicker 선택 날짜 색상 지정
-const selectAttribute = ref({ highlight: 'yellow' });
-
-// 미래날짜 비활성화
-const today = new Date();
-const tomorrow = new Date(today);
-tomorrow.setDate(tomorrow.getDate() + 1);
-const disabledStartDates = ref([
-	{
-		start: tomorrow,
-		end: null,
-	},
-]);
-
-// 시작 날짜 추적, 시작일자로부터 7일만 활성화
-watch(startDate, () => {
-	const start = startDate.value;
-	const pastDates = [];
-	const futureDates = [];
-
-	const beforeStart = new Date(start);
-	beforeStart.setDate(start.getDate() - 1);
-	pastDates.push({ start: null, end: beforeStart });
-
-	const end = new Date(start);
-	if (end.getDate() + 7 > today.getDate()) {
-		end.setDate(today.getDate() + 1);
-	} else {
-		end.setDate(end.getDate() + 7);
-	}
-
-	futureDates.push({ start: end, end: null });
-
-	disabledEndDates.value = [...pastDates, ...futureDates];
+const range = ref({
+	start: new Date(),
+	end: new Date(),
 });
-
-// 선택한 시작날짜로부터 7일이후 날짜 비활성화
-const startSevenDays = new Date(startDate.value);
-startSevenDays.setDate(startSevenDays.getDate() + 7);
-const disabledEndDates = ref([
-	{
-		start: startSevenDays.value,
-		end: null,
-	},
-]);
 
 const store = useBoardStore();
 
@@ -245,8 +189,8 @@ const getGPTResponse = async () => {
 	}
 };
 
-const getSummaryBoard = async (kidId, { startDate, endDate }) => {
-	await store.getSummaryBoard(kidId, { startDate, endDate });
+const getSummaryBoard = async kidId => {
+	await store.getSummaryBoard(kidId, {});
 
 	// boardContent 하나의 String으로 연결
 	for (let i = 0; i < store.boardList.length; i++) {
@@ -266,6 +210,9 @@ const getSummaryBoard = async (kidId, { startDate, endDate }) => {
 	width: 60rem;
 	height: 40rem;
 	max-width: none;
+}
+.report-period {
+	@apply flex justify-start mx-16 mt-3;
 }
 .loader {
 	position: relative;

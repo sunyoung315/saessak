@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@popperjs/core": "^2.11.8",
+    "apexcharts": "^3.45.2",
     "axios": "^1.6.5",
     "flowbite": "^2.2.1",
     "openai": "^4.24.7",
@@ -23,6 +24,7 @@
     "vue": "^3.3.11",
     "vue-cal": "^4.8.1",
     "vue-router": "^4.2.5",
+    "vue3-apexcharts": "^1.4.4",
     "vue3-charts": "^1.1.33",
     "webstomp-client": "^1.2.6",
     "ws": "^8.16.0"

@@ -104,14 +104,14 @@ export const useBoardStore = defineStore('board', () => {
 	// 성장도표 조회
 	const tallList = ref([]);
 	const weightList = ref([]);
-	const getGrowthList = async (gender, myKidMonths) => {
+	const getGrowthList = async gender => {
 		await axios({
 			url: 'https://i10a706.p.ssafy.io/api/growth',
 			method: 'POST',
 			data: {
 				gender,
-				startMonth: myKidMonths - 48,
-				endMonth: myKidMonths + 12,
+				startMonth: 1,
+				endMonth: 100,
 			},
 			headers: {
 				'Content-Type': 'application/json',
