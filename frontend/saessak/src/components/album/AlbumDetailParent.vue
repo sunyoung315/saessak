@@ -19,32 +19,45 @@
 			</label>
 		</div>
 	</div>
-	<!-- DatePicker 시작-->
 	<div class="container p-6 border rounded-lg">
 		<div class="flex justify-between">
-			<div>
-				<VDatePicker v-model="date">
-					<template #default="{ inputValue, togglePopover }">
-						<input class="px-3 py-2 mt-6 mr-6 border" :value="inputValue" />
-						<button class="px-3 py-2" @click="togglePopover">
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								width="24"
-								height="24"
-								viewBox="0 0 24 24"
-								fill="none"
-							>
-								<path
-									fill-rule="evenodd"
-									clip-rule="evenodd"
-									d="M16 2C16.5523 2 17 2.44772 17 3V4H20C21.1046 4 22 4.89543 22 6V20C22 21.1046 21.1046 22 20 22H4C2.89543 22 2 21.1046 2 20V6C2 4.89543 2.89543 4 4 4H7V3C7 2.44772 7.44772 2 8 2C8.55228 2 9 2.44772 9 3V4H15V3C15 2.44772 15.4477 2 16 2ZM20 11H4V20H20V11ZM7 6H4V9H20V6H17V7C17 7.55228 16.5523 8 16 8C15.4477 8 15 7.55228 15 7V6H9V7C9 7.55228 8.55228 8 8 8C7.44772 8 7 7.55228 7 7V6Z"
-									fill="#000000"
+			<!-- DatePicker 시작-->
+			<div class="block mb-5">
+				<!-- <span class="content-title">날짜</span> -->
+				<div class="block mt-1 mb-10">
+					<VDatePicker
+						v-model="date"
+						:select-attribute="selectAttribute"
+						:disabled-dates="disabledDates"
+					>
+						<template #default="{ inputValue, inputEvents }">
+							<div class="relative max-w-sm">
+								<div
+									class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none"
+								>
+									<svg
+										class="w-4 h-4 text-gray-900"
+										aria-hidden="true"
+										xmlns="http://www.w3.org/2000/svg"
+										fill="currentColor"
+										viewBox="0 0 20 20"
+									>
+										<path
+											d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"
+										/>
+									</svg>
+								</div>
+								<input
+									:value="inputValue"
+									v-on="inputEvents"
+									class="datepicker-input text"
 								/>
-							</svg>
-						</button>
-					</template>
-				</VDatePicker>
+							</div>
+						</template>
+					</VDatePicker>
+				</div>
 			</div>
+			<!-- DatePicker 끝-->
 			<div>
 				<button
 					@click="download"
@@ -62,12 +75,11 @@
 				</button>
 			</div>
 		</div>
-		<!-- DatePicker 끝-->
 		<!--전체 보기 -->
 		<div v-if="showToggle">
-			<div class="flex items-center" v-if="albumAllList.length > 0">
+			<div class="flex items-center" v-if="albumParentList.length > 0">
 				<div class="w-full">
-					<div v-for="album in albumAllList" :key="album.albumId">
+					<div v-for="album in albumParentList" :key="album.albumId">
 						<div
 							class="my-2 flex flex-wrap"
 							v-if="
@@ -75,7 +87,7 @@
 								album.fileResponseDtoList.length > 0
 							"
 						>
-							<p class="w-full text-2xl font-bold ml-4">
+							<p class="w-full text-2xl font-bold ml-4 mb-8">
 								{{ album.albumTitle }}
 							</p>
 							<div
@@ -120,7 +132,7 @@
 								album.fileResponseDtoList.length > 0
 							"
 						>
-							<p class="w-full text-2xl font-bold ml-4">
+							<p class="w-full text-2xl font-bold ml-4 mb-8">
 								{{ album.albumTitle }}
 							</p>
 							<div
@@ -168,23 +180,43 @@ const albumStore = useAlbumStore();
 
 const checked = ref([]);
 const showToggle = ref(true);
-const myKidAlbumDateList = ref([]);
-const albumAllList = ref([]);
+let loginStore = JSON.parse(localStorage.getItem('loginStore'));
+// 내 아이
+let kidId = loginStore.kidList[0].kidId;
 
-const classroomId = 1; // 내 아이의 클래스id로 변경 필요
+// 내 아이 앨범 조회 // 번호: kidId
+const myKidAlbumDateList = ref([]);
+const getKidAlbumDateList = async () => {
+	await albumStore.getKidAlbumDateList(route.params.id, date.value);
+	myKidAlbumDateList.value = albumStore.myKidAlbumDateList;
+};
+
+// 반 전체 앨범 조회 // 번호: classroomId
+const albumParentList = ref([]);
+const getAlbumParentList = async () => {
+	await albumStore.getAlbumParentList(kidId, date.value);
+	albumParentList.value = albumStore.albumParentList;
+};
 
 onMounted(async () => {
-	// 내 아이 앨범 조회 // 번호: kidId
-	await albumStore.getkidAlbumDateList(route.params.id, date.value);
-	myKidAlbumDateList.value = albumStore.myKidAlbumDateList;
-
-	// 반 전체 앨범 조회 // 번호: classroomId
-	await albumStore.getAlbumAllList(classroomId, date.value);
-	albumAllList.value = albumStore.albumAllList;
+	await getKidAlbumDateList();
+	await getAlbumParentList();
 });
 
 // datePicker
 const date = ref(new Date());
+// 색상
+const selectAttribute = ref({ highlight: 'green' });
+const today = new Date();
+const tomorrow = new Date(today);
+tomorrow.setDate(tomorrow.getDate() + 1);
+const disabledDates = ref([
+	{
+		start: tomorrow,
+		end: null,
+	},
+]);
+
 // 같은 날짜 체크
 function isSameDate(albumDate, date) {
 	const albumDateObj = new Date(albumDate);
@@ -196,10 +228,10 @@ function isSameDate(albumDate, date) {
 }
 
 watch(date, async newDate => {
-	await albumStore.getkidAlbumDateList(route.params.id, newDate);
+	await albumStore.getKidAlbumDateList(route.params.id, newDate);
 	myKidAlbumDateList.value = albumStore.myKidAlbumDateList;
-	await albumStore.getAlbumAllList(classroomId, newDate);
-	albumAllList.value = albumStore.albumAllList;
+	await albumStore.getAlbumParentList(kidId, newDate);
+	albumParentList.value = albumStore.albumParentList;
 });
 // datePicker 및 날짜 선택 시 데이터 연동 확인 끝
 
@@ -234,5 +266,9 @@ const download = async () => {
 .album {
 	width: 300px;
 	height: 250px;
+}
+
+.content-title {
+	@apply text-gray-900 text-xl font-bold;
 }
 </style>

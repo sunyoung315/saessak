@@ -20,7 +20,13 @@
 		</div>
 		<!-- 반 전체 보기 -->
 		<div v-if="showToggle">
-			<div v-for="album in albumAllList" :key="album.albumId">
+			<div
+				v-for="album in albumParentList.slice(
+					(currentPage - 1) * itemsPerPage,
+					currentPage * itemsPerPage,
+				)"
+				:key="album.albumId"
+			>
 				<div
 					class="flex justify-start items-center"
 					v-if="album.fileResponseDtoList.length != 0"
@@ -62,7 +68,13 @@
 		</div>
 		<!-- 내 아이만 보기 -->
 		<div v-else>
-			<div v-for="album in kidAlbumList" :key="album.albumId">
+			<div
+				v-for="album in kidAlbumList.slice(
+					(currentPage - 1) * itemsPerPage,
+					currentPage * itemsPerPage,
+				)"
+				:key="album.albumId"
+			>
 				<div
 					class="flex justify-start items-center"
 					v-if="album.fileResponseDtoList.length != 0"
@@ -116,21 +128,38 @@ const albumStore = useAlbumStore();
 const showToggle = ref(true);
 
 let loginStore = JSON.parse(localStorage.getItem('loginStore'));
-loginStore = JSON.parse(localStorage.getItem('loginStore'));
 // 내 아이
 let kidId = loginStore.kidList[0].kidId;
 
-const albumAllList = ref([]);
+// 반 전체 앨범 조회
+const albumParentList = ref([]);
+const getAlbumParentList = async () => {
+	await albumStore.getAlbumParentList(kidId);
+	albumParentList.value = albumStore.albumParentList;
+	// 날짜순으로 정렬
+	albumParentList.value.sort(
+		(a, b) => new Date(b.albumDate) - new Date(a.albumDate),
+	);
+};
+
+// 내 아이 앨범 조회, 번호: kidId
 const kidAlbumList = ref([]);
+const getKidAlbumList = async () => {
+	await albumStore.getKidAlbumList(kidId);
+	kidAlbumList.value = albumStore.kidAlbumList;
+	// 날짜순으로 정렬
+	kidAlbumList.value.sort(
+		(a, b) => new Date(b.albumDate) - new Date(a.albumDate),
+	);
+};
 
 onMounted(async () => {
-	// 반 전체 앨범 조회, 번호: classRoomId
-	await albumStore.getAlbumAllList(1);
-	albumAllList.value = albumStore.albumAllList;
-	// 내 아이 앨범 조회, 번호: kidId
-	await albumStore.getkidAlbumList(kidId);
-	kidAlbumList.value = albumStore.kidAlbumList;
+	await getAlbumParentList(kidId);
+	await getKidAlbumList(kidId);
 });
+
+const currentPage = ref(1);
+const itemsPerPage = ref(5);
 
 // carousel 시작
 import 'vue3-carousel/dist/carousel.css';
