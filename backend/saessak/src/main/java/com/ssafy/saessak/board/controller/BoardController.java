@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -32,6 +33,15 @@ public class BoardController {
         List<BoardResponseDto> result = boardService.findByKid(kidId);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, result));
     }
+
+    @Operation(summary = "아이 알림장 월별 조회 (학부모)")
+    @PostMapping("/month/{kidId}")
+    public ResponseEntity<ResultResponse> getMonthlyBoardList(@PathVariable(name="kidId") Long kidId , @RequestParam(name = "boardDate") LocalDate date){
+        log.debug("controller data : {}",date );
+        List<BoardResponseDto> result = boardService.getMonthlyKidBoardList(kidId, date);
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, result));
+    }
+
     // 알림장 등록
     @Operation(summary = "알림장 등록")
     @PostMapping("")
