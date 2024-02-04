@@ -3,7 +3,7 @@
 		<div class="table-box">
 			<div class="flex justify-between">
 				<div class="flex items-center m-2">
-					<div class="mr-4">날짜</div>
+					<div class="mr-4 text-lg text-black font-bold">날짜</div>
 					<div>
 						<VDatePicker :select-attribute="selectAttribute" v-model="menuDate">
 							<template #default="{ inputValue, inputEvents }">
@@ -33,7 +33,7 @@
 						</VDatePicker>
 					</div>
 				</div>
-				<button @click="createMenu(menuList)" class="btn my-2 mx-2">
+				<button @click="createMenuList(menuList)" class="btn my-2 mx-2">
 					등록
 				</button>
 			</div>
@@ -43,6 +43,7 @@
 						<th scope="col" class="col">분류</th>
 						<th scope="col" class="col-food">음식</th>
 						<th scope="col" class="col-allergy">알레르기 식품</th>
+						<th scope="col" class="w-1/12"></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -59,9 +60,14 @@
 							</select>
 						</td>
 						<td class="col-food">
-							<input type="text" class="input w-56" v-model="menu.foodName" />
+							<input
+								type="text"
+								class="input w-56"
+								v-model="menu.foodName"
+								required
+							/>
 						</td>
-						<td>
+						<td class="pl-3">
 							<template v-for="allergy in allergyList" :key="allergy.allergyId">
 								<span class="checkbox-frame">
 									<input
@@ -69,16 +75,24 @@
 										class="checkbox"
 										:value="allergy.allergyId"
 										v-model="menu.foodAllergy"
+										:id="`${allergy.allergyId}${index}`"
 									/>
-									<span class="checkbox-text">{{ allergy.allergyName }}</span>
+									<label
+										class="checkbox-label"
+										:for="`${allergy.allergyId}${index}`"
+										>{{ allergy.allergyName }}</label
+									>
 								</span>
 							</template>
+						</td>
+						<td class="col-btn">
+							<button @click="deleteOneRow(index)">삭제</button>
 						</td>
 					</tr>
 					<tr class="one-row h-2">
 						<button
 							@click="addOneRow"
-							class="text-center text-black text-lg font-bold m-7"
+							class="text-center text-dark-navy text-lg font-bold m-7"
 						>
 							+ 메뉴 추가
 						</button>
@@ -90,13 +104,27 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { useMenuStore } from '@/store/menu';
 import { format } from 'date-fns';
+import { useRouter } from 'vue-router';
+import { createMenu } from '@/api/menu';
 
 const selectAttribute = ref({ highlight: 'blue' });
 
 const menuDate = ref(new Date());
+
+watch(menuDate, newVal => {
+	const newValue = new Date(newVal);
+	const year = newValue.getFullYear();
+	const month = ('0' + (newValue.getMonth() + 1)).slice(-2);
+	const day = ('0' + newValue.getDate()).slice(-2);
+	const newDate = `${year}-${month}-${day}`;
+
+	for (let menu of menuList.value) {
+		menu.menuDate = newDate;
+	}
+});
 
 const store = useMenuStore();
 
@@ -104,7 +132,7 @@ const allergyList = store.allergyList;
 
 const menuList = ref([
 	{
-		menuDate: format(menuDate.value, 'yyyy-MM-dd'),
+		menuDate: format(menuDate.value, 'yyyy-MM-dd').toString(),
 		menuType: '',
 		foodName: '',
 		foodAllergy: [],
@@ -116,7 +144,7 @@ const addOneRow = () => {
 	menuList.value = [
 		...menuList.value,
 		{
-			menuDate: format(menuDate.value, 'yyyy-MM-dd'),
+			menuDate: format(menuDate.value, 'yyyy-MM-dd').toString(),
 			menuType: '',
 			foodName: '',
 			foodAllergy: [],
@@ -124,17 +152,29 @@ const addOneRow = () => {
 	];
 };
 
-const createMenu = async menuList => {
+// 행 삭제 함수
+const deleteOneRow = index => {
+	menuList.value.splice(index, 1);
+};
+
+const router = useRouter();
+
+const createMenuList = async menuList => {
 	// proxy객체는 for...in구문, join 직접 사용 불가
 	menuList.forEach(menu => {
 		menu.foodAllergy = menu.foodAllergy
+			// 알레르기 식품 랜덤으로 선택했어도 오름차순으로 정렬되게
+			.sort((a, b) => {
+				return a - b;
+			})
+			// string으로
 			.map(allergy => allergy.toString())
+			// '/'로 구분하여 배열 string으로 변환
 			.join('/');
 	});
-	for (let i = 0; i < menuList.length; i++) {
-		console.log(menuList[i]);
-		await store.createMenu(menuList[i]);
-	}
+	await createMenu(menuList);
+	await store.getTeacherWeeklyMenu();
+	router.push({ name: 'MenuList' });
 };
 </script>
 
@@ -143,19 +183,22 @@ const createMenu = async menuList => {
 	@apply relative overflow-x-auto min-h-screen m-3;
 }
 .table {
-	@apply w-full text-base text-left rtl:text-right text-gray-500 dark:text-gray-400;
+	@apply w-full mt-3 text-base text-left rtl:text-right text-gray-500 dark:text-gray-400;
 }
 .table-head {
 	@apply text-gray-700 bg-nav-navy bg-opacity-30 dark:bg-gray-700 dark:text-gray-400;
 }
 .col {
-	@apply p-3 w-1/6;
+	@apply p-3 w-[14%];
 }
 .col-food {
-	@apply p-3 w-1/4;
+	@apply p-3 w-[21%];
 }
 .col-allergy {
-	@apply p-3 w-5/12;
+	@apply p-3 w-[60%];
+}
+.col-btn {
+	@apply w-[5%] text-dark-navy font-bold;
 }
 .one-row {
 	@apply bg-white border-b h-20;
@@ -166,7 +209,7 @@ const createMenu = async menuList => {
 .checkbox {
 	@apply px-1;
 }
-.checkbox-text {
+.checkbox-label {
 	@apply px-1 text-base;
 }
 </style>

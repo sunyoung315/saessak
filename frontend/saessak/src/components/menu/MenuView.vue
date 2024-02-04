@@ -14,6 +14,11 @@
 						작성
 					</button>
 				</template>
+				<template v-else>
+					<button type="button" @click="goWeeklyMenu()" class="btn">
+						목록
+					</button>
+				</template>
 			</div>
 		</template>
 	</div>
@@ -37,9 +42,14 @@ const goCreateMenu = () => {
 	router.push({ name: 'MenuCreate' });
 };
 
+// 작성 화면에서 목록 버튼 클릭시 목록 화면으로
+const goWeeklyMenu = () => {
+	router.push({ name: 'MenuList' });
+};
+
 // 작성 화면에서 '작성' 버튼이 보이지 않게 하기 위해서 path 확인
 const path = computed(() => {
-	return route.path.substr(7);
+	return route.path.substr(6);
 });
 </script>
 

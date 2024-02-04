@@ -84,19 +84,39 @@ export const useMenuStore = defineStore('menu', () => {
 		},
 	]);
 
-	const createMenu = async menu => {
-		console.log(menu);
-		await axios({
-			url: `${REST_MENU_API}`,
+	const weeklyMenu = ref([]);
+	const getTeacherWeeklyMenu = async weeklyDate => {
+		axios({
+			url: `${REST_MENU_API}/teacher/list`,
 			method: 'POST',
-			data: menu,
+			data: weeklyDate,
 			headers: {
 				'Content-Type': 'application/json',
 				Authorization: 'Bearer ' + sessionStorage.getItem('accessToken'),
 			},
 		}).then(resp => {
-			console.log(resp.data.data);
+			weeklyMenu.value = resp.data.data;
 		});
 	};
-	return { allergyList, createMenu };
+
+	const getParentWeeklyMenu = async (weeklyDate, kidId) => {
+		axios({
+			url: `${REST_MENU_API}/parent/list/${kidId}`,
+			method: 'POST',
+			data: weeklyDate,
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: 'Bearer ' + sessionStorage.getItem('accessToken'),
+			},
+		}).then(resp => {
+			weeklyMenu.value = resp.data.data;
+		});
+	};
+
+	return {
+		allergyList,
+		weeklyMenu,
+		getTeacherWeeklyMenu,
+		getParentWeeklyMenu,
+	};
 });

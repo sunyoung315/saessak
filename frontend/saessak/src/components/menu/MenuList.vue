@@ -38,60 +38,181 @@
 		<!-- table -->
 		<div class="table-box">
 			<table class="table">
-				<thead class="table-head">
-					<tr>
-						<th scope="col" class="col-date">
-							{{ formattedWeekDays[0] }} (월)
+				<thead>
+					<template v-for="(date, index) in weekDays" :key="date">
+						<th scope="col" class="date-header">
+							{{ format(date, 'd일') }} {{ dayOfTheWeek[index] }}
 						</th>
-						<th scope="col" class="col-date">
-							{{ formattedWeekDays[1] }} (화)
-						</th>
-						<th scope="col" class="col-date">
-							{{ formattedWeekDays[2] }} (수)
-						</th>
-						<th scope="col" class="col-date">
-							{{ formattedWeekDays[3] }} (목)
-						</th>
-						<th scope="col" class="col-date">
-							{{ formattedWeekDays[4] }} (금)
-						</th>
-					</tr>
+					</template>
 				</thead>
+				<!-- <template v-if="store.weeklyMenu"> -->
 				<tbody>
-					<tr class="one-row">
-						<td class="p-2">
-							<div class="menu-type">점심</div>
-							<img src="" alt="사진" class="menu-image" />
-							<!-- <div class="food-item">
-								<template v-for="food in foodList" :key="food.foodId">
-									<div class="food-title">{{ food.foodName }}</div>
-									<div class="food-allergy">( {{ food.foodAllergy }} )</div>
+					<tr>
+						<td v-for="date in weekDays" :key="date" class="oneday-menu">
+							<div class="block">
+								<template v-for="menu in store.weeklyMenu" :key="menu.menuId">
+									<div
+										v-if="
+											format(date, 'yyyy-MM-dd').toString() === menu.menuDate &&
+											menu.menuType === '점심'
+										"
+										class="menu-card"
+									>
+										<template v-if="props.loginStore.isTeacher">
+											<div class="flex justify-between items-center">
+												<div class="menu-type">
+													{{ menu.menuType }}
+												</div>
+												<button
+													@click="registPhotoModal.openModal(menu)"
+													class="w-7 h-7 mx-2 rounded bg-dark-navy flex justify-center items-center"
+												>
+													<svg
+														xmlns="http://www.w3.org/2000/svg"
+														width="20"
+														height="16"
+														viewBox="0 0 20 16"
+														fill="none"
+													>
+														<path
+															fill-rule="evenodd"
+															clip-rule="evenodd"
+															d="M18 0C19.1046 0 20 0.89543 20 2V14C20 15.1046 19.1046 16 18 16H2C0.89543 16 0 15.1046 0 14V2C0 0.89543 0.89543 0 2 0H18ZM18 2H2V14H2.584L8.9477 7.63809L12.421 10.615L18 4.607V2ZM18 7.545L12.5789 13.3847L9.052 10.362L5.414 14H18V7.545ZM5.5 4C6.32843 4 7 4.67157 7 5.5C7 6.32843 6.32843 7 5.5 7C4.67157 7 4 6.32843 4 5.5C4 4.67157 4.67157 4 5.5 4Z"
+															fill="#FFFFFF"
+														/>
+													</svg>
+												</button>
+											</div>
+										</template>
+										<template v-else>
+											<div class="menu-type">
+												{{ menu.menuType }}
+											</div>
+										</template>
+										<template v-if="menu.menuPath">
+											<img
+												:src="menu.menuPath"
+												alt="점심사진"
+												class="menu-image"
+											/>
+										</template>
+										<template v-else>
+											<div class="menu-image p-4">
+												<img src="@/assets/meal.png" alt="" />
+											</div>
+										</template>
+										<template v-for="food in menu.foodList" :key="food.foodId">
+											<div class="food-item">
+												<div class="food-title">{{ food.foodName }}</div>
+												<div v-if="food.foodAllergy" class="food-allergy">
+													( {{ food.foodAllergy.split('/').join(', ') }} )
+												</div>
+											</div>
+										</template>
+									</div>
 								</template>
-							</div> -->
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td v-for="date in weekDays" :key="date" class="oneday-menu">
+							<div class="block">
+								<template v-for="menu in store.weeklyMenu" :key="menu.menuId">
+									<div
+										v-if="
+											format(date, 'yyyy-MM-dd').toString() === menu.menuDate &&
+											menu.menuType === '간식'
+										"
+										class="menu-card"
+									>
+										<template v-if="props.loginStore.isTeacher">
+											<div class="flex justify-between items-center">
+												<div class="menu-type">
+													{{ menu.menuType }}
+												</div>
+												<button
+													@click="registPhotoModal.openModal(menu)"
+													class="w-7 h-7 mx-2 rounded bg-dark-navy flex justify-center items-center"
+												>
+													<svg
+														xmlns="http://www.w3.org/2000/svg"
+														width="20"
+														height="16"
+														viewBox="0 0 20 16"
+														fill="none"
+													>
+														<path
+															fill-rule="evenodd"
+															clip-rule="evenodd"
+															d="M18 0C19.1046 0 20 0.89543 20 2V14C20 15.1046 19.1046 16 18 16H2C0.89543 16 0 15.1046 0 14V2C0 0.89543 0.89543 0 2 0H18ZM18 2H2V14H2.584L8.9477 7.63809L12.421 10.615L18 4.607V2ZM18 7.545L12.5789 13.3847L9.052 10.362L5.414 14H18V7.545ZM5.5 4C6.32843 4 7 4.67157 7 5.5C7 6.32843 6.32843 7 5.5 7C4.67157 7 4 6.32843 4 5.5C4 4.67157 4.67157 4 5.5 4Z"
+															fill="#FFFFFF"
+														/>
+													</svg>
+												</button>
+											</div>
+										</template>
+										<template v-else>
+											<div class="menu-type">{{ menu.menuType }}</div>
+										</template>
+										<template v-if="menu.menuPath">
+											<img
+												:src="menu.menuPath"
+												alt="간식사진"
+												class="menu-image"
+											/>
+										</template>
+										<template v-else>
+											<div class="menu-image p-4">
+												<img src="@/assets/tray.png" alt="" />
+											</div>
+										</template>
+										<template v-for="food in menu.foodList" :key="food.foodId">
+											<div class="food-item">
+												<div class="food-title">{{ food.foodName }}</div>
+												<div v-if="food.foodAllergy" class="food-allergy">
+													( {{ food.foodAllergy.split('/').join(', ') }} )
+												</div>
+											</div>
+										</template>
+									</div>
+								</template>
+							</div>
 						</td>
 					</tr>
 				</tbody>
+				<!-- </template>
+				<template v-else>
+					<div>등록된 식단표가 없습니다.</div>
+				</template> -->
 			</table>
-			<div>
-				<div>※ 알레르기 유발식품</div>
-				<div>
-					1. 난류 2. 우유 3. 메밀 4. 땅콩 5. 대두 6. 밀 7. 고등어 8. 게 9. 새우
-					10. 돼지고기 11. 복숭아 12. 토마토 13. 아황산류 14. 호두 15. 닭고기
-					16. 쇠고기 17. 오징어 18. 조개 19. 잣
-				</div>
+			<br />
+			<div class="p-2">
+				<div class="px-2 text-lg font-bold">※ 알레르기 유발식품</div>
+				<template v-for="allergy in store.allergyList" :key="allergy.allergyId">
+					<div class="inline-block px-2 pt-1">
+						{{ allergy.allergyId }}. {{ allergy.allergyName }}
+					</div>
+				</template>
 			</div>
 		</div>
 	</div>
+	<MenuRegistPhoto ref="registPhotoModal" :getWeeklyMenu="getWeeklyMenu" />
 </template>
 
 <script setup>
 import { ref, computed, watch, onMounted } from 'vue';
 import { getWeekOfMonth, getMonth, addDays, format } from 'date-fns';
+import { useMenuStore } from '@/store/menu';
+import MenuRegistPhoto from '@/components/menu/MenuRegistPhoto.vue';
+
+const registPhotoModal = ref();
 
 // input type="date"는 "yyyy-MM-dd" 형식의 문자열 -> 같은 형식으로 변환
 let selectedDate = ref(new Date().toISOString().split('T')[0]);
 
 const selectAttribute = ref({ highlight: 'purple' });
+
+const dayOfTheWeek = ['(월)', '(화)', '(수)', '(목)', '(금)'];
 
 // 해당년도, 월, 주차
 const year = ref();
@@ -100,16 +221,6 @@ const weekOfMonth = ref();
 
 // 선택한 날짜의 월~금요일 날짜
 const weekDays = ref([]);
-
-// 테이블 thead에 표시할 일자만 추출
-const formattedWeekDays = computed(() => {
-	return weekDays.value.map(date => format(date, 'd일'));
-});
-
-// // attendaneDate와 매칭하기 위한 yyyy-MM-dd 형식으로 추출
-// const formattedDates = computed(() => {
-// 	return weekDays.value.map(date => format(date, 'yyyy-MM-dd'));
-// });
 
 // 테이블 위의 선택 주차 표시
 let weekly = computed(() => {
@@ -140,26 +251,60 @@ watch(
 	{ immediate: true },
 );
 
-// const menuList = ref([]);
+// 주차별 식단표 요청 data
+const weeklyDate = ref({
+	year,
+	month,
+	week: weekOfMonth.value,
+});
+
+const props = defineProps({
+	loginStore: Object,
+});
+
+const store = useMenuStore();
+
+// 주차별 식단표 비동기 호출
+const getWeeklyMenu = async () => {
+	weeklyDate.value = {
+		year: year.value,
+		month: month.value,
+		week: weekOfMonth.value,
+	};
+	if (props.loginStore.isTeacher) {
+		await store.getTeacherWeeklyMenu(weeklyDate.value);
+	} else {
+		// 임시 kidId ////////////////////////////
+		// await store.getParentWeeklyMenu(weeklyDate.value, props.loginStore.culKid);
+		/////////////////////////////////////////
+		await store.getParentWeeklyMenu(
+			weeklyDate.value,
+			props.loginStore.kidList[0].kidId,
+		);
+	}
+};
+
 // 오늘 날짜(기본값) 데이터로 마운트
-onMounted(async () => {});
+onMounted(async () => {
+	await getWeeklyMenu();
+});
 </script>
 
 <style scoped>
 .table-box {
-	@apply relative overflow-x-auto min-h-screen m-3;
+	@apply min-h-screen m-3  border border-gray-200 rounded p-1;
 }
 .table {
-	@apply w-full text-base text-left rtl:text-right text-gray-500 dark:text-gray-400;
+	@apply w-full text-base text-left text-gray-500;
 }
-.table-head {
-	@apply text-gray-700 bg-nav-navy bg-opacity-30 dark:bg-gray-700 dark:text-gray-400;
+.date-header {
+	@apply pt-4 pb-2 text-lg text-black text-center;
 }
-.col-date {
-	@apply px-6 py-3 w-1/5;
+.oneday-menu {
+	@apply w-1/5 align-top;
 }
-.one-row {
-	@apply bg-white border-b h-20;
+.menu-card {
+	@apply p-2 m-1 bg-slate-50 rounded-md border border-gray-200 shadow-md;
 }
 .menu-type {
 	@apply text-gray-900 font-extrabold text-lg p-2;
@@ -171,9 +316,9 @@ onMounted(async () => {});
 	@apply text-gray-900 font-bold pr-2;
 }
 .food-allergy {
-	@apply text-gray-500 text-xs;
+	@apply text-gray-500 text-sm;
 }
 .menu-image {
-	@apply m-1 h-auto border border-2;
+	@apply mx-1 h-40 border-gray-300 border-2 p-1;
 }
 </style>

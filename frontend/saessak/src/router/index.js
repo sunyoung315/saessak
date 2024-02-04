@@ -29,7 +29,6 @@ import BoardDetailParent from '@/components/board/BoardDetailParent.vue';
 import MenuView from '@/components/menu/MenuView.vue';
 import MenuList from '@/components/menu/MenuList.vue';
 import MenuCreate from '@/components/menu/MenuCreate.vue';
-import MenuRegistPhoto from '@/components/menu/MenuRegistPhoto.vue';
 
 const routes = [
 	{ path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFoundView },
@@ -158,11 +157,6 @@ const routes = [
 				path: 'create',
 				name: 'MenuCreate',
 				component: MenuCreate,
-			},
-			{
-				path: 'photo',
-				name: 'MenuRegistPhoto',
-				component: MenuRegistPhoto,
 			},
 		],
 	},
