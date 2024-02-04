@@ -34,10 +34,10 @@ public class RedisChatController {
     public ResponseEntity<?> getChatRoom(@PathVariable Long roomId, @RequestBody(required = false) ChatPagingRequestDto chatPagingDto){
 
         try { //  Cursor 존재하지 않을 경우,현재시간을 기준으로 paging
-            if(chatPagingDto.getCursor() == null || chatPagingDto.getCursor().equals("")){
+            if(chatPagingDto.getChatTime() == null || chatPagingDto.getChatTime().equals("")){
                 chatPagingDto= ChatPagingRequestDto.builder()
-                        .cursor(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss.SSS")))
-                        .build();
+                        .chatTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss.SSS")))
+                        .build(); // 빈 chatPagingDto 반환
             }
 
             List<ChatPagingResponseDto> chatList = chatRedisCacheService.getChatsFromRedis(roomId, chatPagingDto);

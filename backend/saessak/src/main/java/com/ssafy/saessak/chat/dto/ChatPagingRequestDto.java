@@ -8,5 +8,8 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ChatPagingRequestDto {
-    private String cursor;
+    private Long roomId;
+    private String chatContent;
+    private Long senderId;
+    private String chatTime;
 }

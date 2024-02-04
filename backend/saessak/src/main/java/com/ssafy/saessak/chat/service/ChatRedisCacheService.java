@@ -26,7 +26,10 @@ import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -115,12 +118,15 @@ public class ChatRedisCacheService {
                 .build();
     }
 
+    // 채팅방 전체 내역 확인
     public List<ChatPagingResponseDto> getChatsFromRedis(Long roomId, ChatPagingRequestDto chatPagingDto) {
 
         //마지막 채팅을 기준으로 redis의 Sorted set에 몇번째 항목인지 파악
         ChatMessage cursorDto = ChatMessage.builder()
                 .roomId(roomId)
-                .chatTime(chatPagingDto.getCursor())
+                .senderId(chatPagingDto.getSenderId())
+                .chatContent(chatPagingDto.getChatContent())
+                .chatTime(chatPagingDto.getChatTime())
                 .build();
 
 
@@ -142,7 +148,6 @@ public class ChatRedisCacheService {
         for (ChatMessage chatMessage : chatMessageSaveDtoSet) {
             ChatPagingResponseDto chatPagingResponseDto = ChatPagingResponseDto.builder()
                     .senderId(chatMessage.getSenderId())
-                    .receiverId(chatMessage.getReceiverId())
                     .chatContent(chatMessage.getChatContent())
                     .roomId(roomId)
                     .chatTime(chatMessage.getChatTime())
@@ -152,7 +157,7 @@ public class ChatRedisCacheService {
 
         //Chat_data 부족할경우 MYSQL 추가 조회
         if (chatMessageDtoList.size() != 10) {
-            findOtherChatDataInMysql(chatMessageDtoList, roomId, chatPagingDto.getCursor());
+            findOtherChatDataInMysql(chatMessageDtoList, roomId, chatPagingDto.getChatTime());
         }
         Collections.reverse(chatMessageDtoList);
 
@@ -207,7 +212,6 @@ public class ChatRedisCacheService {
                 Chat chat = chatSlice.getContent().get(i - dtoListSize);
                 chatMessageDtoList.add(ChatPagingResponseDto.builder()
                         .senderId(chat.getSenderId())
-                        .receiverId(chat.getReceiverId())
                         .chatContent(chat.getChatContent())
                         .roomId(chat.getRoom().getRoomId())
                         .chatTime(chat.getChatTime())
@@ -224,7 +228,6 @@ public class ChatRedisCacheService {
                 .roomId(chat.getRoom().getRoomId())
                 .chatContent(chat.getChatContent())
                 .senderId(chat.getSenderId())
-                .receiverId(chat.getReceiverId())
                 .build();
 
         redisTemplate.opsForZSet()
@@ -233,5 +236,4 @@ public class ChatRedisCacheService {
                         chatMessageSaveDto,
                         changeLocalDateTimeToDouble(chatMessageSaveDto.getChatTime()));
     }
-
 }

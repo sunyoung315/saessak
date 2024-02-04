@@ -54,7 +54,6 @@ public class ChatWriteBackScheduling {
 
                 Chat chat = Chat.builder()
                         .chatContent(chatMessage.getValue().getChatContent())
-                        .receiverId(chatMessage.getValue().getReceiverId())
                         .senderId(chatMessage.getValue().getSenderId())
                         .chatTime(chatMessage.getValue().getChatTime())
                         .room(chatroom)
