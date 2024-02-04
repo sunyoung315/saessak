@@ -13,9 +13,9 @@
         />
       </div>
       <!-- 내 캠 -->
-      <div id="main-video">
+      <!-- <div id="main-video">
         <UserVideo :stream-manager="mainStreamManagerComputed" />
-      </div>
+      </div> -->
       <!-- 모든 캠 -->
       <div id="video-container">
         <UserVideo :stream-manager="publisherComputed" @click.native="updateMainVideoStreamManager(publisher)" />
@@ -56,7 +56,7 @@ console.log(chatRoom.value)
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
 
-  const APPLICATION_SERVER_URL = process.env.NODE_ENV === 'production' ? '' : 'http://localhost:8080/';
+  const APPLICATION_SERVER_URL = process.env.NODE_ENV === 'production' ? '' : 'https://i10a706.p.ssafy.io/'; //'http://localhost:5000/';
 
   // OpenVidu objects
   const OV = ref(undefined)
@@ -66,8 +66,8 @@ axios.defaults.headers.post["Content-Type"] = "application/json";
   const subscribers = ref([])
 
   // Join form
-  const mySessionId = ref("SessionCrome")
-  const myUserName = ref("Participant" + Math.floor(Math.random() * 100))
+  const mySessionId = ref("SessionCrome") //chatRoom.value
+  const myUserName =  ref("Participant" + Math.floor(Math.random() * 100)) //chatName.value
   
   
   /////////////////////채팅창을 위한 부분임.

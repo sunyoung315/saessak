@@ -43,8 +43,8 @@ function parentNewChat(teacherId, sucess, fail){
 }
 
 // 7. (공통) 채팅방 진입 시 이전에 저장된 채팅 내역 불러오기
-function loadChat(roomId, sucess, fail){
-    local.get(`${url}/room/list/${roomId}`).then(sucess).catch(fail);
+function loadChat(roomId, param, sucess, fail){
+    local.post(`${url}/room/list/${roomId}`, JSON.stringify(param)).then(sucess).catch(fail);
 }
 
 // 8. (공통) 채팅방 진입 전 userId 받아오기

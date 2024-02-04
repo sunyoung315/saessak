@@ -1,61 +1,34 @@
 <template>
   <div
-    class="flex flex-col w-full h-full max-w-md p-8 mx-auto my-autoborder border-gray-200 rounded-lg shadow bg-yellow-50 sm:p-8 dark:bg-gray-800 dark:border-gray-700"
-  >
+    class="flex flex-col w-full h-full max-w-md p-8 mx-auto my-autoborder border-gray-200 rounded-lg shadow bg-yellow-50 sm:p-8 dark:bg-gray-800 dark:border-gray-700">
     <div class="fixed w-1/3 top-0 right-0 flex justify-between px-3 py-3 bg-yellow-50 pb-0 mx-auto">
       <h3 class="mb-5 text-lg font-bold text-center left-1/2">
         {{ roomName }} {{ isTeacher == true ? '학부모' : '선생님' }}
       </h3>
       <button type="button" @click="discon()">
-        <svg
-          width="30"
-          height="30"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M6 12H19" stroke="#383838" stroke-width="2" stroke-linecap="round" />
-          <path
-            d="M9 8L5 12L9 16"
-            stroke="#383838"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
+          <path d="M9 8L5 12L9 16" stroke="#383838" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
       </button>
     </div>
 
     <!-- message -->
-    <div
-      ref="chatbox"
-      class="chatbox flex flex-col scrollbar-hide overflow-y-scroll w-full h-5/6 mt-0 px-5"
-    >
+    <!--scrollbar-hide -->
+    <div ref="chatbox" class="chatbox flex flex-col scrollbar-hide overflow-y-scroll w-full h-5/6 mt-0 px-5">
       <div v-for="msg in recvList" :key="msg.chatId" class="flex flex-col mt-5">
         <!--발신 메시지(오른쪽)-->
         <div v-if="msg.senderId == userId" class="flex justify-end mb-4">
-          <div
-            class="px-4 py-3 mr-2 text-white bg-yellow-500 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl"
-          >
+          <div class="px-4 py-3 mr-2 text-white bg-yellow-500 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl">
             {{ msg.chatContent }}
           </div>
-          <img
-            src="https://source.unsplash.com/vpOeXr5wmR4/600x600"
-            class="object-cover w-8 h-8 rounded-full"
-            alt=""
-          />
+          <img src="https://source.unsplash.com/vpOeXr5wmR4/600x600" class="object-cover w-8 h-8 rounded-full" alt="" />
         </div>
 
         <!--수신 메시지(왼쪽)-->
         <div v-else class="flex justify-start mb-4">
-          <img
-            src="https://source.unsplash.com/vpOeXr5wmR4/600x600"
-            class="object-cover w-8 h-8 rounded-full"
-            alt=""
-          />
-          <div
-            class="px-4 py-3 ml-2 text-white bg-stone-400 rounded-br-3xl rounded-tr-3xl rounded-tl-xl"
-          >
+          <img src="https://source.unsplash.com/vpOeXr5wmR4/600x600" class="object-cover w-8 h-8 rounded-full" alt="" />
+          <div class="px-4 py-3 ml-2 text-white bg-stone-400 rounded-br-3xl rounded-tr-3xl rounded-tl-xl">
             {{ msg.chatContent }}
           </div>
         </div>
@@ -67,12 +40,9 @@
     <button @click="startFaceChat()" class="block text-white" type="button">
       <div class="h-7 w-7 ml-auto mr-2.5 border rounded-full bg-neutral-500">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-          <path
-            fill="#ffffff"
-            fill-rule="evenodd"
+          <path fill="#ffffff" fill-rule="evenodd"
             d="M14 7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7Zm2 9.387 4.684 1.562A1 1 0 0 0 22 17V7a1 1 0 0 0-1.316-.949L16 7.613v8.774Z"
-            clip-rule="evenodd"
-          />
+            clip-rule="evenodd" />
         </svg>
       </div>
     </button>
@@ -83,34 +53,15 @@
     <div class="bottom-0 left-0 right-0 w-full max-w-md p-2 mx-auto">
       <div class="flex items-center justify-evenly">
         <div class="w-3/4 mt-4 mb-5">
-          <input
-            type="text"
-            id="msg-input"
-            v-model="msg"
-            @keyup.enter="send()"
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          />
+          <input type="text" id="msg-input" v-model="msg" @keyup.enter="send()"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
         </div>
-        <button
-          type="button"
-          @click="send()"
-          class="text-white bg-gray-600 -mt-1 hover:bg-yellow-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm p-2.5 text-center inline-flex items-center me-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-        >
+        <button type="button" @click="send()"
+          class="text-white bg-gray-600 -mt-1 hover:bg-yellow-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm p-2.5 text-center inline-flex items-center me-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
           <!--채팅전송버튼-->
-          <svg
-            class="w-5 h-5"
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 14 10"
-          >
-            <path
-              stroke="currentColor"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M1 5h12m0 0L9 1m4 4L9 9"
-            />
+          <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M1 5h12m0 0L9 1m4 4L9 9" />
           </svg>
         </button>
       </div>
@@ -119,7 +70,7 @@
 </template>
 
 <script setup>
-import { ref, nextTick, onMounted } from 'vue'
+import { ref, nextTick, onMounted, onBeforeUnmount } from 'vue'
 import { loadChat, isVaild, disconnect } from '@/api/chat'
 import { loginStore } from '@/store/loginStore'
 import { chatStore } from '@/store/chatStore'
@@ -145,15 +96,52 @@ const { setChatname, setChatroom, setIsopen } = chatStore()
 const { isTeacher } = storeToRefs(loginStore)
 const faceChatModal = ref()
 
-const isShowModal = ref(false)
+// 1. 커서에 메시지 정보 중 전송 시간 저장
+const cursor = ref({
+  roomId: null,
+  chatContent: null,
+  senderId: null,
+  chatTime: null
+})
+// 2. 불러온 이전 채팅 내역 중 가장 첫번째 채팅 시간을 커서에 저장
+// 3. 스크롤이 맨 위로 올라갔을 때 -> 이전 채팅 불러오기 -> 새로 불러온 채팅으로 커서 재설정
 
-function closeModal() {
-  isShowModal.value = false
+const convertDate = (oldDate) => {
+  var NewDate =
+    oldDate.getFullYear() +
+    '-' +
+    addZero(oldDate.getMonth() + 1) +
+    '-' +
+    addZero(oldDate.getDate()) +
+    ' ' +
+    addZero(oldDate.getHours()) +
+    ':' +
+    addZero(oldDate.getMinutes()) +
+    ':' +
+    addZero(oldDate.getSeconds()) +
+    '.' +
+    oldDate.getMilliseconds()
+
+  return NewDate
 }
-function showModal() {
-  isShowModal.value = true
+
+const handleBeforeUnload = (event) => { // 브라우저 종료 시 채팅 퇴장 시점 저장
+  const confirmationMessage = '채팅을 떠나긔?';
+
+  // 이 부분에서 사용자에게 경고를 표시할 수 있습니다.
+  event.returnValue = confirmationMessage;
+  if (event.returnValue) {
+    discon()
+  }
+  return confirmationMessage;
+
 }
+
 onMounted(() => {
+  window.addEventListener('beforeunload', handleBeforeUnload); // 브라우저 종료 이벤트 등록
+  if (chatbox.value) {
+    chatbox.value.addEventListener('scroll', handleScroll);
+  } // 스크롤 감지 이벤트 등록
   // 접속하면 1. userId 받아오기
   isVaild(({ data }) => {
     // console.log('userId : ')
@@ -162,21 +150,34 @@ onMounted(() => {
   })
 
   // 2. 이전 채팅 load
-  loadChat(props.roomInfo.roomId, ({ data }) => {
-    // console.log('채팅 내역 조회')
-    // console.log(data)
+  let currentDate = new Date()
+  cursor.value = {
+    cursor:
+      convertDate(currentDate)
+  }
+  loadChat(props.roomInfo.roomId, cursor.value, ({ data }) => {
+    console.log('채팅 내역 조회')
+    console.log(data)
+    console.log(data.data[0].chatTime)
+    cursor.value = { // 최초 불러온 채팅을 갖고 커서 설정
+      roomId: data.data[0].roomId,
+      chatContent: data.data[0].chatContent,
+      senderId: data.data[0].senderId,
+      chatTime: data.data[0].chatTime
+    }
     recvList.value = data.data
+    console.log(recvList.value)
     downScroll()
   })
 
-  // console.log("진짜 마지막으로 사이즈 받아왔니")
-  // console.log(props.roomInfo.width + " " + props.roomInfo.height)
 })
 
-// 1. 커서에 메시지 정보 중 전송 시간 저장
-const cursor = ref(-1)
-// 2. 불러온 이전 채팅 내역 중 가장 첫번째 채팅 시간을 커서에 저장
-// 3. 스크롤이 맨 위로 올라갔을 때 -> 이전 채팅 불러오기 -> 새로 불러온 채팅으로 커서 재설정
+onBeforeUnmount(() => {
+  window.removeEventListener('beforeunload', handleBeforeUnload);
+  if (chatbox.value) {
+    chatbox.value.removeEventListener('scroll', handleScroll);
+  }
+});
 
 const userId = ref(-1) // 채팅 유저 구분을 위한 현재 로그인한 userId
 const chatbox = ref(null)
@@ -196,7 +197,49 @@ const recvList = ref([])
 const msg = ref('')
 const stomp = Stomp.over(socket, options)
 
-const downScroll = () => {
+const handleScroll = () => { // 스크롤 맨 위로 올렸을 때 감지하기
+  // 현재 스크롤 위치를 가져옵니다.
+  const scrollTop = chatbox.value.scrollTop || document.documentElement.scrollTop;
+  console.log("현재 스크롤 : " + scrollTop)
+  let currentDate = new Date()
+  if (scrollTop === 0) {
+    console.log('스크롤 맨 위긔.');
+    // 1. 현재 커서를 기준으로 다시 메세지 불러오기(revList 맨 앞에 추가하기)
+
+    console.log("재조회를 위한 커서 : ")
+    console.log(cursor.value);
+    if (cursor.value.chatTime == null) { // 모든 채팅 불러온 경우
+      console.log("모든 채팅 불러왔긔")
+      return
+    }
+    loadChat(props.roomInfo.roomId, cursor.value, ({ data }) => {
+      console.log('이전 채팅 내역 조회')
+      console.log(data)
+      console.log(data.data[0])
+      if (data.data.length == 0) {
+        cursor.value.chatTime = null
+        console.log("모든 채팅 불러왔긔")
+      } else {
+        const newArr = [...data.data, ...recvList.value] // 새로 불러온 채팅 + 기존 채팅
+        cursor.value = {
+          roomId: data.data[0].roomId,
+          chatContent: data.data[0].chatContent,
+          senderId: data.data[0].senderId,
+          chatTime: data.data[0].chatTime
+        }
+        console.log(newArr)
+        recvList.value = newArr
+        // chatbox.value.scrollTo(450, chatbox.value.scrollHeight) // 올리고 나서 스크롤 위치 어따 둘건지???
+      }
+    })
+    // 2. 지금 불러온 메세지 중 첫번째 메세지의 시간을 커서로 변경
+    // 3. 더 이상 불러올 매세지 없으면 api 호출X
+    console.log(recvList.value)
+  }
+
+};
+
+const downScroll = () => { // 스크롤 맨 아래로 내리기
   nextTick(() => {
     if (chatbox.value) {
       chatbox.value.scrollTo(0, chatbox.value.scrollHeight)
@@ -235,11 +278,6 @@ stomp.connect(
         recvList.value.push(JSON.parse(res.body))
 
         downScroll()
-        // nextTick(() => {
-        //   if (chatbox.value) {
-        //     chatbox.value.scrollTo(0, chatbox.value.scrollHeight)
-        //   }
-        // })
       },
       headers
     )
@@ -261,26 +299,26 @@ const send = () => {
 
   let currentDate = new Date()
 
-  var formattedDate =
-    currentDate.getFullYear() +
-    '-' +
-    addZero(currentDate.getMonth() + 1) +
-    '-' +
-    addZero(currentDate.getDate()) +
-    ' ' +
-    addZero(currentDate.getHours()) +
-    ':' +
-    addZero(currentDate.getMinutes()) +
-    ':' +
-    addZero(currentDate.getSeconds()) +
-    '.' +
-    currentDate.getMilliseconds()
+  // var formattedDate =
+  //   currentDate.getFullYear() +
+  //   '-' +
+  //   addZero(currentDate.getMonth() + 1) +
+  //   '-' +
+  //   addZero(currentDate.getDate()) +
+  //   ' ' +
+  //   addZero(currentDate.getHours()) +
+  //   ':' +
+  //   addZero(currentDate.getMinutes()) +
+  //   ':' +
+  //   addZero(currentDate.getSeconds()) +
+  //   '.' +
+  //   currentDate.getMilliseconds()
   if (stomp && stomp.connected) {
     const sendMsg = {
       roomId: props.roomInfo.roomId,
       senderId: userId.value,
       chatContent: msg.value,
-      chatTime: formattedDate
+      chatTime: convertDate(currentDate)
     }
     stomp.send('/pub/message', JSON.stringify(sendMsg), headers)
     msg.value = ''
@@ -303,7 +341,7 @@ const discon = () => {
     }
   )
   //Theheader로 ChatListView로 바꾸겠다고 전송해야됨
-  stomp.unsubscribe((res) => {}, headers)
+  stomp.unsubscribe((res) => { }, headers)
   // console.log(stomp)
   emit('exitChat', true)
 }
