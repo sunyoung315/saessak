@@ -35,7 +35,9 @@ public class RedisChatController {
 
         try { //  Cursor 존재하지 않을 경우,현재시간을 기준으로 paging
             if(chatPagingDto.getChatTime() == null || chatPagingDto.getChatTime().equals("")){
-                chatPagingDto= ChatPagingRequestDto.builder().build(); // 빈 chatPagingDto 반환
+                chatPagingDto= ChatPagingRequestDto.builder()
+                        .chatTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss.SSS")))
+                        .build(); // 빈 chatPagingDto 반환
             }
 
             List<ChatPagingResponseDto> chatList = chatRedisCacheService.getChatsFromRedis(roomId, chatPagingDto);
