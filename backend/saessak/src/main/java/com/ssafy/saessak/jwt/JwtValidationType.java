@@ -1,4 +1,4 @@
-package com.ssafy.saessak.oauth.jwt;
+package com.ssafy.saessak.jwt;
 
 public enum JwtValidationType {
     VALID_JWT_TOKEN,              // 유효한 JWT

@@ -1,9 +1,9 @@
-package com.ssafy.saessak.oauth.jwt.filter;
+package com.ssafy.saessak.jwt.filter;
 
 import com.ssafy.saessak.exception.code.ExceptionCode;
 import com.ssafy.saessak.oauth.authentication.UserAuthentication;
-import com.ssafy.saessak.oauth.jwt.JwtTokenProvider;
-import com.ssafy.saessak.oauth.jwt.JwtValidationType;
+import com.ssafy.saessak.jwt.JwtTokenProvider;
+import com.ssafy.saessak.jwt.JwtValidationType;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,7 +18,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-import static com.ssafy.saessak.oauth.jwt.JwtValidationType.*;
+import static com.ssafy.saessak.jwt.JwtValidationType.*;
 
 @Slf4j
 @Component

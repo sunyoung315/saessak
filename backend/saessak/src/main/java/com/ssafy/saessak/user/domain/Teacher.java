@@ -11,29 +11,10 @@ import java.util.List;
 
 @SuperBuilder
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name="teacher")
 public class Teacher extends User {
-
-    @Column(name = "teacher_device")
-    private String teacherDevice;
-
-    @Column(name = "teacher_alarm", nullable = false)
-    private boolean teacherAlarm;
-
-    public void setToken(String token){
-        this.teacherDevice = token;
-    }
-
-    public void setAlarm() {
-        if(!this.teacherAlarm) {
-            this.teacherAlarm = true;
-        } else {
-            this.teacherAlarm = false;
-        }
-    }
 
     public void mapping_classroom(Classroom classroom) {
         super.mapping_classroom(classroom);

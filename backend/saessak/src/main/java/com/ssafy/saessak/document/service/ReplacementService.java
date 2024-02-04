@@ -60,17 +60,14 @@ public class ReplacementService {
         
         // 입력과 동시에 아이의 반 선생님 모두에게 알림 전송
         Classroom classroom = kid.getClassroom();
-        List<Teacher> teacherList = teacherRepository.findAllByClassroom(classroom);
+        ReplacementTeacherAlarmResponseDto replacementAlarmResponseDto = ReplacementTeacherAlarmResponseDto.builder()
+                .replacementId(savedReplacement.getReplacementId())
+                .classroomId(classroom.getClassroomId())
+                .kidId(savedReplacement.getKid().getId())
+                .kidName(savedReplacement.getKid().getNickname())
+                .build();
 
-        for(Teacher teacher : teacherList) {
-            ReplacementTeacherAlarmResponseDto replacementAlarmResponseDto = ReplacementTeacherAlarmResponseDto.builder()
-                    .replacementId(savedReplacement.getReplacementId())
-                    .teacherDevice(teacher.getTeacherDevice())
-                    .kidId(savedReplacement.getKid().getId())
-                    .kidName(savedReplacement.getKid().getNickname())
-                    .build();
-            fcmService.sendInsertReplacement(replacementAlarmResponseDto);
-        }
+        fcmService.sendInsertReplacement(replacementAlarmResponseDto);
 
         return savedReplacement.getReplacementId();
     }
