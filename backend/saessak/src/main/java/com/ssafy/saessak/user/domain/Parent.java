@@ -24,9 +24,6 @@ public class Parent extends User {
     @Column(name = "parent_alarm")
     private Boolean parentAlarm;
 
-    @Column(name = "parent_alarm_timestamp")
-    private LocalDateTime parentAlarmTimestamp;
-
     @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Kid> kidList;
 

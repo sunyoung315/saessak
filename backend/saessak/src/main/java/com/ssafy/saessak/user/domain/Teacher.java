@@ -23,9 +23,6 @@ public class Teacher extends User {
     @Column(name = "teacher_alarm", nullable = false)
     private boolean teacherAlarm;
 
-    @Column(name = "teacher_alarm_timestamp")
-    private LocalDateTime teacherAlarmTimestamp;
-
     public void setToken(String token){
         this.teacherDevice = token;
     }
