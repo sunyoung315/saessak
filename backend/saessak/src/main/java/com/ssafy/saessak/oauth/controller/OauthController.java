@@ -115,6 +115,7 @@ public class OauthController {
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS));
     }
 
+    @Operation(summary = "refreshToken으로 accessToken 재발급")
     @GetMapping("/refreshtoken")
     public ResponseEntity<ResultResponse> refreshToken(@RequestParam final String refreshToken) {
         AccessTokenGetSuccess accessTokenGetSuccess = kakaoUserService.refreshToken(refreshToken);

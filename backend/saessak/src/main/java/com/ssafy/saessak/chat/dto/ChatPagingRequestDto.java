@@ -2,8 +2,6 @@ package com.ssafy.saessak.chat.dto;
 
 import lombok.*;
 
-import java.time.LocalDateTime;
-
 @Getter
 @Setter
 @Builder

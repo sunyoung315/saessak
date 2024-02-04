@@ -7,7 +7,7 @@ import lombok.Getter;
 @Builder
 @Getter
 @AllArgsConstructor
-public class ReplacementResponseDto {
+public class ReplacementParentAlarmResponseDto {
 
     private String kidName;
     private String replacementName;

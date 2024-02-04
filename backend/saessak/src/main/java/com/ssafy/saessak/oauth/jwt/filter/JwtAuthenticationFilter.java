@@ -33,6 +33,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = getJwtFromRequest(request);
+        String url = request.getRequestURI();
 
         if (token != null && jwtTokenProvider.validateToken(token) == VALID_JWT_TOKEN) {
             Long userId = jwtTokenProvider.getUserFromJwt(token);
@@ -41,7 +42,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        } else if(token != null){
+        } else if(token != null && !url.equals("/api/oauth/refreshtoken")){
             JwtValidationType type = jwtTokenProvider.validateToken(token);
             if(type.equals(INVALID_JWT_TOKEN)) sendError(ExceptionCode.INVALID_JWT_ACCESS_TOKEN, response);
             if(type.equals(EXPIRED_JWT_TOKEN)) sendError(ExceptionCode.ACCESS_TOKEN_EXPIRED, response);

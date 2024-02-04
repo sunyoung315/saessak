@@ -9,10 +9,10 @@ import java.util.List;
 @Builder
 @Getter
 @AllArgsConstructor
-public class ReplacementAlarmResponseDto {
+public class ReplacementTeacherAlarmResponseDto {
 
     private Long replacementId;
-    private List<String> teacherAlarmDeviceList;
+    private String teacherDevice;
     private Long kidId;
     private String kidName;
 
