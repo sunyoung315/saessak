@@ -60,6 +60,7 @@ public class UserService {
         // 프로필 S3 업로드
         try {
             String filePath = s3Upload.upload(kidProfile, "profile");
+            System.out.println("filePath : "+filePath);
             kid.uploadProfile(filePath);
         } catch (IOException e) {
             throw new UserException(ExceptionCode.FAIL_KID_PROFILE_UPLOAD);

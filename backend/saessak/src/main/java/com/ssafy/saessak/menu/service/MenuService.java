@@ -61,6 +61,7 @@ public class MenuService {
                         .daycare(daycare)
                         .menuDate(LocalDate.parse(requestDto.getMenuDate()))
                         .menuType(requestDto.getMenuType())
+                        .menuPath(null)
                         .build();
                 Menu savedMenu = menuRepository.save(menu);
 
