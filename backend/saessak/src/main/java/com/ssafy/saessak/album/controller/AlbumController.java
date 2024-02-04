@@ -38,12 +38,12 @@ public class AlbumController {
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS,albumResponseDtoList));
     }
     @Operation(summary = "반 앨범 날짜별 조회")
-    @PostMapping("/classroom/{classroomId}")
+    @PostMapping("/classroom/{kidId}")
     public ResponseEntity<ResultResponse> getClassAlbum
-            (@PathVariable(name = "classroomId") Long classroomId, @RequestBody AlbumRequestDto albumRequestDto){
+            (@PathVariable(name = "kidId") Long kidId, @RequestBody AlbumRequestDto albumRequestDto){
         log.debug("controller requestBody  : {}", albumRequestDto);
         LocalDate albumDate = albumRequestDto.getAlbumDate();
-        List<AlbumResponseDto> albumResponseDtoList = albumService.getClassAlbum(classroomId, albumDate);
+        List<AlbumResponseDto> albumResponseDtoList = albumService.getClassAlbum(kidId, albumDate);
 
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS,albumResponseDtoList));
     }
