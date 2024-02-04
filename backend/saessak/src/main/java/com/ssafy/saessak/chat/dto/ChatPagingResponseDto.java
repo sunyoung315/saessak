@@ -1,15 +1,13 @@
 package com.ssafy.saessak.chat.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ChatMessageResponse {
+public class ChatPagingResponseDto {
     private Long roomId;
     private String chatContent;
     private Long senderId;

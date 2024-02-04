@@ -112,7 +112,6 @@ public class ChatService {
         for(Chat c : room.getChatList()){
             ChatMessageResponse chatMessageResponse = ChatMessageResponse.builder()
                     .senderId(c.getSenderId())
-                    .receiverId(c.getReceiverId())
                     .chatContent(c.getChatContent())
                     .chatTime(c.getChatTime().toString())
                     .build();
