@@ -12,7 +12,7 @@ import java.util.List;
 public class ReplacementTeacherAlarmResponseDto {
 
     private Long replacementId;
-    private String teacherDevice;
+    private Long classroomId;
     private Long kidId;
     private String kidName;
 

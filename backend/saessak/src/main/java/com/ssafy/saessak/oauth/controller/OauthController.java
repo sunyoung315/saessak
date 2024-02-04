@@ -8,7 +8,7 @@ import com.ssafy.saessak.oauth.service.KakaoSocialService;
 import com.ssafy.saessak.oauth.service.KakaoUserService;
 import com.ssafy.saessak.oauth.service.ParentService;
 import com.ssafy.saessak.oauth.service.TeacherService;
-import com.ssafy.saessak.oauth.token.service.RefreshTokenService;
+import com.ssafy.saessak.jwt.refreshToken.service.RefreshTokenService;
 import com.ssafy.saessak.result.ResultCode;
 import com.ssafy.saessak.result.ResultResponse;
 import com.ssafy.saessak.user.domain.Parent;

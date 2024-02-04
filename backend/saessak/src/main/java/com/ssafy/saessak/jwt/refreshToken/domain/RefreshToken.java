@@ -1,4 +1,4 @@
-package com.ssafy.saessak.oauth.token.domain;
+package com.ssafy.saessak.jwt.refreshToken.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,18 +10,18 @@ import org.springframework.data.redis.core.RedisHash;
 @AllArgsConstructor
 @Getter
 @Builder
-public class Token {
+public class RefreshToken {
 
     @Id
     private Long tokenId;
 
     private String refreshToken;
 
-    public static Token of (
+    public static RefreshToken of (
             final Long tokenId,
             final String refreshToken
     ) {
-        return Token.builder()
+        return RefreshToken.builder()
                 .tokenId(tokenId)
                 .refreshToken(refreshToken)
                 .build();

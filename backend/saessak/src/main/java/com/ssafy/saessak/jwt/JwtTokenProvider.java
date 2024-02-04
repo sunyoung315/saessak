@@ -1,4 +1,4 @@
-package com.ssafy.saessak.oauth.jwt;
+package com.ssafy.saessak.jwt;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;

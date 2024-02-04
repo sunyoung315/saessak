@@ -11,8 +11,10 @@ import com.ssafy.saessak.exception.code.ExceptionCode;
 import com.ssafy.saessak.exception.model.FcmException;
 import com.ssafy.saessak.exception.model.NotFoundException;
 import com.ssafy.saessak.exception.model.UserException;
+import com.ssafy.saessak.fcm.domain.FcmToken;
 import com.ssafy.saessak.fcm.dto.FcmResponseDto;
 import com.ssafy.saessak.fcm.dto.FcmTokenRequestDto;
+import com.ssafy.saessak.fcm.repository.FcmRepository;
 import com.ssafy.saessak.fcm.util.FirebaseInit;
 import com.ssafy.saessak.menu.domain.Food;
 import com.ssafy.saessak.menu.domain.Menu;
@@ -20,9 +22,7 @@ import com.ssafy.saessak.menu.repository.FoodRepository;
 import com.ssafy.saessak.menu.repository.MenuRepository;
 import com.ssafy.saessak.oauth.service.AuthenticationService;
 import com.ssafy.saessak.user.domain.*;
-import com.ssafy.saessak.user.repository.KidRepository;
-import com.ssafy.saessak.user.repository.ParentRepository;
-import com.ssafy.saessak.user.repository.TeacherRepository;
+import com.ssafy.saessak.user.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -36,6 +36,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -44,7 +45,6 @@ public class FcmService {
 
     private final FirebaseInit firebaseInit;
 
-    private final ParentRepository parentRepository;
     private final KidRepository kidRepository;
     private final MenuRepository menuRepository;
     private final FoodRepository foodRepository;
@@ -52,6 +52,8 @@ public class FcmService {
     private final TeacherRepository teacherRepository;
     private final AuthenticationService authenticationService;
     private final AlarmService alarmService;
+    private final FcmRepository fcmRepository;
+    private final ClassroomRepository classroomRepository;
 
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
 
@@ -59,27 +61,36 @@ public class FcmService {
     @Transactional
     public void saveToken(FcmTokenRequestDto requestDto) {
         User user = authenticationService.getUserByAuthentication();
-
-        Teacher teacher = teacherRepository.findById(user.getId())
-                .orElseThrow(() -> new UserException(ExceptionCode.TEACHER_NOT_FOUND));
-        teacher.setToken(requestDto.getToken());
-
-        Parent parent = parentRepository.findById(user.getId())
-                .orElseThrow(() -> new UserException(ExceptionCode.PARENT_NOT_FOUND));
-        parent.setToken(requestDto.getToken());
+        // 갱신을 위해 기존에 토큰이 있으면 삭제
+        Optional<FcmToken> fcmToken = fcmRepository.findById(user.getId());
+        if(fcmToken.isPresent()) {
+            fcmRepository.delete(fcmToken.get());
+        }
+        fcmRepository.save(FcmToken.of(user.getId(), requestDto.getToken()));
     }
 
     @Transactional
-    public void changeAlarm() {
+    public void deleteToken() {
         User user = authenticationService.getUserByAuthentication();
 
-        Teacher teacher = teacherRepository.findById(user.getId())
-                .orElseThrow(() -> new UserException(ExceptionCode.TEACHER_NOT_FOUND));
-        teacher.setAlarm();
+        FcmToken fcmToken = fcmRepository.findById(user.getId())
+                .orElseThrow(() -> new FcmException(ExceptionCode.FCM_TOKEN_NOT_FOUND));
+        fcmRepository.delete(fcmToken);
+    }
 
-        Parent parent = parentRepository.findById(user.getId())
-                .orElseThrow(() -> new UserException(ExceptionCode.PARENT_NOT_FOUND));
-        parent.setAlarm();
+    public String getParentToken(Long kidId) {
+        Kid kid = kidRepository.findById(kidId)
+                .orElseThrow(() -> new UserException(ExceptionCode.KID_NOT_FOUND));
+        Parent parent = kid.getParent();
+        FcmToken fcmToken = fcmRepository.findById(parent.getId())
+                .orElseThrow(() -> new FcmException(ExceptionCode.FCM_TOKEN_NOT_FOUND));
+        return fcmToken.getFcmToken();
+    }
+
+    public String getUserToken(Long userId) {
+        FcmToken fcmToken = fcmRepository.findById(userId)
+                .orElseThrow(() -> new FcmException(ExceptionCode.FCM_TOKEN_NOT_FOUND));
+        return fcmToken.getFcmToken();
     }
 
     public void sendInTime(AttendanceTimeResponseDto responseDto, Long kidId) {
@@ -146,11 +157,21 @@ public class FcmService {
 
     public void sendInsertReplacement(ReplacementTeacherAlarmResponseDto responseDto) {
         String TITLE = "귀가동의서 알림";
-        FcmResponseDto fcmResponseDto = FcmResponseDto.builder()
-                .token(responseDto.getTeacherDevice())
-                .title(TITLE)
-                .body(responseDto.getKidName() + " 어린이의 대리인 귀가 동의서가 등록되었습니다")
-                .build();
+
+        Classroom classroom = classroomRepository.findById(responseDto.getClassroomId())
+                .orElseThrow(() -> new UserException(ExceptionCode.CLASSROOM_NOT_FOUND));
+        List<Teacher> teacherList = teacherRepository.findAllByClassroom(classroom);
+        for(Teacher teacher : teacherList) {
+            String teacherToken = getUserToken(teacher.getId());
+
+            FcmResponseDto fcmResponseDto = FcmResponseDto.builder()
+                    .token(teacherToken)
+                    .title(TITLE)
+                    .body(responseDto.getKidName() + " 어린이의 대리인 귀가 동의서가 등록되었습니다")
+                    .build();
+
+            sendNotification(fcmResponseDto);
+        }
 
         AlarmRequestDto alarmRequestDto = AlarmRequestDto.builder()
                 .kidId(responseDto.getKidId())
@@ -158,7 +179,6 @@ public class FcmService {
                 .alarmDate(LocalDate.now())
                 .build();
 
-        sendNotification(fcmResponseDto);
         alarmService.insertAlarm(alarmRequestDto);
     }
 
@@ -177,7 +197,6 @@ public class FcmService {
                     .build();
             
             // 토큰이 없는경우 || 토큰 만료된 경우
-
             FirebaseMessaging.getInstance().send(message); // 알림 보내기
 
         } catch (Exception e) {
@@ -214,10 +233,10 @@ public class FcmService {
 
     public void sendAllergyParent(Kid kid, String menuType) {
         String TITLE = "알러지 알림";
-        Parent parent = kid.getParent();
+        String parentToken = getParentToken(kid.getId());
 
         FcmResponseDto fcmResponseDto = FcmResponseDto.builder()
-                .token(parent.getParentDevice())
+                .token(parentToken)
                 .title(TITLE)
                 .body(LocalDate.now() + "일에 " + menuType + "식단에 " + kid.getNickname() + " 어린이의 알러지를 유발하는 음식이 존재합니다")
                 .build();
@@ -230,8 +249,10 @@ public class FcmService {
         Classroom classroom = kid.getClassroom();
         List<Teacher> teacherList = teacherRepository.findAllByClassroom(classroom);
         for(Teacher teacher : teacherList) {
+            String teacherToken = getUserToken(teacher.getId());
+
             FcmResponseDto fcmResponseDto = FcmResponseDto.builder()
-                    .token(teacher.getTeacherDevice())
+                    .token(teacherToken)
                     .title(TITLE)
                     .body(LocalDate.now() + "일에 " + menuType + "식단에 " + kid.getNickname() + " 어린이의 알러지를 유발하는 음식이 존재합니다")
                     .build();
@@ -275,13 +296,6 @@ public class FcmService {
                 insertAlarm(alarmRequestDto);
             }
         }
-    }
-
-    public String getParentToken(Long kidId) {
-        Kid kid = kidRepository.findById(kidId)
-                .orElseThrow(() -> new UserException(ExceptionCode.KID_NOT_FOUND));
-        Parent parent = kid.getParent();
-        return parent.getParentDevice();
     }
 
     @Transactional

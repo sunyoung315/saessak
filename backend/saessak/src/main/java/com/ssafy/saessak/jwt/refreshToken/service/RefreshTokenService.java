@@ -1,9 +1,9 @@
-package com.ssafy.saessak.oauth.token.service;
+package com.ssafy.saessak.jwt.refreshToken.service;
 
 import com.ssafy.saessak.exception.code.ExceptionCode;
 import com.ssafy.saessak.exception.model.UnAuthorizedException;
-import com.ssafy.saessak.oauth.token.domain.Token;
-import com.ssafy.saessak.oauth.token.repository.TokenRepository;
+import com.ssafy.saessak.jwt.refreshToken.domain.RefreshToken;
+import com.ssafy.saessak.jwt.refreshToken.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -14,23 +14,23 @@ import org.springframework.transaction.annotation.Transactional;
 public class RefreshTokenService {
 
     private final RedisTemplate<String, Object> redisTemplate;
-    private final TokenRepository tokenRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     @Transactional
     public void saveRefreshToken (final Long userId, final String refreshToken) {
-        tokenRepository.save(Token.of( userId, refreshToken));
+        refreshTokenRepository.save(RefreshToken.of( userId, refreshToken));
     }
 
     public Long findIdByRefreshToken(final String refreshToken) {
-        Token token = tokenRepository.findByRefreshToken(refreshToken)
+        RefreshToken token = refreshTokenRepository.findByRefreshToken(refreshToken)
                 .orElseThrow(() -> new UnAuthorizedException(ExceptionCode.TOKEN_INCORRECT_ERROR));
         return token.getTokenId();
     }
 
     @Transactional
     public void deleteRefreshToken(final Long userId) {
-        Token token = tokenRepository.findById(userId)
+        RefreshToken token = refreshTokenRepository.findById(userId)
                         .orElseThrow(() -> new UnAuthorizedException(ExceptionCode.REFRESH_TOKEN_NOT_FOUND));
-        tokenRepository.delete(token);
+        refreshTokenRepository.delete(token);
     }
 }
