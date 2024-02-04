@@ -10,9 +10,9 @@ export const useReplacementStore = defineStore('replacement', () => {
 	// 대리인 귀가 동의서 입력
 	const registReplacement = ref([]);
 	const PostRegistReplacement = async function (data) {
-		console.log('registReplacement 들어올 때 : ' + registReplacement.value);
+		// console.log('registReplacement 들어올 때 : ' + registReplacement.value);
 		await axios({
-			url: `${REST_DOCUMENT_API}`,
+			url: `${REST_DOCUMENT_API}/`,
 			method: 'POST',
 			headers: {
 				Authorization: 'Bearer ' + token,
@@ -22,7 +22,7 @@ export const useReplacementStore = defineStore('replacement', () => {
 		})
 			.then(response => {
 				registReplacement.value = response.data.data;
-				console.log('registReplacement 실행 후 : ' + registReplacement.value);
+				// console.log('registReplacement 실행 후 : ' + registReplacement.value);
 			})
 			.catch(error => {
 				console.error('Failed to post replacement: ', error);

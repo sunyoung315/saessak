@@ -53,7 +53,15 @@
 							<td
 								class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
 							>
-								{{ kid.replacementCheck ? '확인 완료' : '미확인' }}
+								<span
+									:class="
+										kid.replacementCheck
+											? 'bg-nav-blue text-black font-bold rounded-lg p-2'
+											: 'bg-gray-500 text-white font-bold rounded-lg p-2'
+									"
+								>
+									{{ kid.replacementCheck ? '확인 완료' : '확인 필요' }}
+								</span>
 							</td>
 						</tr>
 					</tbody>
@@ -115,7 +123,15 @@
 							<td
 								class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
 							>
-								{{ kid.kidAlleryCheck ? '확인 완료' : '미확인' }}
+								<span
+									:class="
+										kid.replacementCheck
+											? 'bg-nav-blue text-black font-bold rounded-lg p-2'
+											: 'bg-gray-500 text-white font-bold rounded-lg p-2'
+									"
+								>
+									{{ kid.replacementCheck ? '확인 완료' : '확인 필요' }}
+								</span>
 							</td>
 						</tr>
 					</tbody>
@@ -146,13 +162,13 @@ const props = defineProps({
 });
 
 onMounted(async () => {
+	// 선생님
 	await replacementStore.getReplacementList();
 	replacementList.value = replacementStore.replacementList;
 	await allergyStore.getAllergyList();
 	allergyList.value = allergyStore.allergyList;
 });
 
-// 버튼
 function moveReplacement(replacementId) {
 	router.push({
 		name: 'DocumentReplaceDetail',

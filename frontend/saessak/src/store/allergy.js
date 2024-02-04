@@ -9,16 +9,22 @@ const token = sessionStorage.getItem('accessToken');
 export const useAllergyStore = defineStore('allergy', () => {
 	// 식품 알레르기 동의서 입력
 	const registAllergy = ref([]);
-	const getRegistAllergy = async function () {
-		await axios
-			.post(`${REST_DOCUMENT_API}`, {
-				headers: {
-					Authorization: 'Bearer ' + token,
-				},
-			})
+	const PostRegistAllergy = async function (data) {
+		await axios({
+			url: `${REST_DOCUMENT_API}/`,
+			method: 'POST',
+			headers: {
+				Authorization: 'Bearer ' + token,
+				'Content-Type': 'application/json',
+			},
+			data,
+		})
 			.then(response => {
 				registAllergy.value = response.data.data;
-				// console.log(registAllergy.value);
+				console.log('pinia: ' + registAllergy.value);
+			})
+			.catch(error => {
+				console.error('error: ', error);
 			});
 	};
 
@@ -57,7 +63,7 @@ export const useAllergyStore = defineStore('allergy', () => {
 
 	return {
 		registAllergy,
-		getRegistAllergy,
+		PostRegistAllergy,
 		allergyList,
 		getAllergyList,
 		myKidAllergyList,

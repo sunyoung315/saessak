@@ -47,6 +47,7 @@
 								type="checkbox"
 								:value="allergy.no"
 								:checked="isKidAllergic(allergy.no)"
+								disabled
 								class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
 							/>
 							<label
@@ -61,19 +62,18 @@
 				<div class="flex justify-end">
 					<div class="flex-col text-gray-700 text-xl font-bold m-8">
 						<div>
-							<p class="mb-8">반 : {{ kidAllergy[0].classroomName }}</p>
-							<p class="mb-8">이름 : {{ kidAllergy[0].kidName }}</p>
+							<p class="mb-8">반 : {{ myKidAllergyList.classroomName }}</p>
+							<p class="mb-8">이름 : {{ myKidAllergyList.kidName }}</p>
 						</div>
 						<div>
-							<h2>전자 서명:</h2>
-							<document-signature />
+							<h2>전자 서명: 저장된 서명파일 이미지 넣기</h2>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 		<div v-else>
-			<!-- Parents -->
+			<!-- Parents Version -->
 			<div
 				class="container mx-16 p-1.5 w-auto border border-gray-200 shadow rounded-lg"
 			>
@@ -104,6 +104,7 @@
 								type="checkbox"
 								:value="allergy.no"
 								:checked="isKidAllergic(allergy.no)"
+								disabled
 								class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
 							/>
 							<label
@@ -117,13 +118,12 @@
 				</div>
 				<div class="flex justify-end">
 					<div class="flex-col text-gray-700 text-xl font-bold m-8">
-						<div>
-							<p class="mb-8">반 : {{ kidAllergy[0].classroomName }}</p>
-							<p class="mb-8">이름 : {{ kidAllergy[0].kidName }}</p>
+						<div class="text-end">
+							<p class="mb-8">반 : {{ myKidAllergyList.classroomName }}</p>
+							<p class="mb-8">이름 : {{ myKidAllergyList.kidName }}</p>
 						</div>
 						<div>
-							<h2>전자 서명:</h2>
-							<document-signature />
+							<h2>전자 서명: 저장된 서명파일 이미지 넣기</h2>
 						</div>
 					</div>
 				</div>
@@ -133,22 +133,34 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import DocumentSignature from '@/components/document/DocumentSignature.vue';
+import { useAllergyStore } from '@/store/allergy';
 
 const router = useRouter();
-const isTeacher = ref(true);
+const allergyStore = useAllergyStore();
 
-const kidAllergy = [
-	{
-		kidId: 100,
-		classroomName: '개나리',
-		kidName: '김샛별',
-		kidAllergy: '1/2/11/12',
-		kidAllergySignature: 'String',
-	},
-];
+let loginStore = JSON.parse(localStorage.getItem('loginStore'));
+let isTeacher = loginStore.isTeacher;
+
+// 내 아이 id 조회 (부모님인 경우만)
+const kidId = loginStore.isTeacher ? undefined : loginStore.kidList[0].kidId;
+
+// 데이터 목록 가져오기
+const myKidAllergyList = ref([]);
+const getmyAllergyList = async kidId => {
+	await allergyStore.getmyAllergyList(kidId);
+	myKidAllergyList.value = allergyStore.myKidAllergyList;
+};
+
+onMounted(async () => {
+	// 선생님인 경우
+	if (loginStore.isTeacher) {
+	} else {
+		// 학부모 경우
+		await getmyAllergyList(kidId);
+	}
+});
 
 const allergyList = ref([
 	{
@@ -229,11 +241,17 @@ const allergyList = ref([
 	},
 ]);
 
-// 해당 알러지 번호가 알러지 목록에 있는지 확인하는 함수
+// 해당 알러지 번호가 알러지 목록에 있는지 확인하는 함수 -> 아래 if문 처리를 안하면, 비동기-동기 undefined 문제 발생
 const isKidAllergic = allergyNo => {
-	return kidAllergy[0].kidAllergy.split('/').includes(allergyNo.toString());
+	if (myKidAllergyList.value && myKidAllergyList.value.kidAllergy) {
+		return myKidAllergyList.value.kidAllergy
+			.split('/')
+			.includes(allergyNo.toString());
+	}
+	return false;
 };
 
+// 버튼
 const confirm = ref(false);
 function check() {
 	confirm.value = !confirm.value;
@@ -242,7 +260,9 @@ function check() {
 function goBack() {
 	router.go(-1);
 }
+// 버튼 끝
 
+// 문구
 const allergyContent = ref(
 	'원아들의 식품 알레르기에 관한 실태를 파악하고 \n \n 발병 등에 대한 예방조치와 제거 및 대체식품의 필요여부를 확인하고자 하오니 \n \n 특정 식품에 대한 알레르기 반응이 있는 식품을 확인하여 체크해주시기 바랍니다.',
 );

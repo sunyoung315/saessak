@@ -27,36 +27,139 @@
 			<div
 				class="text-wrap text-left text-2xl whitespace-pre-line ml-40 mt-12 font-bold"
 			>
-				<p class="mb-4 ml-60">이름: {{ kidName }}</p>
-				<p class="mb-4">
-					날짜 :
-					<input type="date" v-model="registReplacement.replacementDate" />
-				</p>
-				<p class="mb-4">
-					시간 :
-					<input type="time" v-model="registReplacement.replacementTime" />
-				</p>
-				<div class="flex justify-start">
-					<p class="mb-4">
-						보호자 :
-						<input type="text" v-model="registReplacement.replacementName" />
-					</p>
-					<p class="mb-4 ml-48">
-						보호자 관계 :
+				<div class="md:flex md:items-center mb-6">
+					<div>
+						<label
+							class="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4"
+							for="inline-full-name"
+						>
+							이름:
+						</label>
+					</div>
+					<div>
 						<input
+							class="bg-gray-200 text-xl appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-nav-navy"
+							id="inline-full-name"
 							type="text"
+							v-model="kidName"
+							readonly
+						/>
+					</div>
+				</div>
+				<div class="flex justify-start">
+					<div class="md:flex md:items-center mb-6">
+						<div>
+							<label
+								class="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4"
+								for="inline-full-name"
+							>
+								날짜:
+							</label>
+						</div>
+						<div>
+							<input
+								class="bg-white text-xl appearance-none border-2 border-black rounded w-full py-2 px-4 text-black leading-tight focus:outline-none focus:bg-white focus:border-nav-navy"
+								id="inline-full-name"
+								type="date"
+								v-model="registReplacement.replacementDate"
+							/>
+						</div>
+					</div>
+					<div class="md:flex md:items-center mb-6">
+						<div>
+							<label
+								class="block text-gray-500 ml-20 font-bold md:text-right mb-1 md:mb-0 pr-4"
+								for="inline-full-name"
+							>
+								시간:
+							</label>
+						</div>
+						<div>
+							<input
+								class="bg-white text-xl appearance-none border-2 border-black rounded w-full py-2 px-4 text-black leading-tight focus:outline-none focus:bg-white focus:border-nav-navy"
+								id="inline-full-name"
+								type="time"
+								v-model="registReplacement.replacementTime"
+							/>
+						</div>
+					</div>
+				</div>
+				<div class="md:flex md:items-center mb-6">
+					<div>
+						<label
+							class="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4"
+							for="inline-full-name"
+						>
+							보호자 성함:
+						</label>
+					</div>
+					<div>
+						<input
+							class="bg-white text-xl appearance-none border-2 border-black rounded w-full py-2 px-4 text-black leading-tight focus:outline-none focus:bg-white focus:border-nav-navy"
+							id="inline-full-name"
+							type="text"
+							placeholder="보호자 성함을 입력해주세요."
+							v-model="registReplacement.replacementName"
+						/>
+					</div>
+				</div>
+				<div class="md:flex md:items-center mb-6">
+					<div>
+						<label
+							class="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4"
+							for="inline-full-name"
+						>
+							보호자 관계:
+						</label>
+					</div>
+					<div>
+						<input
+							class="bg-white text-xl appearance-none border-2 border-black rounded w-full py-2 px-4 text-black leading-tight focus:outline-none focus:bg-white focus:border-nav-navy"
+							id="inline-full-name"
+							type="text"
+							placeholder="원아와의 관계를 입력해주세요."
 							v-model="registReplacement.replacementRelationship"
 						/>
-					</p>
+					</div>
 				</div>
-				<p class="mb-4">
-					귀가 방법 :
-					<input type="tel" v-model="registReplacement.replacementVehicle" />
-				</p>
-				<p class="mb-4">
-					비상연락망 :
-					<input type="tel" v-model="registReplacement.replacementNumber" />
-				</p>
+				<div class="md:flex md:items-center mb-6">
+					<div>
+						<label
+							class="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4"
+							for="inline-full-name"
+						>
+							귀가 방법:
+						</label>
+					</div>
+					<div>
+						<input
+							class="bg-white text-xl appearance-none border-2 border-black rounded w-full py-2 px-4 text-black leading-tight focus:outline-none focus:bg-white focus:border-nav-navy"
+							id="inline-full-name"
+							type="text"
+							placeholder="귀가 방법을 입력해주세요."
+							v-model="registReplacement.replacementVehicle"
+						/>
+					</div>
+				</div>
+				<div class="md:flex md:items-center mb-6">
+					<div>
+						<label
+							class="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4"
+							for="inline-full-name"
+						>
+							비상 연락망:
+						</label>
+					</div>
+					<div>
+						<input
+							class="bg-white text-xl appearance-none border-2 border-black rounded w-full py-2 px-4 text-black leading-tight focus:outline-none focus:bg-white focus:border-nav-navy"
+							id="inline-full-name"
+							type="text"
+							placeholder="비상 연락망을 입력해주세요."
+							v-model="registReplacement.replacementNumber"
+						/>
+					</div>
+				</div>
 			</div>
 			<div class="text-wrap text-center text-xl whitespace-pre-line m-12">
 				<p>{{ replaceContent }}</p>
@@ -76,7 +179,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useReplacementStore } from '@/store/replacement';
 import DocumentSignature from '@/components/document/DocumentSignature.vue';
@@ -105,10 +208,9 @@ const registReplacement = ref({
 async function regist() {
 	try {
 		await replacementStore.PostRegistReplacement(registReplacement.value);
-		console.log(registReplacement);
-		console.log('성공');
+		// console.log(registReplacement);
 	} catch (error) {
-		console.error('실패: ', error);
+		// console.error('실패: ', error);
 	}
 }
 
