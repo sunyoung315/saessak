@@ -18,6 +18,7 @@ import com.ssafy.saessak.user.repository.KidRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -130,28 +131,27 @@ public class BoardService {
         if(kidResult.isEmpty()) throw new UserException(ExceptionCode.KID_NOT_FOUND);
         Kid kid = kidResult.get();
 
-        Optional<List<Board>> result = boardRepository.findByKidAndBoardDate(kid,date);
-        if (result.isPresent()){
-            Board board = result.get().get(0);
-            return BoardDetailDto.builder()
-                    .boardId(board.getBoardId())
-                    .kidId(board.getKid().getId())
-                    .classroomId(board.getClassroom().getClassroomId())
-                    .boardDate(board.getBoardDate())
-                    .boardPath(board.getBoardPath())
-                    .boardContent(board.getBoardContent())
-                    .boardPoopStatus(board.getBoardPoopStatus())
-                    .boardSleepTime(board.getBoardSleepTime())
-                    .boardTall(board.getBoardTall())
-                    .boardTemperature(board.getBoardTemperature())
-                    .boardWeight(board.getBoardWeight())
-                    .build();
-        }
-        else{
-            return null;
-        }
+        Optional<Board> result = boardRepository.findFirstByKidAndBoardDateOrderByBoardId(kid,date);
+        if(result.isEmpty()) return null;
+        log.debug("data size : {}" , result.get()) ;
+        Board board = result.get();
+        return BoardDetailDto.builder()
+                .boardId(board.getBoardId())
+                .kidId(board.getKid().getId())
+                .classroomId(board.getClassroom().getClassroomId())
+                .boardDate(board.getBoardDate())
+                .boardPath(board.getBoardPath())
+                .boardContent(board.getBoardContent())
+                .boardPoopStatus(board.getBoardPoopStatus())
+                .boardSleepTime(board.getBoardSleepTime())
+                .boardTall(board.getBoardTall())
+                .boardTemperature(board.getBoardTemperature())
+                .boardWeight(board.getBoardWeight())
+                .build();
+
+
     }
-    // 아이의 가장 최근 엘범
+    // 아이의 가장 최근 알림장
     public BoardDetailDto getKidCurrentBoard( Long kidId){
         Optional<Kid> kidResult = kidRepository.findById(kidId);
         if(kidResult.isEmpty()) throw new UserException(ExceptionCode.KID_NOT_FOUND);
@@ -176,6 +176,45 @@ public class BoardService {
                 .boardContent(board.getBoardContent())
                 .build();
 
+
+    }
+    // 해당 달의 아이의 알림장 리스트
+    public List<BoardResponseDto> getMonthlyKidBoardList(Long kidId, LocalDate date){
+        Optional<Kid> kidResult = kidRepository.findById(kidId);
+        if(kidResult.isEmpty()) throw new UserException(ExceptionCode.KID_NOT_FOUND);
+        Kid kid = kidResult.get();
+        log.debug("service");
+        LocalDate start = date.withDayOfMonth(1);
+        LocalDate end = date.withDayOfMonth(date.lengthOfMonth());
+        Optional<List<Board>> boardResult =
+                boardRepository.findByKidAndBoardDateGreaterThanEqualAndBoardDateLessThanEqualOrderByBoardDate(kid, start, end);
+        List<BoardResponseDto> boardResponseDtoList = new ArrayList<>();
+        log.debug("startDate {} , endDate {}", start, end);
+        if(boardResult.isEmpty()) return boardResponseDtoList;
+        for(Board board: boardResult.get()){
+
+            String path = null;
+            Optional<List<Album>> albumListResult = albumRepository.findByKidAndAlbumDate(kid,board.getBoardDate());
+            if(albumListResult.isPresent()){
+                List<Album> albumList = albumListResult.get();
+                out : for(Album album : albumList){
+                    for(File file : album.getFileList()){
+                        path = file.getFilePath();
+                        break out;
+                    }
+                }
+            }
+
+            BoardResponseDto boardResponseDto = BoardResponseDto.builder()
+                    .boardDate(board.getBoardDate())
+                    .boardId(board.getBoardId())
+                    .boardPath(path)
+                    .kidId(kidId)
+                    .build();
+
+            boardResponseDtoList.add(boardResponseDto);
+        }
+        return boardResponseDtoList;
 
     }
     public PhysicalResponseDto getPhysicalList (Long kidId, LocalDate startDate,LocalDate endDate){
