@@ -1,4 +1,4 @@
-package com.ssafy.saessak.todo;
+package com.ssafy.saessak.todo.service;
 
 import com.ssafy.saessak.exception.code.ExceptionCode;
 import com.ssafy.saessak.exception.model.NotFoundException;
@@ -39,7 +39,7 @@ public class TodoService {
     public List<TodoResponseDto> getTodoList(){
         User user = authenticationService.getUserByAuthentication();
         List<TodoResponseDto> todoResponseDtoList = new ArrayList<>();
-        Optional<List<Todo>> todoResult = todoRepository.findAllByUser(user);
+        Optional<List<Todo>> todoResult = todoRepository.findAllByUserOrderByTodoId(user);
 
         for(Todo todo : todoResult.get()){
             TodoResponseDto todoResponseDto = TodoResponseDto.builder()
@@ -59,7 +59,7 @@ public class TodoService {
         if (todoResult.isEmpty()) throw new NotFoundException(ExceptionCode.TODO_NOT_FOUND);
         Todo todo = todoResult.get();
         todo.toggleTodo();
-//        todoRepository.save(todo);
+        todoRepository.save(todo);
         return todoId;
     }
     // delete

@@ -2,12 +2,11 @@ package com.ssafy.saessak.todo.controller;
 
 import com.ssafy.saessak.result.ResultCode;
 import com.ssafy.saessak.result.ResultResponse;
-import com.ssafy.saessak.todo.TodoService;
+import com.ssafy.saessak.todo.service.TodoService;
 import com.ssafy.saessak.todo.dto.TodoResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
