@@ -76,7 +76,7 @@ public class ParentService {
         }
 
         String userToken = fcmService.getUserToken(parent.getId());
-        Boolean isAlarm = userToken.equals(null) ? false : true;
+        Boolean isAlarm = userToken == null ? false : true;
         LoginParentResponseDto loginResponseDto = LoginParentResponseDto.builder()
                 .isTeacher(false)
                 .isAlarm(isAlarm)
