@@ -213,11 +213,11 @@ const logout = () => {
     setKidlist('')
   }
   // console.log("로그아웃 드가자")
-  localStorage.removeItem('chatStore')
   localStorage.removeItem('loginStore')
-  // setlogout()
-  // setTeacherFlag(false)
-  // setTeachername('')
+  localStorage.removeItem('chatStore')
+  setlogout()
+  setTeacherFlag(false)
+  setTeachername('')
   window.location.href = '/'
 }
 </script>
