@@ -209,13 +209,12 @@ const replacementSignature = ref();
 async function regist() {
 	try {
 		// 전자서명 제외 입력
-		await replacementStore.PostRegistReplacement(registReplacement);
+		await replacementStore.PostRegistReplacement(registReplacement.value);
 		console.log("전자서명 입력 후 " + replacementStore.registReplacementId);
-		console.log("regist 데이터: "+ registReplacement.value );
 		// 전자서명 입력
 		const formData = new FormData();
 		formData.append("replacementId", replacementStore.registReplacementId);
-		formData.append("signFile", new File([replacementSignature], "sign"+replacementStore.registReplacementId+".png", {type: 'image/png'}));
+		formData.append("signFile", new File([replacementSignature], "sign"+replacementStore.registReplacementId+".jpeg", {type: 'image/jpeg'}));
 		await replacementStore.PostRegistFileReplacement(formData);
 	} catch (error) {
 		// console.error('실패: ', error);

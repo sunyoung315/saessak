@@ -10,7 +10,6 @@ export const useReplacementStore = defineStore('replacement', () => {
 	// 대리인 귀가 동의서 입력
 	const registReplacementId = ref([]);
 	const PostRegistReplacement = async function (data) {
-		console.log('registReplacement 들어올 때 : ' + registReplacementId.value);
 		await axios({
 			url: `${REST_DOCUMENT_API}/`,
 			method: 'POST',
@@ -22,7 +21,6 @@ export const useReplacementStore = defineStore('replacement', () => {
 		})
 			.then(response => {
 				registReplacementId.value = response.data.data;
-				console.log('registReplacement 실행 후 : ' + registReplacementId.value);
 			})
 			.catch(error => {
 				console.error('실행 제대로 안됨: ', error);
@@ -36,7 +34,7 @@ export const useReplacementStore = defineStore('replacement', () => {
 			method: 'POST',
 			headers: {
 				Authorization: 'Bearer ' + token,
-				'Content-Type': 'application/json',
+				'Content-Type': 'multipart/form-data',
 			},
 			data,
 		})

@@ -70,13 +70,13 @@ const saveSignature = () => {
 	const dataUrl = canvas.value.toDataURL();
 	// 서명 데이터 이벤트 전달
 	// emit('signature-saved', dataUrl);
-	console.log(dataUrl);
+	// console.log(dataUrl);
 	const blobData = dataURItoBlob(dataUrl);
-	console.log(blobData);
+	// console.log(blobData);
 	emit('signature-saved', blobData);
 
 	// File Download
-	const image = canvas.value.toDataURL('image/png');
+	const image = canvas.value.toDataURL('image/jpeg');
 	// const link = document.createElement('a');
 	// link.href = image;
 	// link.download = 'signature';
