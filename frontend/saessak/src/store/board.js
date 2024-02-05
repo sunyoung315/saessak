@@ -75,17 +75,15 @@ export const useBoardStore = defineStore('board', () => {
 			headers: {
 				'Content-Type': 'application/json',
 			},
-		})
-			.then(resp => {
+		}).then(resp => {
+			if (resp.data.data) {
 				noContent.value = '';
 				oneBoard.value = resp.data.data;
 				date.value = oneBoard.value.boardDate;
-			})
-			.catch(error => {
-				if (error.response.status === 500) {
-					noContent.value = '등록된 알림장이 없습니다.';
-				}
-			});
+			} else {
+				noContent.value = '등록된 알림장이 없습니다.';
+			}
+		});
 	};
 
 	// 알림장 상세보기(kidId, 최신 알림장)
@@ -138,14 +136,10 @@ export const useBoardStore = defineStore('board', () => {
 			headers: {
 				'Content-Type': 'application/json',
 			},
-		})
-			.then(resp => {
-				tallList.value = resp.data.data.tallList;
-				weightList.value = resp.data.data.weightList;
-			})
-			.catch(err => {
-				console.log(err);
-			});
+		}).then(resp => {
+			tallList.value = resp.data.data.tallList;
+			weightList.value = resp.data.data.weightList;
+		});
 	};
 
 	// 선택기간 아이의 성장 기록 조회

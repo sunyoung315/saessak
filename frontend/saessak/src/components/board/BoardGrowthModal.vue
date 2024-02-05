@@ -207,7 +207,7 @@ const chartOptionsTall = ref({
 		},
 	},
 	markers: {
-		size: 4,
+		size: 5,
 	},
 	dataLabels: {
 		enabled: false,
@@ -276,7 +276,7 @@ const chartOptionsWeight = ref({
 		},
 	},
 	markers: {
-		size: 4,
+		size: 5,
 	},
 	dataLabels: {
 		enabled: false,

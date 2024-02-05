@@ -115,15 +115,20 @@
 
 			<!-- content -->
 			<div class="mx-20 my-5">
-				<template v-if="!summary">
+				<template v-if="!summary && isCreating">
 					<div
 						class="h-[25rem] w-[50rem] px-4 py-12 border border-gray-200 shadow rounded-lg flex justify-center items-center"
 					>
 						<span class="loader"></span>
 					</div>
 				</template>
+				<template v-else-if="!summary && !isCreating">
+					<div>확인하고 싶은 알림장 기간을 선택하세요 :)</div>
+				</template>
 				<template v-else>
-					<div class="whitespace-pre-line">{{ summary }}</div>
+					<div class="whitespace-pre-line text-base">
+						{{ summary }}
+					</div>
 				</template>
 			</div>
 		</div>
@@ -156,6 +161,8 @@ const range = ref({
 	start: new Date(),
 	end: new Date(),
 });
+
+const isCreating = ref(false);
 
 const store = useBoardStore();
 
@@ -194,6 +201,9 @@ const getGPTResponse = async () => {
 };
 
 const getSummaryBoard = async kidId => {
+	isCreating.value = true;
+	summary.value = '';
+
 	const startDate = `${range.value.start.getFullYear()}-${('0' + (range.value.start.getMonth() + 1)).slice(-2)}-${('0' + range.value.start.getDate()).slice(-2)}`;
 	const endDate = `${range.value.end.getFullYear()}-${('0' + (range.value.end.getMonth() + 1)).slice(-2)}-${('0' + range.value.end.getDate()).slice(-2)}`;
 
