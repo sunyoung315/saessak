@@ -37,154 +37,169 @@
 		</div>
 		<!-- table -->
 		<div class="table-box">
-			<table class="table">
-				<thead>
-					<template v-for="(date, index) in weekDays" :key="date">
-						<th scope="col" class="date-header">
-							{{ format(date, 'd일') }} {{ dayOfTheWeek[index] }}
-						</th>
-					</template>
-				</thead>
-				<!-- <template v-if="store.weeklyMenu"> -->
-				<tbody>
-					<tr>
-						<td v-for="date in weekDays" :key="date" class="oneday-menu">
-							<div class="block">
-								<template v-for="menu in store.weeklyMenu" :key="menu.menuId">
-									<div
-										v-if="
-											format(date, 'yyyy-MM-dd').toString() === menu.menuDate &&
-											menu.menuType === '점심'
-										"
-										class="menu-card"
-									>
-										<template v-if="props.loginStore.isTeacher">
-											<div class="flex justify-between items-center">
+			<template v-if="store.weeklyMenu">
+				<table class="table">
+					<thead>
+						<template v-for="(date, index) in weekDays" :key="date">
+							<th scope="col" class="date-header">
+								{{ format(date, 'd일') }} {{ dayOfTheWeek[index] }}
+							</th>
+						</template>
+					</thead>
+					<tbody>
+						<tr>
+							<td v-for="date in weekDays" :key="date" class="oneday-menu">
+								<div class="block">
+									<template v-for="menu in store.weeklyMenu" :key="menu.menuId">
+										<div
+											v-if="
+												format(date, 'yyyy-MM-dd').toString() ===
+													menu.menuDate && menu.menuType === '점심'
+											"
+											class="menu-card"
+										>
+											<template v-if="props.loginStore.isTeacher">
+												<div class="flex justify-between items-center">
+													<div class="menu-type">
+														{{ menu.menuType }}
+													</div>
+													<button
+														@click="registPhotoModal.openModal(menu)"
+														class="add-image-btn"
+													>
+														<svg
+															xmlns="http://www.w3.org/2000/svg"
+															width="20"
+															height="16"
+															viewBox="0 0 20 16"
+															fill="none"
+														>
+															<path
+																fill-rule="evenodd"
+																clip-rule="evenodd"
+																d="M18 0C19.1046 0 20 0.89543 20 2V14C20 15.1046 19.1046 16 18 16H2C0.89543 16 0 15.1046 0 14V2C0 0.89543 0.89543 0 2 0H18ZM18 2H2V14H2.584L8.9477 7.63809L12.421 10.615L18 4.607V2ZM18 7.545L12.5789 13.3847L9.052 10.362L5.414 14H18V7.545ZM5.5 4C6.32843 4 7 4.67157 7 5.5C7 6.32843 6.32843 7 5.5 7C4.67157 7 4 6.32843 4 5.5C4 4.67157 4.67157 4 5.5 4Z"
+																fill="#FFFFFF"
+															/>
+														</svg>
+													</button>
+												</div>
+											</template>
+											<template v-else>
 												<div class="menu-type">
 													{{ menu.menuType }}
 												</div>
-												<button
-													@click="registPhotoModal.openModal(menu)"
-													class="w-7 h-7 mx-2 rounded bg-dark-navy flex justify-center items-center"
-												>
-													<svg
-														xmlns="http://www.w3.org/2000/svg"
-														width="20"
-														height="16"
-														viewBox="0 0 20 16"
-														fill="none"
+											</template>
+											<template v-if="menu.menuPath">
+												<img
+													:src="menu.menuPath"
+													alt="점심사진"
+													class="menu-image"
+												/>
+											</template>
+											<template v-else>
+												<div class="menu-image p-4">
+													<img src="@/assets/meal.png" alt="" />
+												</div>
+											</template>
+											<template
+												v-for="food in menu.foodList"
+												:key="food.foodId"
+											>
+												<div class="food-item">
+													<div class="food-title">{{ food.foodName }}</div>
+													<div v-if="food.foodAllergy" class="food-allergy">
+														( {{ food.foodAllergy.split('/').join(', ') }} )
+													</div>
+												</div>
+											</template>
+										</div>
+									</template>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td v-for="date in weekDays" :key="date" class="oneday-menu">
+								<div class="block">
+									<template v-for="menu in store.weeklyMenu" :key="menu.menuId">
+										<div
+											v-if="
+												format(date, 'yyyy-MM-dd').toString() ===
+													menu.menuDate && menu.menuType === '간식'
+											"
+											class="menu-card"
+										>
+											<template v-if="props.loginStore.isTeacher">
+												<div class="flex justify-between items-center">
+													<div class="menu-type">
+														{{ menu.menuType }}
+													</div>
+													<button
+														@click="registPhotoModal.openModal(menu)"
+														class="w-7 h-7 mx-2 rounded bg-dark-navy flex justify-center items-center"
 													>
-														<path
-															fill-rule="evenodd"
-															clip-rule="evenodd"
-															d="M18 0C19.1046 0 20 0.89543 20 2V14C20 15.1046 19.1046 16 18 16H2C0.89543 16 0 15.1046 0 14V2C0 0.89543 0.89543 0 2 0H18ZM18 2H2V14H2.584L8.9477 7.63809L12.421 10.615L18 4.607V2ZM18 7.545L12.5789 13.3847L9.052 10.362L5.414 14H18V7.545ZM5.5 4C6.32843 4 7 4.67157 7 5.5C7 6.32843 6.32843 7 5.5 7C4.67157 7 4 6.32843 4 5.5C4 4.67157 4.67157 4 5.5 4Z"
-															fill="#FFFFFF"
-														/>
-													</svg>
-												</button>
-											</div>
-										</template>
-										<template v-else>
-											<div class="menu-type">
-												{{ menu.menuType }}
-											</div>
-										</template>
-										<template v-if="menu.menuPath">
-											<img
-												:src="menu.menuPath"
-												alt="점심사진"
-												class="menu-image"
-											/>
-										</template>
-										<template v-else>
-											<div class="menu-image p-4">
-												<img src="@/assets/meal.png" alt="" />
-											</div>
-										</template>
-										<template v-for="food in menu.foodList" :key="food.foodId">
-											<div class="food-item">
-												<div class="food-title">{{ food.foodName }}</div>
-												<div v-if="food.foodAllergy" class="food-allergy">
-													( {{ food.foodAllergy.split('/').join(', ') }} )
+														<svg
+															xmlns="http://www.w3.org/2000/svg"
+															width="20"
+															height="16"
+															viewBox="0 0 20 16"
+															fill="none"
+														>
+															<path
+																fill-rule="evenodd"
+																clip-rule="evenodd"
+																d="M18 0C19.1046 0 20 0.89543 20 2V14C20 15.1046 19.1046 16 18 16H2C0.89543 16 0 15.1046 0 14V2C0 0.89543 0.89543 0 2 0H18ZM18 2H2V14H2.584L8.9477 7.63809L12.421 10.615L18 4.607V2ZM18 7.545L12.5789 13.3847L9.052 10.362L5.414 14H18V7.545ZM5.5 4C6.32843 4 7 4.67157 7 5.5C7 6.32843 6.32843 7 5.5 7C4.67157 7 4 6.32843 4 5.5C4 4.67157 4.67157 4 5.5 4Z"
+																fill="#FFFFFF"
+															/>
+														</svg>
+													</button>
 												</div>
-											</div>
-										</template>
-									</div>
-								</template>
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<td v-for="date in weekDays" :key="date" class="oneday-menu">
-							<div class="block">
-								<template v-for="menu in store.weeklyMenu" :key="menu.menuId">
-									<div
-										v-if="
-											format(date, 'yyyy-MM-dd').toString() === menu.menuDate &&
-											menu.menuType === '간식'
-										"
-										class="menu-card"
-									>
-										<template v-if="props.loginStore.isTeacher">
-											<div class="flex justify-between items-center">
-												<div class="menu-type">
-													{{ menu.menuType }}
+											</template>
+											<template v-else>
+												<div class="menu-type">{{ menu.menuType }}</div>
+											</template>
+											<template v-if="menu.menuPath">
+												<img
+													:src="menu.menuPath"
+													alt="간식사진"
+													class="menu-image"
+												/>
+											</template>
+											<template v-else>
+												<div class="menu-image p-4">
+													<img src="@/assets/tray.png" alt="" />
 												</div>
-												<button
-													@click="registPhotoModal.openModal(menu)"
-													class="w-7 h-7 mx-2 rounded bg-dark-navy flex justify-center items-center"
-												>
-													<svg
-														xmlns="http://www.w3.org/2000/svg"
-														width="20"
-														height="16"
-														viewBox="0 0 20 16"
-														fill="none"
-													>
-														<path
-															fill-rule="evenodd"
-															clip-rule="evenodd"
-															d="M18 0C19.1046 0 20 0.89543 20 2V14C20 15.1046 19.1046 16 18 16H2C0.89543 16 0 15.1046 0 14V2C0 0.89543 0.89543 0 2 0H18ZM18 2H2V14H2.584L8.9477 7.63809L12.421 10.615L18 4.607V2ZM18 7.545L12.5789 13.3847L9.052 10.362L5.414 14H18V7.545ZM5.5 4C6.32843 4 7 4.67157 7 5.5C7 6.32843 6.32843 7 5.5 7C4.67157 7 4 6.32843 4 5.5C4 4.67157 4.67157 4 5.5 4Z"
-															fill="#FFFFFF"
-														/>
-													</svg>
-												</button>
-											</div>
-										</template>
-										<template v-else>
-											<div class="menu-type">{{ menu.menuType }}</div>
-										</template>
-										<template v-if="menu.menuPath">
-											<img
-												:src="menu.menuPath"
-												alt="간식사진"
-												class="menu-image"
-											/>
-										</template>
-										<template v-else>
-											<div class="menu-image p-4">
-												<img src="@/assets/tray.png" alt="" />
-											</div>
-										</template>
-										<template v-for="food in menu.foodList" :key="food.foodId">
-											<div class="food-item">
-												<div class="food-title">{{ food.foodName }}</div>
-												<div v-if="food.foodAllergy" class="food-allergy">
-													( {{ food.foodAllergy.split('/').join(', ') }} )
+											</template>
+											<template
+												v-for="food in menu.foodList"
+												:key="food.foodId"
+											>
+												<div class="food-item">
+													<div class="food-title">{{ food.foodName }}</div>
+													<div v-if="food.foodAllergy" class="food-allergy">
+														( {{ food.foodAllergy.split('/').join(', ') }} )
+													</div>
 												</div>
-											</div>
-										</template>
-									</div>
-								</template>
-							</div>
-						</td>
-					</tr>
-				</tbody>
-				<!-- </template>
-				<template v-else>
-					<div>등록된 식단표가 없습니다.</div>
-				</template> -->
-			</table>
+											</template>
+										</div>
+									</template>
+								</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</template>
+			<template v-else>
+				<table class="table">
+					<thead>
+						<template v-for="(date, index) in weekDays" :key="date">
+							<th scope="col" class="date-header">
+								{{ format(date, 'd일') }} {{ dayOfTheWeek[index] }}
+							</th>
+						</template>
+					</thead>
+				</table>
+				<div class="no-menu">등록된 식단표가 없습니다.</div>
+			</template>
 			<br />
 			<div class="p-2">
 				<div class="px-2 text-lg font-bold">※ 알레르기 유발식품</div>
@@ -230,27 +245,6 @@ let weekly = computed(() => {
 	return '';
 });
 
-// input에서 날짜 선택으로 인한 변화 추적
-watch(
-	selectedDate,
-	async newVal => {
-		if (newVal) {
-			let date = new Date(newVal);
-			// 일요일 기준(0), 월요일 기준(1)
-			weekOfMonth.value = getWeekOfMonth(date, { weekStartsOn: 1 });
-			month.value = getMonth(date) + 1;
-			year.value = date.getFullYear();
-
-			// 주차에 해당하는 날짜 계산
-			const startOfWeek = addDays(date, -(date.getDay() || 7) + 1); // 주의 첫번째 요일 (월요일)
-			weekDays.value = Array.from({ length: 5 }, (_, i) =>
-				addDays(startOfWeek, i),
-			);
-		}
-	},
-	{ immediate: true },
-);
-
 // 주차별 식단표 요청 data
 const weeklyDate = ref({
 	year,
@@ -284,6 +278,29 @@ const getWeeklyMenu = async () => {
 	}
 };
 
+// input에서 날짜 선택으로 인한 변화 추적
+watch(
+	selectedDate,
+	async newVal => {
+		if (newVal) {
+			let date = new Date(newVal);
+			// 일요일 기준(0), 월요일 기준(1)
+			weekOfMonth.value = getWeekOfMonth(date, { weekStartsOn: 1 });
+			month.value = getMonth(date) + 1;
+			year.value = date.getFullYear();
+
+			// 주차에 해당하는 날짜 계산
+			const startOfWeek = addDays(date, -(date.getDay() || 7) + 1); // 주의 첫번째 요일 (월요일)
+			weekDays.value = Array.from({ length: 5 }, (_, i) =>
+				addDays(startOfWeek, i),
+			);
+
+			await getWeeklyMenu();
+		}
+	},
+	{ immediate: true },
+);
+
 // 오늘 날짜(기본값) 데이터로 마운트
 onMounted(async () => {
 	await getWeeklyMenu();
@@ -307,10 +324,13 @@ onMounted(async () => {
 	@apply p-2 m-1 bg-slate-50 rounded-md border border-gray-200 shadow-md;
 }
 .menu-type {
-	@apply text-gray-900 font-extrabold text-lg p-2;
+	@apply text-gray-900 font-extrabold text-lg py-2 px-1;
 }
 .food-item {
 	@apply flex flex-wrap items-center p-1;
+}
+.add-image-btn {
+	@apply w-7 h-6 mx-1 mt-1 rounded bg-dark-navy flex justify-center items-center;
 }
 .food-title {
 	@apply text-gray-900 font-bold pr-2;
@@ -319,6 +339,9 @@ onMounted(async () => {
 	@apply text-gray-500 text-sm;
 }
 .menu-image {
-	@apply mx-1 h-40 border-gray-300 border-2 p-1;
+	@apply h-40 border-gray-300 border-2 p-1;
+}
+.no-menu {
+	@apply text-base font-semibold bg-slate-50 rounded-md border border-gray-200 shadow-md m-1 pl-10 pt-10 pb-20;
 }
 </style>

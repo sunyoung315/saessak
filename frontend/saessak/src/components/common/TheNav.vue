@@ -1,7 +1,7 @@
 <template>
 	<aside
 		id="default-sidebar"
-		class="top-0 left-0 z-40 w-64 h-auto min-h-full transition-transform -translate-x-full sm:translate-x-0"
+		class="top-0 left-0 z-40 w-64 min-h-screen transition-transform -translate-x-full sm:translate-x-0"
 		aria-label="Sidebar"
 	>
 		<div

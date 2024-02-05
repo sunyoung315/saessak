@@ -84,7 +84,10 @@ export const useMenuStore = defineStore('menu', () => {
 		},
 	]);
 
+	// 주차별 식단표
 	const weeklyMenu = ref([]);
+
+	// 선생님ver 식단표 호출
 	const getTeacherWeeklyMenu = async weeklyDate => {
 		axios({
 			url: `${REST_MENU_API}/teacher/list`,
@@ -95,10 +98,15 @@ export const useMenuStore = defineStore('menu', () => {
 				Authorization: 'Bearer ' + sessionStorage.getItem('accessToken'),
 			},
 		}).then(resp => {
-			weeklyMenu.value = resp.data.data;
+			if (resp.data.data.length) {
+				weeklyMenu.value = resp.data.data;
+			} else {
+				weeklyMenu.value = null;
+			}
 		});
 	};
 
+	// 학부모ver 식단표 호출
 	const getParentWeeklyMenu = async (weeklyDate, kidId) => {
 		axios({
 			url: `${REST_MENU_API}/parent/list/${kidId}`,
