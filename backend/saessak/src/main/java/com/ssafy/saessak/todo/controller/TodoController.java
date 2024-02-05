@@ -2,6 +2,7 @@ package com.ssafy.saessak.todo.controller;
 
 import com.ssafy.saessak.result.ResultCode;
 import com.ssafy.saessak.result.ResultResponse;
+import com.ssafy.saessak.todo.dto.TodoRequestDto;
 import com.ssafy.saessak.todo.service.TodoService;
 import com.ssafy.saessak.todo.dto.TodoResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -19,9 +20,8 @@ public class TodoController {
 
     private final TodoService todoService;
     @PostMapping("")
-    public ResponseEntity<ResultResponse> saveTodo(@RequestParam(name = "content") String content){
-
-        Long todoId = todoService.saveTodo(content);
+    public ResponseEntity<ResultResponse> saveTodo(@RequestBody TodoRequestDto todoRequestDto){
+        Long todoId = todoService.saveTodo(todoRequestDto.getContent());
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, todoId));
     }
     @GetMapping("")
