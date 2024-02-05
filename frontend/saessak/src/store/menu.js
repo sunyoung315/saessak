@@ -117,7 +117,11 @@ export const useMenuStore = defineStore('menu', () => {
 				Authorization: 'Bearer ' + sessionStorage.getItem('accessToken'),
 			},
 		}).then(resp => {
-			weeklyMenu.value = resp.data.data;
+			if (resp.data.data.length) {
+				weeklyMenu.value = resp.data.data;
+			} else {
+				weeklyMenu.value = null;
+			}
 		});
 	};
 
