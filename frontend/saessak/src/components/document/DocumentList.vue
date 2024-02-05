@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="view-frame p-4">
 		<div class="flex justify-between">
 			<div class="inline-flex rounded-md shadow-sm ml-6 mt-5">
 				<button

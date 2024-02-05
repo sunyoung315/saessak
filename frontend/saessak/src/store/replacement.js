@@ -26,7 +26,7 @@ export const useReplacementStore = defineStore('replacement', () => {
 				console.error('실행 제대로 안됨: ', error);
 			});
 	};
-	
+
 	// 대리인 귀가 동의서 전자서명 입력
 	const PostRegistFileReplacement = async function (data) {
 		await axios({
@@ -38,13 +38,13 @@ export const useReplacementStore = defineStore('replacement', () => {
 			},
 			data,
 		})
-		.then(response => {
-			console.log('registReplacement 실행 후 : ' + response);
-		})
-		.catch(error => {
-			console.error('Failed to post replacement: ', error);
-		});
-	}
+			.then(response => {
+				console.log('registReplacement 실행 후 : ' + response);
+			})
+			.catch(error => {
+				console.error('Failed to post replacement: ', error);
+			});
+	};
 
 	// 대리인 목록 조회
 	const replacementList = ref([]);
@@ -82,7 +82,7 @@ export const useReplacementStore = defineStore('replacement', () => {
 
 	// 대리인 귀가 동의서 확인 버튼
 	const replacemenChecktList = ref([]);
-	const getreplacemenChecktList = async function (replacementId) {
+	const getReplacemenChecktList = async function (replacementId) {
 		await axios
 			.get(`${REST_DOCUMENT_API}/check/${replacementId}`)
 			.then(response => {
@@ -90,6 +90,7 @@ export const useReplacementStore = defineStore('replacement', () => {
 				// console.log(replacemenChecktList.value);
 			});
 	};
+
 	return {
 		registReplacementId,
 		PostRegistReplacement,
@@ -101,6 +102,6 @@ export const useReplacementStore = defineStore('replacement', () => {
 		replacemenDetailtList,
 		getReplacementDetailList,
 		replacemenChecktList,
-		getreplacemenChecktList,
+		getReplacemenChecktList,
 	};
 });

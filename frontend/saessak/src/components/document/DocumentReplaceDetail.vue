@@ -67,9 +67,25 @@
 			</div>
 
 			<div class="flex justify-end">
-				<div class="flex-col text-gray-700 text-xl font-bold m-8">
+				<div class="flex-col text-gray-700 font-bold m-8">
 					<div>
-						<h2>전자 서명: 전자서명된 이미지 파일</h2>
+						<h2 class="mb-2 text-2xl">전자 서명:</h2>
+						<div
+							v-if="replaceDetailList.replacementSignature"
+							class="border relative text-center items-center font-bold text-xl h-32 w-64"
+						>
+							<img
+								:src="replaceDetailList.replacementSignature"
+								alt="image"
+								class="z-0 absolute top-0 left-0 w-full h-full"
+							/>
+							<div
+								class="z-10 relative flex items-center justify-center h-full"
+							>
+								<span>(인 또는 서명)</span>
+							</div>
+						</div>
+						<div v-else>등록된 서명이 없습니다.</div>
 					</div>
 				</div>
 			</div>
@@ -97,18 +113,21 @@ const kidName = loginStore.isTeacher
 
 // 데이터 목록 가져오기
 const replaceDetailList = ref([]);
-onMounted(async () => {
+const getReplacementDetailList = async () => {
 	await replacementStore.getReplacementDetailList(replacementId);
 	replaceDetailList.value = replacementStore.replacemenDetailtList;
-});
+};
 
-const replacementCheckList = ref([]);
+onMounted(async () => {
+	await getReplacementDetailList();
+});
 
 // Btn
 // 확인버튼
-function check() {
-	replacementStore.getreplacemenChecktList(replacementId);
-	replacementCheckList.value = replacementStore.replacementCheckList;
+async function check() {
+	await replacementStore.getReplacemenChecktList(replacementId);
+	replaceDetailList.value.replacementCheck =
+		replacementStore.replacemenChecktList.value.check;
 }
 
 function goBack() {
