@@ -30,7 +30,7 @@
 				></textarea>
 			</label>
 		</div>
-		<span class="content-title">건강기록</span>
+		<span class="content-title">건강기록 (선택)</span>
 		<div class="content-box mb-0 p-2">
 			<div class="record-flex">
 				<span class="record-title">체온 체크 </span>
