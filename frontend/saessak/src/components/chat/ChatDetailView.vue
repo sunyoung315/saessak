@@ -18,7 +18,8 @@
     <div ref="chatbox" class="chatbox flex flex-col scrollbar-hide overflow-y-scroll w-full h-5/6 mt-0 px-5">
       <div v-for="msg in recvList" :key="msg.chatId" class="flex flex-col mt-5">
         <!--발신 메시지(오른쪽)-->
-        <div v-if="msg.senderId == userId" class="flex justify-end mb-4">
+        <div class="flex w-0 h-0 text-yellow-50">{{ msg.chatTime }}</div>
+        <div v-if="msg.senderId == userId" ref="printMsg" class="flex justify-end mb-4">
           <div class="px-4 py-3 mr-2 text-white bg-yellow-500 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl">
             {{ msg.chatContent }}
           </div>
@@ -26,7 +27,7 @@
         </div>
 
         <!--수신 메시지(왼쪽)-->
-        <div v-else class="flex justify-start mb-4">
+        <div v-else ref="printMsg" class="flex justify-start mb-4">
           <img src="https://source.unsplash.com/vpOeXr5wmR4/600x600" class="object-cover w-8 h-8 rounded-full" alt="" />
           <div class="px-4 py-3 ml-2 text-white bg-stone-400 rounded-br-3xl rounded-tr-3xl rounded-tl-xl">
             {{ msg.chatContent }}
@@ -37,7 +38,7 @@
     <!-- end message(오른쪽) -->
 
     <!-- 화상채팅 버튼 -->
-    <button @click="startFaceChat()" class="block text-white" type="button">
+    <button v-if="isTeacher == true" @click="startFaceChat()" class="block text-white" type="button">
       <div class="h-7 w-7 ml-auto mr-2.5 border rounded-full bg-neutral-500">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
           <path fill="#ffffff" fill-rule="evenodd"
@@ -70,7 +71,7 @@
 </template>
 
 <script setup>
-import { ref, nextTick, onMounted, onBeforeUnmount } from 'vue'
+import { ref, nextTick, watch, onMounted, onBeforeUnmount } from 'vue'
 import { loadChat, isVaild, disconnect } from '@/api/chat'
 import { loginStore } from '@/store/loginStore'
 import { chatStore } from '@/store/chatStore'
@@ -91,10 +92,13 @@ const props = defineProps({
   }
 })
 
+const lstore = loginStore()
 const { chatName, chatRoom, isOpen } = storeToRefs(chatStore)
 const { setChatname, setChatroom, setIsopen } = chatStore()
-const { isTeacher } = storeToRefs(loginStore)
-const faceChatModal = ref()
+const { isTeacher } = storeToRefs(lstore)
+const printMsg = ref([])
+const lastChat = ref("")
+let oldHeight = -1
 
 // 1. 커서에 메시지 정보 중 전송 시간 저장
 const cursor = ref({
@@ -138,6 +142,8 @@ const handleBeforeUnload = (event) => { // 브라우저 종료 시 채팅 퇴장
 }
 
 onMounted(() => {
+  console.log("선생님이니")
+  console.log(isTeacher.value)
   window.addEventListener('beforeunload', handleBeforeUnload); // 브라우저 종료 이벤트 등록
   if (chatbox.value) {
     chatbox.value.addEventListener('scroll', handleScroll);
@@ -167,9 +173,21 @@ onMounted(() => {
     }
     recvList.value = data.data
     console.log(recvList.value)
+    oldHeight = chatbox.value.scrollHeight;
     downScroll()
   })
+  // console.log("printMsg")
+  // console.log(printMsg.value);
+  // console.log(printMsg.value.length)
+  // console.log(printMsg.value[printMsg.value.length - 1])
 
+  // watch(recvList, (newList, oldList) => {
+  //   console.log("new msg list : ");
+  //   console.log(newList)
+  //   console.log("old msg list : ");
+  //   console.log(oldList)
+  //   console.log(printMsg.value)
+  // }, {deep : true});
 })
 
 onBeforeUnmount(() => {
@@ -208,6 +226,7 @@ const handleScroll = () => { // 스크롤 맨 위로 올렸을 때 감지하기
 
     console.log("재조회를 위한 커서 : ")
     console.log(cursor.value);
+    // let oldHeight = chatbox.value.scrollHeight // 불러오기 전의 스크롤 길이 저장
     if (cursor.value.chatTime == null) { // 모든 채팅 불러온 경우
       console.log("모든 채팅 불러왔긔")
       return
@@ -221,6 +240,7 @@ const handleScroll = () => { // 스크롤 맨 위로 올렸을 때 감지하기
         console.log("모든 채팅 불러왔긔")
       } else {
         const newArr = [...data.data, ...recvList.value] // 새로 불러온 채팅 + 기존 채팅
+        lastChat.value = data.data[data.data.length - 1].chatTime
         cursor.value = {
           roomId: data.data[0].roomId,
           chatContent: data.data[0].chatContent,
@@ -229,7 +249,11 @@ const handleScroll = () => { // 스크롤 맨 위로 올렸을 때 감지하기
         }
         console.log(newArr)
         recvList.value = newArr
-        // chatbox.value.scrollTo(450, chatbox.value.scrollHeight) // 올리고 나서 스크롤 위치 어따 둘건지???
+        console.log(oldHeight + " / " + chatbox.value.scrollHeight + " / " + chatbox.value.clientHeight)
+        console.log((chatbox.value.scrollHeight - oldHeight + 100))
+        chatbox.value.scrollTo({left : 0, top : chatbox.value.clientHeight}) // 올리고 나서 스크롤 위치 어따 둘건지???
+        console.log(chatbox.value.scrollTop)
+        oldHeight = chatbox.value.scrollHeight
       }
     })
     // 2. 지금 불러온 메세지 중 첫번째 메세지의 시간을 커서로 변경
@@ -242,10 +266,11 @@ const handleScroll = () => { // 스크롤 맨 위로 올렸을 때 감지하기
 const downScroll = () => { // 스크롤 맨 아래로 내리기
   nextTick(() => {
     if (chatbox.value) {
-      chatbox.value.scrollTo(0, chatbox.value.scrollHeight)
+      chatbox.value.scrollTo({left : 0, top : chatbox.value.scrollHeight, behavior : 'smooth'})
     }
   })
 }
+
 
 let headers = {
   Authorization: 'Bearer ' + sessionStorage.getItem('accessToken'),

@@ -123,7 +123,6 @@
 <script setup>
 import { onMounted, nextTick, shallowRef, ref, watch } from 'vue'
 import { initFlowbite } from 'flowbite'
-import { disconnect } from '@/api/chat'
 import { kakaoLogin } from '@/api/oauth'
 import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
@@ -214,9 +213,11 @@ const logout = () => {
     setKidlist('')
   }
   // console.log("로그아웃 드가자")
-  setlogout()
-  setTeacherFlag(false)
-  setTeachername('')
+  localStorage.removeItem('chatStore')
+  localStorage.removeItem('loginStore')
+  // setlogout()
+  // setTeacherFlag(false)
+  // setTeachername('')
   window.location.href = '/'
 }
 </script>
