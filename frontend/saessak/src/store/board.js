@@ -5,14 +5,22 @@ import { defineStore } from 'pinia';
 const REST_BOARD_API = 'https://i10a706.p.ssafy.io/api/board';
 
 export const useBoardStore = defineStore('board', () => {
+	const thisYear = new Date().getFullYear();
+	const years = ref([]);
+	for (let i = 0; i < 10; i++) {
+		years.value[i] = thisYear - i;
+	}
+	const months = ref([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
+
 	// 학부모ver 내 아이 알림장 리스트
 	const myKidBoards = ref([]);
 
-	// 학부모ver 내 아이 알림장 리스트 요청
-	const getMyKidBoards = async kidId => {
+	// 학부모ver 내 아이 알림장 월별 리스트 요청
+	const getMyKidMonthlyBoards = async (kidId, year, month) => {
 		await axios({
-			url: `${REST_BOARD_API}/${kidId}`,
-			method: 'GET',
+			url: `${REST_BOARD_API}/month/${kidId}`,
+			method: 'POST',
+			data: { year, month },
 			headers: {
 				'Content-Type': 'application/json',
 				Authorization: 'Bearer ' + sessionStorage.getItem('accessToken'),
@@ -21,6 +29,20 @@ export const useBoardStore = defineStore('board', () => {
 			myKidBoards.value = resp.data.data;
 		});
 	};
+
+	// // 학부모ver 내 아이 알림장 리스트 요청
+	// const getMyKidBoards = async kidId => {
+	// 	await axios({
+	// 		url: `${REST_BOARD_API}/${kidId}`,
+	// 		method: 'GET',
+	// 		headers: {
+	// 			'Content-Type': 'application/json',
+	// 			Authorization: 'Bearer ' + sessionStorage.getItem('accessToken'),
+	// 		},
+	// 	}).then(resp => {
+	// 		myKidBoards.value = resp.data.data;
+	// 	});
+	// };
 
 	// 알림장 1개
 	const oneBoard = ref({});
@@ -88,7 +110,7 @@ export const useBoardStore = defineStore('board', () => {
 	// 선택 기간의 알림장 조회
 	const summary = ref({});
 	const boardList = ref([]);
-	const getSummaryBoard = async (kidId, { startDate, endDate }) => {
+	const getSummaryBoard = async (kidId, startDate, endDate) => {
 		await axios({
 			url: `${REST_BOARD_API}/summary/${kidId}`,
 			method: 'POST',
@@ -142,8 +164,10 @@ export const useBoardStore = defineStore('board', () => {
 	};
 
 	return {
+		years,
+		months,
+		getMyKidMonthlyBoards,
 		myKidBoards,
-		getMyKidBoards,
 		oneBoard,
 		getOneBoard,
 		date,

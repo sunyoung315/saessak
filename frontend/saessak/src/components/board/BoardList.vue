@@ -55,13 +55,15 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { useBoardStore } from '@/store/board';
 import { useUserStore } from '@/store/user';
 
 // 로그인 유저
 const props = defineProps({
 	loginStore: Object,
+	year: Number,
+	month: Number,
 });
 
 // const kidId = props.loginStore.isTeacher ? undefined : props.loginStore.curKid;
@@ -80,17 +82,27 @@ const getKidsList = async () => {
 	kidsList.value = userStore.kidsList;
 };
 
+const year = props.year;
+const month = props.month;
+
 // 학부모ver 내 아이 알림장 리스트
 const myKidBoards = ref([]);
 
-const getMyKidBoards = async kidId => {
-	await boardStore.getMyKidBoards(kidId);
+const getMyKidMonthlyBoards = async (year, month) => {
+	await boardStore.getMyKidMonthlyBoards(kidId, year, month);
 	myKidBoards.value = boardStore.myKidBoards;
 };
 
+watch(
+	() => boardStore.myKidBoards,
+	newVal => {
+		myKidBoards.value = newVal;
+	},
+);
+
 onMounted(async () => {
 	if (!props.loginStore.isTeacher) {
-		await getMyKidBoards(kidId);
+		await getMyKidMonthlyBoards(year, month);
 		return;
 	}
 	if (props.loginStore.isTeacher) {

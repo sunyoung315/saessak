@@ -88,9 +88,8 @@
 						<!-- 완료될 때까지 버튼 비활성화 해놓음! -->
 						<button
 							type="button"
-							@click="getSummaryBoard(kidId)"
+							@click="getSummaryBoard(props.kidId)"
 							class="btn m-0 ml-2"
-							disabled
 						>
 							조회
 						</button>
@@ -149,6 +148,10 @@ const closeModal = () => {
 defineExpose({ openModal });
 ///////////////////////////////////
 
+const props = defineProps({
+	kidId: Number,
+});
+
 const range = ref({
 	start: new Date(),
 	end: new Date(),
@@ -166,12 +169,13 @@ const API_KEY = import.meta.env.VITE_OPENAI_API_KEY;
 
 const getGPTResponse = async () => {
 	try {
+		// console.log('요약 시작');
 		const openai = new OpenAI({
 			apiKey: API_KEY,
 			dangerouslyAllowBrowser: true,
 		});
 
-		const prompt = `${store.boardList.length}일치의 알림장인 ${content.value} 를 전부 합쳐서 날짜 ':'으로 구분하지 말고 자연스럽게 이어서 150자 정도로 유치원 선생님 말투로 요약해줘.`;
+		const prompt = `${store.boardList.length}일치의 알림장인 ${content.value} 를 유치원 선생님 말투로 100~150자로 요약해주는데, 날짜를 쓰고 엔터를 치고 요약을 쓰는 형태로 써줘.`;
 
 		const response = await openai.chat.completions.create({
 			messages: [
@@ -180,17 +184,20 @@ const getGPTResponse = async () => {
 					content: prompt,
 				},
 			],
-			model: 'gpt-3.5-turbo',
+			model: 'gpt-4-0125-preview',
 		});
-		console.log('요약 결과 : ', response.choices[0].message.content);
+		// console.log('요약 결과 : ', response.choices[0].message.content);
 		summary.value = response.choices[0].message.content;
 	} catch (error) {
-		console.log('에러 발생 : ', error);
+		// console.log('에러 발생 : ', error);
 	}
 };
 
 const getSummaryBoard = async kidId => {
-	await store.getSummaryBoard(kidId, {});
+	const startDate = `${range.value.start.getFullYear()}-${('0' + (range.value.start.getMonth() + 1)).slice(-2)}-${('0' + range.value.start.getDate()).slice(-2)}`;
+	const endDate = `${range.value.end.getFullYear()}-${('0' + (range.value.end.getMonth() + 1)).slice(-2)}-${('0' + range.value.end.getDate()).slice(-2)}`;
+
+	await store.getSummaryBoard(kidId, startDate, endDate);
 
 	// boardContent 하나의 String으로 연결
 	for (let i = 0; i < store.boardList.length; i++) {
@@ -201,7 +208,11 @@ const getSummaryBoard = async kidId => {
 			'\n';
 	}
 
-	getGPTResponse();
+	if (store.boardList.length) {
+		getGPTResponse();
+	} else {
+		summary.value = '조회된 알림장이 없습니다.';
+	}
 };
 </script>
 
@@ -232,8 +243,8 @@ const getSummaryBoard = async kidId => {
 	border: black solid 3px;
 	border-radius: 50%;
 	animation:
-		eyeMove 10s infinite,
-		blink 10s infinite;
+		eyeMove 7s infinite,
+		blink 7s infinite;
 }
 @keyframes eyeMove {
 	0%,
