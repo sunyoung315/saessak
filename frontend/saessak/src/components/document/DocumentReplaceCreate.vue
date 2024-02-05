@@ -169,7 +169,7 @@
 			<div class="flex justify-end">
 				<div class="flex-col text-gray-700 text-xl font-bold m-8">
 					<div>
-						<h2>전자 서명: {{ registReplacement.replacementSignature }}</h2>
+						<h2>전자 서명: </h2>
 						<document-signature @signature-saved="handleSignatureSaved" />
 					</div>
 				</div>
@@ -201,14 +201,22 @@ const registReplacement = ref({
 	replacementRelationship: '',
 	replacementNumber: '',
 	replacementName: '',
-	replacementSignature: '',
 });
+
+const replacementSignature = ref();
 
 // Btn
 async function regist() {
 	try {
-		await replacementStore.PostRegistReplacement(registReplacement.value);
-		// console.log(registReplacement);
+		// 전자서명 제외 입력
+		await replacementStore.PostRegistReplacement(registReplacement);
+		console.log("전자서명 입력 후 " + replacementStore.registReplacementId);
+		console.log("regist 데이터: "+ registReplacement.value );
+		// 전자서명 입력
+		const formData = new FormData();
+		formData.append("replacementId", replacementStore.registReplacementId);
+		formData.append("signFile", new File([replacementSignature], "sign"+replacementStore.registReplacementId+".png", {type: 'image/png'}));
+		await replacementStore.PostRegistFileReplacement(formData);
 	} catch (error) {
 		// console.error('실패: ', error);
 	}
@@ -226,7 +234,8 @@ const replaceContent = ref(
 
 // 전자 서명 데이터 가져오기
 const handleSignatureSaved = signature => {
-	registReplacement.value.replacementSignature = signature;
+	replacementSignature.value = signature;
+	console.log(replacementSignature);
 };
 </script>
 

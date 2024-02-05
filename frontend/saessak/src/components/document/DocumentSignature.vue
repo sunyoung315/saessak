@@ -31,6 +31,8 @@ onMounted(() => {
 	ctx = canvas.value.getContext('2d');
 });
 
+const emit = defineEmits(['signature-saved']);
+
 const startDrawing = e => {
 	drawing.value = true;
 	lastX = e.clientX - canvas.value.getBoundingClientRect().left;
@@ -55,18 +57,30 @@ const stopDrawing = () => {
 	drawing.value = false;
 };
 
+const dataURItoBlob = (dataURI) => {
+    var binary = atob(dataURI.split(',')[1]);
+    var array = [];
+    for(var i = 0; i < binary.length; i++) {
+        array.push(binary.charCodeAt(i));
+    }
+    return new Blob([new Uint8Array(array)], {type: 'image/jpeg'});
+};
+
 const saveSignature = () => {
 	const dataUrl = canvas.value.toDataURL();
 	// 서명 데이터 이벤트 전달
-	emit('signature-saved', dataUrl);
+	// emit('signature-saved', dataUrl);
 	console.log(dataUrl);
+	const blobData = dataURItoBlob(dataUrl);
+	console.log(blobData);
+	emit('signature-saved', blobData);
 
 	// File Download
 	const image = canvas.value.toDataURL('image/png');
-	const link = document.createElement('a');
-	link.href = image;
-	link.download = 'signature';
-	link.click();
+	// const link = document.createElement('a');
+	// link.href = image;
+	// link.download = 'signature';
+	// link.click();
 
 	// const svgData =
 	// 	'<svg xmlns="http://www.w3.org/2000/svg" width="500" height="200">' +

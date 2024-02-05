@@ -8,9 +8,9 @@ const token = sessionStorage.getItem('accessToken');
 
 export const useReplacementStore = defineStore('replacement', () => {
 	// 대리인 귀가 동의서 입력
-	const registReplacement = ref([]);
+	const registReplacementId = ref([]);
 	const PostRegistReplacement = async function (data) {
-		// console.log('registReplacement 들어올 때 : ' + registReplacement.value);
+		console.log('registReplacement 들어올 때 : ' + registReplacementId.value);
 		await axios({
 			url: `${REST_DOCUMENT_API}/`,
 			method: 'POST',
@@ -21,13 +21,32 @@ export const useReplacementStore = defineStore('replacement', () => {
 			data,
 		})
 			.then(response => {
-				registReplacement.value = response.data.data;
-				// console.log('registReplacement 실행 후 : ' + registReplacement.value);
+				registReplacementId.value = response.data.data;
+				console.log('registReplacement 실행 후 : ' + registReplacementId.value);
 			})
 			.catch(error => {
-				console.error('Failed to post replacement: ', error);
+				console.error('실행 제대로 안됨: ', error);
 			});
 	};
+	
+	// 대리인 귀가 동의서 전자서명 입력
+	const PostRegistFileReplacement = async function (data) {
+		await axios({
+			url: `${REST_DOCUMENT_API}/sign`,
+			method: 'POST',
+			headers: {
+				Authorization: 'Bearer ' + token,
+				'Content-Type': 'application/json',
+			},
+			data,
+		})
+		.then(response => {
+			console.log('registReplacement 실행 후 : ' + response);
+		})
+		.catch(error => {
+			console.error('Failed to post replacement: ', error);
+		});
+	}
 
 	// 대리인 목록 조회
 	const replacementList = ref([]);
@@ -74,8 +93,9 @@ export const useReplacementStore = defineStore('replacement', () => {
 			});
 	};
 	return {
-		registReplacement,
+		registReplacementId,
 		PostRegistReplacement,
+		PostRegistFileReplacement,
 		replacementList,
 		getReplacementList,
 		myKidReplacementList,
