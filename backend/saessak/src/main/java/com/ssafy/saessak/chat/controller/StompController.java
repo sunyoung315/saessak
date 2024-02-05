@@ -37,4 +37,10 @@ public class StompController {
         // 메시지에 정의된 채널 id에 메시지를 보낸다.
         sendingOperations.convertAndSend("/sub/room/"+message.getRoomId(), message);
     }
+
+    @MessageMapping("/check")
+    public void check(int roomId){
+        // 상대에게 alert 을 띄우도록 한다.
+        sendingOperations.convertAndSend("/sub/room/"+roomId, true);
+    }
 }
