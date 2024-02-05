@@ -7,6 +7,7 @@ import com.ssafy.saessak.result.ResultCode;
 import com.ssafy.saessak.result.ResultResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -29,9 +30,8 @@ public class NoticeController {
     // 고정한 것을 상단에
     @Operation(summary = "공지사항 전체 조회")
     @GetMapping(value = "/all/{kidId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResultResponse> getAllNotice(@PathVariable("kidId") Long kidId,
-                                                       @PageableDefault(size=20, sort = "notice_id", direction = Sort.Direction.DESC) Pageable pageable) {
-        List<NoticeResponseDto> list = noticeService.getAllNotice(kidId, pageable);
+    public ResponseEntity<ResultResponse> getAllNotice(@PathVariable("kidId") Long kidId, int pageNo) {
+        List<NoticeResponseDto> list = noticeService.getAllNotice(kidId, pageNo);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, list));
     }
 
@@ -47,7 +47,7 @@ public class NoticeController {
     public ResponseEntity<ResultResponse> addNotice(@PathVariable("classroomId") Long classroomId,
                                                     @RequestParam("title") String title,
                                                     @RequestParam("content") String content,
-                                                    @RequestPart("noticeFile") MultipartFile noticeFile) throws IOException {
+                                                    @RequestPart(value = "noticeFile", required = false) MultipartFile noticeFile) throws IOException {
         Long noticeId = noticeService.addNotice(classroomId, title, content, noticeFile);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, noticeId));
     }
@@ -59,12 +59,18 @@ public class NoticeController {
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, noticeId));
     }
 
+    @Operation(summary = "공지사항 고정 해제")
+    @DeleteMapping(value = "/fixed/delete", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResultResponse> deleteNotice(@RequestBody FixedRequestDto fixedRequestDto) {
+        noticeService.deleteFix(fixedRequestDto);
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS));
+    }
+
     // PageNation 적용하기 -> 1개 단위
     @Operation(summary = "고정한 공지사항 조회")
     @GetMapping(value = "/fixed/{kidId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResultResponse> getFixedNotice(@PathVariable("kidId") Long kidId,
-                                                         @PageableDefault(size=1) Pageable pageable) {
-        List<NoticeResponseDto> list = noticeService.getAllFixedNotice(kidId, pageable);
+    public ResponseEntity<ResultResponse> getFixedNotice(@PathVariable("kidId") Long kidId, int pageNo) {
+        List<NoticeResponseDto> list = noticeService.getAllFixedNotice(kidId, pageNo);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, list));
     }
 

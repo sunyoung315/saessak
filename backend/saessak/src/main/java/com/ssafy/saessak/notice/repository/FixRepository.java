@@ -13,6 +13,6 @@ import java.util.Optional;
 
 public interface FixRepository extends JpaRepository<Fix, Long> {
     Optional<Fix> findByNoticeAndKid(Notice n, Kid kid);
-
-    List<Fix> findAllByKid(Kid kid, Pageable pageable);
+    Page<Fix> findAllByKid(Kid kid, Pageable pageable);
+    List<Fix> findAllByKid(Kid kid);
 }

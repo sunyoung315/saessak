@@ -12,7 +12,9 @@ import com.ssafy.saessak.user.repository.ClassroomRepository;
 import com.ssafy.saessak.user.repository.KidRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,23 +35,44 @@ public class NoticeService {
     private final S3Upload s3Uploader;
 
     // 20개씩 페이징
-    public List<NoticeResponseDto> getAllNotice(Long kidId, Pageable pageable) {
+    public List<NoticeResponseDto> getAllNotice(Long kidId, int pageNo) {
 
         Kid kid = kidRepository.findById(kidId).get();
         Classroom classroom = kid.getClassroom();
-        List<Notice> noticeList = noticeRepository.findAllByClassroom(classroom, pageable);
 
         List<NoticeResponseDto> noticeResponseDtoList = new ArrayList<>();
-        for(Notice n : noticeList){
-            boolean flag = fixRepository.findByNoticeAndKid(n, kid).isPresent();
+
+        // 고정한 공지사항 먼저 추가
+        List<Fix> fixList = fixRepository.findAllByKid(kid);
+        for(Fix f: fixList){
+            Notice n = f.getNotice();
             NoticeResponseDto noticeResponseDto = NoticeResponseDto.builder()
                     .noticeId(n.getNoticeId())
                     .noticeTitle(n.getNoticeTitle())
                     .fileFlag(n.getNoticeFile() != null)
                     .noticeTime(n.getNoticeTime())
-                    .noticeFlag(flag)
+                    .noticeFlag(true)
                     .build();
             noticeResponseDtoList.add(noticeResponseDto);
+        }
+
+
+        // 고정 안 한 공지사항 나중에 추가
+        Pageable pageable = PageRequest.of(pageNo, 20-noticeResponseDtoList.size(), Sort.by(Sort.Direction.DESC, "noticeId"));
+        Page<Notice> noticeList = noticeRepository.findAllByClassroom(classroom, pageable);
+        for(Notice n : noticeList){
+            boolean flag = fixRepository.findByNoticeAndKid(n, kid).isPresent();
+            if(!flag){ // 고정 안 한 공지사항만 고른다.
+                NoticeResponseDto noticeResponseDto = NoticeResponseDto.builder()
+                        .noticeId(n.getNoticeId())
+                        .noticeTitle(n.getNoticeTitle())
+                        .fileFlag(n.getNoticeFile() != null)
+                        .noticeTime(n.getNoticeTime())
+                        .noticeFlag(false)
+                        .build();
+                noticeResponseDtoList.add(noticeResponseDto);
+            }
+
         }
 
         return noticeResponseDtoList;
@@ -70,16 +93,24 @@ public class NoticeService {
                           MultipartFile noticeFile) throws IOException {
 
         Classroom classroom = classroomRepository.findById(classroomId).get();
-        String filePath = s3Uploader.upload(noticeFile, "notice");
-
-        Notice notice = Notice.builder()
-                .classroom(classroom)
-                .noticeFile(filePath)
-                .noticeTitle(title)
-                .noticeContent(content)
-                .noticeTime(LocalDate.now())
-                .build();
-
+        Notice notice = null;
+        if(noticeFile != null) {
+            String filePath = s3Uploader.upload(noticeFile, "notice");
+            notice = Notice.builder()
+                    .classroom(classroom)
+                    .noticeFile(filePath)
+                    .noticeTitle(title)
+                    .noticeContent(content)
+                    .noticeTime(LocalDate.now())
+                    .build();
+        }else {
+            notice = Notice.builder()
+                    .classroom(classroom)
+                    .noticeTitle(title)
+                    .noticeContent(content)
+                    .noticeTime(LocalDate.now())
+                    .build();
+        }
         return noticeRepository.save(notice).getNoticeId();
     }
 
@@ -96,11 +127,20 @@ public class NoticeService {
         return fixRepository.save(fix).getId();
     }
 
+    @Transactional
+    public void deleteFix(FixedRequestDto fixedRequestDto) {
+        Notice notice = noticeRepository.findById(fixedRequestDto.getNoticeId()).get();
+        Kid kid = kidRepository.findById(fixedRequestDto.getKidId()).get();
+        Fix fix = fixRepository.findByNoticeAndKid(notice, kid).get();
+        fixRepository.delete(fix);
+    }
+
     // 하나씩 페이징
-    public List<NoticeResponseDto> getAllFixedNotice(Long kidId, Pageable pageable) {
+    public List<NoticeResponseDto> getAllFixedNotice(Long kidId, int pageNo) {
 
         Kid kid = kidRepository.findById(kidId).get();
-        List<Fix> fixedList = fixRepository.findAllByKid(kid, pageable);
+        Pageable pageable = PageRequest.of(pageNo, 1, Sort.by(Sort.Direction.DESC, "notice.noticeId"));
+        Page<Fix> fixedList = fixRepository.findAllByKid(kid, pageable);
 
         List<NoticeResponseDto> noticeResponseDtoList = new ArrayList<>();
         for(Fix f : fixedList){
