@@ -124,7 +124,7 @@
 								album.fileResponseDtoList.length > 0
 							"
 						>
-							<p class="w-full text-2xl font-bold m-2">
+							<p class="w-full text-2xl font-bold ml-4">
 								{{ album.albumTitle }}
 							</p>
 							<div
@@ -196,7 +196,8 @@ onMounted(async () => {
 });
 
 // datePicker
-const date = ref(new Date());
+const date = ref(new Date(route.query.date));
+// const date = ref(new Date());
 // 색상
 const selectAttribute = ref({ highlight: 'green' });
 const today = new Date();
@@ -258,9 +259,5 @@ const download = async () => {
 .album {
 	width: 300px;
 	height: 250px;
-}
-
-.content-title {
-	@apply text-gray-900 text-xl font-bold;
 }
 </style>

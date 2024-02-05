@@ -35,7 +35,7 @@
 				</div>
 				<div v-if="album.fileResponseDtoList.length != 0">
 					<img class="px-2" src="@/assets/film.png" alt="필름" />
-					<Carousel :items-to-show="5" :wrap-around="true">
+					<Carousel :items-to-show="5" :wrap-around="false">
 						<Slide v-for="file in album.fileResponseDtoList" :key="file.fileId">
 							<div class="carousel__item">
 								<img
@@ -52,7 +52,7 @@
 					</Carousel>
 					<img class="px-2" src="@/assets/film.png" alt="필름" />
 					<div
-						@click="goDetail(kidId)"
+						@click="goDetail(kidId, album.albumDate)"
 						class="m-4 text-xl font-bold flex justify-end cursor-pointer"
 					>
 						→ 전체 조회
@@ -77,7 +77,7 @@
 				</div>
 				<div v-if="album.fileResponseDtoList.length != 0">
 					<img class="px-2" src="@/assets/film.png" alt="필름" />
-					<Carousel :items-to-show="5" :wrap-around="true">
+					<Carousel :items-to-show="5" :wrap-around="false">
 						<Slide v-for="file in album.fileResponseDtoList" :key="file.fileId">
 							<div class="carousel__item">
 								<img
@@ -94,7 +94,7 @@
 					</Carousel>
 					<img class="px-2" src="@/assets/film.png" alt="필름" />
 					<div
-						@click="goDetail(kidId)"
+						@click="goDetail(kidId, album.albumDate)"
 						class="m-4 text-xl font-bold flex justify-end cursor-pointer"
 					>
 						→ 전체 조회
@@ -229,10 +229,12 @@ defineComponent({
 // carousel 끝
 
 // Btn
-function goDetail(kidId) {
+function goDetail(kidId, albumDate) {
+	// console.log('goDetail: ' + albumDate);
 	router.push({
 		name: 'AlbumDetailParent',
 		params: { id: kidId },
+		query: { date: albumDate },
 	});
 }
 // Btn
