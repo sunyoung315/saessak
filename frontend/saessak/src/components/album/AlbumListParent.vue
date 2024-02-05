@@ -20,13 +20,7 @@
 		</div>
 		<!-- 반 전체 보기 -->
 		<div v-if="showToggle">
-			<div
-				v-for="album in albumParentList.slice(
-					(currentPage - 1) * itemsPerPage,
-					currentPage * itemsPerPage,
-				)"
-				:key="album.albumId"
-			>
+			<div v-for="album in currentPageAlbums" :key="album.albumId">
 				<div
 					class="flex justify-start items-center"
 					v-if="album.fileResponseDtoList.length != 0"
@@ -41,7 +35,7 @@
 				</div>
 				<div v-if="album.fileResponseDtoList.length != 0">
 					<img class="px-2" src="@/assets/film.png" alt="필름" />
-					<Carousel :items-to-show="5" :wrap-around="true" :autoplay="2000">
+					<Carousel :items-to-show="5" :wrap-around="true">
 						<Slide v-for="file in album.fileResponseDtoList" :key="file.fileId">
 							<div class="carousel__item">
 								<img
@@ -68,13 +62,7 @@
 		</div>
 		<!-- 내 아이만 보기 -->
 		<div v-else>
-			<div
-				v-for="album in kidAlbumList.slice(
-					(currentPage - 1) * itemsPerPage,
-					currentPage * itemsPerPage,
-				)"
-				:key="album.albumId"
-			>
+			<div v-for="album in currentPageAlbums" :key="album.albumId">
 				<div
 					class="flex justify-start items-center"
 					v-if="album.fileResponseDtoList.length != 0"
@@ -89,7 +77,7 @@
 				</div>
 				<div v-if="album.fileResponseDtoList.length != 0">
 					<img class="px-2" src="@/assets/film.png" alt="필름" />
-					<Carousel :items-to-show="5" :wrap-around="true" :autoplay="2000">
+					<Carousel :items-to-show="5" :wrap-around="true">
 						<Slide v-for="file in album.fileResponseDtoList" :key="file.fileId">
 							<div class="carousel__item">
 								<img
@@ -114,11 +102,37 @@
 				</div>
 			</div>
 		</div>
+		<div class="flex justify-center text-2xl font-bold">
+			<button
+				@click="movePage(currentPage - 1)"
+				:disabled="currentPage === 0"
+				:class="{ 'text-gray-200': currentPage === 0 }"
+			>
+				←
+			</button>
+
+			<button
+				v-for="(page, index) in totalPage"
+				:key="index"
+				@click="movePage(index)"
+				class="m-2 rounded-lg p-2"
+				:class="{ 'bg-nav-green': currentPage === index }"
+			>
+				{{ index + 1 }}
+			</button>
+			<button
+				@click="movePage(currentPage + 1)"
+				:disabled="currentPage === totalPage - 1"
+				:class="{ 'text-gray-200': currentPage === totalPage - 1 }"
+			>
+				→
+			</button>
+		</div>
 	</div>
 </template>
 
 <script setup>
-import { ref, defineComponent, onMounted } from 'vue';
+import { ref, defineComponent, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { Carousel, Navigation, Slide } from 'vue3-carousel';
 import { useAlbumStore } from '@/store/album';
@@ -133,6 +147,7 @@ let kidId = loginStore.kidList[0].kidId;
 
 // 반 전체 앨범 조회
 const albumParentList = ref([]);
+const albumParentListDivided = ref([]);
 const getAlbumParentList = async () => {
 	await albumStore.getAlbumParentList(kidId);
 	albumParentList.value = albumStore.albumParentList;
@@ -140,10 +155,13 @@ const getAlbumParentList = async () => {
 	albumParentList.value.sort(
 		(a, b) => new Date(b.albumDate) - new Date(a.albumDate),
 	);
+	// albumDate를 5개씩 데이터로 나눠서 담기
+	albumParentListDivided.value = divideAlbumsByFive(albumParentList.value);
 };
 
 // 내 아이 앨범 조회, 번호: kidId
 const kidAlbumList = ref([]);
+const kidAlbumListDivided = ref([]);
 const getKidAlbumList = async () => {
 	await albumStore.getKidAlbumList(kidId);
 	kidAlbumList.value = albumStore.kidAlbumList;
@@ -151,15 +169,52 @@ const getKidAlbumList = async () => {
 	kidAlbumList.value.sort(
 		(a, b) => new Date(b.albumDate) - new Date(a.albumDate),
 	);
+	// albumDate를 5개씩 데이터로 나눠서 담기
+	kidAlbumListDivided.value = divideAlbumsByFive(kidAlbumList.value);
 };
+
+function divideAlbumsByFive(albums) {
+	let divided = [];
+	let filteredAlbums = albums.filter(
+		album => album.fileResponseDtoList.length > 0,
+	);
+
+	for (let i = 0; i < filteredAlbums.length; i += 5) {
+		divided.push(filteredAlbums.slice(i, i + 5));
+	}
+
+	return divided;
+}
+
+///////////////////////////////////////////////// Pagination
+const currentPage = ref(0); // 현재 페이지 기록
+const currentPageAlbums = computed(() => {
+	// 현재 페이지에 맞는 앨범 데이터 반환
+	return showToggle.value
+		? albumParentListDivided.value[currentPage.value]
+		: kidAlbumListDivided.value[currentPage.value];
+});
+
+const totalPage = computed(() => {
+	// 전체 페이지 개수 계산
+	return showToggle.value
+		? Math.ceil(albumParentListDivided.value.length)
+		: Math.ceil(kidAlbumListDivided.value.length);
+});
+
+// 페이지 이동 함수
+function movePage(num) {
+	if (num < 0 || num >= totalPage.value) {
+		return;
+	}
+	currentPage.value = num;
+}
+///////////////////////////////////////////////////
 
 onMounted(async () => {
 	await getAlbumParentList(kidId);
 	await getKidAlbumList(kidId);
 });
-
-const currentPage = ref(1);
-const itemsPerPage = ref(5);
 
 // carousel 시작
 import 'vue3-carousel/dist/carousel.css';

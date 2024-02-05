@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<div class="ml-6">
+		<div class="ml-16">
 			<label class="relative inline-flex items-center me-5 cursor-pointer">
 				<input
 					type="checkbox"
@@ -19,7 +19,7 @@
 			</label>
 		</div>
 	</div>
-	<div class="container p-6 border rounded-lg">
+	<div class="view-frame">
 		<div class="flex justify-between">
 			<!-- DatePicker 시작-->
 			<div class="block mb-5">
@@ -59,18 +59,10 @@
 			</div>
 			<!-- DatePicker 끝-->
 			<div>
-				<button
-					@click="download"
-					type="button"
-					class="text-white bg-gradient-to-r from-nav-green via-nav-green to-nav-green hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
-				>
+				<button @click="download" type="button" class="btn m-0">
 					다운로드
 				</button>
-				<button
-					type="button"
-					@click="goBack()"
-					class="text-white bg-gradient-to-r from-nav-green via-nav-green to-nav-green hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
-				>
+				<button type="button" @click="goBack()" class="btn m-0 ml-6">
 					목록
 				</button>
 			</div>
@@ -87,7 +79,7 @@
 								album.fileResponseDtoList.length > 0
 							"
 						>
-							<p class="w-full text-2xl font-bold ml-4 mb-8">
+							<p class="w-full text-2xl font-bold ml-4">
 								{{ album.albumTitle }}
 							</p>
 							<div
@@ -132,7 +124,7 @@
 								album.fileResponseDtoList.length > 0
 							"
 						>
-							<p class="w-full text-2xl font-bold ml-4 mb-8">
+							<p class="w-full text-2xl font-bold m-2">
 								{{ album.albumTitle }}
 							</p>
 							<div

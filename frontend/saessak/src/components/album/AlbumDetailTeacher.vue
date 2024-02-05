@@ -1,5 +1,5 @@
 <template>
-	<div class="container p-6 border rounded-lg mt-8">
+	<div class="view-frame p-4">
 		<div class="flex justify-between">
 			<!-- DatePicker 시작-->
 			<div class="block mt-1 mb-10">
@@ -36,16 +36,10 @@
 			</div>
 			<!-- DatePicker 끝-->
 			<div>
-				<button
-					type="button"
-					@click="goBack()"
-					class="text-white bg-gradient-to-r from-nav-green via-nav-green to-nav-green hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
-				>
-					목록
-				</button>
+				<button type="button" @click="goBack()" class="btn m-0">목록</button>
 			</div>
 		</div>
-		<div class="flex items-center mt-8" v-if="myKidAlbumDateList.length > 0">
+		<div class="flex items-center" v-if="myKidAlbumDateList.length > 0">
 			<div v-for="album in myKidAlbumDateList" :key="album.albumId">
 				<div
 					class="my-2 flex flex-wrap"
@@ -65,7 +59,7 @@
 						/>
 						<label
 							:for="file.fileId"
-							class="inline-flex items-center justify-between w-full p-4 text-gray-500 bg-white border-4 border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 peer-checked:border-blue-600 hover:text-gray-600 dark:peer-checked:text-gray-300 peer-checked:text-gray-600 hover:bg-gray-50 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700"
+							class="inline-flex items-center justify-between w-full p-4 text-gray-500 bg-white border-4 border-gray-200 rounded-lg cursor-pointer"
 						>
 							<img
 								class="album rounded"
