@@ -343,13 +343,25 @@ const decrementWeight = () => {
 
 // group button 변경 함수 ///////////////////////
 const isFirst = () => {
-	newBoard.value.boardPoopStatus = '보통';
+	if (newBoard.value.boardPoopStatus === '보통') {
+		newBoard.value.boardPoopStatus = '';
+	} else {
+		newBoard.value.boardPoopStatus = '보통';
+	}
 };
 const isSecond = () => {
-	newBoard.value.boardPoopStatus = '묽음';
+	if (newBoard.value.boardPoopStatus === '묽음') {
+		newBoard.value.boardPoopStatus = '';
+	} else {
+		newBoard.value.boardPoopStatus = '묽음';
+	}
 };
 const isThird = () => {
-	newBoard.value.boardPoopStatus = '딱딱함';
+	if (newBoard.value.boardPoopStatus === '딱딱함') {
+		newBoard.value.boardPoopStatus = '';
+	} else {
+		newBoard.value.boardPoopStatus = '딱딱함';
+	}
 };
 
 const buttonClass = button => {
@@ -401,19 +413,19 @@ const registBoard = () => {
 	@apply inline-flex h-10 rounded-md shadow-sm;
 }
 .group-button-left {
-	@apply px-5 py-2 text-base font-medium text-gray-900 bg-white border border-gray-200 rounded-s-lg focus:z-10 focus:ring-2 focus:ring-dark-navy focus:text-dark-navy focus:font-bold focus:bg-gray-100;
+	@apply px-5 py-2 text-base font-medium text-gray-900 bg-white border border-gray-200 rounded-s-lg;
 }
 .group-button-left-selected {
 	@apply px-5 py-2 text-base rounded-s-lg z-10 ring-2 ring-dark-navy text-dark-navy font-bold bg-gray-100;
 }
 .group-button-center {
-	@apply px-5 py-2 text-base font-medium text-gray-900 bg-white border-t border-b border-gray-200 focus:z-10 focus:ring-2 focus:ring-dark-navy focus:text-dark-navy focus:font-bold focus:bg-gray-100;
+	@apply px-5 py-2 text-base font-medium text-gray-900 bg-white border-t border-b border-gray-200;
 }
 .group-button-center-selected {
 	@apply px-5 py-2 text-base z-10 ring-2 ring-dark-navy text-dark-navy font-bold bg-gray-100;
 }
 .group-button-right {
-	@apply px-5 py-2 text-base font-medium text-gray-900 bg-white border border-gray-200 rounded-e-lg focus:z-10 focus:ring-2 focus:ring-dark-navy focus:text-dark-navy focus:font-bold focus:bg-gray-100;
+	@apply px-5 py-2 text-base font-medium text-gray-900 bg-white border border-gray-200 rounded-e-lg;
 }
 .group-button-right-selected {
 	@apply px-5 py-2 text-base rounded-e-lg z-10 ring-2 ring-dark-navy text-dark-navy font-bold bg-gray-100;
