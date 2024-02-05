@@ -11,6 +11,7 @@ public class LoginTeacherResponseDto {
 
     private String teacherName;
     private Boolean isTeacher;
+    private Boolean isAlarm;
     private String teacherProfile;
     private String accessToken;
     private String refreshToken;
