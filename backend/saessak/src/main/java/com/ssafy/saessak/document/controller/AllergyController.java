@@ -11,6 +11,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RequestMapping("/api/allergy")
 @RequiredArgsConstructor
@@ -23,6 +26,15 @@ public class AllergyController {
     @PostMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResultResponse> insert(@RequestBody AllergyRequestDto allergyRequestDto) {
         allergyService.insert(allergyRequestDto);
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS));
+    }
+
+    @Operation(summary = "식품 알레르기 동의서 전자서명 입력")
+    @PostMapping(value = "/sign", produces = MediaType.APPLICATION_JSON_VALUE, consumes = "multipart/form-data")
+    public ResponseEntity<ResultResponse> insertSign(@RequestParam("kidId") Long kidId,
+                                                     @RequestParam("signFile") MultipartFile signFile) throws IOException {
+
+        allergyService.insertSign(kidId, signFile);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS));
     }
 

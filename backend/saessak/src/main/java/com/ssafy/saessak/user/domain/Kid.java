@@ -62,9 +62,8 @@ public class Kid extends User {
         return this;
     }
 
-    public void setAllergy(String kidAllergy, String kidAllergySignature, LocalDate now) {
+    public void setAllergy(String kidAllergy, LocalDate now) {
         this.kidAllergy = kidAllergy;
-        this.kidAllergySignature = kidAllergySignature;
         this.kidAllergyDate = now;
     }
 
@@ -78,5 +77,9 @@ public class Kid extends User {
 
     public void uploadProfile(String kidProfile) {
         super.uploadProfile(kidProfile);
+    }
+
+    public void uploadSign(String signFile) {
+        this.kidAllergySignature = signFile;
     }
 }

@@ -11,7 +11,9 @@ import com.ssafy.saessak.exception.code.ExceptionCode;
 import com.ssafy.saessak.exception.model.NotFoundException;
 import com.ssafy.saessak.exception.model.UserException;
 import com.ssafy.saessak.fcm.service.FcmService;
+import com.ssafy.saessak.menu.domain.Menu;
 import com.ssafy.saessak.oauth.service.AuthenticationService;
+import com.ssafy.saessak.s3.S3Upload;
 import com.ssafy.saessak.user.domain.Classroom;
 import com.ssafy.saessak.user.domain.Kid;
 import com.ssafy.saessak.user.domain.Teacher;
@@ -21,12 +23,16 @@ import com.ssafy.saessak.user.repository.TeacherRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+
+import static java.awt.SystemColor.menu;
 
 @Service
 @RequiredArgsConstructor
@@ -34,9 +40,9 @@ public class ReplacementService {
 
     private final ReplacementRepository replacementRepository;
     private final KidRepository kidRepository;
-    private final TeacherRepository teacherRepository;
     private final AuthenticationService authenticationService;
     private final FcmService fcmService;
+    private final S3Upload s3Uploader;
 
     @Transactional
     public Long insert(ReplacementRequestDto requestDto) {
@@ -51,7 +57,6 @@ public class ReplacementService {
                 .replacementRelationship(requestDto.getReplacementRelationship())
                 .replacementNumber(requestDto.getReplacementNumber())
                 .replacementName(requestDto.getReplacementName())
-                .replacementSignature(requestDto.getReplacementSignature())
                 .replacementCheck(false)
                 .replacementDay(LocalDate.now())
                 .build();
@@ -70,6 +75,15 @@ public class ReplacementService {
         fcmService.sendInsertReplacement(replacementAlarmResponseDto);
 
         return savedReplacement.getReplacementId();
+    }
+
+    @Transactional
+    public void insertSign(Long replacementId, MultipartFile signFile) throws IOException {
+        Replacement replacement = replacementRepository.findById(replacementId)
+                .orElseThrow(() -> new NotFoundException(ExceptionCode.REPLACEMENT_NOT_FOUND));
+        // AWS S3 사진 upload
+        String filePath = s3Uploader.upload(signFile, "replacement");
+        replacement.uploadSign(filePath);
     }
 
     public List<ReplacementResponseDto> listOfkidId(Long kidId) {

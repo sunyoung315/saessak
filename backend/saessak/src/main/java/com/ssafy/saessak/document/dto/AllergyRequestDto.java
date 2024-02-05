@@ -11,6 +11,5 @@ public class AllergyRequestDto {
     private String kidName;
     private String classroomName;
     private String kidAllergy;
-    private String kidAllergySignature;
 
 }
