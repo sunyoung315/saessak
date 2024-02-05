@@ -21,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -179,11 +180,18 @@ public class BoardService {
 
     }
     // 해당 달의 아이의 알림장 리스트
-    public List<BoardResponseDto> getMonthlyKidBoardList(Long kidId, LocalDate date){
+    public List<BoardResponseDto> getMonthlyKidBoardList(Long kidId, Integer year, Integer month){
         Optional<Kid> kidResult = kidRepository.findById(kidId);
         if(kidResult.isEmpty()) throw new UserException(ExceptionCode.KID_NOT_FOUND);
         Kid kid = kidResult.get();
         log.debug("service");
+        LocalDate date;
+        try {
+            date = LocalDate.of(year,month, 1);
+        }
+        catch (DateTimeException e) {
+            throw new NotFoundException(ExceptionCode.INVALID_DATE_FORMAT);
+        }
         LocalDate start = date.withDayOfMonth(1);
         LocalDate end = date.withDayOfMonth(date.lengthOfMonth());
         Optional<List<Board>> boardResult =
