@@ -63,7 +63,7 @@ const dataURItoBlob = (dataURI) => {
     for(var i = 0; i < binary.length; i++) {
         array.push(binary.charCodeAt(i));
     }
-    return new Blob([new Uint8Array(array)], {type: 'image/jpeg'});
+    return new Blob([new Uint8Array(array)], {type: 'image/png'});
 };
 
 const saveSignature = () => {
@@ -76,7 +76,7 @@ const saveSignature = () => {
 	emit('signature-saved', blobData);
 
 	// File Download
-	const image = canvas.value.toDataURL('image/jpeg');
+	const image = canvas.value.toDataURL('image/png');
 	// const link = document.createElement('a');
 	// link.href = image;
 	// link.download = 'signature';

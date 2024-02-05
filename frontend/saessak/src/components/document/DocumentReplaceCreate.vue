@@ -214,7 +214,7 @@ async function regist() {
 		// 전자서명 입력
 		const formData = new FormData();
 		formData.append("replacementId", replacementStore.registReplacementId);
-		formData.append("signFile", new File([replacementSignature], "sign"+replacementStore.registReplacementId+".jpeg", {type: 'image/jpeg'}));
+		formData.append("signFile", new File([replacementSignature.value], "sign"+replacementStore.registReplacementId+".png", {type: 'image/png'}));
 		await replacementStore.PostRegistFileReplacement(formData);
 	} catch (error) {
 		// console.error('실패: ', error);
@@ -234,7 +234,8 @@ const replaceContent = ref(
 // 전자 서명 데이터 가져오기
 const handleSignatureSaved = signature => {
 	replacementSignature.value = signature;
-	console.log(replacementSignature);
+	console.log("전자서명 가져옴?")
+	console.log(replacementSignature.value);
 };
 </script>
 
