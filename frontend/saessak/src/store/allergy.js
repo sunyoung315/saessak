@@ -8,7 +8,7 @@ const token = sessionStorage.getItem('accessToken');
 
 export const useAllergyStore = defineStore('allergy', () => {
 	// 식품 알레르기 동의서 입력
-	const registAllergy = ref([]);
+	const registAllergyId = ref([]);
 	const PostRegistAllergy = async function (data) {
 		await axios({
 			url: `${REST_DOCUMENT_API}/`,
@@ -20,11 +20,30 @@ export const useAllergyStore = defineStore('allergy', () => {
 			data,
 		})
 			.then(response => {
-				registAllergy.value = response.data.data;
-				console.log('pinia: ' + registAllergy.value);
+				registAllergyId.value = response.data.data;
+				// console.log('pinia: ' + registAllergyId.value);
 			})
 			.catch(error => {
 				console.error('error: ', error);
+			});
+	};
+
+	// 식품 알레르기 동의서 전자서명 입력
+	const PostRegistFileAllergy = async function (data) {
+		await axios({
+			url: `${REST_DOCUMENT_API}/sign`,
+			method: 'POST',
+			headers: {
+				Authorization: 'Bearer ' + token,
+				'Content-Type': 'multipart/form-data',
+			},
+			data,
+		})
+			.then(response => {
+				console.log('registAllergy 실행 후 : ' + response);
+			})
+			.catch(error => {
+				console.error('Failed to post allergy: ', error);
 			});
 	};
 
@@ -54,7 +73,7 @@ export const useAllergyStore = defineStore('allergy', () => {
 
 	// 알레르기 동의 확인 버튼
 	const allergyCheckList = ref([]);
-	const getallergyCheckList = async function (kidId) {
+	const getAllergyCheckList = async function (kidId) {
 		await axios.get(`${REST_DOCUMENT_API}/check/${kidId}`).then(response => {
 			allergyCheckList.value = response.data.data;
 			// console.log(allergyCheckList.value);
@@ -62,13 +81,14 @@ export const useAllergyStore = defineStore('allergy', () => {
 	};
 
 	return {
-		registAllergy,
+		registAllergyId,
 		PostRegistAllergy,
+		PostRegistFileAllergy,
 		allergyList,
 		getAllergyList,
 		myKidAllergyList,
 		getmyAllergyList,
 		allergyCheckList,
-		getallergyCheckList,
+		getAllergyCheckList,
 	};
 });

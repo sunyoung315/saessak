@@ -9,10 +9,16 @@
 					<button
 						type="button"
 						@click="check()"
-						class="mt-8 mr-8 text-white hover:text-dark-navy border border-dark-navy bg-dark-navy hover:bg-white focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+						class="mt-8 mr-6 border border-dark-navy hover:bg-white focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+						:class="
+							myKidAllergyList.kidAllergyCheck
+								? 'text-white bg-dark-navy hover:text-dark-navy'
+								: 'text-black bg-white hover:bg-dark-navy'
+						"
 					>
-						{{ confirm ? '확인완료' : '미확인' }}
+						{{ myKidAllergyList.kidAllergyCheck ? '확인완료' : '확인 필요' }}
 					</button>
+					<!-- {{ myKidAllergyList }} -->
 					<button
 						type="button"
 						@click="goBack()"
@@ -60,13 +66,29 @@
 					</template>
 				</div>
 				<div class="flex justify-end">
-					<div class="flex-col text-gray-700 text-xl font-bold m-8">
+					<div class="flex-col text-gray-700 font-bold m-8">
 						<div>
-							<p class="mb-8">반 : {{ myKidAllergyList.classroomName }}</p>
-							<p class="mb-8">이름 : {{ myKidAllergyList.kidName }}</p>
-						</div>
-						<div>
-							<h2>전자 서명: 저장된 서명파일 이미지 넣기</h2>
+							<div class="flex-col text-gray-700 text-xl font-bold">
+								<p class="mb-8">반 : {{ myKidAllergyList.classroomName }}</p>
+								<p class="mb-8">이름 : {{ myKidAllergyList.kidName }}</p>
+							</div>
+							<h2 class="mb-2 text-2xl">전자 서명:</h2>
+							<div
+								v-if="myKidAllergyList.kidAllergySignature"
+								class="border relative text-center items-center font-bold text-xl h-32 w-64"
+							>
+								<img
+									:src="myKidAllergyList.kidAllergySignature"
+									alt="image"
+									class="z-0 absolute top-0 left-0 w-full h-full"
+								/>
+								<div
+									class="z-10 relative flex items-center justify-center h-full"
+								>
+									<span>(인 또는 서명)</span>
+								</div>
+							</div>
+							<div v-else>등록된 서명이 없습니다.</div>
 						</div>
 					</div>
 				</div>
@@ -117,13 +139,29 @@
 					</template>
 				</div>
 				<div class="flex justify-end">
-					<div class="flex-col text-gray-700 text-xl font-bold m-8">
-						<div class="text-end">
-							<p class="mb-8">반 : {{ myKidAllergyList.classroomName }}</p>
-							<p class="mb-8">이름 : {{ myKidAllergyList.kidName }}</p>
-						</div>
+					<div class="flex-col text-gray-700 font-bold m-8">
 						<div>
-							<h2>전자 서명: 저장된 서명파일 이미지 넣기</h2>
+							<div class="flex-col text-gray-700 text-xl font-bold">
+								<p class="mb-8">반 : {{ myKidAllergyList.classroomName }}</p>
+								<p class="mb-8">이름 : {{ myKidAllergyList.kidName }}</p>
+							</div>
+							<h2 class="mb-2 text-2xl">전자 서명:</h2>
+							<div
+								v-if="myKidAllergyList.kidAllergySignature"
+								class="border relative text-center items-center font-bold text-xl h-32 w-64"
+							>
+								<img
+									:src="myKidAllergyList.kidAllergySignature"
+									alt="image"
+									class="z-0 absolute top-0 left-0 w-full h-full"
+								/>
+								<div
+									class="z-10 relative flex items-center justify-center h-full"
+								>
+									<span>(인 또는 서명)</span>
+								</div>
+							</div>
+							<div v-else>등록된 서명이 없습니다.</div>
 						</div>
 					</div>
 				</div>
@@ -134,17 +172,20 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 import { useAllergyStore } from '@/store/allergy';
 
 const router = useRouter();
+const route = useRoute();
 const allergyStore = useAllergyStore();
 
 let loginStore = JSON.parse(localStorage.getItem('loginStore'));
 let isTeacher = loginStore.isTeacher;
 
-// 내 아이 id 조회 (부모님인 경우만)
-const kidId = loginStore.isTeacher ? undefined : loginStore.kidList[0].kidId;
+// 내 아이 id 조회
+const kidId = loginStore.isTeacher
+	? route.params.kidId
+	: loginStore.kidList[0].kidId;
 
 // 데이터 목록 가져오기
 const myKidAllergyList = ref([]);
@@ -154,12 +195,7 @@ const getmyAllergyList = async kidId => {
 };
 
 onMounted(async () => {
-	// 선생님인 경우
-	if (loginStore.isTeacher) {
-	} else {
-		// 학부모 경우
-		await getmyAllergyList(kidId);
-	}
+	await getmyAllergyList(kidId);
 });
 
 const allergyList = ref([
@@ -252,9 +288,12 @@ const isKidAllergic = allergyNo => {
 };
 
 // 버튼
-const confirm = ref(false);
-function check() {
-	confirm.value = !confirm.value;
+async function check() {
+	await allergyStore.getAllergyCheckList(kidId);
+	if (allergyStore.allergyCheckList.value) {
+		myKidAllergyList.value.kidAllergyCheck =
+			allergyStore.allergyCheckList.value.kidAllergyCheck;
+	}
 }
 
 function goBack() {

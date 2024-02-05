@@ -223,6 +223,9 @@ async function regist() {
 			),
 		);
 		await replacementStore.PostRegistFileReplacement(formData);
+		router.push({
+			name: 'DocumentList',
+		});
 	} catch (error) {
 		// console.error('실패: ', error);
 	}
@@ -233,17 +236,17 @@ function goBack() {
 }
 // Btn
 
-// 문구
-const replaceContent = ref(
-	'영유아의 귀가 시 위 보호자에게 인도하여 주세요. \n \n 위 보호자 이외의 다른 사람에게 인계할 때는 사전에 반드시 연락을 취하겠습니다. \n \n 원에서는 부모가 희망하더라도 영유아를 혼자 귀가시키지 않습니다.',
-);
-
 // 전자 서명 데이터 가져오기
 const handleSignatureSaved = signature => {
 	replacementSignature.value = signature;
 	console.log('전자서명 가져옴?');
 	console.log(replacementSignature.value);
 };
+
+// 문구
+const replaceContent = ref(
+	'영유아의 귀가 시 위 보호자에게 인도하여 주세요. \n \n 위 보호자 이외의 다른 사람에게 인계할 때는 사전에 반드시 연락을 취하겠습니다. \n \n 원에서는 부모가 희망하더라도 영유아를 혼자 귀가시키지 않습니다.',
+);
 </script>
 
 <style scoped></style>

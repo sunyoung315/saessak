@@ -32,7 +32,7 @@
 						<tr
 							v-for="kid in replacementList"
 							:key="kid.replacementId"
-							@click="moveReplacement(kid.replacementId)"
+							@click="moveReplacement(kid.replacementId, kid.kidName)"
 							class="hover:bg-nav-blue"
 						>
 							<td
@@ -125,12 +125,12 @@
 							>
 								<span
 									:class="
-										kid.replacementCheck
+										kid.kidAllergyCheck
 											? 'bg-nav-blue text-black font-bold rounded-lg p-2'
 											: 'bg-gray-500 text-white font-bold rounded-lg p-2'
 									"
 								>
-									{{ kid.replacementCheck ? '확인 완료' : '확인 필요' }}
+									{{ kid.kidAllergyCheck ? '확인 완료' : '확인 필요' }}
 								</span>
 							</td>
 						</tr>
@@ -169,10 +169,11 @@ onMounted(async () => {
 	allergyList.value = allergyStore.allergyList;
 });
 
-function moveReplacement(replacementId) {
+function moveReplacement(replacementId, kidName) {
 	router.push({
 		name: 'DocumentReplaceDetail',
 		params: { replacementId },
+		state: { kidName: kidName },
 	});
 }
 function moveAllergy(kidId) {

@@ -81,13 +81,13 @@ export const useReplacementStore = defineStore('replacement', () => {
 	};
 
 	// 대리인 귀가 동의서 확인 버튼
-	const replacemenChecktList = ref([]);
-	const getReplacemenChecktList = async function (replacementId) {
+	const replacemenCheckList = ref([]);
+	const getReplacemenCheckList = async function (replacementId) {
 		await axios
 			.get(`${REST_DOCUMENT_API}/check/${replacementId}`)
 			.then(response => {
-				replacemenChecktList.value = response.data.data;
-				// console.log(replacemenChecktList.value);
+				replacemenCheckList.value = response.data.data;
+				// console.log(replacemenCheckList.value);
 			});
 	};
 
@@ -101,7 +101,7 @@ export const useReplacementStore = defineStore('replacement', () => {
 		getmyKidReplacementList,
 		replacemenDetailtList,
 		getReplacementDetailList,
-		replacemenChecktList,
-		getReplacemenChecktList,
+		replacemenCheckList,
+		getReplacemenCheckList,
 	};
 });

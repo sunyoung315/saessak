@@ -57,6 +57,7 @@
 					</div>
 				</template>
 			</div>
+			<!-- {{ registAllergy }} -->
 			<div class="flex justify-end">
 				<div class="flex-col text-gray-700 text-xl font-bold m-8">
 					<div class="text-end">
@@ -64,7 +65,6 @@
 						<p class="mb-8">이름 : {{ registAllergy[0].kidName }}</p>
 					</div>
 					<div>
-						<!-- <p>데이터: {{ registAllergy }}</p> -->
 						<h2>전자 서명: {{ registAllergy.kidAllergySignature }}</h2>
 						<document-signature @signature-saved="handleSignatureSaved" />
 					</div>
@@ -84,6 +84,7 @@ import DocumentSignature from '@/components/document/DocumentSignature.vue';
 const router = useRouter();
 const allergyStore = useAllergyStore();
 
+// 내 아이 id 조회
 let loginStore = JSON.parse(localStorage.getItem('loginStore'));
 const kidId = loginStore.kidList[0].kidId;
 const kidName = loginStore.kidList[0].kidName;
@@ -95,10 +96,10 @@ const registAllergy = ref([
 		kidName: kidName,
 		classroomName: '햇님반',
 		kidAllergy: '',
-		kidAllergySignature: '',
 	},
 ]);
 
+// 알러지 목록
 const allergyList = ref([
 	{
 		no: 1,
@@ -178,11 +179,24 @@ const allergyList = ref([
 	},
 ]);
 
+const kidAllergySignature = ref();
 // 버튼
 async function regist() {
+	console.log(registAllergy);
 	try {
-		console.log('regist: ' + JSON.stringify(registAllergy.value));
 		await allergyStore.PostRegistAllergy(registAllergy.value);
+		// 전자서명 입력
+		const formData = new FormData();
+		formData.append('kidId', kidId);
+		formData.append(
+			'signFile',
+			new File(
+				[kidAllergySignature.value],
+				'sign' + allergyStore.registAllergyId + '.png',
+				{ type: 'image/png' },
+			),
+		);
+		await allergyStore.PostRegistFileAllergy(formData);
 		// router.push({
 		// 	name: 'DocumentList',
 		// });
@@ -190,6 +204,12 @@ async function regist() {
 		console.error('실패: ', error);
 	}
 }
+
+// 전자 서명 데이터 가져오기
+const handleSignatureSaved = signature => {
+	kidAllergySignature.value = signature;
+	console.log(kidAllergySignature.value);
+};
 
 function goBack() {
 	router.go(-1);
@@ -203,11 +223,6 @@ const allergyContent = ref(
 const allergyType = ref(
 	'1. 난류 2. 우유 3. 메밀 4. 땅콩 5. 대두 6. 밀 7.고등어 8. 게 9. 새우 10. 돼지고기 \n 11. 복숭아 12. 토마토 13. 아황산류 14. 호두 15. 닭고기 16. 쇠고기 17. 오징어 18. 조개 19. 잣',
 );
-
-// 전자 서명 데이터 가져오기
-const handleSignatureSaved = signature => {
-	registAllergy.value.kidAllergySignature = signature;
-};
 
 // checkbox 선택된 allergy 번호 배열을 전달할 string 형식으로 변환
 const selectedAllergies = ref([]);

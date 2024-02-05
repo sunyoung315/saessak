@@ -14,7 +14,7 @@
 							: 'text-black bg-white hover:bg-dark-navy'
 					"
 				>
-					{{ replaceDetailList.replacementCheck ? '확인완료' : '미확인' }}
+					{{ replaceDetailList.replacementCheck ? '확인 완료' : '확인 필요' }}
 				</button>
 				<button
 					type="button"
@@ -106,9 +106,9 @@ const emit = defineEmits(['update']);
 const replacementStore = useReplacementStore();
 const replacementId = route.params.replacementId;
 let loginStore = JSON.parse(localStorage.getItem('loginStore'));
-// 내 아이 이름 조회 (학부모인 경우만)
+// 아이 이름 조회
 const kidName = loginStore.isTeacher
-	? undefined
+	? history.state.kidName
 	: loginStore.kidList[0].kidName;
 
 // 데이터 목록 가져오기
@@ -125,9 +125,9 @@ onMounted(async () => {
 // Btn
 // 확인버튼
 async function check() {
-	await replacementStore.getReplacemenChecktList(replacementId);
+	await replacementStore.getReplacemenCheckList(replacementId);
 	replaceDetailList.value.replacementCheck =
-		replacementStore.replacemenChecktList.value.check;
+		replacementStore.replacemenCheckList.value.check;
 }
 
 function goBack() {
