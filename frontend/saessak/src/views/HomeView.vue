@@ -14,7 +14,7 @@ const router = useRouter()
 const store = loginStore()
 
 const { isLogin, isTeacher, kidList, userId } = storeToRefs(store)
-const { setUserid, setlogin, setTeacherFlag, setKidlist, setTeachername} = store
+const { setUserid, setlogin, setTeacherFlag, setKidlist, setTeachername, setCurkid} = store
 const code = ref(null)
 
 onMounted(() => {
@@ -70,6 +70,7 @@ const KLogin = (input) => {
     sessionStorage.setItem('refreshToken', input.data.refreshToken) // 토큰만 세션에 저장
     // sessionStorage.setItem('kidList', JSON.stringify(input.data.kidList))
     setKidlist(input.data.kidList) // 나머지 정보는 pinia 저장
+    setCurkid(input.data.kidList[0].kidId)
   }
   setlogin()
 //   console.log('KLogin 실행')
