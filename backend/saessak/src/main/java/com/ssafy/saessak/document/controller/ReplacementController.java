@@ -9,6 +9,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RequestMapping("/api/document/replacement")
 @RequiredArgsConstructor
@@ -21,6 +24,15 @@ public class ReplacementController {
     @PostMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResultResponse> insert(@RequestBody ReplacementRequestDto replacementRequestDto) {
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, replacementService.insert(replacementRequestDto)));
+    }
+
+    @Operation(summary = "대리인 귀가 동의서 전자서명 입력")
+    @PostMapping(value = "/sign", produces = MediaType.APPLICATION_JSON_VALUE, consumes = "multipart/form-data")
+    public ResponseEntity<ResultResponse> insertSign(@RequestParam("replacementId") Long replacementId,
+                                                      @RequestParam("signFile") MultipartFile signFile) throws IOException {
+
+        replacementService.insertSign(replacementId, signFile);
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS));
     }
 
     @Operation(summary = "대리인 귀가 동의서 목록 조회(학부모)")
