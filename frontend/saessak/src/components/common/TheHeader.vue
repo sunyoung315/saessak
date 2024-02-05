@@ -110,10 +110,10 @@
         :size="size"
         :roomInfo="roomInfo"
       ></component>
-      <div class="fixed w-1/3 bottom-0 right-0 p-3 bg-yellow-50">
+      <div v-if="flag == false" class="fixed w-1/3 bottom-0 right-0 p-3 bg-yellow-50">
         <div class="flex items-center justify-evenly">
-          <button @click="showChat(ChatPersonView)">학부모목록</button>
-          <button @click="showChat(ChatListView)">채팅목록</button>
+          <button :flag="flag" @click="showChat(ChatPersonView)">학부모목록</button>
+          <button :flag="flag" @click="showChat(ChatListView)">채팅목록</button>
         </div>
       </div>
     </div>
@@ -127,11 +127,14 @@ import { kakaoLogin } from '@/api/oauth'
 import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
 import { loginStore } from '@/store/loginStore'
+import { chatStore } from '@/store/chatStore'
 import ChatListView from '@/components/chat/ChatListView.vue'
 import ChatPersonView from '@/components/chat/ChatPersonView.vue'
 import ChatDetailView from '../chat/ChatDetailView.vue'
 
 const store = loginStore()
+const chStore = chatStore()
+
 const router = useRouter()
 // const isLogin = ref(false)
 // const isTeacher = ref(false)
@@ -139,6 +142,7 @@ const router = useRouter()
 
 const drawer = ref(null)
 const size = ref([])
+const flag = ref(false)
 
 const getSizeOfDrawer = () => {
   const width = drawer.value.offsetWidth
@@ -148,6 +152,7 @@ const getSizeOfDrawer = () => {
   size.value = { width: width, height: height }
 }
 
+const { chatName, chatReoom, isOpen } = storeToRefs(chStore)
 const { isLogin, isTeacher, kidList } = storeToRefs(store)
 const { setlogin, setlogout, setKidlist, setTeacherFlag, setTeachername } = store
 onMounted(() => {
@@ -172,17 +177,23 @@ const chatEvent = (data) => {
   // console.log(data)
   roomInfo.value = data
   chatSwitch.value = ChatDetailView
+  flag.value = true;
 }
 
-const exitChat = (flag) => {
-  if (flag) {
+const exitChat = (input) => {
+  if (input) {
     chatSwitch.value = ChatListView
+    flag.value = false;
   }
 }
 
 const chatSwitch = shallowRef(ChatPersonView)
 
 const showChat = (name) => {
+  // if(isOpen){ // 채팅방에서 하단 메뉴 클릭할 때
+  //   console.log("채팅방에서 클릭")
+  // }
+  // flag.value = true
   chatSwitch.value = name
   // console.log(chatSwitch.value)
 }
@@ -202,9 +213,11 @@ const logout = () => {
     setKidlist('')
   }
   // console.log("로그아웃 드가자")
-  setlogout()
-  setTeacherFlag(false)
-  setTeachername('')
+  localStorage.removeItem('chatStore')
+  localStorage.removeItem('loginStore')
+  // setlogout()
+  // setTeacherFlag(false)
+  // setTeachername('')
   window.location.href = '/'
 }
 </script>
