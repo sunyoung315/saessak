@@ -38,7 +38,6 @@ public class OauthController {
     private final ParentService parentService;
     private final TeacherService teacherService;
 
-
     @Operation(summary = "카카오 로그인 창 접근")
     @GetMapping("/kakao/login")
     public String getKakaologin() {
