@@ -17,7 +17,7 @@ const router = useRouter()
 const store = loginStore()
 
 const { isLogin, isTeacher, kidList, userId } = storeToRefs(store)
-const { setUserid, setlogin, setTeacherFlag, setKidlist, setTeachername } = store
+const { setUserid, setlogin, setTeacherFlag, setKidlist, setTeachername, setCurkid} = store
 const code = ref(null)
 
 onMounted(() => {
@@ -25,7 +25,7 @@ onMounted(() => {
   if (code.value != null) {
     // console.log(code.value)
     axios
-      .get('http://i10a706.p.ssafy.io:8081/api/oauth/kakao/callback/' + code.value)
+      .get('https://i10a706.p.ssafy.io/api/oauth/kakao/callback/' + code.value)
       // 발급된 코드를 갖고 신규/기존 회원 여부 판별하는 axios 호출
       .then(({ data }) => {
         // console.log('카카오 로그인 전')
@@ -73,6 +73,7 @@ const KLogin = (input) => {
     sessionStorage.setItem('refreshToken', input.data.refreshToken) // 토큰만 세션에 저장
     // sessionStorage.setItem('kidList', JSON.stringify(input.data.kidList))
     setKidlist(input.data.kidList) // 나머지 정보는 pinia 저장
+    setCurkid(input.data.kidList[0].kidId)
   }
   setlogin()
   //   console.log('KLogin 실행')

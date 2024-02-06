@@ -108,9 +108,9 @@ const getChatList = () => {
     // 학부모 조회
     chatListParent(
       ({ data }) => {
-        // console.log('학부모 조회')
-        // console.log(data.data)
-        // chat.value = data.data
+        console.log('학부모 조회')
+        console.log(data.data)
+        chat.value = data.data
       },
       (error) => {
         // console.log(error)
