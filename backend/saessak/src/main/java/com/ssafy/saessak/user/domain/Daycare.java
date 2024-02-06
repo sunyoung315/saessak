@@ -22,8 +22,8 @@ public class Daycare {
     private String daycareName;
 
     @OneToMany(mappedBy = "daycare", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    private final List<Classroom> classroomList = new ArrayList<>();
+    private List<Classroom> classroomList;
 
     @OneToMany(mappedBy = "daycare", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    private final List<Menu> menuList = new ArrayList<>();
+    private List<Menu> menuList;
 }

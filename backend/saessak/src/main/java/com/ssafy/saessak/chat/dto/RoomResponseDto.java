@@ -13,6 +13,7 @@ public class RoomResponseDto {
     private Long roomId;
     private Long kidId;
     private String kidName;
+    private String teacherName;
     private String lastChat;
     private boolean flag; // 이미 다 읽었으면 true
 }

@@ -15,4 +15,6 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
 
     List<Attendance> findAllByAttendanceDateBetweenAndKid(LocalDate startDate, LocalDate endDate, Kid kid);
 
+    List<Attendance> findAllByKid(Kid kid);
+
 }

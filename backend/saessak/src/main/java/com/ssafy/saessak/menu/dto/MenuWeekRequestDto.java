@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MenuWeekRequestDto {
 
-    private Long daycardId;
     private int year;
     private int month;
     private int week;

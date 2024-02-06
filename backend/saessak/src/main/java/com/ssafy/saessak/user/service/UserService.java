@@ -1,20 +1,23 @@
 package com.ssafy.saessak.user.service;
 
-import com.ssafy.saessak.user.domain.Classroom;
-import com.ssafy.saessak.user.domain.Kid;
-import com.ssafy.saessak.user.domain.Parent;
-import com.ssafy.saessak.user.domain.Teacher;
+import com.ssafy.saessak.oauth.service.AuthenticationService;
+import com.ssafy.saessak.oauth.service.ParentService;
+import com.ssafy.saessak.s3.S3Upload;
+import com.ssafy.saessak.user.domain.*;
 import com.ssafy.saessak.user.dto.KidListResponseDto;
-import com.ssafy.saessak.user.dto.KidRegistRequestDto;
-import com.ssafy.saessak.user.dto.ParentRegistRequestDto;
-import com.ssafy.saessak.user.dto.TeacherListReponseDto;
-import com.ssafy.saessak.user.repository.ClassroomRepository;
+import com.ssafy.saessak.user.dto.KidMappingRequestDto;
+import com.ssafy.saessak.user.dto.TeacherListResponseDto;
 import com.ssafy.saessak.user.repository.KidRepository;
 import com.ssafy.saessak.user.repository.ParentRepository;
+import com.ssafy.saessak.user.repository.TeacherRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 import java.util.*;
 
 @Service
@@ -23,78 +26,62 @@ public class UserService {
 
     private final ParentRepository parentRepository;
     private final KidRepository kidRepository;
-    private final ClassroomRepository classroomRepository;
+    private final TeacherRepository teacherRepository;
+    private final AuthenticationService authenticationService;
+    private final ParentService parentService;
+    private final S3Upload s3Upload;
 
     @Transactional
-    public Long registParent(ParentRegistRequestDto parentJoinRequestDto) {
-        final Parent parent = Parent.builder()
-                .parentName(parentJoinRequestDto.getParentName())
-                .parentEmail(parentJoinRequestDto.getParentEmail())
-                .parentPassword(parentJoinRequestDto.getParentPassword())
-                .parentName(parentJoinRequestDto.getParentName())
-                .parentAlarm(false)
-                .build();
-        final Parent savedParent = parentRepository.save(parent);
-        return savedParent.getParentId();
+    public void mapping(KidMappingRequestDto mappingRequestDto) {
+        User user = authenticationService.getUserByAuthentication();
+        Optional<Parent> parent = parentRepository.findById(user.getId());
+        if(parent.isPresent()) {
+            String registCode = new String(Base64.getDecoder().decode(mappingRequestDto.getRegistCode()), StandardCharsets.UTF_8);
+            Long mapping_kidId = Long.parseLong(registCode.substring(0, registCode.length()-3));
+            parentService.mapping(parent.get().getId(), mapping_kidId);
+        }
     }
 
     @Transactional
-    public Long registKid(Long classroomId, KidRegistRequestDto kidRegistRequestDto) {
-
-        Classroom classroom = classroomRepository.findById(classroomId).get();
-
-        final Kid kid = Kid.builder()
-                .kidName(kidRegistRequestDto.getKidName())
-                .kidBirthday(kidRegistRequestDto.getKidBirthday())
-                .kidAllergyCheck(false)
+    public Long registKid(String kidName, LocalDate kidBirthday, MultipartFile kidProfile) {
+        User user = authenticationService.getUserByAuthentication();
+        Classroom classroom = user.getClassroom();
+        Kid kid = Kid.builder()
+                .nickname(kidName)
+                .kidBirthday(kidBirthday)
                 .classroom(classroom)
+                .kidAllergyCheck(false)
                 .build();
-
-        final Kid savedKid = kidRepository.save(kid);
-        return savedKid.getKidId();
+        kidRepository.save(kid);
+        // 프로필 S3 업로드
+        try {
+            String filePath = s3Upload.upload(kidProfile, "profile");
+            kid.uploadProfile(filePath);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return kid.getId();
     }
 
-    @Transactional
-    public KidListResponseDto mapping(Long parentId, Long kidId) {
-        Parent parent = parentRepository.findById(parentId).get();
-        Kid kid = kidRepository.findById(kidId).get();
-        parent.getKidList().add(kid);
-        Kid k = kid.updateParent(parent);
-
-        KidListResponseDto kidListResponseDto = KidListResponseDto.builder()
-                .kidId(k.getKidId())
-                .kidName(k.getKidName())
-                .kidBirthday(k.getKidBirthday())
-                .kidAllergy(k.getKidAllergy())
-                .kidProfile(k.getKidProfile())
-                .kidAllergySignature(k.getKidAllergySignature())
-                .kidInviteLink(k.getKidInviteLink())
-                .kidAllergyDate(k.getKidAllergyDate())
-                .parentId(Optional.ofNullable(k.getParent()).map(Parent::getParentId).orElse(null))
-                .classroomId(k.getClassroom().getClassroomId())
-                .build();
-        return kidListResponseDto;
-    }
-
-    public List<KidListResponseDto> getClassKid(Long classroomId) {
-        Classroom classroom = classroomRepository.findById(classroomId).get();
-
-        if (classroom.getKidList() == null) {
+    public List<KidListResponseDto> getClassKid() {
+        User user = authenticationService.getUserByAuthentication();
+        Classroom classroom = user.getClassroom();
+        List<Kid> kidList = kidRepository.findAllByClassroom(classroom);
+        if (kidList == null) {
             return Collections.emptyList();
         }
 
         List<KidListResponseDto> kidListResponseDtoList = new ArrayList<>();
-        for(Kid k : classroom.getKidList()){
+        for(Kid k : kidList){
             KidListResponseDto kidListResponseDto = KidListResponseDto.builder()
-                    .kidId(k.getKidId())
-                    .kidName(k.getKidName())
+                    .kidId(k.getId())
+                    .kidName(k.getNickname())
                     .kidBirthday(k.getKidBirthday())
                     .kidAllergy(k.getKidAllergy())
-                    .kidProfile(k.getKidProfile())
+                    .kidProfile(k.getProfile())
                     .kidAllergySignature(k.getKidAllergySignature())
-                    .kidInviteLink(k.getKidInviteLink())
                     .kidAllergyDate(k.getKidAllergyDate())
-                    .parentId(Optional.ofNullable(k.getParent()).map(Parent::getParentId).orElse(null))
+                    .parentId(Optional.ofNullable(k.getParent()).map(Parent::getId).orElse(null))
                     .classroomId(k.getClassroom().getClassroomId())
                     .build();
             kidListResponseDtoList.add(kidListResponseDto);
@@ -103,24 +90,27 @@ public class UserService {
     }
 
     // 채팅용, 부모로 채팅 가능한 모든 선생님 조회
-    public List<TeacherListReponseDto> getParentTeacher(Long parentId) {
-        Parent parent = parentRepository.findById(parentId).get();
+    public List<TeacherListResponseDto> getParentTeacher() {
+
+        User user = authenticationService.getUserByAuthentication();
         Map<Long, List<Teacher>> teacherList = new HashMap<>();
-        for(Kid k : parent.getKidList()){
-            teacherList.put(k.getKidId(), k.getClassroom().getTeacherList());
+
+        List<Kid> kidList = kidRepository.findAllByParent((Parent) user);
+        for(Kid k : kidList){
+            teacherList.put(k.getId(), teacherRepository.findAllByClassroom(k.getClassroom()));
         }
 
-        List<TeacherListReponseDto> teacherListReponseDtoList = new ArrayList<>();
+        List<TeacherListResponseDto> teacherListReponseDtoList = new ArrayList<>();
         for(Long kidId : teacherList.keySet()) {
             List<Teacher> tlist = teacherList.get(kidId);
             Kid k = kidRepository.findById(kidId).get();
             for (Teacher t : tlist) {
-                TeacherListReponseDto teacherListReponseDto = TeacherListReponseDto.builder()
-                        .teacherId(t.getTeacherId())
-                        .teacherName(t.getTeacherName())
+                TeacherListResponseDto teacherListReponseDto = TeacherListResponseDto.builder()
+                        .teacherId(t.getId())
+                        .teacherName(t.getNickname())
                         .className(t.getClassroom().getClassroomName())
-                        .kidId(k.getKidId())
-                        .kidName(k.getKidName())
+                        .kidId(k.getId())
+                        .kidName(k.getNickname())
                         .build();
                 teacherListReponseDtoList.add(teacherListReponseDto);
             }

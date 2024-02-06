@@ -4,42 +4,30 @@ import com.ssafy.saessak.fcm.dto.FcmTokenRequestDto;
 import com.ssafy.saessak.fcm.service.FcmService;
 import com.ssafy.saessak.result.ResultCode;
 import com.ssafy.saessak.result.ResultResponse;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
-import jakarta.validation.Valid;
 
 @RequestMapping("/api/fcm")
 @RequiredArgsConstructor
 @RestController
 public class FcmController {
 
-    // 추후 작성 예정
     private final FcmService fcmService;
 
-    @PostMapping("/parent/token")
-    public ResponseEntity<?> saveParentToken(@RequestBody FcmTokenRequestDto requestDto) {
-        fcmService.saveParentToken(requestDto);
+    @Operation(summary = "알림기기 토큰 갱신 (학부모, 선생님)")
+    @PostMapping("/token")
+    public ResponseEntity<?> saveToken(@RequestBody FcmTokenRequestDto requestDto) {
+        fcmService.saveToken(requestDto);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS));
     }
 
-    @PostMapping("/teacher/token")
-    public ResponseEntity<?> saveTeacherToken(@RequestBody FcmTokenRequestDto requestDto) {
-        fcmService.saveTeacherToken(requestDto);
-        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS));
-    }
-
+    @Operation(summary = "알림 활성화 여부 변경 (학부모, 선생님)")
     @GetMapping("/parent/alarm/{parentId}")
-    public ResponseEntity<?> changeParentAlarm(@PathVariable("parentId") Long parentId) {
-        fcmService.changeParentAlarm(parentId);
-        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS));
-    }
-
-    @GetMapping("/teacher/alarm/{teacherId}")
-    public ResponseEntity<?> changeTeacherAlarm(@PathVariable("teacherId") Long teacherId) {
-        fcmService.changeTeacherAlarm(teacherId);
+    public ResponseEntity<?> changeAlarm() {
+        fcmService.changeAlarm();
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS));
     }
 

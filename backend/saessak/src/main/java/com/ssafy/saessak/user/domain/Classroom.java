@@ -2,10 +2,10 @@ package com.ssafy.saessak.user.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ssafy.saessak.album.domain.Album;
+import com.ssafy.saessak.board.domain.Board;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -28,14 +28,10 @@ public class Classroom {
 
     @JsonIgnore
     @OneToMany(mappedBy = "classroom", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    private final List<Teacher> teacherList = new ArrayList<>();
+    private List<Album> albumList;
 
     @JsonIgnore
     @OneToMany(mappedBy = "classroom", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    private final List<Kid> kidList = new ArrayList<>();
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "classroom", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    private final List<Album> albumList = new ArrayList<>();
+    private List<Board> boardList;
 
 }

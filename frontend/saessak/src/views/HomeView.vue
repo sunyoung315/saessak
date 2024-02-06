@@ -1,5 +1,8 @@
 <template>
-  <div></div>
+  <div>
+    <TodoView></TodoView>
+
+  </div>
 </template>
 
 <script setup>
@@ -8,7 +11,7 @@ import { ref, onMounted, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useRoute, useRouter } from 'vue-router'
 import { loginStore } from '@/store/loginStore'
-
+import TodoView from '@/components/todo/TodoView.vue'
 const route = useRoute()
 const router = useRouter()
 const store = loginStore()
@@ -30,13 +33,13 @@ onMounted(() => {
         // console.log(data.data)
         if (data.data.accessToken === 'null') {
           // 회원가입
-        //   console.log('회원가입 필요')
+          //   console.log('회원가입 필요')
           alert('회원가입이 필요합니다!')
           setUserid(data.data.userId)
           router.push({ path: '/join' })
         } else {
           // 로그인
-        //   console.log('로그인 드갈까?')
+          //   console.log('로그인 드갈까?')
           KLogin(data)
         }
         // 기존에 있는 회원 -> 바로 로그인
@@ -48,8 +51,8 @@ onMounted(() => {
 })
 
 const KLogin = (input) => {
-//   console.log('로그인 드가자')
-//   console.log(input)
+  //   console.log('로그인 드가자')
+  //   console.log(input)
   if (input.data.isTeacher) {
     // 선생님 로그인
     setTeacherFlag(true)
@@ -73,7 +76,7 @@ const KLogin = (input) => {
     setCurkid(input.data.kidList[0].kidId)
   }
   setlogin()
-//   console.log('KLogin 실행')
+  //   console.log('KLogin 실행')
   location.href = '/'
 }
 </script>
