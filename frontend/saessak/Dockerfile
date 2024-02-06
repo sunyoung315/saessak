@@ -1,18 +1,16 @@
-FROM node:20.11 as build-stage
+FROM node:21.5 as build-stage
 
-RUN mkdir /saessak
+WORKDIR /app
 
-WORKDIR /saessak
-
-COPY ./package.json .
+COPY ./saessak/package.json .
 
 RUN npm install
-COPY ./ .
+COPY ./saessak .
 
 RUN npm run build
 
 # production stage
 FROM nginx:stable-alpine as production-stage
-COPY --from=build-stage /saessak/dist /usr/share/nginx/html
+COPY --from=build-stage /app/dist /usr/share/nginx/html
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
