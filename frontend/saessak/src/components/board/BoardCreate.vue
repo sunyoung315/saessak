@@ -12,12 +12,7 @@
 			<div class="block mb-5">
 				<span class="content-title">이름</span>
 				<div class="block mt-1 ml-32 mb-10">
-					<select
-						id="name"
-						class="datepicker-input px-5 text-[18px]"
-						v-model="kidId"
-						required
-					>
+					<select id="name" class="selection-input" v-model="kidId" required>
 						<template v-for="kid in userStore.kidsList" :key="kid.kidId">
 							<option :value="kid.kidId">{{ kid.kidName }}</option>
 						</template>
@@ -35,7 +30,7 @@
 				></textarea>
 			</label>
 		</div>
-		<span class="content-title">건강기록</span>
+		<span class="content-title">건강기록 (선택)</span>
 		<div class="content-box mb-0 p-2">
 			<div class="record-flex">
 				<span class="record-title">체온 체크 </span>
@@ -348,13 +343,25 @@ const decrementWeight = () => {
 
 // group button 변경 함수 ///////////////////////
 const isFirst = () => {
-	newBoard.value.boardPoopStatus = '보통';
+	if (newBoard.value.boardPoopStatus === '보통') {
+		newBoard.value.boardPoopStatus = '';
+	} else {
+		newBoard.value.boardPoopStatus = '보통';
+	}
 };
 const isSecond = () => {
-	newBoard.value.boardPoopStatus = '묽음';
+	if (newBoard.value.boardPoopStatus === '묽음') {
+		newBoard.value.boardPoopStatus = '';
+	} else {
+		newBoard.value.boardPoopStatus = '묽음';
+	}
 };
 const isThird = () => {
-	newBoard.value.boardPoopStatus = '딱딱함';
+	if (newBoard.value.boardPoopStatus === '딱딱함') {
+		newBoard.value.boardPoopStatus = '';
+	} else {
+		newBoard.value.boardPoopStatus = '딱딱함';
+	}
 };
 
 const buttonClass = button => {
@@ -406,19 +413,19 @@ const registBoard = () => {
 	@apply inline-flex h-10 rounded-md shadow-sm;
 }
 .group-button-left {
-	@apply px-5 py-2 text-base font-medium text-gray-900 bg-white border border-gray-200 rounded-s-lg focus:z-10 focus:ring-2 focus:ring-dark-navy focus:text-dark-navy focus:font-bold focus:bg-gray-100;
+	@apply px-5 py-2 text-base font-medium text-gray-900 bg-white border border-gray-200 rounded-s-lg;
 }
 .group-button-left-selected {
 	@apply px-5 py-2 text-base rounded-s-lg z-10 ring-2 ring-dark-navy text-dark-navy font-bold bg-gray-100;
 }
 .group-button-center {
-	@apply px-5 py-2 text-base font-medium text-gray-900 bg-white border-t border-b border-gray-200 focus:z-10 focus:ring-2 focus:ring-dark-navy focus:text-dark-navy focus:font-bold focus:bg-gray-100;
+	@apply px-5 py-2 text-base font-medium text-gray-900 bg-white border-t border-b border-gray-200;
 }
 .group-button-center-selected {
 	@apply px-5 py-2 text-base z-10 ring-2 ring-dark-navy text-dark-navy font-bold bg-gray-100;
 }
 .group-button-right {
-	@apply px-5 py-2 text-base font-medium text-gray-900 bg-white border border-gray-200 rounded-e-lg focus:z-10 focus:ring-2 focus:ring-dark-navy focus:text-dark-navy focus:font-bold focus:bg-gray-100;
+	@apply px-5 py-2 text-base font-medium text-gray-900 bg-white border border-gray-200 rounded-e-lg;
 }
 .group-button-right-selected {
 	@apply px-5 py-2 text-base rounded-e-lg z-10 ring-2 ring-dark-navy text-dark-navy font-bold bg-gray-100;

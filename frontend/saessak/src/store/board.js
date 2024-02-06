@@ -5,14 +5,22 @@ import { defineStore } from 'pinia';
 const REST_BOARD_API = 'https://i10a706.p.ssafy.io/api/board';
 
 export const useBoardStore = defineStore('board', () => {
+	const thisYear = new Date().getFullYear();
+	const years = ref([]);
+	for (let i = 0; i < 10; i++) {
+		years.value[i] = thisYear - i;
+	}
+	const months = ref([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
+
 	// 학부모ver 내 아이 알림장 리스트
 	const myKidBoards = ref([]);
 
-	// 학부모ver 내 아이 알림장 리스트 요청
-	const getMyKidBoards = async kidId => {
+	// 학부모ver 내 아이 알림장 월별 리스트 요청
+	const getMyKidMonthlyBoards = async (kidId, year, month) => {
 		await axios({
-			url: `${REST_BOARD_API}/${kidId}`,
-			method: 'GET',
+			url: `${REST_BOARD_API}/month/${kidId}`,
+			method: 'POST',
+			data: { year, month },
 			headers: {
 				'Content-Type': 'application/json',
 				Authorization: 'Bearer ' + sessionStorage.getItem('accessToken'),
@@ -21,6 +29,20 @@ export const useBoardStore = defineStore('board', () => {
 			myKidBoards.value = resp.data.data;
 		});
 	};
+
+	// // 학부모ver 내 아이 알림장 리스트 요청
+	// const getMyKidBoards = async kidId => {
+	// 	await axios({
+	// 		url: `${REST_BOARD_API}/${kidId}`,
+	// 		method: 'GET',
+	// 		headers: {
+	// 			'Content-Type': 'application/json',
+	// 			Authorization: 'Bearer ' + sessionStorage.getItem('accessToken'),
+	// 		},
+	// 	}).then(resp => {
+	// 		myKidBoards.value = resp.data.data;
+	// 	});
+	// };
 
 	// 알림장 1개
 	const oneBoard = ref({});
@@ -53,17 +75,15 @@ export const useBoardStore = defineStore('board', () => {
 			headers: {
 				'Content-Type': 'application/json',
 			},
-		})
-			.then(resp => {
+		}).then(resp => {
+			if (resp.data.data) {
 				noContent.value = '';
 				oneBoard.value = resp.data.data;
 				date.value = oneBoard.value.boardDate;
-			})
-			.catch(error => {
-				if (error.response.status === 500) {
-					noContent.value = '등록된 알림장이 없습니다.';
-				}
-			});
+			} else {
+				noContent.value = '등록된 알림장이 없습니다.';
+			}
+		});
 	};
 
 	// 알림장 상세보기(kidId, 최신 알림장)
@@ -88,7 +108,7 @@ export const useBoardStore = defineStore('board', () => {
 	// 선택 기간의 알림장 조회
 	const summary = ref({});
 	const boardList = ref([]);
-	const getSummaryBoard = async (kidId, { startDate, endDate }) => {
+	const getSummaryBoard = async (kidId, startDate, endDate) => {
 		await axios({
 			url: `${REST_BOARD_API}/summary/${kidId}`,
 			method: 'POST',
@@ -104,26 +124,22 @@ export const useBoardStore = defineStore('board', () => {
 	// 성장도표 조회
 	const tallList = ref([]);
 	const weightList = ref([]);
-	const getGrowthList = async (gender, myKidMonths) => {
+	const getGrowthList = async gender => {
 		await axios({
 			url: 'https://i10a706.p.ssafy.io/api/growth',
 			method: 'POST',
 			data: {
 				gender,
-				startMonth: myKidMonths - 48,
-				endMonth: myKidMonths + 12,
+				startMonth: 1,
+				endMonth: 100,
 			},
 			headers: {
 				'Content-Type': 'application/json',
 			},
-		})
-			.then(resp => {
-				tallList.value = resp.data.data.tallList;
-				weightList.value = resp.data.data.weightList;
-			})
-			.catch(err => {
-				console.log(err);
-			});
+		}).then(resp => {
+			tallList.value = resp.data.data.tallList;
+			weightList.value = resp.data.data.weightList;
+		});
 	};
 
 	// 선택기간 아이의 성장 기록 조회
@@ -142,8 +158,10 @@ export const useBoardStore = defineStore('board', () => {
 	};
 
 	return {
+		years,
+		months,
+		getMyKidMonthlyBoards,
 		myKidBoards,
-		getMyKidBoards,
 		oneBoard,
 		getOneBoard,
 		date,
