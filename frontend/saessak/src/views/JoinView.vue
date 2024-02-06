@@ -55,14 +55,14 @@ const KLogin = (input) => {
   if (input.data.isTeacher) {
     // 선생님 로그인
     setTeacherFlag(true)
-    setAlarmFlag(input.data.isAlarm)
+    setAlarmFlag(input.data.alarm)
     sessionStorage.setItem('refreshToken', input.data.refreshToken)
     sessionStorage.setItem('accessToken', input.data.accessToken)
     setTeachername(input.data.teacherName)
   } else {
     // 학부모 로그인
     setTeacherFlag(false)
-    setAlarmFlag(input.data.isAlarm)
+    setAlarmFlag(input.data.alarm)
     // sessionStorage.setItem('isTeacher', input.data.isTeacher)
     sessionStorage.setItem('accessToken', input.data.accessToken)
     sessionStorage.setItem('refreshToken', input.data.refreshToken) // 토큰만 세션에 저장
