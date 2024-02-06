@@ -387,6 +387,17 @@ Test: 테스트 코드 작성
  ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📂service
  ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜SaessakApplication.java
  ```
-
+ 
 </div>
 </details>
+
+<details>
+<summary>AI 폴더 구조</summary>
+<div markdown="1">
+
+
+```
+📦recognition   
+ ┗ 📂modules    
+ ┗ 📜deepface_server.py   
+```

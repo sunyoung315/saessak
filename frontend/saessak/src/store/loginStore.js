@@ -5,6 +5,7 @@ import createPersistedState from 'pinia-plugin-persistedstate';
 
 export const loginStore = defineStore("loginStore", () => {
     const isLogin = ref(false);
+    const isAlarm = ref(false)
     const isTeacher = ref(false)
     const teacherName = ref("")
     const kidList = ref([])
@@ -17,6 +18,10 @@ export const loginStore = defineStore("loginStore", () => {
 
     function setlogout(){
         isLogin.value = false;
+    }
+
+    function setAlarmFlag(input) {
+        isAlarm.value = input;
     }
 
     function setTeacherFlag(input){
@@ -39,8 +44,8 @@ export const loginStore = defineStore("loginStore", () => {
         curKid.value = kid;
     }
 
-    return {isLogin, isTeacher, teacherName, kidList, curKid, userId,
-        setCurkid, setKidlist, setTeacherFlag, setTeachername, setUserid, setlogin, setlogout};
+    return {isLogin, isAlarm, isTeacher, teacherName, kidList, curKid, userId,
+        setCurkid, setKidlist, setAlarmFlag, setTeacherFlag, setTeachername, setUserid, setlogin, setlogout};
 }, {persist : true,
     strategies: [{ storage: sessionStorage }],
 });
