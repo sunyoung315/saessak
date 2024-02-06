@@ -33,10 +33,10 @@
 		<!-- 로그인 후 -->
 		<div v-else>
 			<div v-if="isTeacher">
-				<MainTeacherVue />
+				<MainTeacherVue :loginStore="loginStore" />
 			</div>
 			<div v-else>
-				<MainParentVue />
+				<MainParentVue :loginStore="loginStore" />
 			</div>
 		</div>
 	</div>
