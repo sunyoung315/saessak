@@ -1,39 +1,47 @@
 <template>
-    <div>
-        <div class="grid grid-cols-12 gap-2">
-            <div class="col-span-1"></div>
-            <div class="col-span-7">{{ todo.content }}</div>
-            <div class="col-span-2"><button @click="toggle">{{ todo.completed }}</button></div>
-            <div class="col-span-2"><button @click="delTodo">delete</button></div>
-
-        </div>
-
+    <div class="flex mb-4 items-center">
+        <p class="w-full" :class="todo.completed ? 'line-through text-green' : 'text-grey-darkest'">{{ todo.content }}</p>
+        <button
+            class="flex-no-shrink p-2 ml-4 mr-2 border-2 rounded hover:text-white text-green border-green hover:bg-green"
+            @click="toggle">check</button>
+        <button class="flex-no-shrink p-2 ml-2 border-2 rounded text-red border-red hover:text-white hover:bg-red"
+            @click="delTodo">Remove</button>
     </div>
 </template>
 
 
 <script setup>
 import { deleteTodo, toggleTodo, } from '@/api/todo';
+import axios from 'axios';
 import { watch } from 'vue'
-
+const config = {
+    headers: {
+        "Authorization": "Bearer " + sessionStorage.getItem("accessToken")
+    }
+}
 const props = defineProps(["todo"])
-
+const emits = defineEmits(["updatedTodo"])
 const todo = props.todo
 
 const delTodo = () => {
     console.log("delete", todo.todoId)
-    deleteTodo(todo.Id, (response) => {
-        console.log(response)
-        emit("deleteSuccess")
+    deleteTodo(todo.todoId, (response) => {
+        // console.log(response)
+        emits("updatedTodo")
     },
         (error) => {
-            console.log(error)
+            // console.log(error)
         })
 }
 
 const toggle = () => {
-    console.log("toggle", todo.todoId)
-    toggleTodo()
+
+    toggleTodo(todo.todoId, (response) => {
+        todo.completed = !todo.completed
+    },
+        (error) => {
+            // console.log(error)
+        })
 }
 
 
