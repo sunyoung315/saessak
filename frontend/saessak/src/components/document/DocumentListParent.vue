@@ -64,7 +64,7 @@
 											: 'bg-gray-500 text-white font-bold rounded-lg p-2'
 									"
 								>
-									{{ kid.replacementCheck ? '확인 완료' : '확인 필요' }}
+									{{ kid.replacementCheck ? '확인완료' : '미확인' }}
 								</span>
 							</td>
 						</tr>

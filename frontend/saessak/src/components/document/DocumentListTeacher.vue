@@ -3,26 +3,28 @@
 		<!-- Teacher Version : 귀가 동의서 -->
 		<div v-if="isReplace === true">
 			<div class="container p-6 flex items-center">
-				<table class="items-center bg-transparent border-collapse mt-4 w-full">
+				<table
+					class="items-center bg-transparent border-collapse mt-4 w-full text-center"
+				>
 					<thead>
 						<tr class="bg-nav-blue">
 							<th
-								class="px-6 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left"
+								class="w-72 px-6 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold"
 							>
 								분류
 							</th>
 							<th
-								class="px-6 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left"
+								class="px-6 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold"
 							>
 								대상 원아
 							</th>
 							<th
-								class="px-6 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left"
+								class="px-6 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold"
 							>
 								작성일자
 							</th>
 							<th
-								class="px-6 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left"
+								class="px-6 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold"
 							>
 								확인여부
 							</th>
@@ -60,7 +62,7 @@
 											: 'bg-gray-500 text-white font-bold rounded-lg p-2'
 									"
 								>
-									{{ kid.replacementCheck ? '확인 완료' : '확인 필요' }}
+									{{ kid.replacementCheck ? '확인완료' : '미확인' }}
 								</span>
 							</td>
 						</tr>
@@ -71,26 +73,28 @@
 		<!-- Teacher Version : 알레르기 동의서 -->
 		<div v-else>
 			<div class="container p-6 flex items-center">
-				<table class="items-center bg-transparent border-collapse mt-4 w-full">
+				<table
+					class="text-center items-center bg-transparent border-collapse mt-4 w-full"
+				>
 					<thead>
 						<tr class="bg-nav-blue">
 							<th
-								class="px-6 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left"
+								class="w-72 px-6 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold"
 							>
 								분류
 							</th>
 							<th
-								class="px-6 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left"
+								class="px-6 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold"
 							>
 								대상 원아
 							</th>
 							<th
-								class="px-6 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left"
+								class="px-6 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold"
 							>
 								작성일자
 							</th>
 							<th
-								class="px-6 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left"
+								class="px-6 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold"
 							>
 								확인여부
 							</th>
@@ -130,7 +134,7 @@
 											: 'bg-gray-500 text-white font-bold rounded-lg p-2'
 									"
 								>
-									{{ kid.kidAllergyCheck ? '확인 완료' : '확인 필요' }}
+									{{ kid.kidAllergyCheck ? '확인완료' : '미확인' }}
 								</span>
 							</td>
 						</tr>
