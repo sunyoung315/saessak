@@ -18,8 +18,9 @@ public class TodoBackScheduling {
     @Scheduled(cron = "0 0 0 * * *")
     @Transactional
     public void deleteYesterdayTodoList(){
-        LocalDate yesterday = LocalDate.now().minusDays(1);
-        todoRepository.deleteAllByCreatedDateBefore(yesterday);
+        LocalDate today = LocalDate.now();
+        log.info("delete yesterday todoList, today is {}", today);
+        todoRepository.deleteAllByCreatedDateBefore(today);
 
     }
 
