@@ -197,8 +197,8 @@ const handleBeforeUnload = (event) => {
 }
 
 onMounted(() => {
-  console.log('선생님이니')
-  console.log(isTeacher.value)
+  // console.log('선생님이니')
+  // console.log(isTeacher.value)
   window.addEventListener('beforeunload', handleBeforeUnload) // 브라우저 종료 이벤트 등록
   if (chatbox.value) {
     chatbox.value.addEventListener('scroll', handleScroll)
@@ -216,9 +216,9 @@ onMounted(() => {
     cursor: convertDate(currentDate)
   }
   loadChat(props.roomInfo.roomId, cursor.value, ({ data }) => {
-    console.log('채팅 내역 조회')
-    console.log(data)
-    console.log(data.data[0].chatTime)
+    // console.log('채팅 내역 조회')
+    // console.log(data)
+    // console.log(data.data[0].chatTime)
     cursor.value = {
       // 최초 불러온 채팅을 갖고 커서 설정
       roomId: data.data[0].roomId,
@@ -227,7 +227,7 @@ onMounted(() => {
       chatTime: data.data[0].chatTime
     }
     recvList.value = data.data
-    console.log(recvList.value)
+    // console.log(recvList.value)
     oldHeight = chatbox.value.scrollHeight
     downScroll()
   })
@@ -277,24 +277,24 @@ const handleScroll = () => {
   // console.log('현재 스크롤 : ' + scrollTop)
   let currentDate = new Date()
   if (scrollTop === 0) {
-    console.log('스크롤 맨 위긔.')
+    // console.log('스크롤 맨 위긔.')
     // 1. 현재 커서를 기준으로 다시 메세지 불러오기(revList 맨 앞에 추가하기)
 
-    console.log('재조회를 위한 커서 : ')
-    console.log(cursor.value)
+    // console.log('재조회를 위한 커서 : ')
+    // console.log(cursor.value)
     // let oldHeight = chatbox.value.scrollHeight // 불러오기 전의 스크롤 길이 저장
     if (cursor.value.chatTime == null) {
       // 모든 채팅 불러온 경우
-      console.log('모든 채팅 불러왔긔')
+      // console.log('모든 채팅 불러왔긔')
       return
     }
     loadChat(props.roomInfo.roomId, cursor.value, ({ data }) => {
-      console.log('이전 채팅 내역 조회')
-      console.log(data)
-      console.log(data.data[0])
+      // console.log('이전 채팅 내역 조회')
+      // console.log(data)
+      // console.log(data.data[0])
       if (data.data.length == 0) {
         cursor.value.chatTime = null
-        console.log('모든 채팅 불러왔긔')
+        // console.log('모든 채팅 불러왔긔')
       } else {
         const newArr = [...data.data, ...recvList.value] // 새로 불러온 채팅 + 기존 채팅
         lastChat.value = data.data[data.data.length - 1].chatTime
@@ -304,20 +304,20 @@ const handleScroll = () => {
           senderId: data.data[0].senderId,
           chatTime: data.data[0].chatTime
         }
-        console.log(newArr)
+        // console.log(newArr)
         recvList.value = newArr
-        console.log(
-          oldHeight + ' / ' + chatbox.value.scrollHeight + ' / ' + chatbox.value.clientHeight
-        )
-        console.log(chatbox.value.scrollHeight - oldHeight + 100)
+        // console.log(
+        //   oldHeight + ' / ' + chatbox.value.scrollHeight + ' / ' + chatbox.value.clientHeight
+        // )
+        // console.log(chatbox.value.scrollHeight - oldHeight + 100)
         chatbox.value.scrollTo({ left: 0, top: chatbox.value.clientHeight }) // 올리고 나서 스크롤 위치 어따 둘건지???
-        console.log(chatbox.value.scrollTop)
+        // console.log(chatbox.value.scrollTop)
         oldHeight = chatbox.value.scrollHeight
       }
     })
     // 2. 지금 불러온 메세지 중 첫번째 메세지의 시간을 커서로 변경
     // 3. 더 이상 불러올 매세지 없으면 api 호출X
-    console.log(recvList.value)
+    // console.log(recvList.value)
   }
 }
 
@@ -336,8 +336,8 @@ let headers = {
   userId: userId
 }
 
-console.log('소켓 연결 시작')
-console.log('roomId : ' + roomId)
+// console.log('소켓 연결 시작')
+// console.log('roomId : ' + roomId)
 // chat 메세지 정보에서 리시버id 안받을거임 / 백에서는 내가 보낸 토큰으로 senderid 지정함
 // 그럼 내가 받을땐?
 // console.log(roomId);
@@ -345,24 +345,24 @@ stomp.connect(
   headers,
   (frame) => {
     // 소켓 연결 성공
-    console.log('after frame')
+    // console.log('after frame')
     connected.value = true
     setIsopen(true)
-    console.log('소켓 연결 성공', frame)
-    console.log(stomp)
+    // console.log('소켓 연결 성공', frame)
+    // console.log(stomp)
     // 서버의 메시지 전송 endpoint를 구독합니다.
     // 이런형태를 pub sub 구조라고 합니다.
     stomp.subscribe(
       '/sub/room/' + roomId,
       (res) => {
-        console.log('구독으로 받은 메시지 입니다.')
-        console.log(res.body)
+        // console.log('구독으로 받은 메시지 입니다.')
+        // console.log(res.body)
         // 받은 데이터를 json으로 파싱하고 리스트에 넣어줍니다.
-        console.log(JSON.parse(res.body).chatContent)
-        console.log(isTeacher.value)
+        // console.log(JSON.parse(res.body).chatContent)
+        // console.log(isTeacher.value)
         if (res.body == 'true') {
           if (isTeacher.value == false) {
-            console.log('check flag')
+            // console.log('check flag')
             const isConfirmed = window.confirm("화상채팅 할거긔?");
             if(isConfirmed){
               window.open('/facechat', '_blank', 'width=720, height=720')
@@ -379,7 +379,7 @@ stomp.connect(
   },
   (error) => {
     // 소켓 연결 실패
-    console.log('소켓 연결 실패', error)
+    // console.log('소켓 연결 실패', error)
     connected.value = false
     setIsopen(false)
   }
@@ -421,7 +421,7 @@ const send = () => {
 }
 
 const discon = () => {
-  console.log('discon 실행')
+  // console.log('discon 실행')
   const params = {
     roomId: props.roomInfo.roomId,
     userId: userId.value
@@ -429,10 +429,10 @@ const discon = () => {
   disconnect(
     params,
     ({ response }) => {
-      console.log(response)
+      // console.log(response)
     },
     ({ error }) => {
-      console.log(error)
+      // console.log(error)
     }
   )
   //Theheader로 ChatListView로 바꾸겠다고 전송해야됨

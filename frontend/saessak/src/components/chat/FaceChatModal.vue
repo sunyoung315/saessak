@@ -52,7 +52,7 @@ import UserVideo from './video/UserVideo.vue'
 
 const store = chatStore()
 const { chatName, chatRoom } = storeToRefs(store)
-console.log(chatRoom.value)
+// console.log(chatRoom.value)
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
 
@@ -94,7 +94,7 @@ axios.defaults.headers.post["Content-Type"] = "application/json";
 
   // vue2에서의 methods 부분을 vue3화 시키기
   function joinSession() {
-    console.log("joinSession 실행")
+    // console.log("joinSession 실행")
     // --- 1) Get an OpenVidu object ---
     OV.value = new OpenVidu()
     
@@ -173,7 +173,7 @@ axios.defaults.headers.post["Content-Type"] = "application/json";
           getMedia()  // 세션이 만들어졌을때 미디어 불러옴
         })
         .catch((error) => {
-          console.log("There was an error connecting to the session:", error.code, error.message);
+          // console.log("There was an error connecting to the session:", error.code, error.message);
         })
     })
 
