@@ -25,32 +25,62 @@ const {
 } = store;
 const code = ref(null);
 
+const {
+	VITE_KAKAO_CLIENT_ID,
+	VITE_KAKAO_CLIENT_SECRET,
+	VITE_KAKAO_REDIRECT_URL,
+} = import.meta.env;
+
 onMounted(() => {
 	code.value = route.query.code;
 	if (code.value != null) {
-		// console.log(code.value)
 		axios
-			.get('https://i10a706.p.ssafy.io/api/oauth/kakao/callback/' + code.value)
-			// 발급된 코드를 갖고 신규/기존 회원 여부 판별하는 axios 호출
+			.post(
+				'https://kauth.kakao.com/oauth/token',
+				{
+					grant_type: 'authorization_code',
+					client_id: VITE_KAKAO_CLIENT_ID,
+					client_secret: VITE_KAKAO_CLIENT_SECRET,
+					redirect_uri: VITE_KAKAO_REDIRECT_URL,
+					code: code.value,
+				},
+				{
+					headers: {
+						'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
+					},
+				},
+			)
 			.then(({ data }) => {
-				// console.log('카카오 로그인 전')
-				// console.log(data)
-				// console.log(data.data)
-				if (data.data.accessToken === 'null') {
-					// 회원가입
-					//   console.log('회원가입 필요')
-					alert('회원가입이 필요합니다!');
-					setUserid(data.data.userId);
-					router.push({ path: '/join' });
-				} else {
-					// 로그인
-					//   console.log('로그인 드갈까?')
-					KLogin(data);
-				}
-				// 기존에 있는 회원 -> 바로 로그인
-				// 신규 회원 -> 인증코드 입력 받기 -> 로그인
-				//   location.href="/";
-				//   route.push({name : "Home"});
+				console.log(data.access_token);
+				axios
+					.get(
+						'https://i10a706.p.ssafy.io/api/oauth/kakao/callback/' +
+							data.access_token,
+					)
+					// 발급된 코드를 갖고 신규/기존 회원 여부 판별하는 axios 호출
+					.then(({ data }) => {
+						// console.log('카카오 로그인 전')
+						// console.log(data)
+						console.log(data.data);
+						if (data.data.accessToken === 'null') {
+							// 회원가입
+							//   console.log('회원가입 필요')
+							alert('회원가입이 필요합니다!');
+							setUserid(data.data.userId);
+							router.push({ path: '/join' });
+						} else {
+							// 로그인
+							// console.log('로그인 드갈까?')
+							KLogin(data);
+						}
+						// 기존에 있는 회원 -> 바로 로그인
+						// 신규 회원 -> 인증코드 입력 받기 -> 로그인
+						location.href = '/';
+						//   route.push({name : "Home"});
+					});
+			})
+			.catch(error => {
+				console.error(error);
 			});
 	}
 });
@@ -61,7 +91,7 @@ const KLogin = input => {
 	if (input.data.isTeacher) {
 		// 선생님 로그인
 		setTeacherFlag(true);
-		setAlarmFlag(input.data.isAlarm);
+		setAlarmFlag(input.data.alarm);
 		// console.log('나는 선생님이다')
 		// console.log(store.isTeacher)
 		// sessionStorage.setItem('isTeacher', input.data.isTeacher)
@@ -74,7 +104,7 @@ const KLogin = input => {
 	} else {
 		// 학부모 로그인
 		setTeacherFlag(false);
-		setAlarmFlag(input.data.isAlarm);
+		setAlarmFlag(input.data.alarm);
 		// sessionStorage.setItem('isTeacher', input.data.isTeacher)
 		sessionStorage.setItem('accessToken', input.data.accessToken);
 		sessionStorage.setItem('refreshToken', input.data.refreshToken); // 토큰만 세션에 저장
@@ -84,7 +114,7 @@ const KLogin = input => {
 	}
 	setlogin();
 	//   console.log('KLogin 실행')
-	location.href = '/';
+	// location.href = '/'
 };
 </script>
 
