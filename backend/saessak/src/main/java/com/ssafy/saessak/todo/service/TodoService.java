@@ -55,7 +55,8 @@ public class TodoService {
     @Transactional
     // update
     public Long toggleTodo (Long todoId){
-        Optional<Todo> todoResult = todoRepository.findById(todoId);
+        User user = authenticationService.getUserByAuthentication();
+        Optional<Todo> todoResult = todoRepository.findByUserAndTodoId(user,todoId);
         if (todoResult.isEmpty()) throw new NotFoundException(ExceptionCode.TODO_NOT_FOUND);
         Todo todo = todoResult.get();
         todo.toggleTodo();
@@ -65,7 +66,8 @@ public class TodoService {
     // delete
     @Transactional
     public Long deleteTodo (Long todoId){
-        Optional<Todo> todoResult = todoRepository.findById(todoId);
+        User user = authenticationService.getUserByAuthentication();
+        Optional<Todo> todoResult = todoRepository.findByUserAndTodoId(user,todoId);
         if (todoResult.isEmpty()) throw new NotFoundException(ExceptionCode.TODO_NOT_FOUND);
         Todo todo = todoResult.get();
         todoRepository.delete(todo);
