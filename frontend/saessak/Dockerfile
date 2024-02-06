@@ -2,10 +2,10 @@ FROM node:21.5 as build-stage
 
 WORKDIR /app
 
-COPY ./saessak/package.json .
+COPY ./package.json .
 
 RUN npm install
-COPY ./saessak .
+COPY ./ .
 
 RUN npm run build
 
