@@ -1,24 +1,21 @@
-import { localAxios } from "./http";
+import { localAxios } from './http'
 
-const local = localAxios();
+const local = localAxios()
 
-const url = "/fcm/token";
+const url = '/fcm/token'
 
 const config = {
-    headers : {
-        "Authorization" : "Bearer " + sessionStorage.getItem("accessToken")
-    }
-} 
-
-function saveToken(param, success, fail){
-    local.post(`${url}`, JSON.stringify(param), config).then(success).catch(fail);
+  headers: {
+    Authorization: 'Bearer ' + sessionStorage.getItem('accessToken')
+  }
 }
 
-function deleteToken(success, fail){
-    local.delete(`${url}`, config).then(success).catch(fail);
+function saveToken(param, success, fail) {
+  local.post(`${url}`, JSON.stringify(param), config).then(success).catch(fail)
 }
 
-export {
-    saveToken,
-    deleteToken
+function deleteToken(success, fail) {
+  local.delete(`${url}`, config).then(success).catch(fail)
 }
+
+export { saveToken, deleteToken }
