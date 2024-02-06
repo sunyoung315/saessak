@@ -6,7 +6,6 @@
       <div>
         <label class="relative inline-flex items-center cursor-pointer">
           <input type="checkbox" v-model="alarm" class="sr-only peer" >
-          {{ alarm }}
           <div class=" mr-8 w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
         </label>
 
@@ -137,6 +136,7 @@ import { chatStore } from '@/store/chatStore'
 import ChatListView from '@/components/chat/ChatListView.vue'
 import ChatPersonView from '@/components/chat/ChatPersonView.vue'
 import ChatDetailView from '../chat/ChatDetailView.vue'
+import { saveToken, deleteToken } from "@/api/fcm";
 
 const store = loginStore()
 const chStore = chatStore()
@@ -230,11 +230,23 @@ const logout = () => {
 
 const alarm = ref();
 
+const saveFcmToken = () => {
+  saveToken(
+    // 토큰
+    (response) => {
+
+    },
+    (error) => {
+      console.log(error);
+    }
+  );
+}
+
 watch(alarm, (newValue) => {
   if(newValue) {
-    console.log("checkbox is checked");
+    // checked
   } else {
-    console.log("checkbox is unchecked")
+    // unchecked
   }
 })
 
