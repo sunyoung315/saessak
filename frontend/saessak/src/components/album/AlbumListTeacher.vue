@@ -17,7 +17,6 @@
 					{{ showToggle ? '아이별 보기' : '전체 보기' }}</span
 				>
 			</label>
-			{{ showToggle }}
 			<div>
 				<button type="button" @click="registAlbum()" class="btn m-0">
 					추가

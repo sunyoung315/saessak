@@ -27,8 +27,8 @@ import BoardList from '@/components/board/BoardList.vue';
 import BoardDetailTeacher from '@/components/board/BoardDetailTeacher.vue';
 import BoardDetailParent from '@/components/board/BoardDetailParent.vue';
 import MenuView from '@/components/menu/MenuView.vue';
-import MenuList from '@/components/menu/MenuList';
-import MenuCreate from '@/components/menu/MenuCreate';
+import MenuList from '@/components/menu/MenuList.vue';
+import MenuCreate from '@/components/menu/MenuCreate.vue';
 import AppView from '@/AppView.vue';
 import faceChatModal from '@/components/chat/FaceChatModal.vue';
 
