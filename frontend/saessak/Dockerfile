@@ -1,5 +1,7 @@
 FROM node:20.11 as build-stage
 
+RUN mkdir /saessak
+
 WORKDIR /saessak
 
 COPY ./package.json .
