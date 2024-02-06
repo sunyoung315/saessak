@@ -12,6 +12,13 @@ class WebMvcConfig implements WebMvcConfigurer {
         registry.addMapping("/**")
                 .allowedOrigins("http://localhost:5173", 
                 "http://i10a706.p.ssafy.io/", 
-                "http://i10a706.p.ssafy.io:5173");
+                "http://i10a706.p.ssafy.io:5173")
+                .allowedMethods(
+                        "GET",
+                        "HEAD",
+                        "POST",
+                        "PATCH",
+                        "DELETE"
+                );
     }
 }
