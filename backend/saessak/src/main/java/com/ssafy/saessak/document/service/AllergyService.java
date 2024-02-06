@@ -78,6 +78,7 @@ public class AllergyService {
                 .kidName(kid.getNickname())
                 .kidAllergy(kid.getKidAllergy())
                 .kidAllergySignature(kid.getKidAllergySignature())
+                .kidAllergyCheck(kid.getKidAllergyCheck())
                 .build();
 
         return allergyDetailResponseDto;
