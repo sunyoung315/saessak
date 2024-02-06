@@ -42,17 +42,6 @@ public class Parent extends User {
         }
     }
 
-    public void setToken(String token){
-        this.parentDevice = token;
-    }
-
-    public void setAlarm() {
-        if(!this.parentAlarm) {
-            this.parentAlarm = true;
-        } else {
-            this.parentAlarm = false;
-        }
-    }
 
 }
 

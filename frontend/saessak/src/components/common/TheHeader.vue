@@ -4,6 +4,11 @@
     <div class="flex justify-between items-center">
       <RouterLink to="/">Logo</RouterLink>
       <div>
+        <label class="relative inline-flex items-center cursor-pointer">
+          <input type="checkbox" v-model="alarm" class="sr-only peer" >
+          <div class=" mr-8 w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+        </label>
+
         <RouterLink v-if="isLogin == true" to="/setting">설정</RouterLink>
         <button
           v-if="isLogin == true"
@@ -72,7 +77,7 @@
             >
               <li v-if="idx > 0">
                 <a
-                  href="#"
+                  @click="kidChange(idx)"
                   class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                   >{{ kidList[idx].kidName }}</a
                 >
@@ -110,10 +115,10 @@
         :size="size"
         :roomInfo="roomInfo"
       ></component>
-      <div class="fixed w-1/3 bottom-0 right-0 p-3 bg-yellow-50">
+      <div v-if="flag == false" class="fixed w-1/3 bottom-0 right-0 p-3 bg-yellow-50">
         <div class="flex items-center justify-evenly">
-          <button @click="showChat(ChatPersonView)">학부모목록</button>
-          <button @click="showChat(ChatListView)">채팅목록</button>
+          <button :flag="flag" @click="showChat(ChatPersonView)">학부모목록</button>
+          <button :flag="flag" @click="showChat(ChatListView)">채팅목록</button>
         </div>
       </div>
     </div>
@@ -127,11 +132,15 @@ import { kakaoLogin } from '@/api/oauth'
 import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
 import { loginStore } from '@/store/loginStore'
+import { chatStore } from '@/store/chatStore'
 import ChatListView from '@/components/chat/ChatListView.vue'
 import ChatPersonView from '@/components/chat/ChatPersonView.vue'
 import ChatDetailView from '../chat/ChatDetailView.vue'
+import { saveToken, deleteToken } from "@/api/fcm";
 
 const store = loginStore()
+const chStore = chatStore()
+
 const router = useRouter()
 // const isLogin = ref(false)
 // const isTeacher = ref(false)
@@ -139,6 +148,7 @@ const router = useRouter()
 
 const drawer = ref(null)
 const size = ref([])
+const flag = ref(false)
 
 const getSizeOfDrawer = () => {
   const width = drawer.value.offsetWidth
@@ -148,8 +158,9 @@ const getSizeOfDrawer = () => {
   size.value = { width: width, height: height }
 }
 
-const { isLogin, isTeacher, kidList } = storeToRefs(store)
-const { setlogin, setlogout, setKidlist, setTeacherFlag, setTeachername } = store
+const { chatName, chatReoom, isOpen } = storeToRefs(chStore)
+const { isLogin, isTeacher, kidList, isAlarm } = storeToRefs(store)
+const { setlogin, setCurkid, setlogout, setKidlist, setTeacherFlag, setTeachername } = store
 onMounted(() => {
   initFlowbite()
   // 로그인 여부 판단하기
@@ -161,6 +172,7 @@ onMounted(() => {
     if (!isTeacher) {
       kidList.value = JSON.parse(sessionStorage.getItem('kidList'))
     }
+    alarm.value = isAlarm
   }
   getSizeOfDrawer()
   // console.log(isLogin)
@@ -172,17 +184,23 @@ const chatEvent = (data) => {
   // console.log(data)
   roomInfo.value = data
   chatSwitch.value = ChatDetailView
+  flag.value = true;
 }
 
-const exitChat = (flag) => {
-  if (flag) {
+const exitChat = (input) => {
+  if (input) {
     chatSwitch.value = ChatListView
+    flag.value = false;
   }
 }
 
 const chatSwitch = shallowRef(ChatPersonView)
 
 const showChat = (name) => {
+  // if(isOpen){ // 채팅방에서 하단 메뉴 클릭할 때
+  //   console.log("채팅방에서 클릭")
+  // }
+  // flag.value = true
   chatSwitch.value = name
   // console.log(chatSwitch.value)
 }
@@ -202,10 +220,45 @@ const logout = () => {
     setKidlist('')
   }
   // console.log("로그아웃 드가자")
+  localStorage.removeItem('loginStore')
+  localStorage.removeItem('chatStore')
   setlogout()
   setTeacherFlag(false)
   setTeachername('')
   window.location.href = '/'
+}
+
+const alarm = ref();
+
+const saveFcmToken = () => {
+  saveToken(
+    // 토큰
+    (response) => {
+
+    },
+    (error) => {
+      console.log(error);
+    }
+  );
+}
+
+watch(alarm, (newValue) => {
+  if(newValue) {
+    // checked
+  } else {
+    // unchecked
+  }
+})
+
+const kidChange = (idx) => {
+  console.log(kidList.value[idx].kidId)
+  setCurkid(kidList.value[idx].kidId)
+  // 변경한 kidId 삭제 후 0번째 kid로 다시 넣기
+  let tmp = kidList.value.splice(idx, 1)[0]
+  kidList.value.unshift(tmp)
+  location.reload()
+
+
 }
 </script>
 

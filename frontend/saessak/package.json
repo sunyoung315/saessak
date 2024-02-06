@@ -11,11 +11,14 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.507.0",
     "@popperjs/core": "^2.11.8",
     "apexcharts": "^3.45.2",
     "axios": "^1.6.5",
     "flowbite": "^2.2.1",
+    "flowbite-vue": "^0.1.2",
     "openai": "^4.24.7",
+    "openvidu-browser": "^2.29.1",
     "pinia": "^2.1.7",
     "pinia-plugin-persistedstate": "^3.2.1",
     "sockjs-client": "^1.6.1",

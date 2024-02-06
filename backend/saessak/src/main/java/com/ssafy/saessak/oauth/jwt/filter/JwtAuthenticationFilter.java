@@ -30,27 +30,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
 
-    private String[] AUTH_WHITELIST = {
-            "/api/oauth/",
-            "/api/test/",
-            "/api/v1/urls/",
-            "/api/v2/urls/",
-            "/swagger-ui/",
-            "/v3/api-docs",
-            "/swagger-resources/",
-    };
-
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String requestUrl = request.getRequestURI();
         String token = getJwtFromRequest(request);
-
-        for(String url : AUTH_WHITELIST) {
-            if(requestUrl.startsWith(url)) {
-                filterChain.doFilter(request, response);
-                return;
-            }
-        }
 
         if (token != null && jwtTokenProvider.validateToken(token) == VALID_JWT_TOKEN) {
             Long userId = jwtTokenProvider.getUserFromJwt(token);
@@ -59,18 +41,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            filterChain.doFilter(request, response);
-
-        } else {
+        } else if(token != null){
             JwtValidationType type = jwtTokenProvider.validateToken(token);
             if(type.equals(INVALID_JWT_TOKEN)) sendError(ExceptionCode.INVALID_JWT_ACCESS_TOKEN, response);
             if(type.equals(EXPIRED_JWT_TOKEN)) sendError(ExceptionCode.ACCESS_TOKEN_EXPIRED, response);
             if(type.equals(UNSUPPORTED_JWT_TOKEN)) sendError(ExceptionCode.UNSUPPORTED_JWT_ACCESS_TOKEN, response);
-            if(type.equals(EMPTY_JWT_TOKEN)) sendError(ExceptionCode.EMPTY_JWT_TOKEN, response);
             return;
         }
 
+        filterChain.doFilter(request, response);
     }
+
 
     private void sendError(ExceptionCode exceptionCode, HttpServletResponse response) throws IOException {
         response.setStatus(exceptionCode.getStatus());

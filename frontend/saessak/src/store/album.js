@@ -7,31 +7,44 @@ const REST_ALBUM_API = `https://i10a706.p.ssafy.io/api/album`;
 const token = sessionStorage.getItem('accessToken');
 
 export const useAlbumStore = defineStore('album', () => {
-	// 반 전체 앨범 조회
-	const albumAllList = ref([]);
-	const getAlbumAllList = async function (classroomId) {
+	// 반 전체 앨범 조회 (선생님)
+	const albumTeacherList = ref([]);
+	const getAlbumTeacherList = async function () {
 		await axios
-			.get(`${REST_ALBUM_API}/classroom/${classroomId}`)
+			.get(`${REST_ALBUM_API}/classroom`, {
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: 'Bearer ' + token,
+				},
+			})
 			.then(response => {
-				albumAllList.value = response.data.data;
+				albumTeacherList.value = response.data.data;
+			});
+	};
 
-				// console.log(albumAllList.value[0].fileResponseDtoList);
-			});
+	// 반 전체 앨범 조회 (학부모)
+	const albumParentList = ref([]);
+	const getAlbumParentList = async function (kidId) {
+		await axios.get(`${REST_ALBUM_API}/classroom/${kidId}`).then(response => {
+			albumParentList.value = response.data.data;
+			// console.log(albumAllList.value[0].fileResponseDtoList);
+		});
 	};
+
 	// 반 앨범 날짜 조회(Carousel - 학부모)
-	const albumDateAllList = ref([]);
-	const getAlbumDateAllList = async function (classroomId, albumDate) {
-		await axios
-			.post(`${REST_ALBUM_API}/classroom/${classroomId}`, { albumDate })
-			.then(response => {
-				getAlbumDateAllList.value = response.data.data;
-				// console.log(getAlbumDateAllList.value[1].fileResponseDtoList);
-			});
-	};
+	// const albumDateAllList = ref([]);
+	// const getAlbumDateAllList = async function (classroomId, albumDate) {
+	// 	await axios
+	// 		.post(`${REST_ALBUM_API}/classroom/${classroomId}`, { albumDate })
+	// 		.then(response => {
+	// 			getAlbumDateAllList.value = response.data.data;
+	// 			// console.log(getAlbumDateAllList.value[1].fileResponseDtoList);
+	// 		});
+	// };
 
 	// 아이별 앨범 조회
 	const kidAlbumList = ref([]);
-	const getkidAlbumList = async function (kidId) {
+	const getKidAlbumList = async function (kidId) {
 		await axios.get(`${REST_ALBUM_API}/kid/${kidId}`).then(response => {
 			kidAlbumList.value = response.data.data;
 			// console.log(kidAlbumList);
@@ -40,7 +53,7 @@ export const useAlbumStore = defineStore('album', () => {
 
 	// 아이별 앨범날짜 조회 (Carousel - 학부모, CardDetail - 선생님)
 	const myKidAlbumDateList = ref([]);
-	const getkidAlbumDateList = async function (kidId, albumDate) {
+	const getKidAlbumDateList = async function (kidId, albumDate) {
 		await axios
 			.post(`${REST_ALBUM_API}/kid/${kidId}`, { albumDate })
 			.then(response => {
@@ -57,6 +70,7 @@ export const useAlbumStore = defineStore('album', () => {
 		await axios
 			.get(`${REST_ALBUM_API}/classroom/kid`, {
 				headers: {
+					'Content-Type': 'application/json',
 					Authorization: 'Bearer ' + token,
 				},
 			})
@@ -70,14 +84,16 @@ export const useAlbumStore = defineStore('album', () => {
 	};
 
 	return {
-		albumAllList,
-		getAlbumAllList,
-		albumDateAllList,
-		getAlbumDateAllList,
+		albumTeacherList,
+		getAlbumTeacherList,
+		albumParentList,
+		getAlbumParentList,
+		// albumDateAllList,
+		// getAlbumDateAllList,
 		kidAlbumList,
-		getkidAlbumList,
+		getKidAlbumList,
 		myKidAlbumDateList,
-		getkidAlbumDateList,
+		getKidAlbumDateList,
 		recentAlbumList,
 		getRecentAlbumList,
 	};
