@@ -30,7 +30,7 @@ onMounted(() => {
       .then(({ data }) => {
         // console.log('카카오 로그인 전')
         // console.log(data)
-        // console.log(data.data)
+        console.log(data.data)
         if (data.data.accessToken === 'null') {
           // 회원가입
           //   console.log('회원가입 필요')
@@ -39,12 +39,12 @@ onMounted(() => {
           router.push({ path: '/join' })
         } else {
           // 로그인
-          //   console.log('로그인 드갈까?')
+          // console.log('로그인 드갈까?')
           KLogin(data)
         }
         // 기존에 있는 회원 -> 바로 로그인
         // 신규 회원 -> 인증코드 입력 받기 -> 로그인
-        //   location.href="/";
+          location.href="/";
         //   route.push({name : "Home"});
       })
   }
@@ -56,7 +56,7 @@ const KLogin = (input) => {
   if (input.data.isTeacher) {
     // 선생님 로그인
     setTeacherFlag(true)
-    setAlarmFlag(input.data.isAlarm)
+    setAlarmFlag(input.data.alarm)
     // console.log('나는 선생님이다')
     // console.log(store.isTeacher)
     // sessionStorage.setItem('isTeacher', input.data.isTeacher)
@@ -69,7 +69,7 @@ const KLogin = (input) => {
   } else {
     // 학부모 로그인
     setTeacherFlag(false);
-    setAlarmFlag(input.data.isAlarm)
+    setAlarmFlag(input.data.alarm)
     // sessionStorage.setItem('isTeacher', input.data.isTeacher)
     sessionStorage.setItem('accessToken', input.data.accessToken)
     sessionStorage.setItem('refreshToken', input.data.refreshToken) // 토큰만 세션에 저장
@@ -79,7 +79,7 @@ const KLogin = (input) => {
   }
   setlogin()
   //   console.log('KLogin 실행')
-  location.href = '/'
+  // location.href = '/'
 }
 </script>
 

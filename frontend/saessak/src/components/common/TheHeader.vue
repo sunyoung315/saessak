@@ -172,7 +172,8 @@ onMounted(() => {
     if (!isTeacher) {
       kidList.value = JSON.parse(sessionStorage.getItem('kidList'))
     }
-    alarm.value = isAlarm
+    alarm.value = isAlarm.value
+    console.log(isAlarm.value);
   }
   getSizeOfDrawer()
   // console.log(isLogin)
@@ -230,11 +231,29 @@ const logout = () => {
 
 const alarm = ref();
 
-const saveFcmToken = () => {
-  saveToken(
-    // 토큰
-    (response) => {
+const tokenBox = ref({
+  token: '',
+});
 
+const saveFcmToken = () => {
+    messaging.getToken()
+    .then((tokenValue) => {
+      tokenBox.value.token = tokenValue;
+      saveToken(tokenBox.value,
+      (response) => {
+        // console.log(response);
+      },
+      (error) => {
+        console.log(error);
+      })
+    }
+  );
+}
+
+const deleteFcmToken = () => {
+  deleteToken(
+    (response) => {
+      // console.log(response);
     },
     (error) => {
       console.log(error);
@@ -244,11 +263,13 @@ const saveFcmToken = () => {
 
 watch(alarm, (newValue) => {
   if(newValue) {
-    // checked
+    // console.log('checked');
+    saveFcmToken();
   } else {
-    // unchecked
-  }
-})
+    // console.log('unchecked');
+    deleteFcmToken();
+  }}
+)
 
 const kidChange = (idx) => {
   console.log(kidList.value[idx].kidId)
@@ -257,8 +278,6 @@ const kidChange = (idx) => {
   let tmp = kidList.value.splice(idx, 1)[0]
   kidList.value.unshift(tmp)
   location.reload()
-
-
 }
 </script>
 
