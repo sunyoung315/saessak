@@ -29,7 +29,7 @@
 		<!-- Parent Version -->
 		<template v-else>
 			<div class="book-flex">
-				<div v-for="board in myKidBoards" :key="board.boardId">
+				<div v-for="(board, index) in myKidBoards" :key="board.boardId">
 					<RouterLink
 						:to="{
 							name: 'BoardDetailParent',
@@ -40,13 +40,24 @@
 						<div class="book-title-parent">
 							{{ board.boardDate }}
 						</div>
-						<div class="book-photo-position">
-							<img
-								:src="board.boardPath"
-								alt="profile"
-								class="book-photo-size"
-							/>
-						</div>
+						<template v-if="board.boardPath">
+							<div class="book-photo-position">
+								<img
+									:src="board.boardPath"
+									alt="profile"
+									class="book-photo-size"
+								/>
+							</div>
+						</template>
+						<template v-else>
+							<div class="relative left-[3.2rem] top-[3.6rem]">
+								<img
+									:src="`/toys/${toys[index % toys.length]}`"
+									alt="toys"
+									class="w-[8.5rem] h-[8.5rem]"
+								/>
+							</div>
+						</template>
 					</RouterLink>
 				</div>
 			</div>
@@ -100,6 +111,21 @@ watch(
 	},
 );
 
+const toys = ref([
+	'colors.png',
+	'teddy-bear.png',
+	'robot.png',
+	'aeroplane.png',
+	'rubber-duck.png',
+	'bicycle.png',
+	'blocks1.png',
+	'bucket.png',
+	'blocks2.png',
+	'rocking-horse.png',
+	'toy-train.png',
+	'xylophone.png',
+]);
+
 onMounted(async () => {
 	if (!props.loginStore.isTeacher) {
 		await getMyKidMonthlyBoards(year, month);
@@ -117,7 +143,7 @@ onMounted(async () => {
 	@apply flex flex-wrap justify-start;
 }
 .book-frame {
-	@apply bg-[url('@/assets/BoardFrame.png')] bg-book inline-block w-[13.77rem] h-[16.4rem] mx-3 my-4 bg-white rounded-lg hover:bg-yellow-50 hover:bg-opacity-65;
+	@apply bg-[url('@/assets/BoardFrame.png')] bg-book inline-block w-[13.77rem] h-[16.4rem] mx-3 my-4 bg-white rounded-lg bg-yellow-50 hover:bg-nav-yellow hover:bg-opacity-65;
 }
 .book-title-teacher {
 	@apply relative left-[4.4rem] top-[1.8rem] font-semibold text-base w-24 text-center;
