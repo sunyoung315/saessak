@@ -212,7 +212,7 @@ const download = async () => {
 			downloadLink.remove()
 			URL.revokeObjectURL(downloadLink.href);
 		} catch (error) {
-			console.log(error)
+			// console.log(error)
 		}
 	}
 }; // File Download 끝
