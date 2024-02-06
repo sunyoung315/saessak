@@ -25,31 +25,6 @@ const { VITE_KAKAO_CLIENT_ID, VITE_KAKAO_CLIENT_SECRET, VITE_KAKAO_REDIRECT_URL 
 onMounted(() => {
   code.value = route.query.code
   if (code.value != null) {
-    // console.log(code.value)
-    // axios
-    //   .get('https://i10a706.p.ssafy.io/api/oauth/kakao/callback/' + code.value)
-    //   // 발급된 코드를 갖고 신규/기존 회원 여부 판별하는 axios 호출
-    //   .then(({ data }) => {
-    //     // console.log('카카오 로그인 전')
-    //     // console.log(data)
-    //     console.log(data.data)
-    //     if (data.data.accessToken === 'null') {
-    //       // 회원가입
-    //       //   console.log('회원가입 필요')
-    //       alert('회원가입이 필요합니다!')
-    //       setUserid(data.data.userId)
-    //       router.push({ path: '/join' })
-    //     } else {
-    //       // 로그인
-    //       // console.log('로그인 드갈까?')
-    //       KLogin(data)
-    //     }
-    //     // 기존에 있는 회원 -> 바로 로그인
-    //     // 신규 회원 -> 인증코드 입력 받기 -> 로그인
-    //     location.href = '/'
-    //     //   route.push({name : "Home"});
-    //   })
-
     axios
       .post(
         'https://kauth.kakao.com/oauth/token',
