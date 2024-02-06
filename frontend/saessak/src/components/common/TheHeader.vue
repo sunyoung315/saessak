@@ -7,6 +7,7 @@
         <label class="relative inline-flex items-center cursor-pointer">
           <input type="checkbox" v-model="alarm" class="sr-only peer" />
           <div
+            v-if="isLogin == true"
             class="mr-8 w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"
           ></div>
         </label>
@@ -23,8 +24,50 @@
         >
           채팅
         </button>
-        <RouterLink v-if="isLogin == true" to="/alram">알람</RouterLink>
+        <!-- <RouterLink v-if="isLogin == true" to="/alram">알람</RouterLink> -->
+        <!-- 알람 드롭다운 시작해따-->
+        <button
+          id="dropdownNotificationButton"
+          data-dropdown-toggle="dropdownNotification"
+          class="relative inline-flex items-center text-sm font-medium text-center text-gray-500 hover:text-gray-900 focus:outline-none dark:hover:text-white dark:text-gray-400"
+          type="button"
+          @click="getAlarmList()"
+        >
+          <svg
+            class="w-7 h-7"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            viewBox="0 0 14 20"
+          >
+            <path
+              d="M12.133 10.632v-1.8A5.406 5.406 0 0 0 7.979 3.57.946.946 0 0 0 8 3.464V1.1a1 1 0 0 0-2 0v2.364a.946.946 0 0 0 .021.106 5.406 5.406 0 0 0-4.154 5.262v1.8C1.867 13.018 0 13.614 0 14.807 0 15.4 0 16 .538 16h12.924C14 16 14 15.4 14 14.807c0-1.193-1.867-1.789-1.867-4.175ZM3.823 17a3.453 3.453 0 0 0 6.354 0H3.823Z"
+            />
+          </svg>
 
+          <div
+            class="absolute block w-3 h-3 bg-red-500 border-2 border-white rounded-full -top-0.5 start-2.5 dark:border-gray-900"
+          ></div>
+        </button>
+
+        <!-- Dropdown menu -->
+        <div
+          id="dropdownNotification"
+          class="z-20 hidden w-full max-w-sm bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-800 dark:divide-gray-700"
+          aria-labelledby="dropdownNotificationButton"
+        >
+          <div class="divide-y divide-gray-100 dark:divide-gray-700">
+            <div class="w-full ps-3">
+              <div class="text-gray-500 text-sm mb-1.5 dark:text-gray-400">
+                New message from
+                <span class="font-semibold text-gray-900 dark:text-white">Jese Leos</span>: "Hey,
+                what's up? All set for the presentation?"
+              </div>
+              <div class="text-xs text-blue-600 dark:text-blue-500">a few moments ago</div>
+            </div>
+          </div>
+        </div>
+        <!-- 알람 드롭다운 끝나따-->
         <button
           v-if="isLogin == false"
           class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
@@ -139,6 +182,7 @@ import ChatListView from '@/components/chat/ChatListView.vue'
 import ChatPersonView from '@/components/chat/ChatPersonView.vue'
 import ChatDetailView from '../chat/ChatDetailView.vue'
 import { saveToken, deleteToken } from '@/api/fcm'
+import { alarmListOfParent, alarmListOfTeacher } from '@/api/alarm'
 
 const {
   VITE_FIREBASE_APIKEY,
@@ -173,7 +217,7 @@ const getSizeOfDrawer = () => {
 }
 
 const { chatName, chatReoom, isOpen } = storeToRefs(chStore)
-const { isLogin, isTeacher, kidList, isAlarm } = storeToRefs(store)
+const { isLogin, isTeacher, kidList, isAlarm, curKid } = storeToRefs(store)
 const { setlogin, setCurkid, setlogout, setKidlist, setTeacherFlag, setTeachername, setAlarmFlag } =
   store
 onMounted(() => {
@@ -308,6 +352,39 @@ watch(alarm, (newValue) => {
     setAlarmFlag(false)
   }
 })
+
+// const alarmList = ref({
+//   alarmId:
+//     kidName:
+//   alarmType:
+//     alarmDate:
+//   alarmContent:
+// });
+
+const getAlarmList = () => {
+  if (isTeacher.value) {
+    console.log('니 선생?')
+    alarmListOfTeacher(
+      (response) => {
+        console.log(response)
+      },
+      (error) => {
+        console.log(error)
+      }
+    )
+  }
+  if (!isTeacher.value) {
+    alarmListOfParent(
+      curKid.value,
+      (response) => {
+        console.log(response)
+      },
+      (error) => {
+        console.log(error)
+      }
+    )
+  }
+}
 
 const kidChange = (idx) => {
   console.log(kidList.value[idx].kidId)
