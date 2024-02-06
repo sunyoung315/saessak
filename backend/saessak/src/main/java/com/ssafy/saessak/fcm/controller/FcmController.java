@@ -25,7 +25,7 @@ public class FcmController {
     }
 
     @Operation(summary = "알림기기 토큰 삭제 (학부모, 선생님)")
-    @GetMapping("/token")
+    @DeleteMapping("/token")
     public ResponseEntity<?> deleteToken() {
         fcmService.deleteToken();
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS));
