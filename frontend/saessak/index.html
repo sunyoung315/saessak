@@ -15,18 +15,6 @@
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-messaging.js"></script>
 <script>
-  let firebaseConfig = {
-    apiKey: "AIzaSyCxxUbccZ7bwVgT7rzA7yjcLCXQPnvnmDc",
-    authDomain: "saessak-63104.firebaseapp.com",
-    projectId: "saessak-63104",
-    storageBucket: "saessak-63104.appspot.com",
-    messagingSenderId: "115340242931",
-    appId: "1:115340242931:web:390ff13b031281d17aac86",
-    measurementId: "G-PPTD28SK2P"
-};
-
-firebase.initializeApp(firebaseConfig);
-
 // 서비스 워커 등록
 // if ('serviceWorker' in navigator) {
 //   navigator.serviceWorker.register('/firebase-messaging-sw.js')
@@ -37,18 +25,4 @@ firebase.initializeApp(firebaseConfig);
 //           console.error('Service Worker registration failed:', error);
 //       });
 // }
-
-const messaging = firebase.messaging();
-
-// messaging
-//   .requestPermission()
-//   .then(function () {
-//     return messaging.getToken();
-//   })
-//   .then(function (token) {
-//     localStorage.setItem("fcm-token", token);
-//   })
-//   .catch(function (arr) {
-//     console.log("Error Occured");
-//   });
 </script>

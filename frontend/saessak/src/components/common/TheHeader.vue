@@ -138,6 +138,10 @@ import ChatPersonView from '@/components/chat/ChatPersonView.vue'
 import ChatDetailView from '../chat/ChatDetailView.vue'
 import { saveToken, deleteToken } from "@/api/fcm";
 
+const { VITE_FIREBASE_APIKEY, VITE_FIREBASE_AUTHDOMAIN, VITE_FIREBASE_PROJECTID, VITE_FIREBASE_STORAGEBUCKET,
+  VITE_FIREBASE_MESSAGINGSENDERID, VITE_FIREBASE_APPID, VITE_FIREBASE_MEASUREMENTID,
+    VITE_KAKAO_CLIENT_ID, VITE_KAKAO_REDIRECT_URL } = import.meta.env;
+
 const store = loginStore()
 const chStore = chatStore()
 
@@ -160,7 +164,7 @@ const getSizeOfDrawer = () => {
 
 const { chatName, chatReoom, isOpen } = storeToRefs(chStore)
 const { isLogin, isTeacher, kidList, isAlarm } = storeToRefs(store)
-const { setlogin, setCurkid, setlogout, setKidlist, setTeacherFlag, setTeachername } = store
+const { setlogin, setCurkid, setlogout, setKidlist, setTeacherFlag, setTeachername, setAlarmFlag } = store
 onMounted(() => {
   initFlowbite()
   // 로그인 여부 판단하기
@@ -207,11 +211,15 @@ const showChat = (name) => {
 }
 
 const login = () => {
-  kakaoLogin(({ data }) => {
-    // console.log('로그인 가즈아')
-    // console.log(data)
-    window.location.href = data
-  })
+  // kakaoLogin(({ data }) => {
+  //   // console.log('로그인 가즈아')
+  //   // console.log(data)
+  //   window.location.href = data
+  // })
+  window.location.href = "https://kauth.kakao.com"+"/auth/authorize"
+                            +"?client_id="+ VITE_KAKAO_CLIENT_ID
+                            +"&redirect_uri="+ VITE_KAKAO_REDIRECT_URL
+                            +"&response_type=code&prompt=login";
 }
 
 const logout = () => {
@@ -230,6 +238,19 @@ const logout = () => {
 }
 
 const alarm = ref();
+
+const firebaseConfig = {
+    apiKey: VITE_FIREBASE_APIKEY,
+    authDomain: VITE_FIREBASE_AUTHDOMAIN,
+    projectId: VITE_FIREBASE_PROJECTID,
+    storageBucket: VITE_FIREBASE_STORAGEBUCKET,
+    messagingSenderId: VITE_FIREBASE_MESSAGINGSENDERID,
+    appId: VITE_FIREBASE_APPID,
+    measurementId: VITE_FIREBASE_MEASUREMENTID
+};
+
+firebase.initializeApp(firebaseConfig);
+const messaging = firebase.messaging();
 
 const tokenBox = ref({
   token: '',
@@ -265,9 +286,11 @@ watch(alarm, (newValue) => {
   if(newValue) {
     // console.log('checked');
     saveFcmToken();
+    setAlarmFlag(true);
   } else {
     // console.log('unchecked');
     deleteFcmToken();
+    setAlarmFlag(false);
   }}
 )
 
