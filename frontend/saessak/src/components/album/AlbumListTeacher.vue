@@ -19,11 +19,7 @@
 			</label>
 			{{ showToggle }}
 			<div>
-				<button
-					type="button"
-					@click="registAlbum()"
-					class="text-white bg-gradient-to-r from-nav-green via-nav-green to-nav-green hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
-				>
+				<button type="button" @click="registAlbum()" class="btn m-0">
 					추가
 				</button>
 			</div>
@@ -31,7 +27,12 @@
 		<!-- 아이 이름별 보기 -->
 		<div v-if="showToggle">
 			<div v-for="kid in recentAlbumList" :key="kid.kidId">
-				<div v-if="kid.albumResponseDto.length > 0">
+				<div
+					v-if="
+						kid.albumResponseDto &&
+						kid.albumResponseDto.fileResponseDtoList.length > 0
+					"
+				>
 					<img class="px-2" src="@/assets/film.png" alt="필름" />
 					<Carousel
 						:items-to-show="5"
@@ -60,43 +61,55 @@
 					<div class="flex justify-between">
 						<button
 							class="bg-nav-green m-4 text-black font-bold py-2 px-4 rounded-full"
+							disabled
 						>
 							{{ kid.kidName }}
 						</button>
 
-						<span @click="goDetail(kid.kidId)" class="m-4 text-xl font-bold"
-							>→ 전체 조회</span
-						>
+						<button @click="goDetail(kid.kidId)" class="m-4 text-xl font-bold">
+							→ 전체 조회
+						</button>
 					</div>
 				</div>
 			</div>
 		</div>
 		<!-- Card 형식 : 전체 아이들 보기 -->
 		<div v-else class="border p-4 rounded-lg">
-			<!-- DatePicker 시작-->
-			<VDatePicker v-model="date">
-				<template #default="{ inputValue, togglePopover }">
-					<input class="px-3 py-2 mt-6 mr-6 border" :value="inputValue" />
-					<button class="px-3 py-2" @click="togglePopover">
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							width="24"
-							height="24"
-							viewBox="0 0 24 24"
-							fill="none"
-						>
-							<path
-								fill-rule="evenodd"
-								clip-rule="evenodd"
-								d="M16 2C16.5523 2 17 2.44772 17 3V4H20C21.1046 4 22 4.89543 22 6V20C22 21.1046 21.1046 22 20 22H4C2.89543 22 2 21.1046 2 20V6C2 4.89543 2.89543 4 4 4H7V3C7 2.44772 7.44772 2 8 2C8.55228 2 9 2.44772 9 3V4H15V3C15 2.44772 15.4477 2 16 2ZM20 11H4V20H20V11ZM7 6H4V9H20V6H17V7C17 7.55228 16.5523 8 16 8C15.4477 8 15 7.55228 15 7V6H9V7C9 7.55228 8.55228 8 8 8C7.44772 8 7 7.55228 7 7V6Z"
-								fill="#000000"
-							/>
-						</svg>
-					</button>
-				</template>
-			</VDatePicker>
-			<!-- DatePicker 끝-->
-			<div v-for="album in albumAllList" :key="album.albumId">
+			<div class="block mb-5">
+				<div class="block mt-1 mb-10">
+					<VDatePicker
+						v-model="date"
+						:select-attribute="selectAttribute"
+						:disabled-dates="disabledDates"
+					>
+						<template #default="{ inputValue, inputEvents }">
+							<div class="relative max-w-sm">
+								<div
+									class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none"
+								>
+									<svg
+										class="w-4 h-4 text-gray-900"
+										aria-hidden="true"
+										xmlns="http://www.w3.org/2000/svg"
+										fill="currentColor"
+										viewBox="0 0 20 20"
+									>
+										<path
+											d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"
+										/>
+									</svg>
+								</div>
+								<input
+									:value="inputValue"
+									v-on="inputEvents"
+									class="datepicker-input text"
+								/>
+							</div>
+						</template>
+					</VDatePicker>
+				</div>
+			</div>
+			<div v-for="album in albumTeacherList" :key="album.albumId">
 				<div
 					class="my-2 flex flex-wrap"
 					v-if="
@@ -144,16 +157,22 @@ const router = useRouter();
 const albumStore = useAlbumStore();
 const showToggle = ref(true);
 
+// 반 아이들 최신 앨범 리스트 조회 (Carousel)
 const recentAlbumList = ref([]);
-const albumAllList = ref([]);
+const getRecentAlbumList = async () => {
+	await albumStore.getRecentAlbumList();
+	recentAlbumList.value = albumStore.recentAlbumList;
+};
+
+const albumTeacherList = ref([]);
+const getAlbumTeacherList = async () => {
+	await albumStore.getAlbumTeacherList();
+	albumTeacherList.value = albumStore.albumTeacherList;
+};
 
 onMounted(async () => {
-	// 반 아이들 최신 앨범 리스트 조회 (Carousel)
-	await albumStore.getRecentAlbumList;
-	recentAlbumList.value = albumStore.recentAlbumList;
-	// 반 전체 앨범 조회 (Card), 번호: classRoomId
-	await albumStore.getAlbumAllList(1);
-	albumAllList.value = albumStore.albumAllList;
+	await getRecentAlbumList();
+	await getAlbumTeacherList();
 });
 
 // carousel 시작
@@ -185,6 +204,17 @@ function registAlbum() {
 
 // datePicker
 const date = ref(new Date());
+// 색상
+const selectAttribute = ref({ highlight: 'green' });
+const today = new Date();
+const tomorrow = new Date(today);
+tomorrow.setDate(tomorrow.getDate() + 1);
+const disabledDates = ref([
+	{
+		start: tomorrow,
+		end: null,
+	},
+]);
 // 날짜 같은지 확인
 function isSameDate(albumDate, date) {
 	const albumDateObj = new Date(albumDate);

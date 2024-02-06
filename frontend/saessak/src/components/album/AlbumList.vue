@@ -1,9 +1,11 @@
 <template>
-	<div v-if="isTeacher">
-		<AlbumListTeacher></AlbumListTeacher>
-	</div>
-	<div v-else>
-		<AlbumListParent></AlbumListParent>
+	<div class="view-frame p-4">
+		<div v-if="isTeacher">
+			<AlbumListTeacher></AlbumListTeacher>
+		</div>
+		<div v-else>
+			<AlbumListParent></AlbumListParent>
+		</div>
 	</div>
 </template>
 
