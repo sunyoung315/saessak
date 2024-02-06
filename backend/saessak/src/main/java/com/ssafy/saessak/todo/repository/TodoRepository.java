@@ -11,4 +11,5 @@ import java.util.Optional;
 public interface TodoRepository extends JpaRepository<Todo,Long> {
     Optional<List<Todo>> findAllByUserOrderByTodoId(User user);
     void deleteAllByCreatedDateBefore(LocalDate date);
+    Optional<Todo> findByUserAndTodoId(User user, Long todoId);
 }
