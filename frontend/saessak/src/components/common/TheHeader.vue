@@ -77,7 +77,7 @@
             >
               <li v-if="idx > 0">
                 <a
-                  href="#"
+                  @click="kidChange(idx)"
                   class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                   >{{ kidList[idx].kidName }}</a
                 >
@@ -160,7 +160,7 @@ const getSizeOfDrawer = () => {
 
 const { chatName, chatReoom, isOpen } = storeToRefs(chStore)
 const { isLogin, isTeacher, kidList, isAlarm } = storeToRefs(store)
-const { setlogin, setlogout, setKidlist, setTeacherFlag, setTeachername } = store
+const { setlogin, setCurkid, setlogout, setKidlist, setTeacherFlag, setTeachername } = store
 onMounted(() => {
   initFlowbite()
   // 로그인 여부 판단하기
@@ -220,11 +220,11 @@ const logout = () => {
     setKidlist('')
   }
   // console.log("로그아웃 드가자")
-  localStorage.removeItem('chatStore')
   localStorage.removeItem('loginStore')
-  // setlogout()
-  // setTeacherFlag(false)
-  // setTeachername('')
+  localStorage.removeItem('chatStore')
+  setlogout()
+  setTeacherFlag(false)
+  setTeachername('')
   window.location.href = '/'
 }
 
@@ -250,6 +250,16 @@ watch(alarm, (newValue) => {
   }
 })
 
+const kidChange = (idx) => {
+  console.log(kidList.value[idx].kidId)
+  setCurkid(kidList.value[idx].kidId)
+  // 변경한 kidId 삭제 후 0번째 kid로 다시 넣기
+  let tmp = kidList.value.splice(idx, 1)[0]
+  kidList.value.unshift(tmp)
+  location.reload()
+
+
+}
 </script>
 
 <style scoped>
