@@ -65,6 +65,7 @@ public class Kid extends User {
     public void setAllergy(String kidAllergy, LocalDate now) {
         this.kidAllergy = kidAllergy;
         this.kidAllergyDate = now;
+        this.kidAllergyCheck = false;
     }
 
     public void changeCheck() {
