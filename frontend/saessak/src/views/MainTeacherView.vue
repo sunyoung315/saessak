@@ -17,15 +17,15 @@
 				<div class="basis-1/3 m-8 bg-slate-200">
 					<div class="flex flex-row items-center p-8">
 						<p class="mr-4 text-xl font-bold">2월 1일 생일자</p>
-						<img src="@/assets/happyBirthday.png" alt="생일" />
+						<!-- <img src="@/assets/happyBirthday.png" alt="생일" /> -->
 					</div>
 					<div>
 						<div class="flex flex-row justify-center items-center p-8">
-							<img src="@/assets/image1.png" alt="생일" class="birthday" />
+							<!-- <img src="@/assets/image1.png" alt="생일" class="birthday" /> -->
 							<p class="ml-4 text-xl font-bold">박나은</p>
 						</div>
 						<div class="flex flex-row justify-center items-center p-8">
-							<img src="@/assets/image1.png" alt="생일" class="birthday" />
+							<!-- <img src="@/assets/image1.png" alt="생일" class="birthday" /> -->
 							<p class="ml-4 text-xl font-bold">박나은</p>
 						</div>
 					</div>
