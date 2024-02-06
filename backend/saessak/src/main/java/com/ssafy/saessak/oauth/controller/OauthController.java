@@ -71,7 +71,7 @@ public class OauthController {
     @Operation(summary = "사용자 검증 (로그인 or 회원가입)")
     @GetMapping("/kakao/callback/{code}")
     public ResponseEntity<ResultResponse> login(@PathVariable("code") String code) {
-        KakaoUserResponse kakaoUserResponse = kakaoSocialService.login(code);
+        KakaoUserResponse kakaoUserResponse = kakaoSocialService.getUserInfo(code);
         if(kakaoUserService.checkUser(kakaoUserResponse)) {
 
             Optional<Parent> parent = parentService.isParent(kakaoUserResponse);

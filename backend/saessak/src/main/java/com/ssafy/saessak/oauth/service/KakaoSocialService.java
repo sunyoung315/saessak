@@ -69,7 +69,7 @@ public class KakaoSocialService {
         return tokenResponse.accessToken();
     }
 
-    private KakaoUserResponse getUserInfo (final String accessToken ) {
+    public KakaoUserResponse getUserInfo (final String accessToken ) {
         return kakaoApiClient.getUserInformation("Bearer " + accessToken);
     }
 
