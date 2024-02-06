@@ -13,13 +13,6 @@ class WebMvcConfig implements WebMvcConfigurer {
                 .allowedOrigins("http://localhost:5173", 
                 "http://i10a706.p.ssafy.io/", 
                 "https://i10a706.p.ssafy.io/",
-                "http://i10a706.p.ssafy.io:5173")
-                .allowedMethods(
-                        "GET",
-                        "HEAD",
-                        "POST",
-                        "PATCH",
-                        "DELETE"
-                );
+                "http://i10a706.p.ssafy.io:5173");
     }
 }
