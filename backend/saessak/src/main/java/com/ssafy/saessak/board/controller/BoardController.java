@@ -36,9 +36,11 @@ public class BoardController {
 
     @Operation(summary = "아이 알림장 월별 조회 (학부모)")
     @PostMapping("/month/{kidId}")
-    public ResponseEntity<ResultResponse> getMonthlyBoardList(@PathVariable(name="kidId") Long kidId , @RequestParam(name = "boardDate") LocalDate date){
-        log.debug("controller data : {}",date );
-        List<BoardResponseDto> result = boardService.getMonthlyKidBoardList(kidId, date);
+    public ResponseEntity<ResultResponse> getMonthlyBoardList
+            (@PathVariable(name="kidId") Long kidId , @RequestBody YearMonthRequestDto yearMonthRequestDto){
+        log.debug("controller data : {}", yearMonthRequestDto );
+        List<BoardResponseDto> result =
+                boardService.getMonthlyKidBoardList(kidId, yearMonthRequestDto.getYear(), yearMonthRequestDto.getMonth());
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, result));
     }
 

@@ -82,15 +82,16 @@ public class FcmService {
         Kid kid = kidRepository.findById(kidId)
                 .orElseThrow(() -> new UserException(ExceptionCode.KID_NOT_FOUND));
         Parent parent = kid.getParent();
-        FcmToken fcmToken = fcmRepository.findById(parent.getId())
-                .orElseThrow(() -> new FcmException(ExceptionCode.FCM_TOKEN_NOT_FOUND));
-        return fcmToken.getFcmToken();
+
+        Optional<FcmToken> fcmToken = fcmRepository.findById(parent.getId());
+        if(fcmToken.isPresent()) return fcmToken.get().getFcmToken();
+        return null;
     }
 
     public String getUserToken(Long userId) {
-        FcmToken fcmToken = fcmRepository.findById(userId)
-                .orElseThrow(() -> new FcmException(ExceptionCode.FCM_TOKEN_NOT_FOUND));
-        return fcmToken.getFcmToken();
+        Optional<FcmToken> fcmToken = fcmRepository.findById(userId);
+        if(fcmToken.isPresent()) return fcmToken.get().getFcmToken();
+        return null;
     }
 
     public void sendInTime(AttendanceTimeResponseDto responseDto, Long kidId) {
@@ -138,23 +139,25 @@ public class FcmService {
     }
 
     public void sendNotification(FcmResponseDto fcmResponseDto) {
-        try {
-            // Firebase Admin SDK 초기화
-            firebaseInit.init();
-            
-            // 메시지 생성
-            Message message = Message.builder()
-                    .setToken(fcmResponseDto.getToken()) // 수신자의 FCM 토큰
-                    .setNotification(Notification.builder()
-                            .setTitle(fcmResponseDto.getTitle()) // 알림 제목
-                            .setBody(fcmResponseDto.getBody()) // 알림 내용
-                            .build())
-                    .build();
+        if(fcmResponseDto.getToken() != null) {
+            try {
+                // Firebase Admin SDK 초기화
+                firebaseInit.init();
 
-            FirebaseMessaging.getInstance().send(message); // 알림 보내기
+                // 메시지 생성
+                Message message = Message.builder()
+                        .setToken(fcmResponseDto.getToken()) // 수신자의 FCM 토큰
+                        .setNotification(Notification.builder()
+                                .setTitle(fcmResponseDto.getTitle()) // 알림 제목
+                                .setBody(fcmResponseDto.getBody()) // 알림 내용
+                                .build())
+                        .build();
 
-        } catch (Exception e) {
-            throw new FcmException(ExceptionCode.FAIL_FCM_ALARM);
+                FirebaseMessaging.getInstance().send(message); // 알림 보내기
+
+            } catch (Exception e) {
+                throw new FcmException(ExceptionCode.FAIL_FCM_ALARM);
+            }
         }
     }
 

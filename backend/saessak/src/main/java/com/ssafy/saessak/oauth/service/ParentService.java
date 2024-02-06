@@ -2,6 +2,7 @@ package com.ssafy.saessak.oauth.service;
 
 import com.ssafy.saessak.exception.code.ExceptionCode;
 import com.ssafy.saessak.exception.model.UserException;
+import com.ssafy.saessak.fcm.service.FcmService;
 import com.ssafy.saessak.oauth.dto.KidResponseDto;
 import com.ssafy.saessak.oauth.dto.LoginParentResponseDto;
 import com.ssafy.saessak.oauth.dto.LoginSuccessResponseDto;
@@ -25,6 +26,7 @@ public class ParentService {
     private final ParentRepository parentRepository;
     private final UserRepository userRepository;
     private final KidRepository kidRepository;
+    private final FcmService fcmService;
 
     public Optional<Parent> isParent(KakaoUserResponse kakaoUserResponse) {
         return parentRepository.findByEmailAndNickname(kakaoUserResponse.kakaoAccount().email(),
@@ -73,8 +75,11 @@ public class ParentService {
             kidResponseDtoList.add(kidResponseDto);
         }
 
+        String userToken = fcmService.getUserToken(parent.getId());
+        Boolean isAlarm = userToken == null ? false : true;
         LoginParentResponseDto loginResponseDto = LoginParentResponseDto.builder()
                 .isTeacher(false)
+                .isAlarm(isAlarm)
                 .accessToken(loginSuccessResponseDto.getAccessToken())
                 .refreshToken(loginSuccessResponseDto.getRefreshToken())
                 .kidList(kidResponseDtoList)

@@ -17,6 +17,5 @@ public class ReplacementRequestDto {
     private String replacementRelationship;
     private String replacementNumber;
     private String replacementName;
-    private String replacementSignature;
 
 }
