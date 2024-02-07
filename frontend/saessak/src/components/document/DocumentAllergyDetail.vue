@@ -16,7 +16,7 @@
 								: 'text-black bg-white hover:bg-dark-navy'
 						"
 					>
-						{{ myKidAllergyList.kidAllergyCheck ? '확인완료' : '확인 필요' }}
+						{{ myKidAllergyList.kidAllergyCheck ? '확인완료' : '미확인' }}
 					</button>
 					<!-- {{ myKidAllergyList }} -->
 					<button
@@ -72,7 +72,7 @@
 								<p class="mb-8">반 : {{ myKidAllergyList.classroomName }}</p>
 								<p class="mb-8">이름 : {{ myKidAllergyList.kidName }}</p>
 							</div>
-							<h2 class="mb-2 text-2xl">전자 서명:</h2>
+							<h2 class="mb-2 text-xl">전자 서명:</h2>
 							<div
 								v-if="myKidAllergyList.kidAllergySignature"
 								class="border relative text-center items-center font-bold text-xl h-32 w-64"
@@ -142,10 +142,9 @@
 					<div class="flex-col text-gray-700 font-bold m-8">
 						<div>
 							<div class="flex-col text-gray-700 text-xl font-bold">
-								<p class="mb-8">반 : {{ myKidAllergyList.classroomName }}</p>
 								<p class="mb-8">이름 : {{ myKidAllergyList.kidName }}</p>
 							</div>
-							<h2 class="mb-2 text-2xl">전자 서명:</h2>
+							<h2 class="mb-2 text-xl">전자 서명:</h2>
 							<div
 								v-if="myKidAllergyList.kidAllergySignature"
 								class="border relative text-center items-center font-bold text-xl h-32 w-64"
@@ -289,10 +288,10 @@ const isKidAllergic = allergyNo => {
 
 // 버튼
 async function check() {
-	await allergyStore.getAllergyCheckList(kidId);
-	if (allergyStore.allergyCheckList.value) {
+	if (myKidAllergyList.value.kidAllergyCheck === false) {
 		myKidAllergyList.value.kidAllergyCheck =
-			allergyStore.allergyCheckList.value.kidAllergyCheck;
+			!myKidAllergyList.value.kidAllergyCheck;
+		await allergyStore.getAllergyCheckList(kidId);
 	}
 }
 

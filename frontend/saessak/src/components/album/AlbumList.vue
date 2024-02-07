@@ -1,10 +1,13 @@
 <template>
 	<div class="view-frame p-4">
-		<div v-if="isTeacher">
-			<AlbumListTeacher></AlbumListTeacher>
+		<div v-if="props.loginStore.isTeacher">
+			<AlbumListTeacher :showToggle="props.showToggle" />
 		</div>
 		<div v-else>
-			<AlbumListParent></AlbumListParent>
+			<AlbumListParent
+				:loginStore="loginStore"
+				:showToggle="props.showToggle"
+			/>
 		</div>
 	</div>
 </template>
@@ -13,9 +16,10 @@
 import AlbumListParent from '@/components/album/AlbumListParent.vue';
 import AlbumListTeacher from '@/components/album/AlbumListTeacher.vue';
 
-let loginStore = JSON.parse(localStorage.getItem('loginStore'));
-loginStore = JSON.parse(localStorage.getItem('loginStore'));
-let isTeacher = loginStore.isTeacher;
+const props = defineProps({
+	loginStore: Object,
+	showToggle: Boolean,
+});
 </script>
 
 <style scoped></style>

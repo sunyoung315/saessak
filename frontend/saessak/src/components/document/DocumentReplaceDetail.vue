@@ -6,7 +6,7 @@
 			<div class="flex justify-end items-center mb-10">
 				<button
 					type="button"
-					@click="check()"
+					@click="check"
 					class="mt-8 mr-6 border border-dark-navy hover:bg-white focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
 					:class="
 						replaceDetailList.replacementCheck
@@ -14,11 +14,11 @@
 							: 'text-black bg-white hover:bg-dark-navy'
 					"
 				>
-					{{ replaceDetailList.replacementCheck ? '확인 완료' : '확인 필요' }}
+					{{ replaceDetailList.replacementCheck ? '확인완료' : '미확인' }}
 				</button>
 				<button
 					type="button"
-					@click="goBack()"
+					@click="goList()"
 					class="mt-8 mr-8 text-white hover:text-dark-navy border border-dark-navy bg-dark-navy hover:bg-white focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
 				>
 					목록
@@ -30,12 +30,12 @@
 				</p>
 			</div>
 			<div
-				class="text-wrap text-left text-2xl whitespace-pre-line ml-40 mt-12 font-bold"
+				class="flex flex-col text-left text-lg whitespace-pre-line ml-80 mt-12 font-bold"
 			>
 				<div class="md:flex md:items-center mb-6">
 					<div>
 						<label
-							class="block text-black font-bold md:text-right mb-1 md:mb-0 pr-4"
+							class="block text-black font-bold mb-1 md:mb-0 pr-4"
 							for="inline-full-name"
 						>
 							이름: {{ kidName }}
@@ -43,23 +43,65 @@
 					</div>
 				</div>
 				<div class="flex justify-start">
-					<p class="mb-4">날짜 : {{ replaceDetailList.replacementDate }}</p>
-					<p class="mb-4 ml-40">
-						시간 : {{ replaceDetailList.replacementTime }}
-					</p>
+					<div class="flex items-center mb-6">
+						<div>
+							<label
+								class="block w-48 text-black font-bold mb-1 md:mb-0 pr-4"
+								for="inline-full-name"
+							>
+								날짜: {{ replaceDetailList.replacementDate }}
+							</label>
+						</div>
+						<div>
+							<label
+								class="block w-72 text-black ml-40 font-bold mb-1 md:mb-0 pr-4"
+								for="inline-full-name"
+							>
+								시간: {{ replaceDetailList.replacementTime }}
+							</label>
+						</div>
+					</div>
 				</div>
 				<div class="flex justify-start">
-					<p class="mb-4">보호자 : {{ replaceDetailList.replacementName }}</p>
-					<p class="mb-4 ml-52">
-						보호자 관계 : {{ replaceDetailList.replacementRelationship }}
-					</p>
+					<div class="flex items-center mb-6">
+						<div>
+							<label
+								class="block w-48 text-black font-bold mb-1 md:mb-0 pr-4"
+								for="inline-full-name"
+							>
+								보호자: {{ replaceDetailList.replacementName }}
+							</label>
+						</div>
+						<div>
+							<label
+								class="block w-72 text-black ml-40 font-bold mb-1 md:mb-0 pr-4"
+								for="inline-full-name"
+							>
+								보호자 관계: {{ replaceDetailList.replacementRelationship }}
+							</label>
+						</div>
+					</div>
 				</div>
-				<p class="mb-4">
-					귀가 방법 : {{ replaceDetailList.replacementVehicle }}
-				</p>
-				<p class="mb-4">
-					비상연락망 : {{ replaceDetailList.replacementNumber }}
-				</p>
+				<div class="flex justify-start">
+					<div class="flex items-center mb-6">
+						<div>
+							<label
+								class="block w-48 text-black font-bold mb-1 md:mb-0 pr-4"
+								for="inline-full-name"
+							>
+								귀가 방법: {{ replaceDetailList.replacementVehicle }}
+							</label>
+						</div>
+						<div>
+							<label
+								class="block w-72 text-black ml-40 font-bold mb-1 md:mb-0 pr-4"
+								for="inline-full-name"
+							>
+								비상연락망: {{ replaceDetailList.replacementNumber }}
+							</label>
+						</div>
+					</div>
+				</div>
 			</div>
 			<div class="text-wrap text-center text-xl whitespace-pre-line m-12">
 				<p>{{ replaceContent }}</p>
@@ -69,7 +111,7 @@
 			<div class="flex justify-end">
 				<div class="flex-col text-gray-700 font-bold m-8">
 					<div>
-						<h2 class="mb-2 text-2xl">전자 서명:</h2>
+						<h2 class="mb-2 text-xl">전자 서명:</h2>
 						<div
 							v-if="replaceDetailList.replacementSignature"
 							class="border relative text-center items-center font-bold text-xl h-32 w-64"
@@ -119,19 +161,23 @@ const getReplacementDetailList = async () => {
 };
 
 onMounted(async () => {
-	await getReplacementDetailList();
+	await getReplacementDetailList(replacementId);
 });
 
 // Btn
 // 확인버튼
 async function check() {
-	await replacementStore.getReplacemenCheckList(replacementId);
-	replaceDetailList.value.replacementCheck =
-		replacementStore.replacemenCheckList.value.check;
+	if (replaceDetailList.value.replacementCheck === false) {
+		replaceDetailList.value.replacementCheck =
+			!replaceDetailList.value.replacementCheck;
+		await replacementStore.getReplacemenCheckList(replacementId);
+	}
 }
 
-function goBack() {
-	router.go(-1);
+function goList() {
+	router.push({
+		name: 'DocumentList',
+	});
 }
 // Btn
 

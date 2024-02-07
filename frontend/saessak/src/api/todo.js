@@ -20,10 +20,10 @@ async function postTodo(content ,success, fail){
     local.post(`${url}`,{content},config).then(success).catch(fail)
 }
 async function deleteTodo(todoId, success, fail){
-    local.delete(`${url}/${todoId}`).then(success).catch(fail)
+    local.delete(`${url}/${todoId}`,config).then(success).catch(fail)
 }
 async function toggleTodo(todoId, success, fail){
-    local.patch(`${url}/${todoId}`).then(success).catch(fail)
+    local.patch(`${url}/${todoId}`,null, config).then(success).catch(fail)
 }
 
 export {

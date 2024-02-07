@@ -150,6 +150,10 @@
             </ul>
             <div class="py-2">
               <a
+              @click="newKids()"
+              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+              >아이 등록</a>
+              <a
                 @click="logout()"
                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
                 >로그아웃</a
@@ -193,6 +197,7 @@
 <script setup>
 import { onMounted, nextTick, shallowRef, ref, watch } from 'vue'
 import { initFlowbite } from 'flowbite'
+import {kidRegister, getkidList} from '@/api/user'
 import { kakaoLogin } from '@/api/oauth'
 import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
@@ -203,6 +208,7 @@ import ChatPersonView from '@/components/chat/ChatPersonView.vue'
 import ChatDetailView from '../chat/ChatDetailView.vue'
 import { saveToken, deleteToken } from '@/api/fcm'
 import { alarmListOfParent, alarmListOfTeacher, deleteAlarm, deleteAllofParent, deleteAllofTeacher } from '@/api/alarm'
+import Swal from 'sweetalert2'
 
 const {
   VITE_FIREBASE_APIKEY,
@@ -236,6 +242,14 @@ const getSizeOfDrawer = () => {
   size.value = { width: width, height: height }
 }
 
+const msg = Swal.mixin({
+  toast: true,
+  position: 'center',
+  input: 'text',
+  inputPlaceholder: '등록 코드를 입력해주세요',
+  showConfirmButton: true
+}) // 아이등록 promt
+
 const { chatName, chatReoom, isOpen } = storeToRefs(chStore)
 const { isLogin, isTeacher, kidList, isAlarm, curKid } = storeToRefs(store)
 const { setlogin, setCurkid, setlogout, setKidlist, setTeacherFlag, setTeachername, setAlarmFlag } =
@@ -252,7 +266,7 @@ onMounted(() => {
       kidList.value = JSON.parse(sessionStorage.getItem('kidList'))
     }
     alarm.value = isAlarm.value
-    console.log(isAlarm.value)
+    // console.log(isAlarm.value)
   }
   getSizeOfDrawer()
   // console.log(isLogin)
@@ -316,6 +330,19 @@ const logout = () => {
   window.location.href = '/'
 }
 
+const newKids = () => {
+  msg.fire({
+    icon : 'info'
+  }).then(function(code) {
+    kidRegister({registCode : code.value}, ({data}) => {
+      // console.log(data)
+      getkidList(({data}) => {
+        setKidlist(data.data)
+      })
+    })
+  })
+}
+
 const alarm = ref()
 
 const firebaseConfig = {
@@ -341,10 +368,10 @@ const saveFcmToken = () => {
     saveToken(
       tokenBox.value,
       (response) => {
-        console.log(response)
+        // console.log(response)
       },
       (error) => {
-        console.log(error)
+        // console.log(error)
       }
     )
   })
@@ -353,10 +380,10 @@ const saveFcmToken = () => {
 const deleteFcmToken = () => {
   deleteToken(
     (response) => {
-      console.log(response)
+      // console.log(response)
     },
     (error) => {
-      console.log(error)
+      // console.log(error)
     }
   )
 }
@@ -433,7 +460,7 @@ const removeAlarm = (alarmId) => {
 }
 
 const kidChange = (idx) => {
-  console.log(kidList.value[idx].kidId)
+  // console.log(kidList.value[idx].kidId)
   setCurkid(kidList.value[idx].kidId)
   // 변경한 kidId 삭제 후 0번째 kid로 다시 넣기
   let tmp = kidList.value.splice(idx, 1)[0]

@@ -18,7 +18,7 @@
         >
           <img
             class="w-24 h-24 my-2 mb-3 rounded-full shadow-lg"
-            src="https://flowbite.com/docs/images/people/profile-picture-3.jpg"
+            :src=person.kidProfile
             alt="Bonnie image"
           />
           <h5 class="text-xl font-medium text-gray-900 dark:text-white">

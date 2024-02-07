@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
 import HomeView from '@/views/HomeView.vue';
-import NotFoundView from '@/views/NotFoundView.vue';
 import LoginView from '@/views/LoginView.vue';
 import UserView from '@/components/user/UserView.vue';
 import JoinView from '@/views/JoinView.vue';
@@ -11,6 +10,8 @@ import AlbumDetailParent from '@/components/album/AlbumDetailParent.vue';
 import AlbumDetailTeacher from '@/components/album/AlbumDetailTeacher.vue';
 import AlbumCreate from '@/components/album/AlbumCreate.vue';
 import NoticeView from '@/components/notice/NoticeView.vue';
+import NoticeList from '@/components/notice/NoticeList.vue';
+import NoticeCreate from '@/components/notice/NoticeCreate.vue';
 import DocumentView from '@/components/document/DocumentView.vue';
 import DocumentList from '@/components/document/DocumentList.vue';
 import DocumentReplaceDetail from '@/components/document/DocumentReplaceDetail.vue';
@@ -38,7 +39,6 @@ const routes = [
 		name: 'App',
 		component: AppView,
 		children: [
-			{ path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFoundView },
 			{
 				path: '/',
 				name: 'Home',
@@ -117,6 +117,18 @@ const routes = [
 				path: '/notice',
 				name: 'Notice',
 				component: NoticeView,
+				children: [
+					{
+						path: '',
+						name: 'NoticeList',
+						component: NoticeList,
+					},
+					{
+						path: 'create',
+						name: 'NoticeCreate',
+						component: NoticeCreate,
+					},
+				],
 			},
 			{
 				path: '/document',
@@ -139,7 +151,7 @@ const routes = [
 						component: DocumentAllergyDetail,
 					},
 					{
-						path: 'replace/create',
+						path: 'replacement/create',
 						name: 'DocumentReplaceCreate',
 						component: DocumentReplaceCreate,
 					},
