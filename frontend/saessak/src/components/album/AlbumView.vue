@@ -15,6 +15,13 @@
 							class="w-12 h-7 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-nav-green peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-6 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-nav-green"
 						></div>
 						<span
+							v-if="loginStore.isTeacher"
+							class="text-xl m-5 font-extrabold inline-block text-gray-900 dark:text-gray-300"
+						>
+							{{ showToggle ? '아이별 보기' : '전체 보기' }}</span
+						>
+						<span
+							v-else
 							class="text-xl m-5 font-extrabold inline-block text-gray-900 dark:text-gray-300"
 						>
 							{{ showToggle ? '전체 보기' : '내 아이 보기' }}</span

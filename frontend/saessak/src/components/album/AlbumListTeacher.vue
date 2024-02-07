@@ -13,7 +13,6 @@
 					<Carousel
 						:items-to-show="5"
 						:wrap-around="true"
-						:autoplay="2000"
 						v-if="kid.albumResponseDto"
 					>
 						<Slide
@@ -50,7 +49,7 @@
 			</div>
 		</div>
 		<!-- Card 형식 : 전체 아이들 보기 -->
-		<div v-else class="border p-4 rounded-lg">
+		<div v-else>
 			<div class="block mb-5">
 				<div class="block mt-1 mb-10">
 					<VDatePicker
@@ -85,46 +84,48 @@
 					</VDatePicker>
 				</div>
 			</div>
-			<div v-for="album in albumTeacherList" :key="album.albumId">
-				<div
-					class="my-2 flex flex-wrap"
-					v-if="
-						isSameDate(album.albumDate, date) &&
-						album.fileResponseDtoList.length > 0
-					"
-				>
-					<p class="w-full text-2xl font-bold m-2">{{ album.albumTitle }}</p>
+			<div v-if="albumClassroomDateList.length">
+				<div v-for="album in albumClassroomDateList" :key="album.albumId">
 					<div
-						v-for="file in album.fileResponseDtoList"
-						:key="file.fileId"
-						class="w-1/4 flex-shrink-0 flex flex-wrap"
+						class="my-2 flex flex-wrap"
+						v-if="albumClassroomDateList != null"
 					>
-						<input
-							type="checkbox"
-							:id="file.fileId"
-							:value="`${file.fileId}`"
-							class="hidden peer"
-						/>
-						<label
-							:for="file.fileId"
-							class="inline-flex items-center justify-between w-full p-4 text-gray-500 bg-white border-4 border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 hover:text-gray-600 dark:peer-checked:text-gray-300 peer-checked:text-gray-600 hover:bg-gray-50 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700"
+						<p class="w-full text-2xl font-bold m-2">{{ album.albumTitle }}</p>
+						<div
+							v-for="file in album.fileResponseDtoList"
+							:key="file.fileId"
+							class="w-1/4 flex-shrink-0 flex flex-wrap"
 						>
-							<img
-								class="album rounded"
-								:src="`${file.filePath}`"
-								:for="file.fileId"
-								alt="img"
+							<input
+								type="checkbox"
+								:id="file.fileId"
+								:value="`${file.fileId}`"
+								class="hidden peer"
 							/>
-						</label>
+							<label
+								:for="file.fileId"
+								class="inline-flex items-center justify-between w-full p-4 text-gray-500 bg-white border-4 border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 hover:text-gray-600 dark:peer-checked:text-gray-300 peer-checked:text-gray-600 hover:bg-gray-50 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700"
+							>
+								<img
+									class="album rounded"
+									:src="`${file.filePath}`"
+									:for="file.fileId"
+									alt="img"
+								/>
+							</label>
+						</div>
 					</div>
 				</div>
+			</div>
+			<div v-else>
+				<p>등록된 사진이 없습니다.</p>
 			</div>
 		</div>
 	</div>
 </template>
 
 <script setup>
-import { ref, defineComponent, onMounted } from 'vue';
+import { ref, defineComponent, onMounted, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { Carousel, Navigation, Slide } from 'vue3-carousel';
 import { useAlbumStore } from '@/store/album';
@@ -136,22 +137,51 @@ const props = defineProps({
 	showToggle: Boolean,
 });
 
-// 반 아이들 최신 앨범 리스트 조회 (Carousel)
+// datePicker
+const date = ref(new Date());
+// 색상
+const selectAttribute = ref({ highlight: 'green' });
+const today = new Date();
+const tomorrow = new Date(today);
+tomorrow.setDate(tomorrow.getDate() + 1);
+const disabledDates = ref([
+	{
+		start: tomorrow,
+		end: null,
+	},
+]);
+
+function formatDate(date) {
+	const year = date.getFullYear();
+	const month = `0${date.getMonth() + 1}`.slice(-2); // 월은 0부터 시작하므로 1을 더해줍니다.
+	const day = `0${date.getDate()}`.slice(-2);
+
+	return `${year}-${month}-${day}`;
+}
+
+watch(date, async newDate => {
+	const albumDate = formatDate(newDate);
+	await postAlbumClassroomDateList(albumDate);
+});
+
+// 반 아이들 최신 앨범 리스트 조회 (Carousel) - o -
 const recentAlbumList = ref([]);
 const getRecentAlbumList = async () => {
 	await albumStore.getRecentAlbumList();
 	recentAlbumList.value = albumStore.recentAlbumList;
 };
 
-const albumTeacherList = ref([]);
-const getAlbumTeacherList = async () => {
-	await albumStore.getAlbumTeacherList();
-	albumTeacherList.value = albumStore.albumTeacherList;
+// 반 앨범 날짜별 조회
+const albumClassroomDateList = ref([]);
+const postAlbumClassroomDateList = async () => {
+	const albumDate = formatDate(date.value);
+	await albumStore.postAlbumClassroomDateList(albumDate);
+	albumClassroomDateList.value = albumStore.albumClassroomDateList;
 };
 
 onMounted(async () => {
 	await getRecentAlbumList();
-	await getAlbumTeacherList();
+	await postAlbumClassroomDateList();
 });
 
 // carousel 시작
@@ -175,29 +205,6 @@ function goDetail(kidId) {
 }
 
 // Btn 끝
-
-// datePicker
-const date = ref(new Date());
-// 색상
-const selectAttribute = ref({ highlight: 'green' });
-const today = new Date();
-const tomorrow = new Date(today);
-tomorrow.setDate(tomorrow.getDate() + 1);
-const disabledDates = ref([
-	{
-		start: tomorrow,
-		end: null,
-	},
-]);
-// 날짜 같은지 확인
-function isSameDate(albumDate, date) {
-	const albumDateObj = new Date(albumDate);
-	return (
-		albumDateObj.getFullYear() === date.getFullYear() &&
-		albumDateObj.getMonth() === date.getMonth() &&
-		albumDateObj.getDate() === date.getDate()
-	);
-}
 </script>
 
 <style scoped>

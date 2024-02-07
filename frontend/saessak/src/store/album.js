@@ -19,6 +19,31 @@ export const useAlbumStore = defineStore('album', () => {
 			})
 			.then(response => {
 				albumTeacherList.value = response.data.data;
+			})
+			.catch(error => {
+				console.log(error);
+			});
+	};
+
+	// 반 앨범 날짜별 조회 (선생님)
+	const albumClassroomDateList = ref([]);
+	const postAlbumClassroomDateList = async function (albumDate) {
+		await axios
+			.post(
+				`${REST_ALBUM_API}/classroom`,
+				{ albumDate },
+				{
+					headers: {
+						'Content-Type': 'application/json',
+						Authorization: 'Bearer ' + token,
+					},
+				},
+			)
+			.then(response => {
+				albumClassroomDateList.value = response.data.data;
+			})
+			.catch(error => {
+				console.log(error);
 			});
 	};
 
@@ -86,6 +111,8 @@ export const useAlbumStore = defineStore('album', () => {
 	return {
 		albumTeacherList,
 		getAlbumTeacherList,
+		albumClassroomDateList,
+		postAlbumClassroomDateList,
 		albumParentList,
 		getAlbumParentList,
 		// albumDateAllList,
