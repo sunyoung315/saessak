@@ -8,7 +8,6 @@
 			<button type="button" @click="goCreateBoard()" class="btn">작성</button>
 		</template>
 	</div>
-
 	<RouterView />
 </template>
 

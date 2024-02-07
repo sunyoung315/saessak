@@ -12,7 +12,7 @@ const config = {
 
 // noticeList 전부 불러오기
 function noticeListAll(kidId, param, sucess, fail) {
-    local.get(`${url}/all/${kidId}`, JSON.stringify(param)).then(sucess).catch(fail);
+    local.get(`${url}/all/${kidId}`, param).then(sucess).catch(fail);
 }
 
 
