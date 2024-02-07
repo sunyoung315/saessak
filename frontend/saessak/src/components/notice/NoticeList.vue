@@ -2,14 +2,16 @@
 import { onMounted, ref, defineProps } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { noticeListAll } from '@/api/notice'
+import { noticeListParentAll, noticeListTeacherAll } from '@/api/notice'
 
 
 const router = useRouter();
 
-// 아이 id
+// 부를 리스트 나누기
+const isTeacher = loginStore.isTeacher;
 let loginStore = JSON.parse(localStorage.getItem('loginStore'));
 const kidId = loginStore.kidList[0].kidId;
+const teacherToken = 'Bearer ' + sessionStorage.getItem('accessToken');
 
 // 내 아이 귀가동의서 목록 가져오기
 const noticeList = ref([]);
@@ -17,11 +19,24 @@ const paging = ref({
 	pageNo: 0
 })
 onMounted(() => {
-	noticeListAll(kidId, {
+
+	if (!isTeacher) {
+
+	}
+	noticeListParentAll(kidId, {
 		params: paging.value
 	}, ({ data }) => {
 		noticeList.value = data.data
+		console.log(data.data);
 	});
+
+	noticeListTeacherAll({
+		params: paging.value
+	}, ({ data }) => {
+		noticeList.value = data.data
+		console.log(data.data);
+	});
+
 })
 
 
@@ -74,7 +89,7 @@ function moveNoticeDetail() {
 							{{ notice.noticeTitle }}
 						</td>
 						<td class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-							선생님1
+							{{ notice.teacherName }}
 						</td>
 						<td class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
 							<div v-if="notice.fileFlag" class="flex justify-center items-center">

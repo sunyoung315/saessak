@@ -11,11 +11,15 @@ const config = {
 }
 
 // noticeList 전부 불러오기
-function noticeListAll(kidId, param, sucess, fail) {
-    local.get(`${url}/all/${kidId}`, param).then(sucess).catch(fail);
+function noticeListParentAll(kidId, param, sucess, fail) {
+    local.get(`${url}/all/parent/${kidId}`, param).then(sucess).catch(fail);
 }
 
+function noticeListTeacherAll(param, sucess, fail) {
+    local.get(`${url}/all/teacher`, param, config).then(sucess).catch(fail);
+}
 
 export {
-    noticeListAll
+    noticeListParentAll,
+    noticeListTeacherAll
 }
