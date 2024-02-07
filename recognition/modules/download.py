@@ -7,8 +7,8 @@ result = DeepFace.represent(
     align=True,
     detector_backend="opencv",
     enforce_detection=False,
-    model_name="VGG-Face",
-    normalization="VGGFace2"
+    model_name="Facenet512",
+    normalization="Facenet2018"
 )
 
 print("download model")

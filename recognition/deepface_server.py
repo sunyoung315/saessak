@@ -37,10 +37,24 @@ app = Flask(__name__)
 jwt_secret = config("JWT_SECRET_KEY")
 token_validator = Validator(jwt_secret)
 
+models = [
+  "VGG-Face", 
+  "Facenet", 
+  "Facenet512", 
+  "OpenFace", 
+  "DeepFace", 
+  "DeepID", 
+  "ArcFace", 
+  "SFace",
+]
+
+normals = [
+    'base', 'raw', 'Facenet', 'Facenet2018', 'VGGFace', 'VGGFace2', 'ArcFace'
+]
 
 model = "Facenet512"
-normal = "VGGFace2"
-CORS(app, origins="*")
+normal = "Facenet2018"
+CORS(app, origins="*")  
 
 def get_face_embeddings (img ): 
     represent_objs = DeepFace.represent(
@@ -176,18 +190,18 @@ def verifyAlbum():
                         
                         for image_embed in image_embeddings : 
                             # 유사한 사진이 있는지?
-                            distance_cosine = dst.findCosineDistance(kid_embed, image_embed)
-                            distance_euclidean = dst.findEuclideanDistance(kid_embed, image_embed)
                             distance_euclidean_l2 = dst.findEuclideanDistance(
                                 dst.l2_normalize(kid_embed), dst.l2_normalize(image_embed)
                             )
-
-                            threshold_cosine = dst.findThreshold(model_name=model,distance_metric="cosine")
-                            threshold_euclidean = dst.findThreshold(model_name=model,distance_metric="euclidean")
                             threshold_euclidean_l2 = dst.findThreshold(model_name=model,distance_metric="euclidean_l2")
-
                             if distance_euclidean_l2 > threshold_euclidean_l2 : continue
-                            if distance_cosine > threshold_cosine : continue
+                            
+                            threshold_cosine = dst.findThreshold(model_name=model,distance_metric="cosine")
+                            distance_cosine = dst.findCosineDistance(kid_embed, image_embed)
+                            if distance_cosine > threshold_cosine*1.1 : continue
+                            
+                            threshold_euclidean = dst.findThreshold(model_name=model,distance_metric="euclidean")
+                            distance_euclidean = dst.findEuclideanDistance(kid_embed, image_embed)
                             if distance_euclidean > threshold_euclidean : continue
                                 
                             kid_album[kid_id].append(add_object.copy())
@@ -214,10 +228,15 @@ def verifyAlbum():
                 insert(file_table),
                 class_album
             )
+
+
             # 아이앨범 생성
             for key, value in kid_album.items() :
                 if len(value) == 0 : continue
-                
+                print()
+                print(key)
+                print(value)
+                print()     
                 result = conn.execute(
                     insert(album_table),
                     {
