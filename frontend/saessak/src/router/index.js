@@ -153,7 +153,7 @@ const routes = [
 						component: DocumentAllergyDetail,
 					},
 					{
-						path: 'replace/create',
+						path: 'replacement/create',
 						name: 'DocumentReplaceCreate',
 						component: DocumentReplaceCreate,
 					},
