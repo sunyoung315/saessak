@@ -38,10 +38,17 @@ public class AlarmController {
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS));
     }
 
-    @Operation(summary = "알림 전체 삭제")
-    @DeleteMapping(value = "/all/{kidId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResultResponse> deleteAll(@PathVariable("kidId") Long kidId) {
-        alarmService.deleteAll(kidId);
+    @Operation(summary = "알림 전체 삭제 (학부모)")
+    @DeleteMapping(value = "/kid/{kidId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResultResponse> deleteAllofParent(@PathVariable("kidId") Long kidId) {
+        alarmService.deleteAllofParent(kidId);
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS));
+    }
+
+    @Operation(summary = "알림 전체 삭제 (선생님)")
+    @DeleteMapping(value = "/classroom", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResultResponse> deleteAllofTeacher() {
+        alarmService.deleteAllofTeacher();
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS));
     }
 }
