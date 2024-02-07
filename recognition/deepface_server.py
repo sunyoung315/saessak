@@ -38,6 +38,8 @@ jwt_secret = config("JWT_SECRET_KEY")
 token_validator = Validator(jwt_secret)
 
 
+model = "Facenet512"
+normal = "VGGFace2"
 CORS(app, origins="*")
 
 def get_face_embeddings (img ): 
@@ -45,8 +47,8 @@ def get_face_embeddings (img ):
         img_path=img,
         detector_backend="opencv",
         enforce_detection=False,
-        model_name="VGG-Face",
-        normalization="VGGFace2"
+        model_name=model,
+        normalization=normal
     )
     embedding_list = []
     
@@ -180,9 +182,9 @@ def verifyAlbum():
                                 dst.l2_normalize(kid_embed), dst.l2_normalize(image_embed)
                             )
 
-                            threshold_cosine = dst.findThreshold(model_name="VGG-Face",distance_metric="cosine")
-                            threshold_euclidean = dst.findThreshold(model_name="VGG-Face",distance_metric="euclidean")
-                            threshold_euclidean_l2 = dst.findThreshold(model_name="VGG-Face",distance_metric="euclidean_l2")
+                            threshold_cosine = dst.findThreshold(model_name=model,distance_metric="cosine")
+                            threshold_euclidean = dst.findThreshold(model_name=model,distance_metric="euclidean")
+                            threshold_euclidean_l2 = dst.findThreshold(model_name=model,distance_metric="euclidean_l2")
 
                             if distance_euclidean_l2 > threshold_euclidean_l2 : continue
                             if distance_cosine > threshold_cosine : continue
