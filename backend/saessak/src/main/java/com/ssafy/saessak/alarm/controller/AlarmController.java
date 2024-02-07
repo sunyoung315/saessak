@@ -39,9 +39,9 @@ public class AlarmController {
     }
 
     @Operation(summary = "알림 전체 삭제")
-    @DeleteMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResultResponse> deleteAll() {
-        alarmService.deleteAll();
+    @DeleteMapping(value = "/all/{kidId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResultResponse> deleteAll(@PathVariable("kidId") Long kidId) {
+        alarmService.deleteAll(kidId);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS));
     }
 }

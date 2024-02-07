@@ -109,9 +109,10 @@ public class AlarmService {
     }
 
     @Transactional
-    public void deleteAll() {
+    public void deleteAll(Long kidId) {
         User user = authenticationService.getUserByAuthentication();
-
+        Kid kid = kidRepository.findById(kidId)
+                .orElseThrow(() -> new UserException(ExceptionCode.KID_NOT_FOUND));
         try {
             List<String> alarmTypeList = new ArrayList<>();
 
@@ -127,7 +128,7 @@ public class AlarmService {
                 alarmTypeList.add("알러지 알림");
             }
 
-            List<Alarm> alarmList = alarmRepository.findByAlarmTypeIn(alarmTypeList);
+            List<Alarm> alarmList = alarmRepository.findByKidAndAlarmTypeIn(kid, alarmTypeList);
             for (Alarm alarm : alarmList) {
                 alarmRepository.delete(alarm);
             }
