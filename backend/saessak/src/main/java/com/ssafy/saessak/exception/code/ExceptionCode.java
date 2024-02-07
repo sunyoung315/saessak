@@ -1,5 +1,6 @@
 package com.ssafy.saessak.exception.code;
 
+import com.google.api.Http;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,7 @@ public enum ExceptionCode {
     AUTHENTICATION_USER_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "A202", "인증한 유저가 존재하지 않습니다"),
 
     USER_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "U101", "해당 유저는 존재하지 않습니다."),
+    USER_CODE_MISMATCH(HttpStatus.BAD_REQUEST.value(), "U102", "회원 가입 인증 코드가 잘못되었습니다"),
     KID_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "U201", "해당 아이는 존재하지 않습니다"),
     FAIL_KID_PROFILE_UPLOAD(HttpStatus.INTERNAL_SERVER_ERROR.value(), "U202", "아이 프로필 사진 업로드를 실패했습니다"),
     PARENT_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "U301", "해당 학부모는 존재하지 않습니다"),

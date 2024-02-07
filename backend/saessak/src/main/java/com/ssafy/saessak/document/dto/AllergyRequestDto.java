@@ -9,7 +9,6 @@ public class AllergyRequestDto {
 
     private Long kidId;
     private String kidName;
-    private String classroomName;
     private String kidAllergy;
 
 }
