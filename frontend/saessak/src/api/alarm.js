@@ -11,13 +11,23 @@ const config = {
 }
 
 function alarmListOfParent(kidId, success, fail) {
-  console.log('axios: parent')
   local.get(`${url}/kid/${kidId}`, config).then(success).catch(fail)
 }
 
 function alarmListOfTeacher(success, fail) {
-  console.log('axios: teacher')
   local.get(`${url}/classroom`, config).then(success).catch(fail)
 }
 
-export { alarmListOfParent, alarmListOfTeacher }
+function deleteAlarm(alarmId, success, fail) {
+  local.delete(`${url}/${alarmId}`, config).then(success).catch(fail)
+}
+
+function deleteAllofParent(kidId, success, fail) {
+  local.delete(`${url}/kid/${kidId}`, config).then(success).catch(fail)
+}
+
+function deleteAllofTeacher(success, fail) {
+  local.delete(`${url}/classroom`, config).then(success).catch(fail)
+}
+
+export { alarmListOfParent, alarmListOfTeacher, deleteAlarm, deleteAllofParent, deleteAllofTeacher }

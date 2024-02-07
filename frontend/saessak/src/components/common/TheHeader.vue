@@ -31,7 +31,7 @@
           data-dropdown-toggle="dropdownNotification"
           class="relative inline-flex items-center text-sm font-medium text-center text-gray-500 hover:text-gray-900 focus:outline-none dark:hover:text-white dark:text-gray-400"
           type="button"
-          @click="getAlarmList()"
+          @click="getAlarmList()" v-if="isLogin == true"
         >
           <svg
             class="w-7 h-7"
@@ -56,14 +56,29 @@
           class="z-20 hidden w-full max-w-sm bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-800 dark:divide-gray-700"
           aria-labelledby="dropdownNotificationButton"
         >
-          <div class="divide-y divide-gray-100 dark:divide-gray-700">
-            <div class="w-full ps-3">
-              <div class="text-gray-500 text-sm mb-1.5 dark:text-gray-400">
-                New message from
-                <span class="font-semibold text-gray-900 dark:text-white">Jese Leos</span>: "Hey,
-                what's up? All set for the presentation?"
+        <div @click="removeAllAlarm()" class="block px-4 py-2 font-medium text-center text-gray-700 rounded-t-lg bg-gray-50 dark:bg-gray-800 dark:text-white">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" width="10" height="10"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg>
+          </div>
+          <div v-if="isTeacher == false">
+            <div v-for="alarm in alarmList" :key="alarm.alarmId" @click="removeAlarm(alarm.alarmId)" class="divide-y divide-gray-100 dark:divide-gray-700">
+              <div class="w-full ps-3">
+                <span class="font-semibold text-gray-900 dark:text-white">{{ alarm.alarmType }}</span>
+                <div class="text-gray-500 text-sm mb-1.5 dark:text-gray-400">
+                  {{ alarm.alarmDate}}일 {{ alarm.alarmContent.substring(0, 5)}} {{ alarm.alarmType.substring(0, 2) }}하였습니다!
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" width="10" height="10"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg>
+                </div>
               </div>
-              <div class="text-xs text-blue-600 dark:text-blue-500">a few moments ago</div>
+            </div>
+          </div>
+          <div v-if="isTeacher == true">
+            <div v-for="alarm in alarmList" :key="alarm.alarmId" @click="removeAlarm(alarm.alarmId)" class="divide-y divide-gray-100 dark:divide-gray-700">
+              <div class="w-full ps-3">
+                <span class="font-semibold text-gray-900 dark:text-white">{{ alarm.alarmType }}</span>
+                <div class="text-gray-500 text-sm mb-1.5 dark:text-gray-400">
+                  {{alarm.kidName}} 원아의 {{ alarm.alarmType.substring(0, alarm.alarmType.length-3) }} 확인이 필요합니다!
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" width="10" height="10"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -182,7 +197,7 @@ import ChatListView from '@/components/chat/ChatListView.vue'
 import ChatPersonView from '@/components/chat/ChatPersonView.vue'
 import ChatDetailView from '../chat/ChatDetailView.vue'
 import { saveToken, deleteToken } from '@/api/fcm'
-import { alarmListOfParent, alarmListOfTeacher } from '@/api/alarm'
+import { alarmListOfParent, alarmListOfTeacher, deleteAlarm, deleteAllofParent, deleteAllofTeacher } from '@/api/alarm'
 
 const {
   VITE_FIREBASE_APIKEY,
@@ -353,20 +368,13 @@ watch(alarm, (newValue) => {
   }
 })
 
-// const alarmList = ref({
-//   alarmId:
-//     kidName:
-//   alarmType:
-//     alarmDate:
-//   alarmContent:
-// });
+const alarmList = ref([]);
 
 const getAlarmList = () => {
   if (isTeacher.value) {
-    console.log('니 선생?')
     alarmListOfTeacher(
-      (response) => {
-        console.log(response)
+      ({data}) => {
+        alarmList.value = data.data;
       },
       (error) => {
         console.log(error)
@@ -376,14 +384,46 @@ const getAlarmList = () => {
   if (!isTeacher.value) {
     alarmListOfParent(
       curKid.value,
-      (response) => {
-        console.log(response)
+      ({data}) => {
+        alarmList.value = data.data;
       },
       (error) => {
         console.log(error)
       }
     )
   }
+}
+
+const removeAllAlarm = () => {
+  if(isTeacher.value) {
+    // console.log("알람 선생님 전체 삭제");
+    deleteAllofTeacher(
+      (response) => {
+        getAlarmList();
+      }, (error) => {
+        console.log(error);
+      })
+  }
+  if(!isTeacher.value) {
+    // console.log("알람 학부모 전체 삭제");
+    deleteAllofParent(curKid.value,
+      (response) => {
+        console.log(response);
+        getAlarmList();
+      }, (error) => {
+        console.log(error);
+      })
+  }
+}
+
+const removeAlarm = (alarmId) => {
+  // console.log("알람 삭제", alarmId);
+  deleteAlarm(alarmId,
+  (response) => {
+    getAlarmList();
+  }, (error) => {
+    console.log(error);
+  })
 }
 
 const kidChange = (idx) => {
