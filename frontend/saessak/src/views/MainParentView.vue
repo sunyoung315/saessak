@@ -92,7 +92,9 @@
 					<img src="/icons/notice.png" alt="icon" class="w-12" />
 					<div class="title">공지사항</div>
 				</div>
-				<div></div>
+				{{ noticeStore.fixedNoticeList }}
+				<div>제목</div>
+				<div>내용</div>
 			</div>
 		</div>
 		<div class="main-full">
@@ -105,7 +107,7 @@
 						v-if="menu.menuDate === todayDate && menu.menuType === menuType"
 					>
 						<div class="menu-item m-0 p-0">
-							<div class="flex items-center">
+							<div class="flex items-center mt-1">
 								<span class="ml-3 pr-3 text-base font-bold">구분 : </span>
 								<select
 									id="name"
@@ -169,6 +171,23 @@
 										</template>
 									</template>
 								</template>
+								<template v-if="menuType === '간식'">
+									<template
+										v-for="allergy in menuStore.todaySnackAllergy"
+										:key="allergy"
+									>
+										<template
+											v-for="i in menuStore.allergyList"
+											:key="i.allergyId"
+										>
+											<template v-if="i.allergyId == allergy">
+												<div class="leading-[3rem] font-bold text-lg">
+													{{ allergy }}. {{ i.allergyName }}
+												</div>
+											</template>
+										</template>
+									</template>
+								</template>
 							</div>
 						</div>
 					</template>
@@ -182,6 +201,7 @@
 import { onMounted, ref } from 'vue';
 import { useBoardStore } from '@/store/board';
 import { useMenuStore } from '@/store/menu';
+import { useNoticeStore } from '@/store/notice';
 import { getWeekOfMonth } from 'date-fns';
 
 const props = defineProps({
@@ -199,11 +219,13 @@ const week = getWeekOfMonth(today, { weekStartsOn: 1 });
 
 const boardStore = useBoardStore();
 const menuStore = useMenuStore();
+const noticeStore = useNoticeStore();
 
 const oneBoard = ref(null);
-const id = ref(1);
 
 const menuType = ref('점심');
+
+// const noticeNum = ref(0);
 
 onMounted(async () => {
 	boardStore.date = `${year}-${month}-${day}`;
@@ -211,10 +233,10 @@ onMounted(async () => {
 
 	if (boardStore.oneBoard) {
 		oneBoard.value = boardStore.oneBoard;
-		id.value = boardStore.oneBoard.boardId;
 	}
 
 	await menuStore.getParentWeeklyMenu({ year, month, week }, kidId);
+	await noticeStore.getFixedNoticeList(kidId);
 });
 </script>
 
@@ -262,7 +284,7 @@ onMounted(async () => {
 	@apply w-1/3 h-[20.8rem] bg-nav-yellow p-1 mx-2 rounded shadow-md;
 }
 .menu-image {
-	@apply border-2 border-gray-300 rounded-md bg-gray-50 mt-3 p-1 w-[23.5rem] h-[17.3rem];
+	@apply border-2 border-gray-300 rounded-md bg-gray-50 mt-3 p-2 w-[22.5rem] h-[17rem];
 }
 .menu-item-type {
 	@apply inline-block w-1/2 flex flex-col items-center justify-center;

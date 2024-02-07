@@ -15,9 +15,16 @@
 				<TodoView />
 			</div>
 			<div class="main-half">
-				<div class="flex items-end">
-					<img src="/icons/cake.png" alt="icon" class="w-12" />
-					<div class="title">생일</div>
+				<div class="flex">
+					<div class="w-1/2">
+						<div class="flex items-end">
+							<img src="/icons/cake.png" alt="icon" class="w-12" />
+							<div class="title">생일</div>
+						</div>
+					</div>
+					<div class="w-1/2">
+						<VCalendar :attributes="attributes" class="w-full h-[21rem]" />
+					</div>
 				</div>
 			</div>
 		</div>
@@ -95,6 +102,23 @@
 										</template>
 									</template>
 								</template>
+								<template v-if="menuType === '간식'">
+									<template
+										v-for="allergy in menuStore.todaySnackAllergy"
+										:key="allergy"
+									>
+										<template
+											v-for="i in menuStore.allergyList"
+											:key="i.allergyId"
+										>
+											<template v-if="i.allergyId == allergy">
+												<div class="leading-[3rem] font-bold text-lg">
+													{{ allergy }}. {{ i.allergyName }}
+												</div>
+											</template>
+										</template>
+									</template>
+								</template>
 							</div>
 						</div>
 					</template>
@@ -107,6 +131,7 @@
 <script setup>
 import { onMounted, ref } from 'vue';
 import { useMenuStore } from '@/store/menu';
+import { useUserStore } from '@/store/user';
 import { getWeekOfMonth } from 'date-fns';
 import TodoView from '@/components/todo/TodoView.vue';
 
@@ -123,11 +148,18 @@ const day = ('0' + today.getDate()).slice(-2);
 const todayDate = `${year}-${month}-${day}`;
 
 const menuStore = useMenuStore();
+const userStore = useUserStore();
 
 const menuType = ref('점심');
 
+// 캘린더 설정
+// const attributes = [{
+// }];
+
 onMounted(async () => {
 	await menuStore.getTeacherWeeklyMenu({ year, month, week });
+	await userStore.getKidsList();
+	console.log();
 });
 </script>
 
@@ -150,18 +182,6 @@ onMounted(async () => {
 .title {
 	@apply text-xl font-bold mx-2;
 }
-.board-content {
-	@apply block my-6 h-64 leading-7;
-}
-.health-item {
-	@apply flex items-center mb-3;
-}
-.health-title {
-	@apply inline-block w-20 font-bold;
-}
-.health-content {
-	@apply inline-block w-16 h-[2rem] pl-2 border-2 border-gray-300 rounded bg-gray-50;
-}
 .menu-item {
 	@apply w-1/3 h-[20.8rem];
 }
@@ -169,12 +189,21 @@ onMounted(async () => {
 	@apply w-1/3 h-[20.8rem] bg-nav-yellow p-1 mx-2 rounded shadow-md;
 }
 .menu-image {
-	@apply border-2 border-gray-300 rounded-md bg-gray-50 mt-3 p-1 w-[23.5rem] h-[17.3rem];
+	@apply border-2 border-gray-300 rounded-md bg-gray-50 mt-3 p-1 w-[22.5rem] h-[17.3rem];
 }
 .menu-item-type {
 	@apply inline-block w-1/2 flex flex-col items-center justify-center;
 }
 .menu-item-foods {
 	@apply inline-block w-1/2 flex flex-col items-start justify-center;
+}
+:deep(.vc-header) {
+	@apply mt-6 h-12;
+}
+:deep(.vc-weekdays) {
+	@apply h-6;
+}
+:deep(.vc-week) {
+	@apply h-10;
 }
 </style>
