@@ -1,13 +1,20 @@
 <template>
 	<div class="h-100 w-full flex items-center justify-center">
 		<div class="rounded w-full">
-			<div class="mb-4">
-				<TodoCreate @create-todo="updateTodoList"></TodoCreate>
+			<div class="mb-2">
+				<TodoCreate @create-todo="updateTodoList" />
 			</div>
-			<div class="h-52 bg-gray-100 p-2 rounded overflow-y-scroll">
-				<div v-for="todo in todoList" :key="todo.todoId">
-					<TodoDetail v-bind:todo="todo" @updated-todo="updateTodoList" />
-				</div>
+			<div
+				class="h-[13.5rem] bg-white border border-gray-200 shadow-md px-4 py-3 rounded overflow-auto"
+			>
+				<template v-if="todoList.length">
+					<div v-for="todo in todoList" :key="todo.todoId">
+						<TodoDetail v-bind:todo="todo" @updated-todo="updateTodoList" />
+					</div>
+				</template>
+				<template v-else>
+					<div class="text-gray-400">등록된 오늘의 할 일이 없습니다.</div>
+				</template>
 			</div>
 		</div>
 	</div>
