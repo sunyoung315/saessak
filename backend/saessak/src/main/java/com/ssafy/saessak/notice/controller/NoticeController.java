@@ -70,7 +70,8 @@ public class NoticeController {
     // PageNation 적용하기 -> 1개 단위
     @Operation(summary = "고정한 공지사항 조회")
     @GetMapping(value = "/fixed/{kidId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResultResponse> getFixedNotice(@PathVariable("kidId") Long kidId, int pageNo) {
+    public ResponseEntity<ResultResponse> getFixedNotice(@PathVariable("kidId") Long kidId,
+                                                         @RequestParam("pageNo") int pageNo) {
         List<NoticeResponseDto> list = noticeService.getAllFixedNotice(kidId, pageNo);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, list));
     }
