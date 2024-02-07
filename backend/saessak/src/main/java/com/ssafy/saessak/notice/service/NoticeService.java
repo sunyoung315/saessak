@@ -5,11 +5,14 @@ import com.ssafy.saessak.notice.domain.Notice;
 import com.ssafy.saessak.notice.dto.*;
 import com.ssafy.saessak.notice.repository.FixRepository;
 import com.ssafy.saessak.notice.repository.NoticeRepository;
+import com.ssafy.saessak.oauth.service.AuthenticationService;
 import com.ssafy.saessak.s3.S3Upload;
 import com.ssafy.saessak.user.domain.Classroom;
 import com.ssafy.saessak.user.domain.Kid;
+import com.ssafy.saessak.user.domain.User;
 import com.ssafy.saessak.user.repository.ClassroomRepository;
 import com.ssafy.saessak.user.repository.KidRepository;
+import com.ssafy.saessak.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -28,28 +31,31 @@ import java.util.List;
 @RequiredArgsConstructor
 public class NoticeService {
 
+    private final UserRepository userRepository;
     private final ClassroomRepository classroomRepository;
     private final NoticeRepository noticeRepository;
     private final KidRepository kidRepository;
     private final FixRepository fixRepository;
     private final S3Upload s3Uploader;
+    private final AuthenticationService authenticationService;
 
     // 20개씩 페이징
-    public List<NoticeResponseDto> getAllNotice(Long kidId, int pageNo) {
+    public List<NoticeResponseDto> getAllNotice(Long userId, int pageNo) {
 
-        Kid kid = kidRepository.findById(kidId).get();
-        Classroom classroom = kid.getClassroom();
+        User user = userRepository.findById(userId).get();
+        Classroom classroom = user.getClassroom();
 
         List<NoticeResponseDto> noticeResponseDtoList = new ArrayList<>();
 
         // 고정한 공지사항 먼저 추가
-        List<Fix> fixList = fixRepository.findAllByKid(kid);
+        List<Fix> fixList = fixRepository.findAllByUser(user);
         for(Fix f: fixList){
             Notice n = f.getNotice();
             NoticeResponseDto noticeResponseDto = NoticeResponseDto.builder()
                     .noticeId(n.getNoticeId())
                     .noticeTitle(n.getNoticeTitle())
                     .fileFlag(n.getNoticeFile() != null)
+                    .teacherName(n.getUser().getNickname())
                     .noticeTime(n.getNoticeTime())
                     .noticeFlag(true)
                     .build();
@@ -61,13 +67,14 @@ public class NoticeService {
         Pageable pageable = PageRequest.of(pageNo, 20-noticeResponseDtoList.size(), Sort.by(Sort.Direction.DESC, "noticeId"));
         Page<Notice> noticeList = noticeRepository.findAllByClassroom(classroom, pageable);
         for(Notice n : noticeList){
-            boolean flag = fixRepository.findByNoticeAndKid(n, kid).isPresent();
+            boolean flag = fixRepository.findByNoticeAndUser(n, user).isPresent();
             if(!flag){ // 고정 안 한 공지사항만 고른다.
                 NoticeResponseDto noticeResponseDto = NoticeResponseDto.builder()
                         .noticeId(n.getNoticeId())
                         .noticeTitle(n.getNoticeTitle())
                         .fileFlag(n.getNoticeFile() != null)
                         .noticeTime(n.getNoticeTime())
+                        .teacherName(n.getUser().getNickname())
                         .noticeFlag(false)
                         .build();
                 noticeResponseDtoList.add(noticeResponseDto);
@@ -91,7 +98,7 @@ public class NoticeService {
     @Transactional
     public Long addNotice(Long classroomId, String title, String content,
                           MultipartFile noticeFile) throws IOException {
-
+        User user = authenticationService.getUserByAuthentication();
         Classroom classroom = classroomRepository.findById(classroomId).get();
         Notice notice = null;
         if(noticeFile != null) {
@@ -100,6 +107,7 @@ public class NoticeService {
                     .classroom(classroom)
                     .noticeFile(filePath)
                     .noticeTitle(title)
+                    .user(user)
                     .noticeContent(content)
                     .noticeTime(LocalDate.now())
                     .build();
@@ -107,6 +115,7 @@ public class NoticeService {
             notice = Notice.builder()
                     .classroom(classroom)
                     .noticeTitle(title)
+                    .user(user)
                     .noticeContent(content)
                     .noticeTime(LocalDate.now())
                     .build();
@@ -117,10 +126,10 @@ public class NoticeService {
     @Transactional
     public Long addFix(FixedRequestDto fixedRequestDto) {
         Notice notice = noticeRepository.findById(fixedRequestDto.getNoticeId()).get();
-        Kid kid = kidRepository.findById(fixedRequestDto.getKidId()).get();
+        User user = userRepository.findById(fixedRequestDto.getKidId()).get();
 
         Fix fix = Fix.builder()
-                .kid(kid)
+                .user(user)
                 .notice(notice)
                 .build();
 
@@ -130,16 +139,16 @@ public class NoticeService {
     @Transactional
     public void deleteFix(FixedRequestDto fixedRequestDto) {
         Notice notice = noticeRepository.findById(fixedRequestDto.getNoticeId()).get();
-        Kid kid = kidRepository.findById(fixedRequestDto.getKidId()).get();
-        Fix fix = fixRepository.findByNoticeAndKid(notice, kid).get();
+        User user = userRepository.findById(fixedRequestDto.getKidId()).get();
+        Fix fix = fixRepository.findByNoticeAndUser(notice, user).get();
         fixRepository.delete(fix);
     }
 
     // 하나씩 페이징
-    public List<NoticeResponseFixedDto> getAllFixedNotice(Long kidId) {
+    public List<NoticeResponseFixedDto> getAllFixedNotice(Long userId) {
 
-        Kid kid = kidRepository.findById(kidId).get();
-        List<Fix> fixedList = fixRepository.findAllByKid(kid);
+        User user = userRepository.findById(userId).get();
+        List<Fix> fixedList = fixRepository.findAllByUser(user);
 
         List<NoticeResponseFixedDto> noticeResponseDtoList = new ArrayList<>();
         for(Fix f : fixedList){

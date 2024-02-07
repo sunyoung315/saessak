@@ -2,6 +2,7 @@ package com.ssafy.saessak.notice.domain;
 
 import com.ssafy.saessak.user.domain.Daycare;
 import com.ssafy.saessak.user.domain.Kid;
+import com.ssafy.saessak.user.domain.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,7 +23,7 @@ public class Fix {
     private Notice notice;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "kid_id")
-    private Kid kid;
+    @JoinColumn(name = "user_id")
+    private User user;
 
 }

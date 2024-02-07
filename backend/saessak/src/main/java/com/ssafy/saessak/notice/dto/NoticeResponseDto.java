@@ -14,6 +14,7 @@ public class NoticeResponseDto {
     private Long noticeId;
     private String noticeTitle;
     private LocalDate noticeTime;
+    private String teacherName;
     private boolean noticeFlag;
     private boolean fileFlag;
 }

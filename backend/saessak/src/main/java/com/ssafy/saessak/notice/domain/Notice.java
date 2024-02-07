@@ -3,6 +3,7 @@ package com.ssafy.saessak.notice.domain;
 import com.ssafy.saessak.menu.domain.Menu;
 import com.ssafy.saessak.user.domain.Classroom;
 import com.ssafy.saessak.user.domain.Daycare;
+import com.ssafy.saessak.user.domain.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,6 +24,10 @@ public class Notice {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "classroom_id")
     private Classroom classroom;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @Column(name = "notice_title")
     private String noticeTitle;
