@@ -136,11 +136,10 @@ public class NoticeService {
     }
 
     // 하나씩 페이징
-    public List<NoticeResponseDto> getAllFixedNotice(Long kidId, int pageNo) {
+    public List<NoticeResponseDto> getAllFixedNotice(Long kidId) {
 
         Kid kid = kidRepository.findById(kidId).get();
-        Pageable pageable = PageRequest.of(pageNo, 1, Sort.by(Sort.Direction.DESC, "notice.noticeId"));
-        Page<Fix> fixedList = fixRepository.findAllByKid(kid, pageable);
+        List<Fix> fixedList = fixRepository.findAllByKid(kid);
 
         List<NoticeResponseDto> noticeResponseDtoList = new ArrayList<>();
         for(Fix f : fixedList){
