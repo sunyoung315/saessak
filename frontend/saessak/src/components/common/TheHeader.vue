@@ -13,8 +13,19 @@
         </label>
 
         <RouterLink v-if="isLogin == true" to="/setting" class="inline-block">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
-            <path fill-rule="evenodd" clip-rule="evenodd" d="M11.5 0L14 3L18 3.5L20 6.5L18 10L20 13.5L18 16.5L14 17L11.5 20H8.5L6 17L2 16.5L0 13.5L2 10L0 6.5L2 3.5L6 3L8.5 0H11.5ZM10.562 1.999H9.437L7.0312 4.88666L3.156 5.37L2.35 6.581L4.3035 10L2.35 13.418L3.156 14.629L7.0312 15.1133L9.436 17.999H10.563L12.9688 15.1133L16.843 14.629L17.649 13.418L15.6965 10L17.649 6.581L16.843 5.37L12.9688 4.88666L10.562 1.999ZM10 6C12.2091 6 14 7.79086 14 10C14 12.2091 12.2091 14 10 14C7.79086 14 6 12.2091 6 10C6 7.79086 7.79086 6 10 6ZM10 8C8.89543 8 8 8.89543 8 10C8 11.1046 8.89543 12 10 12C11.1046 12 12 11.1046 12 10C12 8.89543 11.1046 8 10 8Z" fill="black"/>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 20 20"
+            fill="none"
+          >
+            <path
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M11.5 0L14 3L18 3.5L20 6.5L18 10L20 13.5L18 16.5L14 17L11.5 20H8.5L6 17L2 16.5L0 13.5L2 10L0 6.5L2 3.5L6 3L8.5 0H11.5ZM10.562 1.999H9.437L7.0312 4.88666L3.156 5.37L2.35 6.581L4.3035 10L2.35 13.418L3.156 14.629L7.0312 15.1133L9.436 17.999H10.563L12.9688 15.1133L16.843 14.629L17.649 13.418L15.6965 10L17.649 6.581L16.843 5.37L12.9688 4.88666L10.562 1.999ZM10 6C12.2091 6 14 7.79086 14 10C14 12.2091 12.2091 14 10 14C7.79086 14 6 12.2091 6 10C6 7.79086 7.79086 6 10 6ZM10 8C8.89543 8 8 8.89543 8 10C8 11.1046 8.89543 12 10 12C11.1046 12 12 11.1046 12 10C12 8.89543 11.1046 8 10 8Z"
+              fill="black"
+            />
           </svg>
         </RouterLink>
         <button
@@ -25,8 +36,19 @@
           data-drawer-placement="right"
           aria-controls="drawer-right-example"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <path fill-rule="evenodd" clip-rule="evenodd" d="M19 3C20.1046 3 21 3.89543 21 5V17C21 18.1046 20.1046 19 19 19H9L3 22L3 5C3 3.89543 3.89543 3 5 3H19ZM19 5H5V18.468L8.44603 17H19V5ZM11 12V14H7V12H11ZM17 8V10H7V8H17Z" fill="black"/>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+          >
+            <path
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M19 3C20.1046 3 21 3.89543 21 5V17C21 18.1046 20.1046 19 19 19H9L3 22L3 5C3 3.89543 3.89543 3 5 3H19ZM19 5H5V18.468L8.44603 17H19V5ZM11 12V14H7V12H11ZM17 8V10H7V8H17Z"
+              fill="black"
+            />
           </svg>
         </button>
         <!-- <RouterLink v-if="isLogin == true" to="/alram">알람</RouterLink> -->
@@ -36,7 +58,8 @@
           data-dropdown-toggle="dropdownNotification"
           class="relative inline-flex items-center text-sm font-medium text-center text-gray-500 hover:text-gray-900 focus:outline-none dark:hover:text-white dark:text-gray-400"
           type="button"
-          @click="getAlarmList()" v-if="isLogin == true"
+          @click="getAlarmList()"
+          v-if="isLogin == true"
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="18" viewBox="0 0 14 18" fill="none">
             <path fill-rule="evenodd" clip-rule="evenodd" d="M8 0C10.2816 0.463729 12 2.58146 12 5V9C13.1046 9 14 9.89543 14 11V16H9C9 17.1046 8.10457 18 7 18C5.89543 18 5 17.1046 5 16H0V11C0 9.89543 0.89543 9 2 9V5C2 2.58111 3.71785 0.463343 6 0H8ZM7 2C5.40232 2 4.09634 3.24892 4.00509 4.82373L4 5V9C4 10.1046 3.10457 11 2 11V14H12V11C10.8954 11 10 10.1046 10 9V5C10 3.34315 8.65685 2 7 2Z" fill="black"/>
@@ -49,27 +72,68 @@
           class="z-20 hidden w-full max-w-sm bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-800 dark:divide-gray-700"
           aria-labelledby="dropdownNotificationButton"
         >
-        <div @click="removeAllAlarm()" class="block px-4 py-2 font-medium text-center text-gray-700 rounded-t-lg bg-gray-50 dark:bg-gray-800 dark:text-white">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" width="10" height="10"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg>
+          <div
+            @click="removeAllAlarm()"
+            class="block px-4 py-2 font-medium text-center text-gray-700 rounded-t-lg bg-gray-50 dark:bg-gray-800 dark:text-white"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" width="10" height="10">
+              <path
+                d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"
+              />
+            </svg>
           </div>
           <div v-if="isTeacher == false">
-            <div v-for="alarm in alarmList" :key="alarm.alarmId" @click="removeAlarm(alarm.alarmId)" class="divide-y divide-gray-100 dark:divide-gray-700">
+            <div
+              v-for="alarm in alarmList"
+              :key="alarm.alarmId"
+              @click="removeAlarm(alarm.alarmId)"
+              class="divide-y divide-gray-100 dark:divide-gray-700"
+            >
               <div class="w-full ps-3">
-                <span class="font-semibold text-gray-900 dark:text-white">{{ alarm.alarmType }}</span>
+                <span class="font-semibold text-gray-900 dark:text-white">{{
+                  alarm.alarmType
+                }}</span>
                 <div class="text-gray-500 text-sm mb-1.5 dark:text-gray-400">
-                  {{ alarm.alarmDate}}일 {{ alarm.alarmContent.substring(0, 5)}} {{ alarm.alarmType.substring(0, 2) }}하였습니다!
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" width="10" height="10"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg>
+                  {{ alarm.alarmDate }}일 {{ alarm.alarmContent.substring(0, 5) }}
+                  {{ alarm.alarmType.substring(0, 2) }}하였습니다!
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 384 512"
+                    width="10"
+                    height="10"
+                  >
+                    <path
+                      d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"
+                    />
+                  </svg>
                 </div>
               </div>
             </div>
           </div>
           <div v-if="isTeacher == true">
-            <div v-for="alarm in alarmList" :key="alarm.alarmId" @click="removeAlarm(alarm.alarmId)" class="divide-y divide-gray-100 dark:divide-gray-700">
+            <div
+              v-for="alarm in alarmList"
+              :key="alarm.alarmId"
+              @click="removeAlarm(alarm.alarmId)"
+              class="divide-y divide-gray-100 dark:divide-gray-700"
+            >
               <div class="w-full ps-3">
-                <span class="font-semibold text-gray-900 dark:text-white">{{ alarm.alarmType }}</span>
+                <span class="font-semibold text-gray-900 dark:text-white">{{
+                  alarm.alarmType
+                }}</span>
                 <div class="text-gray-500 text-sm mb-1.5 dark:text-gray-400">
-                  {{alarm.kidName}} 원아의 {{ alarm.alarmType.substring(0, alarm.alarmType.length-3) }} 확인이 필요합니다!
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" width="10" height="10"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg>
+                  {{ alarm.kidName }} 원아의
+                  {{ alarm.alarmType.substring(0, alarm.alarmType.length - 3) }} 확인이 필요합니다!
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 384 512"
+                    width="10"
+                    height="10"
+                  >
+                    <path
+                      d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"
+                    />
+                  </svg>
                 </div>
               </div>
             </div>
@@ -138,9 +202,10 @@
             </ul>
             <div class="py-2">
               <a
-              @click="newKids()"
-              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
-              >아이 등록</a>
+                @click="newKids()"
+                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                >아이 등록</a
+              >
               <a
                 @click="logout()"
                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
@@ -185,7 +250,7 @@
 <script setup>
 import { onMounted, nextTick, shallowRef, ref, watch } from 'vue'
 import { initFlowbite } from 'flowbite'
-import {kidRegister, getkidList} from '@/api/user'
+import { kidRegister, getkidList } from '@/api/user'
 import { kakaoLogin } from '@/api/oauth'
 import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
@@ -195,7 +260,13 @@ import ChatListView from '@/components/chat/ChatListView.vue'
 import ChatPersonView from '@/components/chat/ChatPersonView.vue'
 import ChatDetailView from '../chat/ChatDetailView.vue'
 import { saveToken, deleteToken } from '@/api/fcm'
-import { alarmListOfParent, alarmListOfTeacher, deleteAlarm, deleteAllofParent, deleteAllofTeacher } from '@/api/alarm'
+import {
+  alarmListOfParent,
+  alarmListOfTeacher,
+  deleteAlarm,
+  deleteAllofParent,
+  deleteAllofTeacher
+} from '@/api/alarm'
 import Swal from 'sweetalert2'
 
 const {
@@ -235,7 +306,11 @@ const msg = Swal.mixin({
   position: 'center',
   input: 'text',
   inputPlaceholder: '등록 코드를 입력해주세요',
-  showConfirmButton: true
+  showConfirmButton: true,
+  showCancelButton: true,
+  confirmButtonText: '등록',
+  cancelButtonText: '취소',
+  backdrop: true
 }) // 아이등록 promt
 
 const { chatName, chatReoom, isOpen } = storeToRefs(chStore)
@@ -319,16 +394,20 @@ const logout = () => {
 }
 
 const newKids = () => {
-  msg.fire({
-    icon : 'info'
-  }).then(function(code) {
-    kidRegister({registCode : code.value}, ({data}) => {
-      // console.log(data)
-      getkidList(({data}) => {
-        setKidlist(data.data)
-      })
+  msg
+    .fire({
+      icon: 'info'
     })
-  })
+    .then(function (result) {
+      if (result.isConfirmed) {
+        kidRegister({ registCode: result.value }, ({ data }) => {
+          // console.log(data)
+          getkidList(({ data }) => {
+            setKidlist(data.data)
+          })
+        })
+      }
+    })
 }
 
 const alarm = ref()
@@ -388,13 +467,13 @@ watch(alarm, (newValue, oldValue) => {
   }
 })
 
-const alarmList = ref([]);
+const alarmList = ref([])
 
 const getAlarmList = () => {
   if (isTeacher.value) {
     alarmListOfTeacher(
-      ({data}) => {
-        alarmList.value = data.data;
+      ({ data }) => {
+        alarmList.value = data.data
       },
       (error) => {
         console.log(error)
@@ -404,8 +483,8 @@ const getAlarmList = () => {
   if (!isTeacher.value) {
     alarmListOfParent(
       curKid.value,
-      ({data}) => {
-        alarmList.value = data.data;
+      ({ data }) => {
+        alarmList.value = data.data
       },
       (error) => {
         console.log(error)
@@ -415,34 +494,42 @@ const getAlarmList = () => {
 }
 
 const removeAllAlarm = () => {
-  if(isTeacher.value) {
+  if (isTeacher.value) {
     // console.log("알람 선생님 전체 삭제");
     deleteAllofTeacher(
       (response) => {
-        getAlarmList();
-      }, (error) => {
-        console.log(error);
-      })
+        getAlarmList()
+      },
+      (error) => {
+        console.log(error)
+      }
+    )
   }
-  if(!isTeacher.value) {
+  if (!isTeacher.value) {
     // console.log("알람 학부모 전체 삭제");
-    deleteAllofParent(curKid.value,
+    deleteAllofParent(
+      curKid.value,
       (response) => {
-        getAlarmList();
-      }, (error) => {
-        console.log(error);
-      })
+        getAlarmList()
+      },
+      (error) => {
+        console.log(error)
+      }
+    )
   }
 }
 
 const removeAlarm = (alarmId) => {
   // console.log("알람 삭제", alarmId);
-  deleteAlarm(alarmId,
-  (response) => {
-    getAlarmList();
-  }, (error) => {
-    console.log(error);
-  })
+  deleteAlarm(
+    alarmId,
+    (response) => {
+      getAlarmList()
+    },
+    (error) => {
+      console.log(error)
+    }
+  )
 }
 
 const kidChange = (idx) => {

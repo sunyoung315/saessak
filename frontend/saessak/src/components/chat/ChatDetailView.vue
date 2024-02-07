@@ -132,6 +132,7 @@ import { loginStore } from '@/store/loginStore'
 import { chatStore } from '@/store/chatStore'
 import Stomp from 'webstomp-client' // 채팅 라이브러리 import
 import { storeToRefs } from 'pinia'
+import Swal from 'sweetalert2'
 //채팅메시지 = {room_id, chat_content, sender_id, receiver_id}
 const props = defineProps({
   roomInfo: {
@@ -391,8 +392,25 @@ function addZero(value) {
 const send = () => {
   // 메세지 전송
   // console.log('Send message:' + msg.value)
-
-  let currentDate = new Date()
+  if (msg.value.length == 0) {
+    Swal.fire({
+      icon: 'warning',
+      title: '메시지를 입력해주세요!',
+      confirmButtonText: '확인'
+    })
+  } else {
+    let currentDate = new Date()
+    if (stomp && stomp.connected) {
+      const sendMsg = {
+        roomId: props.roomInfo.roomId,
+        senderId: userId.value,
+        chatContent: msg.value,
+        chatTime: convertDate(currentDate)
+      }
+      stomp.send('/pub/message', JSON.stringify(sendMsg), headers)
+      msg.value = ''
+    }
+  }
 
   // var formattedDate =
   //   currentDate.getFullYear() +
@@ -408,16 +426,6 @@ const send = () => {
   //   addZero(currentDate.getSeconds()) +
   //   '.' +
   //   currentDate.getMilliseconds()
-  if (stomp && stomp.connected) {
-    const sendMsg = {
-      roomId: props.roomInfo.roomId,
-      senderId: userId.value,
-      chatContent: msg.value,
-      chatTime: convertDate(currentDate)
-    }
-    stomp.send('/pub/message', JSON.stringify(sendMsg), headers)
-    msg.value = ''
-  }
 }
 
 const discon = () => {
@@ -452,7 +460,18 @@ const startFaceChat = () => {
   // 만들 팝업창 height 크기의 1/2 만큼 보정값으로 빼주었음
 
   stomp.send('/pub/check', roomId, headers)
-  window.open('/facechat', '', 'status=no, height=' + popupHeight  + ', width=' + popupWidth  + ', left='+ popupX + ', top='+ popupY);
+  window.open(
+    '/facechat',
+    '',
+    'status=no, height=' +
+      popupHeight +
+      ', width=' +
+      popupWidth +
+      ', left=' +
+      popupX +
+      ', top=' +
+      popupY
+  )
   // window.open('/facechat', '_blank', 'width=720, height=720')
 }
 </script>

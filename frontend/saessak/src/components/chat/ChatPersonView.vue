@@ -17,8 +17,15 @@
           class="flex flex-col items-center w-5/12 mb-3 border border-gray-200 rounded-lg shadow pb-10mb-4"
         >
           <img
+            v-if="isTeacher == true"
             class="w-24 h-24 my-2 mb-3 rounded-full shadow-lg"
-            :src=person.kidProfile
+            :src="person.kidProfile"
+            alt="Bonnie image"
+          />
+          <img
+            v-if="isTeacher == false"
+            class="w-24 h-24 my-2 mb-3 rounded-full shadow-lg"
+            :src="person.profile"
             alt="Bonnie image"
           />
           <h5 class="text-xl font-medium text-gray-900 dark:text-white">
@@ -86,7 +93,7 @@ const getPersonList = () => {
     // console.log('선생님 - 반 아이 조회')
     getClassKids(
       ({ data }) => {
-        // console.log(data.data)
+        console.log(data.data)
         Person.value = data.data
       },
       (error) => {
@@ -94,10 +101,10 @@ const getPersonList = () => {
       }
     )
   } else {
-    // console.log('학부모 - 선생님 조회')
+    console.log('학부모 - 선생님 조회')
     getMyTeacher(
       ({ data }) => {
-        // console.log(data.data)
+        console.log(data.data)
         Person.value = data.data
       },
       (error) => {
@@ -122,8 +129,12 @@ const addChat = (input) => {
       input.id,
       ({ data }) => {
         // console.log(data)
-        const roomInfo = { roomId: data.data, roomName: input.name, 
-          width : props.size.width, height : props.size.height }
+        const roomInfo = {
+          roomId: data.data,
+          roomName: input.name,
+          width: props.size.width,
+          height: props.size.height
+        }
         emit('chatEvent', roomInfo)
       },
       (error) => {
@@ -137,8 +148,12 @@ const addChat = (input) => {
       input.id,
       ({ data }) => {
         // console.log(data)
-        const roomInfo = { roomId: data.data, roomName: input.name,
-          width : props.size.width, height : props.size.height }
+        const roomInfo = {
+          roomId: data.data,
+          roomName: input.name,
+          width: props.size.width,
+          height: props.size.height
+        }
         emit('chatEvent', roomInfo)
       },
       (error) => {
