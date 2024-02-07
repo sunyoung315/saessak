@@ -136,17 +136,18 @@ public class NoticeService {
     }
 
     // 하나씩 페이징
-    public List<NoticeResponseDto> getAllFixedNotice(Long kidId) {
+    public List<NoticeResponseFixedDto> getAllFixedNotice(Long kidId) {
 
         Kid kid = kidRepository.findById(kidId).get();
         List<Fix> fixedList = fixRepository.findAllByKid(kid);
 
-        List<NoticeResponseDto> noticeResponseDtoList = new ArrayList<>();
+        List<NoticeResponseFixedDto> noticeResponseDtoList = new ArrayList<>();
         for(Fix f : fixedList){
             Notice n = f.getNotice();
-            NoticeResponseDto noticeResponseDto = NoticeResponseDto.builder()
+            NoticeResponseFixedDto noticeResponseDto = NoticeResponseFixedDto.builder()
                     .noticeId(n.getNoticeId())
                     .noticeTitle(n.getNoticeTitle())
+                    .noticeContent(n.getNoticeContent())
                     .fileFlag(n.getNoticeFile() != null)
                     .noticeTime(n.getNoticeTime())
                     .noticeFlag(true)

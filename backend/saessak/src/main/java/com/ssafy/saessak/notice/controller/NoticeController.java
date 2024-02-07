@@ -71,7 +71,7 @@ public class NoticeController {
     @Operation(summary = "고정한 공지사항 조회")
     @GetMapping(value = "/fixed/{kidId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResultResponse> getFixedNotice(@PathVariable("kidId") Long kidId) {
-        List<NoticeResponseDto> list = noticeService.getAllFixedNotice(kidId);
+        List<NoticeResponseFixedDto> list = noticeService.getAllFixedNotice(kidId);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, list));
     }
 
