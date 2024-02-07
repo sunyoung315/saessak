@@ -1,25 +1,7 @@
 <template>
 	<div>
-		<div class="ml-6">
-			<label class="relative inline-flex items-center me-5 cursor-pointer">
-				<input
-					type="checkbox"
-					class="sr-only peer"
-					checked
-					v-model="showToggle"
-				/>
-				<div
-					class="w-12 h-7 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-nav-green peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-6 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-nav-green"
-				></div>
-				<span
-					class="text-xl m-5 font-extrabold inline-block text-gray-900 dark:text-gray-300"
-				>
-					{{ showToggle ? '전체 보기' : '내 아이 보기' }}</span
-				>
-			</label>
-		</div>
 		<!-- 반 전체 보기 -->
-		<div v-if="showToggle">
+		<div v-if="props.showToggle">
 			<div v-for="album in currentPageAlbums" :key="album.albumId">
 				<div
 					class="flex justify-start items-center"
@@ -132,18 +114,21 @@
 </template>
 
 <script setup>
-import { ref, defineComponent, onMounted, computed } from 'vue';
+import { ref, defineComponent, onMounted, computed, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { Carousel, Navigation, Slide } from 'vue3-carousel';
 import { useAlbumStore } from '@/store/album';
 
 const router = useRouter();
 const albumStore = useAlbumStore();
-const showToggle = ref(true);
 
-let loginStore = JSON.parse(localStorage.getItem('loginStore'));
+const props = defineProps({
+	loginStore: Object,
+	showToggle: Boolean,
+});
+
 // 내 아이
-let kidId = loginStore.kidList[0].kidId;
+let kidId = props.loginStore.kidList[0].kidId;
 
 // 반 전체 앨범 조회
 const albumParentList = ref([]);
@@ -188,16 +173,20 @@ function divideAlbumsByFive(albums) {
 
 ///////////////////////////////////////////////// Pagination
 const currentPage = ref(0); // 현재 페이지 기록
+watch(props.showToggle, () => {
+	// props.showToggle 값이 바뀔 때마다 currentPage를 1로 설정
+	currentPage.value = 0;
+});
 const currentPageAlbums = computed(() => {
 	// 현재 페이지에 맞는 앨범 데이터 반환
-	return showToggle.value
+	return props.showToggle
 		? albumParentListDivided.value[currentPage.value]
 		: kidAlbumListDivided.value[currentPage.value];
 });
 
 const totalPage = computed(() => {
 	// 전체 페이지 개수 계산
-	return showToggle.value
+	return props.showToggle
 		? Math.ceil(albumParentListDivided.value.length)
 		: Math.ceil(kidAlbumListDivided.value.length);
 });
@@ -230,11 +219,11 @@ defineComponent({
 
 // Btn
 function goDetail(kidId, albumDate) {
-	// console.log('goDetail: ' + albumDate);
 	router.push({
 		name: 'AlbumDetailParent',
 		params: { id: kidId },
 		query: { date: albumDate },
+		state: { showToggle: props.showToggle },
 	});
 }
 // Btn
@@ -242,7 +231,7 @@ function goDetail(kidId, albumDate) {
 
 <style scoped>
 .album {
-	width: 300px;
-	height: 250px;
+	width: 250px;
+	height: 200px;
 }
 </style>
