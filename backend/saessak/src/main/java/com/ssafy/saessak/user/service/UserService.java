@@ -47,10 +47,11 @@ public class UserService {
     }
 
     @Transactional
-    public Long registKid(String kidName, LocalDate kidBirthday, MultipartFile kidProfile) {
+    public Long registKid(Gender gender, String kidName, LocalDate kidBirthday, MultipartFile kidProfile) {
         User user = authenticationService.getUserByAuthentication();
         Classroom classroom = user.getClassroom();
         Kid kid = Kid.builder()
+                .gender(gender)
                 .nickname(kidName)
                 .kidBirthday(kidBirthday)
                 .classroom(classroom)
@@ -87,6 +88,7 @@ public class UserService {
                     .kidAllergySignature(k.getKidAllergySignature())
                     .kidAllergyDate(k.getKidAllergyDate())
                     .parentId(Optional.ofNullable(k.getParent()).map(Parent::getId).orElse(null))
+                    .kidGender(k.getGender())
                     .classroomId(k.getClassroom().getClassroomId())
                     .build();
             kidListResponseDtoList.add(kidListResponseDto);
