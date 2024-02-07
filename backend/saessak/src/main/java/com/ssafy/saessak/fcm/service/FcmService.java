@@ -139,6 +139,7 @@ public class FcmService {
     }
 
     public void sendNotification(FcmResponseDto fcmResponseDto) {
+        System.out.println("FCM을 보내는 토큰 : "+fcmResponseDto.getToken());
         if(fcmResponseDto.getToken() != null) {
             try {
                 // Firebase Admin SDK 초기화
