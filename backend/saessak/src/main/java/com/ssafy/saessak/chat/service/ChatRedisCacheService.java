@@ -94,12 +94,14 @@ public class ChatRedisCacheService {
             recentChatMessage = zSetOperations.range(CHAT_SORTED_SET_ + room.getRoomId(), size - 1, size).iterator().next();
         }
 
-        if(recentChatMessage == null){
+        if(recentChatMessage == null || visit == null){
             return RoomResponseDto.builder()
                     .roomId(room.getRoomId())
                     .kidId(room.getKid().getId())
                     .kidName(room.getKid().getNickname())
                     .teacherName(room.getTeacher().getNickname())
+                    .kidProfile(room.getKid().getProfile())
+                    .teacherProfile(room.getTeacher().getProfile())
                     .flag(false)
                     .build();
         }
@@ -114,6 +116,8 @@ public class ChatRedisCacheService {
                 .kidName(room.getKid().getNickname())
                 .teacherName(room.getTeacher().getNickname())
                 .lastChat(recentChatMessage.getChatContent())
+                .kidProfile(room.getKid().getProfile())
+                .teacherProfile(room.getTeacher().getProfile())
                 .flag(isChatTimeBeforeLastVisitTime)
                 .build();
     }

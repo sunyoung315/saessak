@@ -115,6 +115,7 @@ public class UserService {
                         .teacherId(t.getId())
                         .teacherName(t.getNickname())
                         .className(t.getClassroom().getClassroomName())
+                        .profile(t.getProfile())
                         .kidId(k.getId())
                         .kidName(k.getNickname())
                         .build();
