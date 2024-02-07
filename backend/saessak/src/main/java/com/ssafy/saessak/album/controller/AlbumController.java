@@ -1,5 +1,6 @@
 package com.ssafy.saessak.album.controller;
 
+import com.ssafy.saessak.album.domain.Album;
 import com.ssafy.saessak.album.dto.AlbumRequestDto;
 import com.ssafy.saessak.album.dto.AlbumResponseDto;
 import com.ssafy.saessak.album.dto.KidAlbumResponseDto;
@@ -37,15 +38,24 @@ public class AlbumController {
         List<AlbumResponseDto> albumResponseDtoList = albumService.getParentClassAlbumList(kidId);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS,albumResponseDtoList));
     }
-    @Operation(summary = "반 앨범 날짜별 조회")
+    @Operation(summary = "반 앨범 날짜별 조회(학부모)")
     @PostMapping("/classroom/{kidId}")
-    public ResponseEntity<ResultResponse> getClassAlbum
+    public ResponseEntity<ResultResponse> getClassAlbumUsingDate
             (@PathVariable(name = "kidId") Long kidId, @RequestBody AlbumRequestDto albumRequestDto){
         log.debug("controller requestBody  : {}", albumRequestDto);
         LocalDate albumDate = albumRequestDto.getAlbumDate();
         List<AlbumResponseDto> albumResponseDtoList = albumService.getClassAlbum(kidId, albumDate);
 
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS,albumResponseDtoList));
+    }
+    @Operation(summary = "반 앨범 날짜별 조회(선생님)")
+    @PostMapping("/classroom")
+    public ResponseEntity<ResultResponse> getTeacherClassAlbumUsingDate(@RequestBody AlbumRequestDto albumRequestDto){
+
+        LocalDate albumDate = albumRequestDto.getAlbumDate();
+        List<AlbumResponseDto> albumResponseDtoList = albumService.getTeacherClassAlbum(albumDate);
+
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, albumResponseDtoList));
     }
     @Operation(summary = "아이별 앨범 전체 조회")
     @GetMapping("/kid/{kidId}")
