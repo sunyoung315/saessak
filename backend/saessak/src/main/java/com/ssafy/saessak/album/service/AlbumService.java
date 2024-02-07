@@ -71,6 +71,14 @@ public class AlbumService {
         Optional<List<Album>> albumList = albumRepository.findByKidAndAlbumDate(kid,date);
         return albumList.map(this::makeAlbumResponseDtoList).orElse(null);
     }
+
+    public List<AlbumResponseDto> getTeacherClassAlbum(LocalDate date){
+        User user = authenticationService.getUserByAuthentication();
+        Optional<List<Album>> albumResult = albumRepository.findByClassroomAndAlbumDateAndKidIsNull(user.getClassroom(),date);
+        return albumResult.map(this::makeAlbumResponseDtoList).orElse(null);
+
+    }
+
     // 선생
     public List<KidAlbumResponseDto> getKidsCurrentAlbum (){
         User user = authenticationService.getUserByAuthentication();
