@@ -11,6 +11,8 @@ import AlbumDetailParent from '@/components/album/AlbumDetailParent.vue';
 import AlbumDetailTeacher from '@/components/album/AlbumDetailTeacher.vue';
 import AlbumCreate from '@/components/album/AlbumCreate.vue';
 import NoticeView from '@/components/notice/NoticeView.vue';
+import NoticeList from '@/components/notice/NoticeList.vue';
+import NoticeCreate from '@/components/notice/NoticeCreate.vue';
 import DocumentView from '@/components/document/DocumentView.vue';
 import DocumentList from '@/components/document/DocumentList.vue';
 import DocumentReplaceDetail from '@/components/document/DocumentReplaceDetail.vue';
@@ -117,6 +119,18 @@ const routes = [
 				path: '/notice',
 				name: 'Notice',
 				component: NoticeView,
+				children: [
+					{
+						path: '',
+						name: 'NoticeList',
+						component: NoticeList,
+					},
+					{
+						path: 'create',
+						name: 'NoticeCreate',
+						component: NoticeCreate,
+					},
+				],
 			},
 			{
 				path: '/document',
