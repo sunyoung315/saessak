@@ -30,7 +30,8 @@ public class NoticeController {
     // 고정한 것을 상단에
     @Operation(summary = "공지사항 전체 조회")
     @GetMapping(value = "/all/{kidId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResultResponse> getAllNotice(@PathVariable("kidId") Long kidId, int pageNo) {
+    public ResponseEntity<ResultResponse> getAllNotice(@PathVariable("kidId") Long kidId,
+                                                       @RequestParam("pageNo") int pageNo) {
         List<NoticeResponseDto> list = noticeService.getAllNotice(kidId, pageNo);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, list));
     }

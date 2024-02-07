@@ -103,12 +103,12 @@ public class UserService {
         Map<Long, List<Teacher>> teacherList = new HashMap<>();
 
         List<Kid> kidList = kidRepository.findAllByParent((Parent) user);
-        for(Kid k : kidList){
+        for (Kid k : kidList) {
             teacherList.put(k.getId(), teacherRepository.findAllByClassroom(k.getClassroom()));
         }
 
         List<TeacherListResponseDto> teacherListReponseDtoList = new ArrayList<>();
-        for(Long kidId : teacherList.keySet()) {
+        for (Long kidId : teacherList.keySet()) {
             List<Teacher> tlist = teacherList.get(kidId);
             Kid k = kidRepository.findById(kidId)
                     .orElseThrow(() -> new UserException(ExceptionCode.KID_NOT_FOUND));

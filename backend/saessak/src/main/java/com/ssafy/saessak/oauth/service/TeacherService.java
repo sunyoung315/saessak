@@ -62,7 +62,6 @@ public class TeacherService {
                 .orElseThrow(() -> new UserException(ExceptionCode.TEACHER_NOT_FOUND));
 
         String userToken = fcmService.getUserToken(teacher.getId());
-        System.out.println(userToken);
         Boolean isAlarm = userToken == null ? false : true;
 
         LoginTeacherResponseDto loginTeacherResponseDto = LoginTeacherResponseDto.builder()
