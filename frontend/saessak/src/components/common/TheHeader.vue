@@ -7,24 +7,87 @@
         <label class="relative inline-flex items-center cursor-pointer">
           <input type="checkbox" v-model="alarm" class="sr-only peer" />
           <div
+            v-if="isLogin == true"
             class="mr-8 w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"
           ></div>
         </label>
 
-        <RouterLink v-if="isLogin == true" to="/setting">설정</RouterLink>
+        <RouterLink v-if="isLogin == true" to="/setting" class="inline-block">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M11.5 0L14 3L18 3.5L20 6.5L18 10L20 13.5L18 16.5L14 17L11.5 20H8.5L6 17L2 16.5L0 13.5L2 10L0 6.5L2 3.5L6 3L8.5 0H11.5ZM10.562 1.999H9.437L7.0312 4.88666L3.156 5.37L2.35 6.581L4.3035 10L2.35 13.418L3.156 14.629L7.0312 15.1133L9.436 17.999H10.563L12.9688 15.1133L16.843 14.629L17.649 13.418L15.6965 10L17.649 6.581L16.843 5.37L12.9688 4.88666L10.562 1.999ZM10 6C12.2091 6 14 7.79086 14 10C14 12.2091 12.2091 14 10 14C7.79086 14 6 12.2091 6 10C6 7.79086 7.79086 6 10 6ZM10 8C8.89543 8 8 8.89543 8 10C8 11.1046 8.89543 12 10 12C11.1046 12 12 11.1046 12 10C12 8.89543 11.1046 8 10 8Z" fill="black"/>
+          </svg>
+        </RouterLink>
         <button
           v-if="isLogin == true"
-          class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
           type="button"
           data-drawer-target="drawer-right-example"
           data-drawer-show="drawer-right-example"
           data-drawer-placement="right"
           aria-controls="drawer-right-example"
         >
-          채팅
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M19 3C20.1046 3 21 3.89543 21 5V17C21 18.1046 20.1046 19 19 19H9L3 22L3 5C3 3.89543 3.89543 3 5 3H19ZM19 5H5V18.468L8.44603 17H19V5ZM11 12V14H7V12H11ZM17 8V10H7V8H17Z" fill="black"/>
+          </svg>
         </button>
-        <RouterLink v-if="isLogin == true" to="/alram">알람</RouterLink>
+        <!-- <RouterLink v-if="isLogin == true" to="/alram">알람</RouterLink> -->
+        <!-- 알람 드롭다운 시작해따-->
+        <button
+          id="dropdownNotificationButton"
+          data-dropdown-toggle="dropdownNotification"
+          class="relative inline-flex items-center text-sm font-medium text-center text-gray-500 hover:text-gray-900 focus:outline-none dark:hover:text-white dark:text-gray-400"
+          type="button"
+          @click="getAlarmList()" v-if="isLogin == true"
+        >
+          <svg
+            class="w-7 h-7"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            viewBox="0 0 14 20"
+          >
+            <path
+              d="M12.133 10.632v-1.8A5.406 5.406 0 0 0 7.979 3.57.946.946 0 0 0 8 3.464V1.1a1 1 0 0 0-2 0v2.364a.946.946 0 0 0 .021.106 5.406 5.406 0 0 0-4.154 5.262v1.8C1.867 13.018 0 13.614 0 14.807 0 15.4 0 16 .538 16h12.924C14 16 14 15.4 14 14.807c0-1.193-1.867-1.789-1.867-4.175ZM3.823 17a3.453 3.453 0 0 0 6.354 0H3.823Z"
+            />
+          </svg>
 
+          <div
+            class="absolute block w-3 h-3 bg-red-500 border-2 border-white rounded-full -top-0.5 start-2.5 dark:border-gray-900"
+          ></div>
+        </button>
+
+        <!-- Dropdown menu -->
+        <div
+          id="dropdownNotification"
+          class="z-20 hidden w-full max-w-sm bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-800 dark:divide-gray-700"
+          aria-labelledby="dropdownNotificationButton"
+        >
+        <div @click="removeAllAlarm()" class="block px-4 py-2 font-medium text-center text-gray-700 rounded-t-lg bg-gray-50 dark:bg-gray-800 dark:text-white">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" width="10" height="10"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg>
+          </div>
+          <div v-if="isTeacher == false">
+            <div v-for="alarm in alarmList" :key="alarm.alarmId" @click="removeAlarm(alarm.alarmId)" class="divide-y divide-gray-100 dark:divide-gray-700">
+              <div class="w-full ps-3">
+                <span class="font-semibold text-gray-900 dark:text-white">{{ alarm.alarmType }}</span>
+                <div class="text-gray-500 text-sm mb-1.5 dark:text-gray-400">
+                  {{ alarm.alarmDate}}일 {{ alarm.alarmContent.substring(0, 5)}} {{ alarm.alarmType.substring(0, 2) }}하였습니다!
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" width="10" height="10"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div v-if="isTeacher == true">
+            <div v-for="alarm in alarmList" :key="alarm.alarmId" @click="removeAlarm(alarm.alarmId)" class="divide-y divide-gray-100 dark:divide-gray-700">
+              <div class="w-full ps-3">
+                <span class="font-semibold text-gray-900 dark:text-white">{{ alarm.alarmType }}</span>
+                <div class="text-gray-500 text-sm mb-1.5 dark:text-gray-400">
+                  {{alarm.kidName}} 원아의 {{ alarm.alarmType.substring(0, alarm.alarmType.length-3) }} 확인이 필요합니다!
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" width="10" height="10"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- 알람 드롭다운 끝나따-->
         <button
           v-if="isLogin == false"
           class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
@@ -144,6 +207,7 @@ import ChatListView from '@/components/chat/ChatListView.vue'
 import ChatPersonView from '@/components/chat/ChatPersonView.vue'
 import ChatDetailView from '../chat/ChatDetailView.vue'
 import { saveToken, deleteToken } from '@/api/fcm'
+import { alarmListOfParent, alarmListOfTeacher, deleteAlarm, deleteAllofParent, deleteAllofTeacher } from '@/api/alarm'
 import Swal from 'sweetalert2'
 
 const {
@@ -187,7 +251,7 @@ const msg = Swal.mixin({
 }) // 아이등록 promt
 
 const { chatName, chatReoom, isOpen } = storeToRefs(chStore)
-const { isLogin, isTeacher, kidList, isAlarm } = storeToRefs(store)
+const { isLogin, isTeacher, kidList, isAlarm, curKid } = storeToRefs(store)
 const { setlogin, setCurkid, setlogout, setKidlist, setTeacherFlag, setTeachername, setAlarmFlag } =
   store
 onMounted(() => {
@@ -324,7 +388,9 @@ const deleteFcmToken = () => {
   )
 }
 
-watch(alarm, (newValue) => {
+watch(alarm, (newValue, oldValue) => {
+  console.log("newValue: ", newValue);
+  console.log("oldValue", oldValue);
   if (newValue) {
     // console.log('checked');
     saveFcmToken()
@@ -335,6 +401,63 @@ watch(alarm, (newValue) => {
     setAlarmFlag(false)
   }
 })
+
+const alarmList = ref([]);
+
+const getAlarmList = () => {
+  if (isTeacher.value) {
+    alarmListOfTeacher(
+      ({data}) => {
+        alarmList.value = data.data;
+      },
+      (error) => {
+        console.log(error)
+      }
+    )
+  }
+  if (!isTeacher.value) {
+    alarmListOfParent(
+      curKid.value,
+      ({data}) => {
+        alarmList.value = data.data;
+      },
+      (error) => {
+        console.log(error)
+      }
+    )
+  }
+}
+
+const removeAllAlarm = () => {
+  if(isTeacher.value) {
+    // console.log("알람 선생님 전체 삭제");
+    deleteAllofTeacher(
+      (response) => {
+        getAlarmList();
+      }, (error) => {
+        console.log(error);
+      })
+  }
+  if(!isTeacher.value) {
+    // console.log("알람 학부모 전체 삭제");
+    deleteAllofParent(curKid.value,
+      (response) => {
+        getAlarmList();
+      }, (error) => {
+        console.log(error);
+      })
+  }
+}
+
+const removeAlarm = (alarmId) => {
+  // console.log("알람 삭제", alarmId);
+  deleteAlarm(alarmId,
+  (response) => {
+    getAlarmList();
+  }, (error) => {
+    console.log(error);
+  })
+}
 
 const kidChange = (idx) => {
   // console.log(kidList.value[idx].kidId)

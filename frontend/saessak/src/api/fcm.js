@@ -11,10 +11,12 @@ const config = {
 }
 
 function saveToken(param, success, fail) {
+  console.log("axios: saveToken");
   local.post(`${url}`, JSON.stringify(param), config).then(success).catch(fail)
 }
 
 function deleteToken(success, fail) {
+  console.log("axios: deleteToken");
   local.delete(`${url}`, config).then(success).catch(fail)
 }
 
