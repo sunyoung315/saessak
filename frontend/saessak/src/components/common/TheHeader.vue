@@ -5,8 +5,10 @@
       <RouterLink to="/">Logo</RouterLink>
       <div>
         <label class="relative inline-flex items-center cursor-pointer">
-          <input type="checkbox" v-model="alarm" class="sr-only peer" >
-          <div class=" mr-8 w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+          <input type="checkbox" v-model="alarm" class="sr-only peer" />
+          <div
+            class="mr-8 w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"
+          ></div>
         </label>
 
         <RouterLink v-if="isLogin == true" to="/setting">설정</RouterLink>
@@ -136,7 +138,19 @@ import { chatStore } from '@/store/chatStore'
 import ChatListView from '@/components/chat/ChatListView.vue'
 import ChatPersonView from '@/components/chat/ChatPersonView.vue'
 import ChatDetailView from '../chat/ChatDetailView.vue'
-import { saveToken, deleteToken } from "@/api/fcm";
+import { saveToken, deleteToken } from '@/api/fcm'
+
+const {
+  VITE_FIREBASE_APIKEY,
+  VITE_FIREBASE_AUTHDOMAIN,
+  VITE_FIREBASE_PROJECTID,
+  VITE_FIREBASE_STORAGEBUCKET,
+  VITE_FIREBASE_MESSAGINGSENDERID,
+  VITE_FIREBASE_APPID,
+  VITE_FIREBASE_MEASUREMENTID,
+  VITE_KAKAO_CLIENT_ID,
+  VITE_KAKAO_REDIRECT_URL
+} = import.meta.env
 
 const store = loginStore()
 const chStore = chatStore()
@@ -160,7 +174,8 @@ const getSizeOfDrawer = () => {
 
 const { chatName, chatReoom, isOpen } = storeToRefs(chStore)
 const { isLogin, isTeacher, kidList, isAlarm } = storeToRefs(store)
-const { setlogin, setCurkid, setlogout, setKidlist, setTeacherFlag, setTeachername } = store
+const { setlogin, setCurkid, setlogout, setKidlist, setTeacherFlag, setTeachername, setAlarmFlag } =
+  store
 onMounted(() => {
   initFlowbite()
   // 로그인 여부 판단하기
@@ -172,7 +187,8 @@ onMounted(() => {
     if (!isTeacher) {
       kidList.value = JSON.parse(sessionStorage.getItem('kidList'))
     }
-    alarm.value = isAlarm
+    alarm.value = isAlarm.value
+    console.log(isAlarm.value)
   }
   getSizeOfDrawer()
   // console.log(isLogin)
@@ -184,13 +200,13 @@ const chatEvent = (data) => {
   // console.log(data)
   roomInfo.value = data
   chatSwitch.value = ChatDetailView
-  flag.value = true;
+  flag.value = true
 }
 
 const exitChat = (input) => {
   if (input) {
     chatSwitch.value = ChatListView
-    flag.value = false;
+    flag.value = false
   }
 }
 
@@ -206,11 +222,19 @@ const showChat = (name) => {
 }
 
 const login = () => {
-  kakaoLogin(({ data }) => {
-    // console.log('로그인 가즈아')
-    // console.log(data)
-    window.location.href = data
-  })
+  // kakaoLogin(({ data }) => {
+  //   // console.log('로그인 가즈아')
+  //   // console.log(data)
+  //   window.location.href = data
+  // })
+  window.location.href =
+    'https://kauth.kakao.com' +
+    '/auth/authorize' +
+    '?client_id=' +
+    VITE_KAKAO_CLIENT_ID +
+    '&redirect_uri=' +
+    VITE_KAKAO_REDIRECT_URL +
+    '&response_type=code&prompt=login'
 }
 
 const logout = () => {
@@ -228,25 +252,60 @@ const logout = () => {
   window.location.href = '/'
 }
 
-const alarm = ref();
+const alarm = ref()
+
+const firebaseConfig = {
+  apiKey: VITE_FIREBASE_APIKEY,
+  authDomain: VITE_FIREBASE_AUTHDOMAIN,
+  projectId: VITE_FIREBASE_PROJECTID,
+  storageBucket: VITE_FIREBASE_STORAGEBUCKET,
+  messagingSenderId: VITE_FIREBASE_MESSAGINGSENDERID,
+  appId: VITE_FIREBASE_APPID,
+  measurementId: VITE_FIREBASE_MEASUREMENTID
+}
+
+firebase.initializeApp(firebaseConfig)
+const messaging = firebase.messaging()
+
+const tokenBox = ref({
+  token: ''
+})
 
 const saveFcmToken = () => {
-  saveToken(
-    // 토큰
-    (response) => {
+  messaging.getToken().then((tokenValue) => {
+    tokenBox.value.token = tokenValue
+    saveToken(
+      tokenBox.value,
+      (response) => {
+        console.log(response)
+      },
+      (error) => {
+        console.log(error)
+      }
+    )
+  })
+}
 
+const deleteFcmToken = () => {
+  deleteToken(
+    (response) => {
+      console.log(response)
     },
     (error) => {
-      console.log(error);
+      console.log(error)
     }
-  );
+  )
 }
 
 watch(alarm, (newValue) => {
-  if(newValue) {
-    // checked
+  if (newValue) {
+    // console.log('checked');
+    saveFcmToken()
+    setAlarmFlag(true)
   } else {
-    // unchecked
+    // console.log('unchecked');
+    deleteFcmToken()
+    setAlarmFlag(false)
   }
 })
 
@@ -257,8 +316,6 @@ const kidChange = (idx) => {
   let tmp = kidList.value.splice(idx, 1)[0]
   kidList.value.unshift(tmp)
   location.reload()
-
-
 }
 </script>
 
