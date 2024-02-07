@@ -39,8 +39,53 @@ public class NoticeService {
     private final S3Upload s3Uploader;
     private final AuthenticationService authenticationService;
 
+    public List<NoticeResponseDto> getAllTeacherNotice(int pageNo) {
+
+        User user = authenticationService.getUserByAuthentication();
+        Classroom classroom = user.getClassroom();
+
+        List<NoticeResponseDto> noticeResponseDtoList = new ArrayList<>();
+
+        // 고정한 공지사항 먼저 추가
+        List<Fix> fixList = fixRepository.findAllByUser(user);
+        for(Fix f: fixList){
+            Notice n = f.getNotice();
+            NoticeResponseDto noticeResponseDto = NoticeResponseDto.builder()
+                    .noticeId(n.getNoticeId())
+                    .noticeTitle(n.getNoticeTitle())
+                    .fileFlag(n.getNoticeFile() != null)
+                    .teacherName(n.getUser().getNickname())
+                    .noticeTime(n.getNoticeTime())
+                    .noticeFlag(true)
+                    .build();
+            noticeResponseDtoList.add(noticeResponseDto);
+        }
+
+
+        // 고정 안 한 공지사항 나중에 추가
+        Pageable pageable = PageRequest.of(pageNo, 20-noticeResponseDtoList.size(), Sort.by(Sort.Direction.DESC, "noticeId"));
+        Page<Notice> noticeList = noticeRepository.findAllByClassroom(classroom, pageable);
+        for(Notice n : noticeList){
+            boolean flag = fixRepository.findByNoticeAndUser(n, user).isPresent();
+            if(!flag){ // 고정 안 한 공지사항만 고른다.
+                NoticeResponseDto noticeResponseDto = NoticeResponseDto.builder()
+                        .noticeId(n.getNoticeId())
+                        .noticeTitle(n.getNoticeTitle())
+                        .fileFlag(n.getNoticeFile() != null)
+                        .noticeTime(n.getNoticeTime())
+                        .teacherName(n.getUser().getNickname())
+                        .noticeFlag(false)
+                        .build();
+                noticeResponseDtoList.add(noticeResponseDto);
+            }
+
+        }
+
+        return noticeResponseDtoList;
+    }
+
     // 20개씩 페이징
-    public List<NoticeResponseDto> getAllNotice(Long userId, int pageNo) {
+    public List<NoticeResponseDto> getAllParentNotice(Long userId, int pageNo) {
 
         User user = userRepository.findById(userId).get();
         Classroom classroom = user.getClassroom();
