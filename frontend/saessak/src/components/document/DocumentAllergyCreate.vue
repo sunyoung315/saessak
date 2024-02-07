@@ -82,9 +82,13 @@ const router = useRouter();
 const allergyStore = useAllergyStore();
 
 // 내 아이 id 조회
-let loginStore = JSON.parse(localStorage.getItem('loginStore'));
-const kidId = loginStore.kidList[0].kidId;
-const kidName = loginStore.kidList[0].kidName;
+// let loginStore = JSON.parse(localStorage.getItem('loginStore'));
+const props = defineProps({
+	loginStore: Object,
+});
+
+const kidId = props.loginStore.kidList[0].kidId;
+const kidName = props.loginStore.kidList[0].kidName;
 
 // 전달할 데이터
 const registAllergy = ref({
@@ -181,7 +185,7 @@ async function regist() {
 	}
 	// console.log(registAllergy);
 	try {
-		await allergyStore.PostRegistAllergy(registAllergy.value.value);
+		await allergyStore.PostRegistAllergy(registAllergy.value);
 		// 전자서명 입력
 		const formData = new FormData();
 		formData.append('kidId', kidId);
@@ -193,10 +197,10 @@ async function regist() {
 				{ type: 'image/png' },
 			),
 		);
-		// await allergyStore.PostRegistFileAllergy(formData);
-		// router.push({
-		// 	name: 'DocumentList',
-		// });
+		await allergyStore.PostRegistFileAllergy(formData);
+		router.push({
+			name: 'DocumentList',
+		});
 	} catch (error) {
 		console.error('실패: ', error);
 	}

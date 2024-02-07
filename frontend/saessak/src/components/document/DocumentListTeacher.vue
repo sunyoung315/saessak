@@ -9,22 +9,22 @@
 					<thead>
 						<tr class="bg-nav-blue">
 							<th
-								class="w-72 px-6 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold"
+								class="w-72 px-6 align-middle border border-solid border-blueGray-100 py-3 text uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold"
 							>
 								분류
 							</th>
 							<th
-								class="px-6 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold"
+								class="px-6 align-middle border border-solid border-blueGray-100 py-3 text uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold"
 							>
 								대상 원아
 							</th>
 							<th
-								class="px-6 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold"
+								class="px-6 align-middle border border-solid border-blueGray-100 py-3 text uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold"
 							>
 								작성일자
 							</th>
 							<th
-								class="px-6 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold"
+								class="px-6 align-middle border border-solid border-blueGray-100 py-3 text uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold"
 							>
 								확인여부
 							</th>
@@ -35,25 +35,25 @@
 							v-for="kid in replacementList"
 							:key="kid.replacementId"
 							@click="moveReplacement(kid.replacementId, kid.kidName)"
-							class="hover:bg-nav-blue"
+							class="hover:bg-nav-blue hover:bg-opacity-20"
 						>
 							<td
-								class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+								class="border-t-0 px-6 align-middle border-l-0 border-r-0 text whitespace-nowrap p-4"
 							>
 								귀가 동의서
 							</td>
 							<td
-								class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+								class="border-t-0 px-6 align-middle border-l-0 border-r-0 text whitespace-nowrap p-4"
 							>
 								{{ kid.kidName }}
 							</td>
 							<td
-								class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+								class="border-t-0 px-6 align-middle border-l-0 border-r-0 text whitespace-nowrap p-4"
 							>
 								{{ kid.replacementDay }}
 							</td>
 							<td
-								class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+								class="border-t-0 px-6 align-middle border-l-0 border-r-0 text whitespace-nowrap p-4"
 							>
 								<span
 									:class="
@@ -79,22 +79,22 @@
 					<thead>
 						<tr class="bg-nav-blue">
 							<th
-								class="w-72 px-6 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold"
+								class="w-72 px-6 align-middle border border-solid border-blueGray-100 py-3 text uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold"
 							>
 								분류
 							</th>
 							<th
-								class="px-6 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold"
+								class="px-6 align-middle border border-solid border-blueGray-100 py-3 text uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold"
 							>
 								대상 원아
 							</th>
 							<th
-								class="px-6 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold"
+								class="px-6 align-middle border border-solid border-blueGray-100 py-3 text uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold"
 							>
 								작성일자
 							</th>
 							<th
-								class="px-6 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold"
+								class="px-6 align-middle border border-solid border-blueGray-100 py-3 text uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold"
 							>
 								확인여부
 							</th>
@@ -105,27 +105,27 @@
 							v-for="kid in allergyList"
 							:key="kid.kidId"
 							@click="moveAllergy(kid.kidId)"
-							class="hover:bg-nav-blue"
+							class="hover:bg-nav-blue hover:bg-opacity-20"
 						>
 							<td
-								class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+								class="border-t-0 px-6 align-middle border-l-0 border-r-0 text whitespace-nowrap p-4"
 							>
 								식품 알레르기 조사서
 							</td>
 							<td
-								class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+								class="border-t-0 px-6 align-middle border-l-0 border-r-0 text whitespace-nowrap p-4"
 							>
 								<router-link :to="`/document/allgery/${kid.kidId}`">{{
 									kid.kidName
 								}}</router-link>
 							</td>
 							<td
-								class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+								class="border-t-0 px-6 align-middle border-l-0 border-r-0 text whitespace-nowrap p-4"
 							>
 								{{ kid.kidAllergyDate }}
 							</td>
 							<td
-								class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
+								class="border-t-0 px-6 align-middle border-l-0 border-r-0 text whitespace-nowrap p-4"
 							>
 								<span
 									:class="

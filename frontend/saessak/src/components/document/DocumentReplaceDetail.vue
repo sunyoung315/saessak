@@ -18,7 +18,7 @@
 				</button>
 				<button
 					type="button"
-					@click="goBack()"
+					@click="goList()"
 					class="mt-8 mr-8 text-white hover:text-dark-navy border border-dark-navy bg-dark-navy hover:bg-white focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
 				>
 					목록
@@ -174,8 +174,10 @@ async function check() {
 	}
 }
 
-function goBack() {
-	router.go(-1);
+function goList() {
+	router.push({
+		name: 'DocumentList',
+	});
 }
 // Btn
 

@@ -2,7 +2,7 @@
 	<div>
 		<canvas
 			ref="canvas"
-			width="500"
+			width="400"
 			height="200"
 			style="border: 1px solid #000"
 			@mousedown="startDrawing"

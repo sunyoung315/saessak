@@ -13,7 +13,7 @@
 				</button>
 				<button
 					type="button"
-					@click="goBack()"
+					@click="goList()"
 					class="mt-8 mr-8 text-white hover:text-dark-navy border border-dark-navy bg-dark-navy hover:bg-white focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
 				>
 					목록
@@ -217,10 +217,11 @@ const router = useRouter();
 const replacementStore = useReplacementStore();
 
 // 내 아이 id 조회
-let loginStore = JSON.parse(localStorage.getItem('loginStore'));
-const kidId = loginStore.kidList[0].kidId;
-const kidName = loginStore.kidList[0].kidName;
-
+const props = defineProps({
+	loginStore: Object,
+});
+const kidId = props.loginStore.kidList[0].kidId;
+const kidName = props.loginStore.kidList[0].kidName;
 const today = ref(`${new Date().toISOString().split('T')[0]}`);
 
 // 전달할 데이터
@@ -233,9 +234,9 @@ const registReplacement = ref({
 	replacementNumber: '',
 	replacementName: '',
 });
-// console.log(registReplacement);
 
 ///////// date
+const selectAttribute = ref({ highlight: 'navy' });
 watchEffect(() => {
 	registReplacement.value.replacementDate = new Date(
 		registReplacement.value.replacementDate,
@@ -244,9 +245,7 @@ watchEffect(() => {
 		.split('T')[0];
 });
 
-const selectAttribute = ref({ highlight: 'navy' });
-///////////
-
+// 전자서명
 const replacementSignature = ref();
 
 // Btn
@@ -286,16 +285,18 @@ async function regist() {
 	}
 }
 
-function goBack() {
-	router.go(-1);
+function goList() {
+	router.push({
+		name: 'DocumentList',
+	});
 }
 // Btn
 
 // 전자 서명 데이터 가져오기
 const handleSignatureSaved = signature => {
 	replacementSignature.value = signature;
-	console.log('전자서명 가져옴?');
-	console.log(replacementSignature.value);
+	// console.log('전자서명 가져옴?');
+	// console.log(replacementSignature.value);
 };
 
 ///////////////////  유효성 검사
