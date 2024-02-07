@@ -15,6 +15,11 @@ function kakaoLogin(sucess, fail){
     local.get(`${url}/kakao/login`).then(sucess).catch(fail);
 }
 
+async function userDelete(userId, success, fail){
+    await local.delete(`${url}/${userId}`).then(success).catch(fail);
+}
+
 export {
-    kakaoLogin
+    kakaoLogin,
+    userDelete
 }

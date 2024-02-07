@@ -26,8 +26,20 @@ function getMyTeacher(sucess, fail){
     local.get(`${url}/teacher`, config).then(sucess).catch(fail);
 }
 
+// (학부모) 새로운 아이 코드 등록하기
+function kidRegister(param, success, fail){
+    local.post(`${url}/kid/mapping`, JSON.stringify(param), config).then(success).catch(fail);
+}
+
+// (학부모) 전체 아이 리스트 조회하기
+function getkidList(success, fail){
+    local.get(`${url}/parent/kidlist`, config).then(success).catch(fail);
+}
+
 export {
     getClassKids,
     getMyTeacher,
-    teacherLogin
+    teacherLogin,
+    kidRegister,
+    getkidList
 };

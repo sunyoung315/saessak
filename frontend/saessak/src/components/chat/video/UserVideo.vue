@@ -2,7 +2,7 @@
     <div v-if="streamManager">
       <ov-video :stream-manager="streamManager"/>
       <!-- {{ clientData }} : 현재 userName -->
-      <div><p>{{ clientData }}</p></div>
+      <!-- <div><p>{{ clientData }}</p></div> -->
     </div>
   </template>
   

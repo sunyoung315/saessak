@@ -10,15 +10,24 @@
     <ul role="list" class="" v-for="chatItem in chat" :key="chatItem.chatId">
       <li v-if="chatItem.flag === false" class="py-3 mb-2 border rounded-lg sm:py-4">
         <div
-          @click="chatDetail({roomId : chatItem.roomId, roomName : isTeacher == true ? chatItem.kidName : chatItem.teacherName})"
+          @click="
+            chatDetail({
+              roomId: chatItem.roomId,
+              roomName: isTeacher == true ? chatItem.kidName : chatItem.teacherName
+            })
+          "
           class="flex items-center px-3"
-        ><!--학부모->아이ID는 현재의 아이모드를 구분하기 위해 pinia에 저장해서 거기서 가져오기-->
-        <!--선생님 화면에서 본인의 teacherId는 로그인 정보에서 가져오기-->
+        >
+          <!--학부모->아이ID는 현재의 아이모드를 구분하기 위해 pinia에 저장해서 거기서 가져오기-->
+          <!--선생님 화면에서 본인의 teacherId는 로그인 정보에서 가져오기-->
           <div class="flex-shrink-0">
+            <img v-if="isTeacher == true" 
+              class="w-8 h-8 rounded-full" 
+              :src="chatItem.kidProfile" />
             <img
+              v-if="isTeacher == false"
               class="w-8 h-8 rounded-full"
-              src="https://flowbite.com/docs/images/people/profile-picture-4.jpg"
-              alt="Neil image"
+              :src="chatItem.teacherProfile"
             />
           </div>
           <div class="flex-1 min-w-0 ms-4">
@@ -40,7 +49,15 @@
           class="absolute left-0.5 w-2 h-2 transform -translate-x-1/2 -translate-y-1/2 bg-yellow-500 rounded-full top-1"
         ></div>
 
-        <div @click="chatDetail({roomId : chatItem.roomId, roomName : isTeacher == true ? chatItem.kidName : chatItem.teacherName})" class="relative flex items-center px-3">
+        <div
+          @click="
+            chatDetail({
+              roomId: chatItem.roomId,
+              roomName: isTeacher == true ? chatItem.kidName : chatItem.teacherName
+            })
+          "
+          class="relative flex items-center px-3"
+        >
           <div class="relative flex-shrink-0">
             <div
               class="absolute top-0 left-0 h-2 transform -translate-x-1/2 -translate-y-1/2 bg-yellow-500 rounded-full"
@@ -87,7 +104,7 @@ onMounted(() => {
 })
 
 const store = loginStore()
-const {isTeacher} = storeToRefs(store);
+const { isTeacher } = storeToRefs(store)
 const userId = ref(3)
 const getChatList = () => {
   // console.log('채팅 리스트 조회')
@@ -108,8 +125,8 @@ const getChatList = () => {
     // 학부모 조회
     chatListParent(
       ({ data }) => {
-        console.log('학부모 조회')
-        console.log(data.data)
+        // console.log('학부모 조회')
+        // console.log(data.data)
         chat.value = data.data
       },
       (error) => {
