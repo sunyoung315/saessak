@@ -153,6 +153,7 @@ public class NoticeService {
                     .noticeFile(filePath)
                     .noticeTitle(title)
                     .user(user)
+                    .noticeFileName(noticeFile.getOriginalFilename())
                     .noticeContent(content)
                     .noticeTime(LocalDate.now())
                     .build();
