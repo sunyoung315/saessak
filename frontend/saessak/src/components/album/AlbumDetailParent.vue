@@ -1,30 +1,10 @@
 <template>
-	<div>
-		<div class="ml-16">
-			<label class="relative inline-flex items-center me-5 cursor-pointer">
-				<input
-					type="checkbox"
-					class="sr-only peer"
-					checked
-					v-model="showToggle"
-				/>
-				<div
-					class="w-12 h-7 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-nav-green peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-6 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-nav-green"
-				></div>
-				<span
-					class="text-xl m-5 font-extrabold inline-block text-gray-900 dark:text-gray-300"
-				>
-					{{ showToggle ? '전체 보기' : '내 아이 보기' }}</span
-				>
-			</label>
-		</div>
-	</div>
 	<div class="view-frame">
 		<div class="flex justify-between">
 			<!-- DatePicker 시작-->
-			<div class="block mb-5">
+			<div class="block">
 				<!-- <span class="content-title">날짜</span> -->
-				<div class="block mt-1 mb-10">
+				<div class="datepicker">
 					<VDatePicker
 						v-model="date"
 						:select-attribute="selectAttribute"
@@ -59,16 +39,12 @@
 			</div>
 			<!-- DatePicker 끝-->
 			<div>
-				<button @click="download" type="button" class="btn m-0">
-					다운로드
-				</button>
-				<button type="button" @click="goBack()" class="btn m-0 ml-6">
-					목록
-				</button>
+				<button @click="download" type="button" class="btn">다운로드</button>
+				<button type="button" @click="goBack()" class="btn">목록</button>
 			</div>
 		</div>
 		<!--전체 보기 -->
-		<div v-if="showToggle">
+		<div v-if="props.showToggle">
 			<div class="flex items-center" v-if="albumParentList.length > 0">
 				<div class="w-full">
 					<div v-for="album in albumParentList" :key="album.albumId">
@@ -164,17 +140,27 @@
 import { ref, onMounted, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useAlbumStore } from '@/store/album';
-import axios from 'axios';
+import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
+const {
+	VITE_AWS_REGION,
+	VITE_AWS_ACCESS_KEY,
+	VITE_AWS_SECRET_KEY,
+	VITE_AWS_BUCKET_NAME,
+} = import.meta.env;
+
+const props = defineProps({
+	loginStore: Object,
+	showToggle: Boolean,
+});
 
 const route = useRoute();
 const router = useRouter();
 const albumStore = useAlbumStore();
 
 const checked = ref([]);
-const showToggle = ref(true);
-let loginStore = JSON.parse(localStorage.getItem('loginStore'));
+// const showToggle = ref(history.state.isTeacher);
 // 내 아이
-let kidId = loginStore.kidList[0].kidId;
+let kidId = props.loginStore.kidList[0].kidId;
 
 // 내 아이 앨범 조회 // 번호: kidId
 const myKidAlbumDateList = ref([]);
@@ -233,24 +219,43 @@ function goBack() {
 	router.go(-1);
 }
 
+const s3Client = new S3Client({
+	region: VITE_AWS_REGION, // AWS 리전 (예: us-east-1)
+	credentials: {
+		accessKeyId: VITE_AWS_ACCESS_KEY,
+		secretAccessKey: VITE_AWS_SECRET_KEY,
+	},
+});
+
+const bucketName = VITE_AWS_BUCKET_NAME;
+const removeUrl = `https://${bucketName}.s3.${VITE_AWS_REGION}.amazonaws.com/`;
 // File Download 시작
 const download = async () => {
 	for (let i = 0; i < checked.value.length; i++) {
-		const fileUrl = checked.value[i]; // 파일 경로를 체크된 이미지의 파일 경로로 변경
-		const res = await axios({
-			method: 'get',
-			url: fileUrl,
-			responseType: 'blob',
-		});
-		console.log(res.data);
-		const newUrl = window.URL.createObjectURL(res.data);
-		const a = document.createElement('a');
-		a.href = newUrl;
-		// 아래 a.download = 저장되는 이미지 파일 이름
-		a.download = `image${i}.png`; // 다운로드 되는 파일 이름을 image0, image1, ... 로 설정
-		a.click();
-		a.remove();
-		window.URL.revokeObjectURL(newUrl);
+		const fileKey = checked.value[i].replace(removeUrl, '');
+		// console.log(fileKey)
+		try {
+			// S3 객체 다운로드 명령 생성
+			const getObjectCommand = new GetObjectCommand({
+				Bucket: bucketName,
+				Key: fileKey,
+			});
+
+			// S3 객체 다운로드
+			const { Body, ContentType } = await s3Client.send(getObjectCommand);
+			const byteArray = await Body.transformToByteArray();
+			const type = ContentType.split('/')[1];
+			const blob = new Blob([byteArray], { type: ContentType });
+
+			const downloadLink = document.createElement('a');
+			downloadLink.href = URL.createObjectURL(blob);
+			downloadLink.download = `image${i}.` + type;
+			downloadLink.click();
+			downloadLink.remove();
+			URL.revokeObjectURL(downloadLink.href);
+		} catch (error) {
+			// console.log(error)
+		}
 	}
 }; // File Download 끝
 </script>

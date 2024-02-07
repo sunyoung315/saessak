@@ -1,7 +1,5 @@
 <template>
-  <div>
-    <TodoView></TodoView>
-  </div>
+	<MainView />
 </template>
 
 <script setup>
@@ -17,10 +15,17 @@ const route = useRoute()
 const router = useRouter()
 const store = loginStore()
 
-const { isLogin, isTeacher, kidList, userId, isAlarm } = storeToRefs(store)
-const { setUserid, setlogin, setTeacherFlag, setKidlist, setTeachername, setCurkid, setAlarmFlag } =
-  store
-const code = ref(null)
+const { isLogin, isTeacher, kidList, userId, isAlarm } = storeToRefs(store);
+const {
+	setUserid,
+	setlogin,
+	setTeacherFlag,
+	setKidlist,
+	setTeachername,
+	setCurkid,
+	setAlarmFlag,
+} = store;
+const code = ref(null);
 
 const msg = Swal.mixin({
   toast: true,

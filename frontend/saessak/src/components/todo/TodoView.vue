@@ -1,29 +1,32 @@
 <template>
-	<div>todoView</div>
-	<TodoCreate />
-	<div v-for="todo in todoList" :key="todo.todoId">
-		<TodoDetail v-bind:todo="todo" />
+	<div class="h-100 w-full flex items-center justify-center">
+		<div class="rounded w-full">
+			<div class="mb-4">
+				<TodoCreate @create-todo="updateTodoList"></TodoCreate>
+			</div>
+			<div class="h-52 bg-gray-100 p-2 rounded overflow-y-scroll">
+				<div v-for="todo in todoList" :key="todo.todoId">
+					<TodoDetail v-bind:todo="todo" @updated-todo="updateTodoList" />
+				</div>
+			</div>
+		</div>
 	</div>
 </template>
 
 <script setup>
-import { BaseTransitionPropsValidators, onMounted, ref, watch } from 'vue';
+import { onMounted, ref } from 'vue';
 import { getTodoList } from '@/api/todo';
 import TodoDetail from '@/components/todo/TodoDetail.vue';
 import TodoCreate from '@/components/todo/TodoCreate.vue';
 
 onMounted(() => {
-	getTodoList(
-		response => {
-			// console.log(response)
-			todoList.value = response.data.data;
-			// console.log("success")
-		},
-		error => {
-			console.log('fail');
-		},
-	);
+	updateTodoList();
 });
+const updateTodoList = () => {
+	getTodoList(response => {
+		todoList.value = response.data.data;
+	});
+};
 
 const todoList = ref([]);
 </script>

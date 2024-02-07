@@ -144,11 +144,11 @@ import OpenAI from 'openai';
 const isOpen = ref(false);
 
 const openModal = () => {
-  isOpen.value = true
-}
+	isOpen.value = true;
+};
 const closeModal = () => {
-  isOpen.value = false
-}
+	isOpen.value = false;
+};
 
 defineExpose({ openModal });
 ///////////////////////////////////
@@ -164,15 +164,15 @@ const range = ref({
 
 const isCreating = ref(false);
 
-const store = useBoardStore()
+const store = useBoardStore();
 
 // 선택 기간의 알림장 1줄 string으로 변환된 정보
-let content = ref('')
+let content = ref('');
 // OpenAI로 요약한 정보
-const summary = ref('')
+const summary = ref('');
 
 // OpenAI 요약
-const API_KEY = import.meta.env.VITE_OPENAI_API_KEY
+const API_KEY = import.meta.env.VITE_OPENAI_API_KEY;
 
 const getGPTResponse = async () => {
 	try {
@@ -193,10 +193,9 @@ const getGPTResponse = async () => {
 			],
 			model: 'gpt-4-0125-preview',
 		});
-		// console.log('요약 결과 : ', response.choices[0].message.content);
 		summary.value = response.choices[0].message.content;
 	} catch (error) {
-		// console.log('에러 발생 : ', error);
+		summary.value = '오류가 발생했습니다!';
 	}
 };
 
@@ -209,11 +208,14 @@ const getSummaryBoard = async kidId => {
 
 	await store.getSummaryBoard(kidId, startDate, endDate);
 
-  // boardContent 하나의 String으로 연결
-  for (let i = 0; i < store.boardList.length; i++) {
-    content.value +=
-      store.boardList[i].boardDate + ' 의 알림장 :  \n' + store.boardList[i].boardContent + '\n'
-  }
+	// boardContent 하나의 String으로 연결
+	for (let i = 0; i < store.boardList.length; i++) {
+		content.value +=
+			store.boardList[i].boardDate +
+			' 의 알림장 :  \n' +
+			store.boardList[i].boardContent +
+			'\n';
+	}
 
 	if (store.boardList.length) {
 		getGPTResponse();
@@ -225,18 +227,18 @@ const getSummaryBoard = async kidId => {
 
 <style scoped>
 .flowbit-modal__container {
-  width: 60rem;
-  height: 40rem;
-  max-width: none;
+	width: 60rem;
+	height: 40rem;
+	max-width: none;
 }
 .report-period {
 	@apply flex justify-start mx-16 mt-3;
 }
 .loader {
-  position: relative;
-  width: 108px;
-  display: flex;
-  justify-content: space-between;
+	position: relative;
+	width: 108px;
+	display: flex;
+	justify-content: space-between;
 }
 .loader::after,
 .loader::before {
@@ -254,53 +256,53 @@ const getSummaryBoard = async kidId => {
 		blink 7s infinite;
 }
 @keyframes eyeMove {
-  0%,
-  10% {
-    background-position: 0px 0px;
-  }
-  13%,
-  40% {
-    background-position: -15px 0px;
-  }
-  43%,
-  70% {
-    background-position: 15px 0px;
-  }
-  73%,
-  90% {
-    background-position: 0px 15px;
-  }
-  93%,
-  100% {
-    background-position: 0px 0px;
-  }
+	0%,
+	10% {
+		background-position: 0px 0px;
+	}
+	13%,
+	40% {
+		background-position: -15px 0px;
+	}
+	43%,
+	70% {
+		background-position: 15px 0px;
+	}
+	73%,
+	90% {
+		background-position: 0px 15px;
+	}
+	93%,
+	100% {
+		background-position: 0px 0px;
+	}
 }
 @keyframes blink {
-  0%,
-  10%,
-  12%,
-  20%,
-  22%,
-  40%,
-  42%,
-  60%,
-  62%,
-  70%,
-  72%,
-  90%,
-  92%,
-  98%,
-  100% {
-    height: 48px;
-  }
-  11%,
-  21%,
-  41%,
-  61%,
-  71%,
-  91%,
-  99% {
-    height: 18px;
-  }
+	0%,
+	10%,
+	12%,
+	20%,
+	22%,
+	40%,
+	42%,
+	60%,
+	62%,
+	70%,
+	72%,
+	90%,
+	92%,
+	98%,
+	100% {
+		height: 48px;
+	}
+	11%,
+	21%,
+	41%,
+	61%,
+	71%,
+	91%,
+	99% {
+		height: 18px;
+	}
 }
 </style>

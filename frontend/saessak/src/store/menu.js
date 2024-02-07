@@ -100,6 +100,31 @@ export const useMenuStore = defineStore('menu', () => {
 		}).then(resp => {
 			if (resp.data.data.length) {
 				weeklyMenu.value = resp.data.data;
+				for (let i = 0; i < weeklyMenu.value.length; i++) {
+					if (weeklyMenu.value[i].menuDate === todayDate) {
+						if (weeklyMenu.value[i].menuType === '점심') {
+							let flatArr = []
+								.concat(
+									...weeklyMenu.value[i].foodList.map(food =>
+										food.foodAllergy.split('/'),
+									),
+								)
+								.filter(item => item !== '')
+								.sort((a, b) => a - b);
+							todayLunchAllergy.value = [...new Set(flatArr)];
+						} else {
+							let flatArr = []
+								.concat(
+									...weeklyMenu.value[i].foodList.map(food =>
+										food.foodAllergy.split('/'),
+									),
+								)
+								.filter(item => item !== '')
+								.sort((a, b) => a - b);
+							todaySnackAllergy.value = [...new Set(flatArr)];
+						}
+					}
+				}
 			} else {
 				weeklyMenu.value = null;
 			}
@@ -107,6 +132,16 @@ export const useMenuStore = defineStore('menu', () => {
 	};
 
 	// 학부모ver 식단표 호출
+	const todayLunchAllergy = ref([]);
+	const todaySnackAllergy = ref([]);
+
+	const today = new Date();
+	const year = today.getFullYear();
+	const month = ('0' + (today.getMonth() + 1)).slice(-2);
+	const day = ('0' + today.getDate()).slice(-2);
+	const todayDate = `${year}-${month}-${day}`;
+	// const todayDate = '2024-02-01';
+
 	const getParentWeeklyMenu = async (weeklyDate, kidId) => {
 		axios({
 			url: `${REST_MENU_API}/parent/list/${kidId}`,
@@ -119,6 +154,31 @@ export const useMenuStore = defineStore('menu', () => {
 		}).then(resp => {
 			if (resp.data.data.length) {
 				weeklyMenu.value = resp.data.data;
+				for (let i = 0; i < weeklyMenu.value.length; i++) {
+					if (weeklyMenu.value[i].menuDate === todayDate) {
+						if (weeklyMenu.value[i].menuType === '점심') {
+							let flatArr = []
+								.concat(
+									...weeklyMenu.value[i].foodList.map(food =>
+										food.foodAllergy.split('/'),
+									),
+								)
+								.filter(item => item !== '')
+								.sort((a, b) => a - b);
+							todayLunchAllergy.value = [...new Set(flatArr)];
+						} else {
+							let flatArr = []
+								.concat(
+									...weeklyMenu.value[i].foodList.map(food =>
+										food.foodAllergy.split('/'),
+									),
+								)
+								.filter(item => item !== '')
+								.sort((a, b) => a - b);
+							todaySnackAllergy.value = [...new Set(flatArr)];
+						}
+					}
+				}
 			} else {
 				weeklyMenu.value = null;
 			}
@@ -130,5 +190,7 @@ export const useMenuStore = defineStore('menu', () => {
 		weeklyMenu,
 		getTeacherWeeklyMenu,
 		getParentWeeklyMenu,
+		todayLunchAllergy,
+		todaySnackAllergy,
 	};
 });

@@ -60,10 +60,7 @@
 			<!-- {{ registAllergy }} -->
 			<div class="flex justify-end">
 				<div class="flex-col text-gray-700 text-xl font-bold m-8">
-					<div class="text-end">
-						<p class="mb-8">반 : {{ registAllergy[0].classroomName }}</p>
-						<p class="mb-8">이름 : {{ registAllergy[0].kidName }}</p>
-					</div>
+					<p class="mb-8">이름 : {{ registAllergy.kidName }}</p>
 					<div>
 						<h2>전자 서명: {{ registAllergy.kidAllergySignature }}</h2>
 						<document-signature @signature-saved="handleSignatureSaved" />
@@ -85,19 +82,20 @@ const router = useRouter();
 const allergyStore = useAllergyStore();
 
 // 내 아이 id 조회
-let loginStore = JSON.parse(localStorage.getItem('loginStore'));
-const kidId = loginStore.kidList[0].kidId;
-const kidName = loginStore.kidList[0].kidName;
+// let loginStore = JSON.parse(localStorage.getItem('loginStore'));
+const props = defineProps({
+	loginStore: Object,
+});
+
+const kidId = props.loginStore.kidList[0].kidId;
+const kidName = props.loginStore.kidList[0].kidName;
 
 // 전달할 데이터
-const registAllergy = ref([
-	{
-		kidId: kidId,
-		kidName: kidName,
-		classroomName: '햇님반',
-		kidAllergy: '',
-	},
-]);
+const registAllergy = ref({
+	kidId: kidId,
+	kidName: kidName,
+	kidAllergy: '',
+});
 
 // 알러지 목록
 const allergyList = ref([
@@ -182,9 +180,12 @@ const allergyList = ref([
 const kidAllergySignature = ref();
 // 버튼
 async function regist() {
-	console.log(registAllergy.value);
+	if (!validateSignature()) {
+		return;
+	}
+	// console.log(registAllergy);
 	try {
-		await allergyStore.PostRegistAllergy(registAllergy.value.value);
+		await allergyStore.PostRegistAllergy(registAllergy.value);
 		// 전자서명 입력
 		const formData = new FormData();
 		formData.append('kidId', kidId);
@@ -196,10 +197,10 @@ async function regist() {
 				{ type: 'image/png' },
 			),
 		);
-		// await allergyStore.PostRegistFileAllergy(formData);
-		// router.push({
-		// 	name: 'DocumentList',
-		// });
+		await allergyStore.PostRegistFileAllergy(formData);
+		router.push({
+			name: 'DocumentList',
+		});
 	} catch (error) {
 		console.error('실패: ', error);
 	}
@@ -235,8 +236,19 @@ function updateAllergy(e, allergyNo) {
 			selectedAllergies.value.splice(index, 1);
 		}
 	}
-	registAllergy.value[0].kidAllergy = selectedAllergies.value.join('/');
+	registAllergy.value.kidAllergy = selectedAllergies.value.join('/');
 }
+
+// 유효성 검사
+const validateSignature = () => {
+	if (!(kidAllergySignature.value instanceof Blob)) {
+		alert(
+			'전자 서명을 완료해주시기 바랍니다. 서명 작성 후 저장 버튼을 누르셔야 등록이 완료됩니다.',
+		);
+		return false;
+	}
+	return true;
+};
 </script>
 
 <style scoped></style>

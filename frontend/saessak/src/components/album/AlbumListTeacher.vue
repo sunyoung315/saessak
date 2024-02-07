@@ -1,30 +1,7 @@
 <template>
 	<div class="flex flex-col">
-		<div class="flex justify-between m-2">
-			<label class="relative inline-flex items-center me-5 cursor-pointer">
-				<input
-					type="checkbox"
-					class="sr-only peer"
-					checked
-					v-model="showToggle"
-				/>
-				<div
-					class="w-12 h-7 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-nav-green peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-6 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-nav-green"
-				></div>
-				<span
-					class="text-xl m-5 font-extrabold inline-block text-gray-900 dark:text-gray-300"
-				>
-					{{ showToggle ? '아이별 보기' : '전체 보기' }}</span
-				>
-			</label>
-			<div>
-				<button type="button" @click="registAlbum()" class="btn m-0">
-					추가
-				</button>
-			</div>
-		</div>
 		<!-- 아이 이름별 보기 -->
-		<div v-if="showToggle">
+		<div v-if="props.showToggle">
 			<div v-for="kid in recentAlbumList" :key="kid.kidId">
 				<div
 					v-if="
@@ -154,7 +131,10 @@ import { useAlbumStore } from '@/store/album';
 
 const router = useRouter();
 const albumStore = useAlbumStore();
-const showToggle = ref(true);
+
+const props = defineProps({
+	showToggle: Boolean,
+});
 
 // 반 아이들 최신 앨범 리스트 조회 (Carousel)
 const recentAlbumList = ref([]);
@@ -194,11 +174,6 @@ function goDetail(kidId) {
 	});
 }
 
-function registAlbum() {
-	router.push({
-		name: 'AlbumCreate',
-	});
-}
 // Btn 끝
 
 // datePicker
@@ -227,7 +202,7 @@ function isSameDate(albumDate, date) {
 
 <style scoped>
 .album {
-	width: 300px;
-	height: 250px;
+	width: 250px;
+	height: 200px;
 }
 </style>

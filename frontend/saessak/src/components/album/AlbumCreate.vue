@@ -3,62 +3,52 @@
 		class="container mt-8 ml-12 mr-16 w-11/12 border border-gray-200 shadow rounded-lg"
 	>
 		<div class="flex justify-end items-center">
-			<button
-				type="button"
-				@click="registAlbum()"
-				class="text-white bg-gradient-to-r m-4 from-nav-green via-nav-green to-nav-green hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
-			>
-				등록
-			</button>
-			<button
-				type="button"
-				@click="goBack()"
-				class="text-white bg-gradient-to-r m-4 mr-8 from-nav-green via-nav-green to-nav-green hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
-			>
-				목록
-			</button>
+			<button type="button" @click="registAlbum()" class="btn">등록</button>
+			<button type="button" @click="goBack()" class="btn">목록</button>
+		</div>
+
+		<span class="content-title">날짜</span>
+		<div class="ml-32 mb-4">
+			<!-- DatePicker 시작-->
+			<VDatePicker v-model="date" :select-attribute="selectAttribute">
+				<template #default="{ inputValue, inputEvents }">
+					<div class="relative max-w-sm">
+						<div
+							class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none"
+						>
+							<svg
+								class="w-4 h-4 text-gray-900"
+								aria-hidden="true"
+								xmlns="http://www.w3.org/2000/svg"
+								fill="currentColor"
+								viewBox="0 0 20 20"
+							>
+								<path
+									d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"
+								/>
+							</svg>
+						</div>
+						<input
+							:value="inputValue"
+							v-on="inputEvents"
+							class="datepicker-input text"
+						/>
+					</div>
+				</template>
+			</VDatePicker>
+			<!-- DatePicker 끝-->
 		</div>
 		<div>
 			<label class="block mt-2 mb-5">
 				<span class="content-title">제목</span>
 				<input
 					type="text"
-					class="block ml-32 mt-2 shadow appearance-none border rounded w-5/12 py-2 px-3 text-gray-700 leading-tight"
+					class="block ml-32 mt-2 h-12 px-4 p-2.5 border border-gray-300 text-gray-900 text-base font-bold rounded-lg"
 					rows="6"
 					placeholder="제목을 입력해주세요."
 					v-model="title"
 				/>
 			</label>
-		</div>
-		<span class="content-title">날짜</span>
-		<div
-			class="block ml-32 mb-4 mt-1 bg-white w-3/12 border border-neutral-300 rounded-lg shadow"
-		>
-			<!-- DatePicker 시작-->
-			<div class="flex jucenterstify- items-center">
-				<VDatePicker v-model="date">
-					<template #default="{ inputValue, togglePopover }">
-						<input class="px-3 py-2" :value="inputValue" />
-						<button class="px-3 py-2" @click="togglePopover">
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								width="24"
-								height="24"
-								viewBox="0 0 24 24"
-								fill="none"
-							>
-								<path
-									fill-rule="evenodd"
-									clip-rule="evenodd"
-									d="M16 2C16.5523 2 17 2.44772 17 3V4H20C21.1046 4 22 4.89543 22 6V20C22 21.1046 21.1046 22 20 22H4C2.89543 22 2 21.1046 2 20V6C2 4.89543 2.89543 4 4 4H7V3C7 2.44772 7.44772 2 8 2C8.55228 2 9 2.44772 9 3V4H15V3C15 2.44772 15.4477 2 16 2ZM20 11H4V20H20V11ZM7 6H4V9H20V6H17V7C17 7.55228 16.5523 8 16 8C15.4477 8 15 7.55228 15 7V6H9V7C9 7.55228 8.55228 8 8 8C7.44772 8 7 7.55228 7 7V6Z"
-									fill="#000000"
-								/>
-							</svg>
-						</button>
-					</template>
-				</VDatePicker>
-			</div>
-			<!-- DatePicker 끝-->
 		</div>
 
 		<span class="content-title">첨부파일 (사진, 동영상: {{ count }}EA)</span>
@@ -129,6 +119,7 @@ import { ref, onMounted } from 'vue';
 const title = ref('');
 const date = ref(new Date());
 const formattedDate = formatDate(date.value);
+const selectAttribute = ref({ highlight: 'green' });
 
 // 이미지 업로드
 let count = ref(0);
@@ -171,7 +162,7 @@ function registAlbum() {
 
 	// post 경로 변경 필요함.
 	axios
-		.post(`http://i10a706.p.ssafy.io:5000/ai/album`, form, {
+		.post(`https://i10a706.p.ssafy.io/ai/album`, form, {
 			headers: {
 				'Content-Type': 'multipart/form-data',
 				Authorization: 'Bearer ' + token,
