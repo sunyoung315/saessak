@@ -29,7 +29,7 @@ public class NoticeController {
     // PageNation 적용하기 -> 20개 정도?
     // 고정한 것을 상단에
     @Operation(summary = "선생님 공지사항 전체 조회")
-    @GetMapping(value = "/all/teacher/{kidId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/all/teacher", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResultResponse> getAllNotice(@RequestParam("pageNo") int pageNo) {
         List<NoticeResponseDto> list = noticeService.getAllTeacherNotice(pageNo);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, list));

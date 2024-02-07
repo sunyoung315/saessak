@@ -41,4 +41,7 @@ public class Notice {
     @Column(name = "notice_file")
     private String noticeFile;
 
+    @Column(name = "notice_file_name")
+    private String noticeFileName;
+
 }
