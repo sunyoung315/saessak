@@ -19,6 +19,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -122,9 +123,16 @@ public class OauthController {
     }
 
     @Operation(summary = "로그아웃")
-    @PostMapping("/logout")
-    public ResponseEntity<ResultResponse> logout(final Principal principal) {
-        refreshTokenService.deleteRefreshToken(Long.valueOf(principal.getName()));
+    @PostMapping("/logout/{userId}")
+    public ResponseEntity<ResultResponse> logout(@PathVariable("userId") Long userId) {
+        refreshTokenService.deleteRefreshToken(userId);
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS));
+    }
+
+    @Operation(summary = "유저 삭제")
+    @DeleteMapping(value = "/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResultResponse> deleteUser(@PathVariable("userId") Long userId) {
+        kakaoUserService.deleteUser(userId);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS));
     }
 

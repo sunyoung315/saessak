@@ -1,5 +1,7 @@
 package com.ssafy.saessak.oauth.service;
 
+import com.ssafy.saessak.exception.code.ExceptionCode;
+import com.ssafy.saessak.exception.model.UserException;
 import com.ssafy.saessak.oauth.authentication.UserAuthentication;
 import com.ssafy.saessak.oauth.dto.AccessTokenGetSuccess;
 import com.ssafy.saessak.oauth.dto.LoginSuccessResponseDto;
@@ -9,6 +11,7 @@ import com.ssafy.saessak.jwt.JwtTokenProvider;
 import com.ssafy.saessak.jwt.refreshToken.service.RefreshTokenService;
 import com.ssafy.saessak.user.domain.User;
 import com.ssafy.saessak.user.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -65,6 +68,13 @@ public class KakaoUserService {
         return new AccessTokenGetSuccess(
                 jwtTokenProvider.issueAccessToken(userAuthentication)
         );
+    }
+
+    @Transactional
+    public void deleteUser(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserException(ExceptionCode.USER_NOT_FOUND));
+        userRepository.delete(user);
     }
 
 }
