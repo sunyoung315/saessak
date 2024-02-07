@@ -1,5 +1,7 @@
 package com.ssafy.saessak.oauth.controller;
 
+import com.ssafy.saessak.exception.code.ExceptionCode;
+import com.ssafy.saessak.exception.model.UserException;
 import com.ssafy.saessak.oauth.dto.AccessTokenGetSuccess;
 import com.ssafy.saessak.oauth.dto.LoginSuccessResponseDto;
 import com.ssafy.saessak.oauth.dto.RegistRequestDto;
@@ -95,23 +97,21 @@ public class OauthController {
     public ResponseEntity<ResultResponse> join(@RequestBody RegistRequestDto registRequestDto) {
         String registCode = new String(Base64.getDecoder().decode(registRequestDto.getRegistCode()), StandardCharsets.UTF_8);
 
-        if(registCode.substring(registCode.length()-3, registCode.length()).equals("kid")) {
+        if (registCode.substring(registCode.length() - 3, registCode.length()).equals("kid")) {
             Long parentId = parentService.registParent(registRequestDto.getUserId());
-            Long mapping_kidId = Long.parseLong(registCode.substring(0, registCode.length()-3));
+            Long mapping_kidId = Long.parseLong(registCode.substring(0, registCode.length() - 3));
             parentService.mapping(parentId, mapping_kidId);
             LoginSuccessResponseDto loginSuccessResponseDto = kakaoUserService.getTokenByUserId(parentId);
             return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, parentService.login(loginSuccessResponseDto)));
         }
-
-        else if(registCode.substring(registCode.length()-9, registCode.length()).equals("classroom")) {
+        if (registCode.substring(registCode.length() - 9, registCode.length()).equals("classroom")) {
             Long teacherId = teacherService.registTeacher(registRequestDto.getUserId());
-            Long mapping_classroomId = Long.parseLong(registCode.substring(0, registCode.length()-9));
+            Long mapping_classroomId = Long.parseLong(registCode.substring(0, registCode.length() - 9));
             teacherService.mapping(teacherId, mapping_classroomId);
             LoginSuccessResponseDto loginSuccessResponseDto = kakaoUserService.getTokenByUserId(teacherId);
             return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, teacherService.login(loginSuccessResponseDto)));
         }
-
-        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS));
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.USER_CODE_MISMATCH));
     }
 
     @Operation(summary = "refreshToken으로 accessToken 재발급")
