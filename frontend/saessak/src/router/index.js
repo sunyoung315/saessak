@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
 import HomeView from '@/views/HomeView.vue';
-import NotFoundView from '@/views/NotFoundView.vue';
 import LoginView from '@/views/LoginView.vue';
 import UserView from '@/components/user/UserView.vue';
 import JoinView from '@/views/JoinView.vue';
@@ -40,7 +39,6 @@ const routes = [
 		name: 'App',
 		component: AppView,
 		children: [
-			{ path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFoundView },
 			{
 				path: '/',
 				name: 'Home',
