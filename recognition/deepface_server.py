@@ -174,19 +174,22 @@ def verifyAlbum():
                         
                         for image_embed in image_embeddings : 
                             # 유사한 사진이 있는지?
-                            # distance_cosine = dst.findCosineDistance(kid_embed, image_embed)
-                            # distance_euclidean = dst.findEuclideanDistance(kid_embed, image_embed)
+                            distance_cosine = dst.findCosineDistance(kid_embed, image_embed)
+                            distance_euclidean = dst.findEuclideanDistance(kid_embed, image_embed)
                             distance_euclidean_l2 = dst.findEuclideanDistance(
                                 dst.l2_normalize(kid_embed), dst.l2_normalize(image_embed)
                             )
 
-                            # threshold_cosine = dst.findThreshold(model_name="VGG-Face",distance_metric="cosine")
-                            # threshold_euclidean = dst.findThreshold(model_name="VGG-Face",distance_metric="euclidean")
+                            threshold_cosine = dst.findThreshold(model_name="VGG-Face",distance_metric="cosine")
+                            threshold_euclidean = dst.findThreshold(model_name="VGG-Face",distance_metric="euclidean")
                             threshold_euclidean_l2 = dst.findThreshold(model_name="VGG-Face",distance_metric="euclidean_l2")
 
-                            if distance_euclidean_l2 <= threshold_euclidean_l2 :
-                                kid_album[kid_id].append(add_object.copy())
-                                break
+                            if distance_euclidean_l2 > threshold_euclidean_l2 : continue
+                            if distance_cosine > threshold_cosine : continue
+                            if distance_euclidean > threshold_euclidean : continue
+                                
+                            kid_album[kid_id].append(add_object.copy())
+                            break
                         
 
             ## 분류 완료 
