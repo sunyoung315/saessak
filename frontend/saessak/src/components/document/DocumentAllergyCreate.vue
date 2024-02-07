@@ -182,9 +182,9 @@ const allergyList = ref([
 const kidAllergySignature = ref();
 // 버튼
 async function regist() {
-	console.log(registAllergy);
+	console.log(registAllergy.value);
 	try {
-		await allergyStore.PostRegistAllergy(registAllergy.value);
+		await allergyStore.PostRegistAllergy(registAllergy.value.value);
 		// 전자서명 입력
 		const formData = new FormData();
 		formData.append('kidId', kidId);
@@ -196,7 +196,7 @@ async function regist() {
 				{ type: 'image/png' },
 			),
 		);
-		await allergyStore.PostRegistFileAllergy(formData);
+		// await allergyStore.PostRegistFileAllergy(formData);
 		// router.push({
 		// 	name: 'DocumentList',
 		// });
