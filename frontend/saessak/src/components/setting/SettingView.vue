@@ -15,6 +15,7 @@
 						<th scope="col" class="col-birthday">생년월일</th>
 						<th scope="col" class="col-gender">성별</th>
 						<th scope="col" class="col-photo">증명사진</th>
+						<th scope="col" class="col-code">등록코드</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -58,7 +59,7 @@
 								<label
 									class="flex flex-col justify-center h-14 w-3/5 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
 									<div class="flex flex-col items-center justify-center" @dragover.prevent @drop="onDrop">
-										<input ref="image" id="input" type="file" name="image" accept="image/*"
+										<input ref="imagefile" id="input" type="file" name="image" accept="image/*"
 											class="hidden" @change="uploadImage($event)" />
 
 										<p class="mb-2 text-sm text-gray-500 dark:text-gray-400">
@@ -78,14 +79,13 @@
 
 					<tr class="one-row h-2">
 						<button v-if="!newKid" @click="addOneRow" class="text-center text-dark-navy text-lg font-bold m-7">
-							+ 행 추가
+							아이등록
 						</button>
 					</tr>
 				</tbody>
 			</table>
 		</div>
-		<div>데이터 테스트</div>
-		<div>{{ transformed }}</div>
+
 	</div>
 </template>
 
@@ -105,15 +105,26 @@ onMounted(() => {
 const regsistKidinClass = async (event) => {
 	const formData = new FormData()
 	formData.append('MultipartFile', image.value);
-	formData.append()
+	formData.append('gender', transformed.value.kidGender)
+	formData.append('kidName', transformed.value.kidName)
+	formData.append('kidBirthday', transformed.value.kidBirth)
 
-	axios.post("https://i10a706.p.ssafy.io/user/kid/regist", formData, {
+	axios.post("https://i10a706.p.ssafy.io/api/user/kid/regist", formData, {
 		headers: {
 			'Content-Type': 'multipart/form-data',
-			Authorization: 'Bearer ' + sessionStorage.getItem("accessToken"),
+			Authorization: 'Bearer ' + localStorage.getItem("accessToken"),
 		}
-	}).then((response) =>
-		console.log(response)
+	}).then((response) => {
+		getClassKids(({ data }) => {
+			existKidList.value = data.data
+		}, (error) => {
+			console.log(error)
+		})
+		image.value = ""
+		newKid.value = ""
+	}
+		// console.log(response)
+
 	).catch((error) => {
 		console.log(error)
 	})
@@ -189,7 +200,7 @@ const uploadImage = (event) => {
 }
 
 .col-photo {
-	@apply p-3 w-[60%];
+	@apply p-3 w-[30%];
 }
 
 .col-btn {
