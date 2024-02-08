@@ -24,7 +24,7 @@
 						<td scope="col" class="col">{{ kid.kidGender == 'M' ? '남' : '여' }}</td>
 						<td scope="col" class="col-kidprofile"><img :src="kid.kidProfile" class="h-16 w-16" alt=""></td>
 					</tr>
-					<tr v-if="Object.keys(newKid).length !== 0">
+					<tr v-if="newKid">
 						<td class="col">
 							<input type="text" class="input w-18" v-model="newKid.kidName" required />
 						</td>
@@ -59,7 +59,7 @@
 									class="flex flex-col justify-center h-14 w-3/5 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
 									<div class="flex flex-col items-center justify-center" @dragover.prevent @drop="onDrop">
 										<input ref="image" id="input" type="file" name="image" accept="image/*"
-											class="hidden" @change="uploadImage($event, newKid.kidIndex)" />
+											class="hidden" @change="uploadImage($event)" />
 
 										<p class="mb-2 text-sm text-gray-500 dark:text-gray-400">
 											<span class="font-semibold">Click to upload</span> or drag and drop
@@ -70,15 +70,14 @@
 									</div>
 								</label>
 								<div>{{ newKid.kidProfile }}</div>
-								<div><button class="btn my-2 mx-2" @click="regsitKid($event, newKid.Kidindex)">등록</button>
+								<div><button class="btn my-2 mx-2" @click="regsistKidinClass($event)">등록</button>
 								</div>
 							</div>
 						</td>
 					</tr>
 
 					<tr class="one-row h-2">
-						<button v-if="Object.keys(newKid).length == 0" @click="addOneRow"
-							class="text-center text-dark-navy text-lg font-bold m-7">
+						<button v-if="!newKid" @click="addOneRow" class="text-center text-dark-navy text-lg font-bold m-7">
 							+ 행 추가
 						</button>
 					</tr>
@@ -86,7 +85,7 @@
 			</table>
 		</div>
 		<div>데이터 테스트</div>
-		<div>{{ transformedList }}</div>
+		<div>{{ transformed }}</div>
 	</div>
 </template>
 
@@ -103,15 +102,22 @@ onMounted(() => {
 	)
 })
 
-const regsitKid = (event) => {
+const regsistKidinClass = async (event) => {
 	const formData = new FormData()
+	formData.append('MultipartFile', image.value);
+	formData.append()
 
-	console.log(obj)
-	formData.append('file', image.value);
-	formData.append('gender', obj.kidGender);
-	formData.append('kidName', obj.kidName);
-	formData.append('kidBirthday', obj.kidBirth);
-	console.log(formData)
+	axios.post("https://i10a706.p.ssafy.io/user/kid/regist", formData, {
+		headers: {
+			'Content-Type': 'multipart/form-data',
+			Authorization: 'Bearer ' + sessionStorage.getItem("accessToken"),
+		}
+	}).then((response) =>
+		console.log(response)
+	).catch((error) => {
+		console.log(error)
+	})
+	// console.log(formData)
 }
 
 const image = ref(null)
@@ -128,7 +134,7 @@ const addOneRow = () => {
 
 }
 
-const transformedList = computed(() => {
+const transformed = computed(() => {
 	return {
 		...newKid.value,
 		kidBirth: formatDate(newKid.value.kidBirth)
@@ -137,7 +143,7 @@ const transformedList = computed(() => {
 })
 
 const existKidList = ref([])
-const newKid = ref({})
+const newKid = ref("")
 
 function formatDate(date) {
 	if (!date) return ""
@@ -147,7 +153,7 @@ function formatDate(date) {
 	return `${year}-${month}-${day}`;
 }
 
-const uploadImage = (event, index) => {
+const uploadImage = (event) => {
 
 	const file = event.target.files[0]
 	if (!file) return
