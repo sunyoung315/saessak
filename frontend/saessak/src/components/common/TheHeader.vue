@@ -59,18 +59,14 @@
       <!-- Dropdown menu -->
       <div
         id="dropdownNotification"
-        class="z-20 hidden w-full max-w-sm bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-800 dark:divide-gray-700"
+        class="z-20 hidden w-72 max-w-sm bg-white divide-y divide-gray-100 rounded-lg shadow-md border border-gray-300"
         aria-labelledby="dropdownNotificationButton"
       >
         <div
           @click="removeAllAlarm()"
-          class="block px-4 py-2 font-medium text-center text-gray-700 rounded-t-lg bg-gray-50 dark:bg-gray-800 dark:text-white"
+          class="block px-4 py-2 text-gray-700 rounded-t-lg bg-gray-50 text-right font-extrabold border-b border-gray-300"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" width="10" height="10">
-            <path
-              d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"
-            />
-          </svg>
+          전체 삭제
         </div>
         <div v-if="isTeacher == false">
           <div
