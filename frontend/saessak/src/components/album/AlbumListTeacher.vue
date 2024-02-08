@@ -13,6 +13,7 @@
 					<Carousel
 						:items-to-show="5"
 						:wrap-around="true"
+						snapAlign="start"
 						v-if="kid.albumResponseDto"
 					>
 						<Slide
@@ -94,7 +95,7 @@
 						<div
 							v-for="file in album.fileResponseDtoList"
 							:key="file.fileId"
-							class="w-1/4 flex-shrink-0 flex flex-wrap"
+							class="w-1/4 flex-shrink-0 flex flex-wrap p-2"
 						>
 							<input
 								type="checkbox"
@@ -104,7 +105,7 @@
 							/>
 							<label
 								:for="file.fileId"
-								class="inline-flex items-center justify-between w-full p-4 text-gray-500 bg-white border-4 border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 hover:text-gray-600 dark:peer-checked:text-gray-300 peer-checked:text-gray-600 hover:bg-gray-50 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700"
+								class="inline-flex items-center justify-between w-full p-4 text-gray-500 bg-white border-2 border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 hover:text-gray-600 dark:peer-checked:text-gray-300 peer-checked:text-gray-600 hover:bg-gray-50 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700"
 							>
 								<img
 									class="album rounded"

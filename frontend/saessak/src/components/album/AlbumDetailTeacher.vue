@@ -2,7 +2,7 @@
 	<div class="view-frame p-4">
 		<div class="flex justify-between">
 			<!-- DatePicker 시작-->
-			<div class="block mt-1 mb-10">
+			<div class="block mt-1 mb-4">
 				<VDatePicker
 					v-model="date"
 					:select-attribute="selectAttribute"
@@ -45,13 +45,13 @@
 				class="my-2 flex flex-wrap"
 				v-if="isSameDate(myKidAlbumDateList[0].albumDate, date)"
 			>
-				<p class="w-full text-2xl font-bold m-2">
+				<p class="w-full text-2xl font-bold m-4">
 					{{ myKidAlbumDateList[0].albumTitle }}
 				</p>
 				<div
 					v-for="file in myKidAlbumDateList[0].fileResponseDtoList"
 					:key="file.fileId"
-					class="w-1/4 flex-shrink-0 flex flex-wrap album-box"
+					class="w-1/4 flex-shrink-0 flex flex-wrap album-box p-2"
 				>
 					<input
 						type="checkbox"
@@ -61,7 +61,7 @@
 					/>
 					<label
 						:for="file.fileId"
-						class="inline-flex items-center justify-between w-full p-4 text-gray-500 bg-white border-4 border-gray-200 rounded-lg cursor-pointer"
+						class="inline-flex items-center justify-between w-full p-4 text-gray-500 bg-white border-2 border-gray-200 rounded-lg cursor-pointer"
 					>
 						<img
 							class="album rounded"
