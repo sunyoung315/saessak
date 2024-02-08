@@ -97,9 +97,11 @@
 												/>
 											</template>
 											<template v-else>
-												<div class="menu-image p-4">
-													<img src="@/assets/meal.png" alt="" />
-												</div>
+												<img
+													src="@/assets/tray.png"
+													alt=""
+													class="menu-image"
+												/>
 											</template>
 											<template
 												v-for="food in menu.foodList"
@@ -165,9 +167,11 @@
 												/>
 											</template>
 											<template v-else>
-												<div class="menu-image p-4">
-													<img src="@/assets/tray.png" alt="" />
-												</div>
+												<img
+													src="@/assets/tray.png"
+													alt=""
+													class="menu-image"
+												/>
 											</template>
 											<template
 												v-for="food in menu.foodList"
@@ -339,7 +343,7 @@ onMounted(async () => {
 	@apply text-gray-500 text-sm;
 }
 .menu-image {
-	@apply h-40 border-gray-300 border-2 p-1;
+	@apply w-full h-40 border-gray-300 border-2 p-1;
 }
 .no-menu {
 	@apply text-base font-semibold bg-slate-50 rounded-md border border-gray-200 shadow-md m-1 pl-10 pt-10 pb-20;

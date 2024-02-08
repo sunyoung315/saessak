@@ -103,6 +103,7 @@ export const useMenuStore = defineStore('menu', () => {
 				for (let i = 0; i < weeklyMenu.value.length; i++) {
 					if (weeklyMenu.value[i].menuDate === todayDate) {
 						if (weeklyMenu.value[i].menuType === '점심') {
+							isTodayLunch.value = true;
 							let flatArr = []
 								.concat(
 									...weeklyMenu.value[i].foodList.map(food =>
@@ -113,6 +114,7 @@ export const useMenuStore = defineStore('menu', () => {
 								.sort((a, b) => a - b);
 							todayLunchAllergy.value = [...new Set(flatArr)];
 						} else {
+							isTodaySnack.value = true;
 							let flatArr = []
 								.concat(
 									...weeklyMenu.value[i].foodList.map(food =>
@@ -134,6 +136,9 @@ export const useMenuStore = defineStore('menu', () => {
 	// 학부모ver 식단표 호출
 	const todayLunchAllergy = ref([]);
 	const todaySnackAllergy = ref([]);
+
+	const isTodayLunch = ref(false);
+	const isTodaySnack = ref(false);
 
 	const today = new Date();
 	const year = today.getFullYear();
@@ -157,6 +162,7 @@ export const useMenuStore = defineStore('menu', () => {
 				for (let i = 0; i < weeklyMenu.value.length; i++) {
 					if (weeklyMenu.value[i].menuDate === todayDate) {
 						if (weeklyMenu.value[i].menuType === '점심') {
+							isTodayLunch.value = true;
 							let flatArr = []
 								.concat(
 									...weeklyMenu.value[i].foodList.map(food =>
@@ -167,6 +173,7 @@ export const useMenuStore = defineStore('menu', () => {
 								.sort((a, b) => a - b);
 							todayLunchAllergy.value = [...new Set(flatArr)];
 						} else {
+							isTodaySnack.value = true;
 							let flatArr = []
 								.concat(
 									...weeklyMenu.value[i].foodList.map(food =>
@@ -192,5 +199,7 @@ export const useMenuStore = defineStore('menu', () => {
 		getParentWeeklyMenu,
 		todayLunchAllergy,
 		todaySnackAllergy,
+		isTodayLunch,
+		isTodaySnack,
 	};
 });
