@@ -4,7 +4,7 @@ import axios from 'axios';
 
 // const REST_DOCUMENT_API = `http://localhost:8080/api/document/replacement`;
 const REST_DOCUMENT_API = `https://i10a706.p.ssafy.io/api/document/replacement`;
-const token = sessionStorage.getItem('accessToken');
+const token = localStorage.getItem('accessToken');
 
 export const useReplacementStore = defineStore('replacement', () => {
 	// 대리인 귀가 동의서 입력

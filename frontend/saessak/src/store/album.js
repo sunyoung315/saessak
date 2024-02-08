@@ -4,7 +4,7 @@ import axios from 'axios';
 
 // const REST_ALBUM_API = `http://localhost:8080/api/album`;
 const REST_ALBUM_API = `https://i10a706.p.ssafy.io/api/album`;
-const token = sessionStorage.getItem('accessToken');
+const token = localStorage.getItem('accessToken');
 
 export const useAlbumStore = defineStore('album', () => {
 	// 반 전체 앨범 조회 (선생님)
@@ -58,12 +58,21 @@ export const useAlbumStore = defineStore('album', () => {
 
 	// 반 앨범 날짜 조회 (학부모)
 	const albumDateAllList = ref([]);
-	const getAlbumDateAllList = async function (kidId, albumDate) {
+	const postAlbumDateAllList = async function (kidId, albumDate) {
 		await axios
-			.post(`${REST_ALBUM_API}/classroom/${kidId}`, { albumDate })
+			.post(
+				`${REST_ALBUM_API}/classroom/${kidId}`,
+				{ albumDate },
+				{
+					headers: {
+						'Content-Type': 'application/json',
+						Authorization: 'Bearer ' + token,
+					},
+				},
+			)
 			.then(response => {
-				getAlbumDateAllList.value = response.data.data;
-				// console.log('pinia:' + getAlbumDateAllList);
+				albumDateAllList.value = response.data.data;
+				// console.log('pinia:' + albumDateAllList.value);
 			});
 	};
 
@@ -76,7 +85,7 @@ export const useAlbumStore = defineStore('album', () => {
 		});
 	};
 
-	// 아이별 앨범날짜 조회 (Carousel - 학부모, CardDetail - 선생님)
+	// 아이별 앨범날짜 조회
 	const myKidAlbumDateList = ref([]);
 	const getKidAlbumDateList = async function (kidId, albumDate) {
 		await axios
@@ -116,7 +125,7 @@ export const useAlbumStore = defineStore('album', () => {
 		albumParentList,
 		getAlbumParentList,
 		albumDateAllList,
-		getAlbumDateAllList,
+		postAlbumDateAllList,
 		kidAlbumList,
 		getKidAlbumList,
 		myKidAlbumDateList,

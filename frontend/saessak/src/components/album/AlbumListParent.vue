@@ -17,7 +17,7 @@
 				</div>
 				<div v-if="album.fileResponseDtoList.length != 0">
 					<img class="px-2" src="@/assets/film.png" alt="필름" />
-					<Carousel :items-to-show="5" :wrap-around="false">
+					<Carousel :items-to-show="5" :wrap-around="false" snapAlign="start">
 						<Slide v-for="file in album.fileResponseDtoList" :key="file.fileId">
 							<div class="carousel__item">
 								<img
@@ -59,7 +59,7 @@
 				</div>
 				<div v-if="album.fileResponseDtoList.length != 0">
 					<img class="px-2" src="@/assets/film.png" alt="필름" />
-					<Carousel :items-to-show="5" :wrap-around="false">
+					<Carousel :items-to-show="5" :wrap-around="false" snapAlign="start">
 						<Slide v-for="file in album.fileResponseDtoList" :key="file.fileId">
 							<div class="carousel__item">
 								<img
@@ -110,6 +110,8 @@
 				→
 			</button>
 		</div>
+		{{ props.showToggle }}
+		{{ currentPage }}
 	</div>
 </template>
 
@@ -173,10 +175,16 @@ function divideAlbumsByFive(albums) {
 
 ///////////////////////////////////////////////// Pagination
 const currentPage = ref(0); // 현재 페이지 기록
-watch(props.showToggle, () => {
-	// props.showToggle 값이 바뀔 때마다 currentPage를 1로 설정
-	currentPage.value = 0;
-});
+
+watch(
+	() => props.showToggle,
+	(newVal, oldVal) => {
+		if (newVal !== oldVal) {
+			currentPage.value = 0;
+		}
+	},
+);
+
 const currentPageAlbums = computed(() => {
 	// 현재 페이지에 맞는 앨범 데이터 반환
 	return props.showToggle
@@ -198,6 +206,7 @@ function movePage(num) {
 	}
 	currentPage.value = num;
 }
+
 ///////////////////////////////////////////////////
 
 onMounted(async () => {

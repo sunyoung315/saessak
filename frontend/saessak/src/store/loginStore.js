@@ -11,6 +11,7 @@ export const loginStore = defineStore("loginStore", () => {
     const kidList = ref([])
     const curKid = ref(-1)
     const userId = ref(0)
+    const profile = ref("")
 
     function setlogin(){
         isLogin.value = true;
@@ -44,8 +45,12 @@ export const loginStore = defineStore("loginStore", () => {
         curKid.value = kid;
     }
 
-    return {isLogin, isAlarm, isTeacher, teacherName, kidList, curKid, userId,
-        setCurkid, setKidlist, setAlarmFlag, setTeacherFlag, setTeachername, setUserid, setlogin, setlogout};
+    function setProfile(url){
+        profile.value = url;
+    }
+
+    return {isLogin, isAlarm, isTeacher, teacherName, kidList, curKid, userId, profile,
+        setCurkid, setKidlist, setAlarmFlag, setTeacherFlag, setTeachername, setUserid, setlogin, setlogout, setProfile};
 }, {persist : true,
     strategies: [{ storage: sessionStorage }],
 });

@@ -219,17 +219,17 @@
     </div>
   </div>
 
-  <!-- drawer component -->
+  <!-- (채팅) drawer component -->
   <div
     id="drawer-right-example"
-    class="scrollbar-hide fixed top-0 right-0 z-40 h-screen p-4 overflow-y-auto transition-transform translate-x-full bg-yellow-50 w-1/3 dark:bg-gray-800"
+    class="scrollbar-hide fixed top-0 right-0 z-40 h-screen border-l-2 border-l-gray-300 p-4 overflow-y-auto transition-transform translate-x-full bg-yellow-50 w-1/3 dark:bg-gray-800"
     tabindex="-1"
     ref="drawer"
     aria-labelledby="drawer-right-label"
   >
-    <div
+    <!-- <div
       class="flex flex-col justify-between h-screen p-8 mx-auto my-auto overflow-y-scroll bg-white border border-gray-200 rounded-lg shadow scrollbar-hide sm:p-8 dark:bg-gray-800 dark:border-gray-700"
-    >
+    > -->
       <component
         :is="chatSwitch"
         @chatEvent="chatEvent"
@@ -237,13 +237,13 @@
         :size="size"
         :roomInfo="roomInfo"
       ></component>
-      <div v-if="flag == false" class="fixed w-1/3 bottom-0 right-0 p-3 bg-yellow-50">
+      <div v-if="flag == false" class="fixed w-1/3 bottom-0 right-0 p-3 border-l-2 border-l-gray-300 bg-yellow-50">
         <div class="flex items-center justify-evenly">
           <button :flag="flag" @click="showChat(ChatPersonView)">학부모목록</button>
           <button :flag="flag" @click="showChat(ChatListView)">채팅목록</button>
         </div>
       </div>
-    </div>
+    <!-- </div> -->
   </div>
 </template>
 
@@ -325,22 +325,22 @@ const {
 	setAlarmFlag,
 } = store;
 onMounted(() => {
-	initFlowbite();
-	// 로그인 여부 판단하기
-	const token = sessionStorage.getItem('accessToken');
-	// isLogin = token == null ? false : true
-	// isTeacher = store.isTeacher;//sTeacher
-	// console.log('나는 선생님인가? ' + isTeacher)
-	if (isLogin) {
-		if (!isTeacher) {
-			kidList.value = JSON.parse(sessionStorage.getItem('kidList'));
-		}
-		alarm.value = isAlarm.value;
-		// console.log(isAlarm.value)
-	}
-	getSizeOfDrawer();
-	// console.log(isLogin)
-});
+  initFlowbite()
+  // 로그인 여부 판단하기
+  const token = localStorage.getItem('accessToken')
+  // isLogin = token == null ? false : true
+  // isTeacher = store.isTeacher;//sTeacher
+  // console.log('나는 선생님인가? ' + isTeacher)
+  if (isLogin) {
+    if (!isTeacher) {
+      kidList.value = JSON.parse(localStorage.getItem('kidList'))
+    }
+    alarm.value = isAlarm.value
+    // console.log(isAlarm.value)
+  }
+  getSizeOfDrawer()
+  // console.log(isLogin)
+})
 
 const roomInfo = ref([]);
 const chatEvent = data => {
@@ -386,19 +386,19 @@ const login = () => {
 };
 
 const logout = () => {
-	sessionStorage.removeItem('accessToken');
-	sessionStorage.removeItem('refreshToken');
-	if (!store.isTeacher) {
-		setKidlist('');
-	}
-	// console.log("로그아웃 드가자")
-	localStorage.removeItem('loginStore');
-	localStorage.removeItem('chatStore');
-	setlogout();
-	setTeacherFlag(false);
-	setTeachername('');
-	window.location.href = '/';
-};
+  localStorage.removeItem('accessToken')
+  localStorage.removeItem('refreshToken')
+  if (!store.isTeacher) {
+    setKidlist('')
+  }
+  // console.log("로그아웃 드가자")
+  localStorage.removeItem('loginStore')
+  localStorage.removeItem('chatStore')
+  setlogout()
+  setTeacherFlag(false)
+  setTeachername('')
+  window.location.href = '/'
+}
 
 const newKids = () => {
 	msg
