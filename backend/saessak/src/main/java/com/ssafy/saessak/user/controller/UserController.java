@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 @RequestMapping("/api/user")
 @RequiredArgsConstructor
@@ -32,8 +33,11 @@ public class UserController {
 
     @Operation(summary = "선생님이 반아이 등록")
     @PostMapping(value = "/kid/regist", produces = MediaType.APPLICATION_JSON_VALUE, consumes = "multipart/form-data")
-    public ResponseEntity<ResultResponse> registKid(@RequestParam Gender gender, @RequestParam String kidName, @RequestParam LocalDate kidBirthday, @RequestParam("MultipartFile") MultipartFile kidProfile) {
-        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, userService.registKid(gender, kidName, kidBirthday, kidProfile)));
+    public ResponseEntity<ResultResponse> registKid(@RequestParam Gender gender, @RequestParam String kidName, @RequestParam String kidBirthday, @RequestParam("MultipartFile") MultipartFile kidProfile) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate date = LocalDate.parse(kidBirthday, formatter);
+
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, userService.registKid(gender, kidName, date, kidProfile)));
     }
 
     @Operation(summary = "반 아이 목록 조회")
