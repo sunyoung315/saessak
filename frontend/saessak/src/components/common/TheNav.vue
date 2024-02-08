@@ -156,7 +156,7 @@ const navColor = ref(localStorage.getItem('navColor') || 'bg-nav-red');
 const flag = ref(false); // 로그인 여부 저장
 onMounted(() => {
 	// 로그인 여부 판단하기
-	const token = sessionStorage.getItem('accessToken');
+	const token = localStorage.getItem('accessToken');
 	flag.value = token == null ? false : true;
 	// console.log(flag);
 });
