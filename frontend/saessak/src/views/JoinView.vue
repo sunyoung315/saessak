@@ -56,16 +56,16 @@ const KLogin = (input) => {
     // 선생님 로그인
     setTeacherFlag(true)
     setAlarmFlag(input.data.alarm)
-    sessionStorage.setItem('refreshToken', input.data.refreshToken)
-    sessionStorage.setItem('accessToken', input.data.accessToken)
+    localStorage.setItem('refreshToken', input.data.refreshToken)
+    localStorage.setItem('accessToken', input.data.accessToken)
     setTeachername(input.data.teacherName)
   } else {
     // 학부모 로그인
     setTeacherFlag(false)
     setAlarmFlag(input.data.alarm)
     // sessionStorage.setItem('isTeacher', input.data.isTeacher)
-    sessionStorage.setItem('accessToken', input.data.accessToken)
-    sessionStorage.setItem('refreshToken', input.data.refreshToken) // 토큰만 세션에 저장
+    localStorage.setItem('accessToken', input.data.accessToken)
+    localStorage.setItem('refreshToken', input.data.refreshToken) // 토큰만 세션에 저장
     // sessionStorage.setItem('kidList', JSON.stringify(input.data.kidList))
     setKidlist(input.data.kidList) // 나머지 정보는 pinia 저장
   }

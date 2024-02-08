@@ -1,8 +1,9 @@
 <template>
+  <!-- border border-gray-200 shadow -->
   <div
-    class="flex flex-col w-full h-full max-w-md p-8 mx-auto my-autoborder border-gray-200 rounded-lg shadow bg-yellow-50 sm:p-8 dark:bg-gray-800 dark:border-gray-700"
+    class="flex flex-col w-full h-full mx-auto my-10 rounded-lg  bg-yellow-50 sm:p-8 dark:bg-gray-800 dark:border-gray-700"
   >
-    <div class="fixed w-1/3 top-0 right-0 flex justify-between px-3 py-3 bg-yellow-50 pb-0 mx-auto">
+    <div class="fixed w-1/3 top-0 right-0 flex justify-between px-3 py-3 border-l-2 border-l-gray-300 bg-yellow-50 pb-0 mx-auto">
       <h3 class="mb-5 text-lg font-bold text-center left-1/2">
         {{ roomName }} {{ isTeacher == true ? '학부모' : '선생님' }}
       </h3>
@@ -42,7 +43,7 @@
             {{ msg.chatContent }}
           </div>
           <img
-            src="https://source.unsplash.com/vpOeXr5wmR4/600x600"
+            :src="myProfile"
             class="object-cover w-8 h-8 rounded-full"
             alt=""
           />
@@ -51,7 +52,7 @@
         <!--수신 메시지(왼쪽)-->
         <div v-else ref="printMsg" class="flex justify-start mb-4">
           <img
-            src="https://source.unsplash.com/vpOeXr5wmR4/600x600"
+            :src="props.roomInfo.chatProfile"
             class="object-cover w-8 h-8 rounded-full"
             alt=""
           />
@@ -140,8 +141,7 @@ const props = defineProps({
     default: () => ({
       roomId: 0,
       roomName: '',
-      width: 0,
-      height: 0
+      chatProfile : '',
       // senderId: 0,
       // receiverId: 0
     })
@@ -151,10 +151,11 @@ const props = defineProps({
 const lstore = loginStore()
 const { chatName, chatRoom, isOpen } = storeToRefs(chatStore)
 const { setChatname, setChatroom, setIsopen } = chatStore()
-const { isTeacher } = storeToRefs(lstore)
+const { isTeacher, profile, kidList } = storeToRefs(lstore)
 const printMsg = ref([])
 const lastChat = ref('')
 let oldHeight = -1
+const myProfile = ref("")
 
 // 1. 커서에 메시지 정보 중 전송 시간 저장
 const cursor = ref({
@@ -198,6 +199,11 @@ const handleBeforeUnload = (event) => {
 }
 
 onMounted(() => {
+  console.log(profile.value)
+  console.log(props.roomInfo.chatProfile)
+
+  myProfile.value = isTeacher.value == true ? profile.value :  kidList.value[0].kidProfile
+  console.log("myProfile : " + myProfile)
   // console.log('선생님이니')
   // console.log(isTeacher.value)
   window.addEventListener('beforeunload', handleBeforeUnload) // 브라우저 종료 이벤트 등록
@@ -332,7 +338,7 @@ const downScroll = () => {
 }
 
 let headers = {
-  Authorization: 'Bearer ' + sessionStorage.getItem('accessToken'),
+  Authorization: 'Bearer ' + localStorage.getItem('accessToken'),
   roomId: roomId,
   userId: userId
 }
