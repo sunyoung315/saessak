@@ -95,7 +95,7 @@ export const useMenuStore = defineStore('menu', () => {
 			data: weeklyDate,
 			headers: {
 				'Content-Type': 'application/json',
-				Authorization: 'Bearer ' + sessionStorage.getItem('accessToken'),
+				Authorization: 'Bearer ' + localStorage.getItem('accessToken'),
 			},
 		}).then(resp => {
 			if (resp.data.data.length) {
@@ -154,7 +154,7 @@ export const useMenuStore = defineStore('menu', () => {
 			data: weeklyDate,
 			headers: {
 				'Content-Type': 'application/json',
-				Authorization: 'Bearer ' + sessionStorage.getItem('accessToken'),
+				Authorization: 'Bearer ' + localStorage.getItem('accessToken'),
 			},
 		}).then(resp => {
 			if (resp.data.data.length) {

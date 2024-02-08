@@ -147,15 +147,19 @@
 							/>
 						</svg>
 					</div>
-					<div class="mt-4 mx-4 h-[10.6rem] text-base leading-10 overflow-auto">
+					<div
+						class="mt-4 mx-4 h-[10.6rem] text-base leading-5 overflow-auto whitespace-pre-line"
+					>
 						{{ noticeList[noticeNum].noticeContent }}
 					</div>
 					<div class="mt-5 mr-2">
-						<!-- to="{
+						<RouterLink
+							class="block font-bold text-right"
+							:to="{
 								name: 'NoticeDetail',
-								params: { id: noticeList[noticeNum].noticeId },
-							}" -->
-						<RouterLink to="/" class="block font-bold text-right">
+								params: { noticeId: noticeList[noticeNum].noticeId },
+							}"
+						>
 							→ 자세히 보기
 						</RouterLink>
 					</div>
