@@ -52,14 +52,14 @@ normals = [
     'base', 'raw', 'Facenet', 'Facenet2018', 'VGGFace', 'VGGFace2', 'ArcFace'
 ]
 
-model = "Facenet512"
-normal = "Facenet2018"
+model = "VGG-Face"
+normal = "VGGFace2"
 CORS(app, origins="*")  
 
 def get_face_embeddings (img ): 
     represent_objs = DeepFace.represent(
         img_path=img,
-        detector_backend="opencv",
+        detector_backend="mtcnn",
         enforce_detection=False,
         model_name=model,
         normalization=normal
@@ -194,15 +194,15 @@ def verifyAlbum():
                                 dst.l2_normalize(kid_embed), dst.l2_normalize(image_embed)
                             )
                             threshold_euclidean_l2 = dst.findThreshold(model_name=model,distance_metric="euclidean_l2")
-                            if distance_euclidean_l2 > threshold_euclidean_l2 : continue
+                            if distance_euclidean_l2 > threshold_euclidean_l2*0.890625 : continue
                             
                             threshold_cosine = dst.findThreshold(model_name=model,distance_metric="cosine")
                             distance_cosine = dst.findCosineDistance(kid_embed, image_embed)
-                            if distance_cosine > threshold_cosine*1.1 : continue
+                            if distance_cosine > threshold_cosine*0.84375 : continue
                             
                             threshold_euclidean = dst.findThreshold(model_name=model,distance_metric="euclidean")
                             distance_euclidean = dst.findEuclideanDistance(kid_embed, image_embed)
-                            if distance_euclidean > threshold_euclidean : continue
+                            if distance_euclidean > threshold_euclidean*0.890625 : continue
                                 
                             kid_album[kid_id].append(add_object.copy())
                             break
@@ -233,10 +233,7 @@ def verifyAlbum():
             # 아이앨범 생성
             for key, value in kid_album.items() :
                 if len(value) == 0 : continue
-                print()
-                print(key)
-                print(value)
-                print()     
+  
                 result = conn.execute(
                     insert(album_table),
                     {
