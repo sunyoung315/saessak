@@ -1,8 +1,8 @@
 <template>
-	<div class="view-frame">
+	<div class="view-frame p-4">
 		<div class="flex justify-between">
 			<!-- DatePicker 시작-->
-			<div class="block">
+			<div class="block mt-1 mb-4">
 				<!-- <span class="content-title">날짜</span> -->
 				<div class="datepicker">
 					<VDatePicker
@@ -45,7 +45,6 @@
 		</div>
 		<!--전체 보기 -->
 		<div v-if="props.showToggle">
-			{{ albumDateAllList }}
 			<div class="flex items-center" v-if="albumDateAllList.length">
 				<div class="w-full">
 					<div v-for="album in albumDateAllList" :key="album.albumId">
@@ -56,13 +55,13 @@
 								album.fileResponseDtoList.length
 							"
 						>
-							<p class="w-full text-2xl font-bold ml-4">
+							<p class="w-full text-2xl font-bold m-4">
 								{{ album.albumTitle }}
 							</p>
 							<div
 								v-for="file in album.fileResponseDtoList"
 								:key="file.fileId"
-								class="w-1/4 flex-shrink-0 flex flex-wrap"
+								class="w-1/4 flex-shrink-0 flex flex-wrap p-2"
 							>
 								<input
 									type="checkbox"
@@ -73,7 +72,7 @@
 								/>
 								<label
 									:for="file.fileId"
-									class="inline-flex items-center justify-between w-full p-4 text-gray-500 bg-white border-4 border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 peer-checked:border-nav-green hover:text-gray-600 dark:peer-checked:text-gray-300 peer-checked:text-gray-600 hover:bg-gray-50 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700"
+									class="inline-flex items-center justify-between w-full p-4 text-gray-500 bg-white border-2 border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 peer-checked:border-nav-green hover:text-gray-600 dark:peer-checked:text-gray-300 peer-checked:text-gray-600 hover:bg-gray-50 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700"
 								>
 									<img
 										class="album rounded"
@@ -94,46 +93,44 @@
 		</div>
 		<!-- 내 아이 보기 -->
 		<div v-else>
-			<div class="flex items-center" v-if="myKidAlbumDateList.length > 0">
+			<div class="flex items-center" v-if="myKidAlbumDateList.length">
 				<div class="w-full">
-					<div v-for="album in myKidAlbumDateList" :key="album.albumId">
+					<div
+						class="my-2 flex flex-wrap"
+						v-if="isSameDate(myKidAlbumDateList[0].albumDate, date)"
+					>
+						<p class="w-full text-2xl font-bold m-4">
+							{{ myKidAlbumDateList[0].albumTitle }}
+						</p>
 						<div
-							class="my-2 flex flex-wrap"
-							v-if="
-								isSameDate(album.albumDate, date) &&
-								album.fileResponseDtoList.length > 0
-							"
+							v-for="file in myKidAlbumDateList[0].fileResponseDtoList"
+							:key="file.fileId"
+							class="w-1/4 flex-shrink-0 flex flex-wrap p-2"
 						>
-							<p class="w-full text-2xl font-bold ml-4">
-								{{ album.albumTitle }}
-							</p>
-							<div
-								v-for="file in album.fileResponseDtoList"
-								:key="file.fileId"
-								class="w-1/4 flex-shrink-0 flex flex-wrap"
+							<input
+								type="checkbox"
+								:id="file.fileId"
+								:value="`${file.filePath}`"
+								class="hidden peer"
+								v-model="checked"
+							/>
+							<label
+								:for="file.fileId"
+								class="inline-flex items-center justify-between w-full p-4 text-gray-500 bg-white border-2 border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 peer-checked:border-nav-green hover:text-gray-600 dark:peer-checked:text-gray-300 peer-checked:text-gray-600 hover:bg-gray-50 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700"
 							>
-								<input
-									type="checkbox"
-									:id="file.fileId"
-									:value="`${file.filePath}`"
-									class="hidden peer"
-									v-model="checked"
-								/>
-								<label
+								<img
+									class="album rounded"
+									:src="`${file.filePath}`"
 									:for="file.fileId"
-									class="inline-flex items-center justify-between w-full p-4 text-gray-500 bg-white border-4 border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 peer-checked:border-nav-green hover:text-gray-600 dark:peer-checked:text-gray-300 peer-checked:text-gray-600 hover:bg-gray-50 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700"
-								>
-									<img
-										class="album rounded"
-										:src="`${file.filePath}`"
-										:for="file.fileId"
-										alt="img"
-									/>
-								</label>
-							</div>
+									alt="img"
+								/>
+							</label>
 						</div>
 					</div>
 				</div>
+			</div>
+			<div v-else>
+				<p>등록된 앨범이 없습니다.</p>
 			</div>
 			<!-- <span>Check 이미지 : {{ checked }}</span> -->
 		</div>
@@ -174,20 +171,27 @@ const getKidAlbumDateList = async () => {
 
 // 반 전체 앨범 날짜별 조회
 const albumDateAllList = ref([]);
-const getAlbumDateAllList = async () => {
-	await albumStore.getAlbumDateAllList(kidId, date.value);
+const postAlbumDateAllList = async () => {
+	const formattedDate = formatDate(date.value);
+	await albumStore.postAlbumDateAllList(kidId, formattedDate);
 	albumDateAllList.value = albumStore.albumDateAllList;
 };
 
 onMounted(async () => {
 	await getKidAlbumDateList();
-	await getAlbumDateAllList();
+	await postAlbumDateAllList();
 });
 
 // datePicker
 const date = ref(new Date(route.query.date));
-// const date = ref(new Date());
-// 색상
+function formatDate(date) {
+	const year = date.getFullYear();
+	const month = `0${date.getMonth() + 1}`.slice(-2); // 월은 0부터 시작하므로 1을 더해줍니다.
+	const day = `0${date.getDate()}`.slice(-2);
+
+	return `${year}-${month}-${day}`;
+}
+
 const selectAttribute = ref({ highlight: 'green' });
 const today = new Date();
 const tomorrow = new Date(today);
@@ -209,10 +213,11 @@ function isSameDate(albumDate, date) {
 	);
 }
 
+// 날짜 변경 감지
 watch(date, async newDate => {
 	await albumStore.getKidAlbumDateList(route.params.id, newDate);
 	myKidAlbumDateList.value = albumStore.myKidAlbumDateList;
-	await albumStore.getAlbumDateAllList(kidId, newDate);
+	await albumStore.postAlbumDateAllList(kidId, newDate);
 	albumDateAllList.value = albumStore.albumDateAllList;
 });
 // datePicker 및 날짜 선택 시 데이터 연동 확인 끝
