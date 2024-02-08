@@ -23,7 +23,7 @@ export const useBoardStore = defineStore('board', () => {
 			data: { year, month },
 			headers: {
 				'Content-Type': 'application/json',
-				Authorization: 'Bearer ' + sessionStorage.getItem('accessToken'),
+				Authorization: 'Bearer ' + localStorage.getItem('accessToken'),
 			},
 		}).then(resp => {
 			myKidBoards.value = resp.data.data;
@@ -37,7 +37,7 @@ export const useBoardStore = defineStore('board', () => {
 	// 		method: 'GET',
 	// 		headers: {
 	// 			'Content-Type': 'application/json',
-	// 			Authorization: 'Bearer ' + sessionStorage.getItem('accessToken'),
+	// 			Authorization: 'Bearer ' + localStorage.getItem('accessToken'),
 	// 		},
 	// 	}).then(resp => {
 	// 		myKidBoards.value = resp.data.data;

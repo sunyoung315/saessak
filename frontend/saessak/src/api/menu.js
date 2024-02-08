@@ -9,7 +9,7 @@ const createMenu = async data => {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
-			Authorization: 'Bearer ' + sessionStorage.getItem('accessToken'),
+			Authorization: 'Bearer ' + localStorage.getItem('accessToken'),
 		},
 		data,
 	})
@@ -29,7 +29,7 @@ const registMenuPhoto = async formData => {
 			data: formData,
 			headers: {
 				'Content-Type': 'multipart/form-data',
-				Authorization: 'Bearer ' + sessionStorage.getItem('accessToken'),
+				Authorization: 'Bearer ' + localStorage.getItem('accessToken'),
 			},
 		});
 		// 사진 등록 성공
