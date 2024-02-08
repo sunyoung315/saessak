@@ -107,7 +107,7 @@ const download = async () => {
 
 		const downloadLink = document.createElement('a');
 		downloadLink.href = URL.createObjectURL(blob);
-		downloadLink.download = notice.value.noticeFileName + type;
+		downloadLink.download = notice.value.noticeFileName;
 		downloadLink.click();
 		downloadLink.remove();
 		URL.revokeObjectURL(downloadLink.href);
