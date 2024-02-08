@@ -6,7 +6,7 @@ const url = "/notice";
 
 const config = {
     headers: {
-        "Authorization": "Bearer " + sessionStorage.getItem("accessToken")
+        "Authorization": "Bearer " + localStorage.getItem("accessToken")
     }
 }
 
