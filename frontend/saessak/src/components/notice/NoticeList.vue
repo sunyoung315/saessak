@@ -58,23 +58,23 @@ function moveNoticeDetail(noticeId) {
 				<thead>
 					<tr class="bg-nav-orange">
 						<th
-							class="px-48 border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold">
+							class="px-48 border border-solid border-blueGray-100 py-3 uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold">
 							제목
 						</th>
 						<th
-							class="px-2 border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold">
+							class="px-2 border border-solid border-blueGray-100 py-3 uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold">
 							작성자
 						</th>
 						<th
-							class="px-1 border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold">
+							class="px-1 border border-solid border-blueGray-100 py-3 uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold">
 							첨부파일
 						</th>
 						<th
-							class="px-1 border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold">
+							class="px-1 border border-solid border-blueGray-100 py-3 uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold">
 							작성일자
 						</th>
 						<th
-							class="px-1 border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold">
+							class="px-1 border border-solid border-blueGray-100 py-3 uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold">
 							고정
 						</th>
 					</tr>
@@ -83,13 +83,13 @@ function moveNoticeDetail(noticeId) {
 					<!-- click="moveReplacement(kid.replacementId)" -->
 					<tr v-for="notice in noticeList" :key="notice.noticeId" class="hover:bg-nav-orange"
 						@click="moveNoticeDetail(notice.noticeId)">
-						<td class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+						<td class="border-t-0 px-6 align-middle border-l-0 border-r-0 whitespace-nowrap p-4">
 							{{ notice.noticeTitle }}
 						</td>
-						<td class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+						<td class="border-t-0 px-6 align-middle border-l-0 border-r-0 whitespace-nowrap p-4">
 							{{ notice.teacherName }}
 						</td>
-						<td class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+						<td class="border-t-0 px-6 align-middle border-l-0 border-r-0 whitespace-nowrap p-4">
 							<div v-if="notice.fileFlag" class="flex justify-center items-center">
 								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
 									fill="none">
@@ -99,10 +99,10 @@ function moveNoticeDetail(noticeId) {
 								</svg>
 							</div>
 						</td>
-						<td class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+						<td class="border-t-0 px-6 align-middle border-l-0 border-r-0 whitespace-nowrap p-4">
 							{{ notice.noticeTime }}
 						</td>
-						<td class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+						<td class="border-t-0 px-6 align-middle border-l-0 border-r-0 whitespace-nowrap p-4">
 							<div v-if="notice.noticeFlag" class="flex justify-center items-center">
 								<svg xmlns="http://www.w3.org/2000/svg" width="18" height="17" viewBox="0 0 18 17"
 									fill="none">
