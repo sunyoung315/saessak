@@ -2,14 +2,23 @@
 <template>
   <div class="header-frame flex justify-between items-center">
     <RouterLink to="/">
-      <div class="flex items-end">
+      <div class="flex items-end mx-2">
         <img src="/saessak-logo.png" alt="logo" class="h-16  px-3">
         <span class="text-4xl font-extrabold">새싹일기</span>
       </div>
     </RouterLink>
+
     <div class="flex justify-between items-center">
       <!-- 알림 활성화 토글 -->
-      <div class="text-lg font-bold mx-3">알림 {{On}}</div>
+      <div class="text-lg font-bold mx-3" v-if="isLogin">
+        <span>알림 </span>
+        <template v-if="alarm">
+          <span>켜짐</span>
+        </template>
+        <template v-else>
+          <span>꺼짐</span>
+        </template>
+      </div>
       <label class="relative inline-flex items-center cursor-pointer">
         <input type="checkbox" v-model="alarm" class="sr-only peer" />
         <div
@@ -17,25 +26,6 @@
           class="mr-8 w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-dark-navy"
         ></div>
       </label>
-
-      <!-- 설정 -->
-      <RouterLink v-if="isLogin == true" to="/setting" class="inline-block">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="20"
-          height="20"
-          viewBox="0 0 20 20"
-          fill="none"
-          class="w-6 h-6 m-4"
-        >
-          <path
-            fill-rule="evenodd"
-            clip-rule="evenodd"
-            d="M11.5 0L14 3L18 3.5L20 6.5L18 10L20 13.5L18 16.5L14 17L11.5 20H8.5L6 17L2 16.5L0 13.5L2 10L0 6.5L2 3.5L6 3L8.5 0H11.5ZM10.562 1.999H9.437L7.0312 4.88666L3.156 5.37L2.35 6.581L4.3035 10L2.35 13.418L3.156 14.629L7.0312 15.1133L9.436 17.999H10.563L12.9688 15.1133L16.843 14.629L17.649 13.418L15.6965 10L17.649 6.581L16.843 5.37L12.9688 4.88666L10.562 1.999ZM10 6C12.2091 6 14 7.79086 14 10C14 12.2091 12.2091 14 10 14C7.79086 14 6 12.2091 6 10C6 7.79086 7.79086 6 10 6ZM10 8C8.89543 8 8 8.89543 8 10C8 11.1046 8.89543 12 10 12C11.1046 12 12 11.1046 12 10C12 8.89543 11.1046 8 10 8Z"
-            fill="black"
-          />
-        </svg>
-      </RouterLink>
       
       <!-- 채팅 -->
       <button
@@ -142,15 +132,14 @@
       <!-- 알람 드롭다운 끝나따-->
       <button
         v-if="isLogin == false"
-        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
         type="button"
         @click="login()"
       >
-        로그인
+        <img src="/icons/kakao_login.png" alt="login" class="mx-5">
       </button>
       <button
         v-if="isLogin == true && isTeacher == true"
-        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+        class="btn m-0 mx-5"
         type="button"
         @click="logout()"
       >
@@ -325,22 +314,22 @@ const {
 	setAlarmFlag,
 } = store;
 onMounted(() => {
-  initFlowbite()
-  // 로그인 여부 판단하기
-  const token = localStorage.getItem('accessToken')
-  // isLogin = token == null ? false : true
-  // isTeacher = store.isTeacher;//sTeacher
-  // console.log('나는 선생님인가? ' + isTeacher)
-  if (isLogin) {
-    if (!isTeacher) {
-      kidList.value = JSON.parse(localStorage.getItem('kidList'))
-    }
-    alarm.value = isAlarm.value
-    // console.log(isAlarm.value)
-  }
-  getSizeOfDrawer()
-  // console.log(isLogin)
-})
+	initFlowbite();
+	// 로그인 여부 판단하기
+	const token = localStorage.getItem('accessToken');
+	// isLogin = token == null ? false : true
+	// isTeacher = store.isTeacher;//sTeacher
+	// console.log('나는 선생님인가? ' + isTeacher)
+	if (isLogin) {
+		if (!isTeacher) {
+			kidList.value = JSON.parse(localStorage.getItem('kidList'));
+		}
+		alarm.value = isAlarm.value;
+		// console.log(isAlarm.value)
+	}
+	getSizeOfDrawer();
+	// console.log(isLogin)
+});
 
 const roomInfo = ref([]);
 const chatEvent = data => {
@@ -386,19 +375,19 @@ const login = () => {
 };
 
 const logout = () => {
-  localStorage.removeItem('accessToken')
-  localStorage.removeItem('refreshToken')
-  if (!store.isTeacher) {
-    setKidlist('')
-  }
-  // console.log("로그아웃 드가자")
-  localStorage.removeItem('loginStore')
-  localStorage.removeItem('chatStore')
-  setlogout()
-  setTeacherFlag(false)
-  setTeachername('')
-  window.location.href = '/'
-}
+	localStorage.removeItem('accessToken');
+	localStorage.removeItem('refreshToken');
+	if (!store.isTeacher) {
+		setKidlist('');
+	}
+	// console.log("로그아웃 드가자")
+	localStorage.removeItem('loginStore');
+	localStorage.removeItem('chatStore');
+	setlogout();
+	setTeacherFlag(false);
+	setTeachername('');
+	window.location.href = '/';
+};
 
 const newKids = () => {
 	msg
