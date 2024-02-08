@@ -1,19 +1,20 @@
 <template>
-  <div class="fixed w-1/3 top-0 right-0 flex px-3 py-5 pb-5 mx-auto bg-yellow-50">
+  <div class="fixed w-1/3 top-0 right-0 flex px-3 py-5 pb-5 mx-auto border-l-2 border-l-gray-300 bg-yellow-50">
     <h5
       class="flex items-center justify-center text-xl font-bold leading-none text-gray-900 dark:text-white"
     >
       채팅 목록
     </h5>
   </div>
-  <div class="flow-root mt-5 grow h-screen">
+  <div class="flow-root mt-12 grow h-screen">
     <ul role="list" class="" v-for="chatItem in chat" :key="chatItem.chatId">
-      <li v-if="chatItem.flag === false" class="py-3 mb-2 border rounded-lg sm:py-4">
+      <li v-if="chatItem.flag === false" class="py-3 mb-2 border border-gray-300 shadow rounded-lg sm:py-4">
         <div
           @click="
             chatDetail({
               roomId: chatItem.roomId,
-              roomName: isTeacher == true ? chatItem.kidName : chatItem.teacherName
+              roomName: isTeacher == true ? chatItem.kidName : chatItem.teacherName,
+              chatProfile : isTeacher == true ? chatItem.kidProfile : chatItem.teacherProfile
             })
           "
           class="flex items-center px-3"
@@ -53,7 +54,8 @@
           @click="
             chatDetail({
               roomId: chatItem.roomId,
-              roomName: isTeacher == true ? chatItem.kidName : chatItem.teacherName
+              roomName: isTeacher == true ? chatItem.kidName : chatItem.teacherName,
+              chatProfile : isTeacher == true ? chatItem.kidProfile : chatItem.teacherProfile
             })
           "
           class="relative flex items-center px-3"

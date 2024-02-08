@@ -21,6 +21,7 @@ const {
 	setlogin,
 	setTeacherFlag,
 	setKidlist,
+	setProfile,
 	setTeachername,
 	setCurkid,
 	setAlarmFlag,
@@ -177,9 +178,10 @@ const KLogin = input => {
 		// console.log('나는 선생님이다')
 		// console.log(store.isTeacher)
 		// sessionStorage.setItem('isTeacher', input.data.isTeacher)
-		sessionStorage.setItem('accessToken', input.data.accessToken);
-		sessionStorage.setItem('refreshToken', input.data.refreshToken);
+		localStorage.setItem('accessToken', input.data.accessToken);
+		localStorage.setItem('refreshToken', input.data.refreshToken);
 		setTeachername(input.data.teacherName);
+		setProfile(input.data.teacherProfile);
 		// sessionStorage.setItem('teacherName', input.data.teacherName)
 		// sessionStorage.setItem('teacherId', input.data.teacherId)
 		// sessionStorage.setItem('classroomId', input.data.classroomId)
@@ -188,8 +190,8 @@ const KLogin = input => {
 		setTeacherFlag(false);
 		setAlarmFlag(input.data.alarm);
 		// sessionStorage.setItem('isTeacher', input.data.isTeacher)
-		sessionStorage.setItem('accessToken', input.data.accessToken);
-		sessionStorage.setItem('refreshToken', input.data.refreshToken); // 토큰만 세션에 저장
+		localStorage.setItem('accessToken', input.data.accessToken);
+		localStorage.setItem('refreshToken', input.data.refreshToken); // 토큰만 세션에 저장
 		// sessionStorage.setItem('kidList', JSON.stringify(input.data.kidList))
 		setKidlist(input.data.kidList); // 나머지 정보는 pinia 저장
 		setCurkid(input.data.kidList[0].kidId);

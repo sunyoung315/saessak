@@ -6,7 +6,7 @@ const url = "/user";
 
 const config = {
     headers : {
-        "Authorization" : "Bearer " + sessionStorage.getItem("accessToken")
+        "Authorization" : "Bearer " + localStorage.getItem("accessToken")
     }
 } // 헤더에 accessToken 담아서 전송하기!!
 
