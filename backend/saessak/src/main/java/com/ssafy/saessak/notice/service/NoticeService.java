@@ -137,6 +137,7 @@ public class NoticeService {
                 .noticeTitle(notice.getNoticeTitle())
                 .noticeContent(notice.getNoticeContent())
                 .noticeFile(notice.getNoticeFile())
+                .noticeFileName(notice.getNoticeFileName())
                 .noticeTime(notice.getNoticeTime())
                 .build();
     }
