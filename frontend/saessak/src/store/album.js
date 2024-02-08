@@ -4,7 +4,7 @@ import axios from 'axios';
 
 // const REST_ALBUM_API = `http://localhost:8080/api/album`;
 const REST_ALBUM_API = `https://i10a706.p.ssafy.io/api/album`;
-const token = sessionStorage.getItem('accessToken');
+const token = localStorage.getItem('accessToken');
 
 export const useAlbumStore = defineStore('album', () => {
 	// 반 전체 앨범 조회 (선생님)
