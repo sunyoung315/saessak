@@ -32,7 +32,7 @@ public class UserController {
 
     @Operation(summary = "선생님이 반아이 등록")
     @PostMapping(value = "/kid/regist", produces = MediaType.APPLICATION_JSON_VALUE, consumes = "multipart/form-data")
-    public ResponseEntity<ResultResponse> registKid(@RequestParam Gender gender, @RequestParam String kidName, @RequestParam LocalDate kidBirthday, @RequestPart("MultipartFile") MultipartFile kidProfile) {
+    public ResponseEntity<ResultResponse> registKid(@RequestParam Gender gender, @RequestParam String kidName, @RequestParam LocalDate kidBirthday, @RequestParam("MultipartFile") MultipartFile kidProfile) {
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, userService.registKid(gender, kidName, kidBirthday, kidProfile)));
     }
 
