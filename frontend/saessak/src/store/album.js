@@ -19,6 +19,31 @@ export const useAlbumStore = defineStore('album', () => {
 			})
 			.then(response => {
 				albumTeacherList.value = response.data.data;
+			})
+			.catch(error => {
+				console.log(error);
+			});
+	};
+
+	// 반 앨범 날짜별 조회 (선생님)
+	const albumClassroomDateList = ref([]);
+	const postAlbumClassroomDateList = async function (albumDate) {
+		await axios
+			.post(
+				`${REST_ALBUM_API}/classroom`,
+				{ albumDate },
+				{
+					headers: {
+						'Content-Type': 'application/json',
+						Authorization: 'Bearer ' + token,
+					},
+				},
+			)
+			.then(response => {
+				albumClassroomDateList.value = response.data.data;
+			})
+			.catch(error => {
+				console.log(error);
 			});
 	};
 
@@ -31,16 +56,16 @@ export const useAlbumStore = defineStore('album', () => {
 		});
 	};
 
-	// 반 앨범 날짜 조회(Carousel - 학부모)
-	// const albumDateAllList = ref([]);
-	// const getAlbumDateAllList = async function (classroomId, albumDate) {
-	// 	await axios
-	// 		.post(`${REST_ALBUM_API}/classroom/${classroomId}`, { albumDate })
-	// 		.then(response => {
-	// 			getAlbumDateAllList.value = response.data.data;
-	// 			// console.log(getAlbumDateAllList.value[1].fileResponseDtoList);
-	// 		});
-	// };
+	// 반 앨범 날짜 조회 (학부모)
+	const albumDateAllList = ref([]);
+	const getAlbumDateAllList = async function (kidId, albumDate) {
+		await axios
+			.post(`${REST_ALBUM_API}/classroom/${kidId}`, { albumDate })
+			.then(response => {
+				getAlbumDateAllList.value = response.data.data;
+				// console.log('pinia:' + getAlbumDateAllList);
+			});
+	};
 
 	// 아이별 앨범 조회
 	const kidAlbumList = ref([]);
@@ -86,10 +111,12 @@ export const useAlbumStore = defineStore('album', () => {
 	return {
 		albumTeacherList,
 		getAlbumTeacherList,
+		albumClassroomDateList,
+		postAlbumClassroomDateList,
 		albumParentList,
 		getAlbumParentList,
-		// albumDateAllList,
-		// getAlbumDateAllList,
+		albumDateAllList,
+		getAlbumDateAllList,
 		kidAlbumList,
 		getKidAlbumList,
 		myKidAlbumDateList,

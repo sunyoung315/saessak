@@ -39,38 +39,42 @@
 				<button type="button" @click="goBack()" class="btn m-0">목록</button>
 			</div>
 		</div>
-		<div class="flex items-center" v-if="myKidAlbumDateList.length > 0">
-			<div v-for="album in myKidAlbumDateList" :key="album.albumId">
+		<div class="flex items-center" v-if="myKidAlbumDateList.length">
+			<!-- <p>{{ myKidAlbumDateList[0].albumDate }}</p> -->
+			<div
+				class="my-2 flex flex-wrap"
+				v-if="isSameDate(myKidAlbumDateList[0].albumDate, date)"
+			>
+				<p class="w-full text-2xl font-bold m-2">
+					{{ myKidAlbumDateList[0].albumTitle }}
+				</p>
 				<div
-					class="my-2 flex flex-wrap"
-					v-if="isSameDate(album.albumDate, date)"
+					v-for="file in myKidAlbumDateList[0].fileResponseDtoList"
+					:key="file.fileId"
+					class="w-1/4 flex-shrink-0 flex flex-wrap album-box"
 				>
-					<p class="w-full text-2xl font-bold m-2">{{ album.albumTitle }}</p>
-					<div
-						v-for="file in album.fileResponseDtoList"
-						:key="file.fileId"
-						class="w-1/4 flex-shrink-0 flex flex-wrap"
+					<input
+						type="checkbox"
+						:id="file.fileId"
+						:value="`${file.fileId}`"
+						class="hidden peer"
+					/>
+					<label
+						:for="file.fileId"
+						class="inline-flex items-center justify-between w-full p-4 text-gray-500 bg-white border-4 border-gray-200 rounded-lg cursor-pointer"
 					>
-						<input
-							type="checkbox"
-							:id="file.fileId"
-							:value="`${file.fileId}`"
-							class="hidden peer"
-						/>
-						<label
+						<img
+							class="album rounded"
+							:src="`${file.filePath}`"
 							:for="file.fileId"
-							class="inline-flex items-center justify-between w-full p-4 text-gray-500 bg-white border-4 border-gray-200 rounded-lg cursor-pointer"
-						>
-							<img
-								class="album rounded"
-								:src="`${file.filePath}`"
-								:for="file.fileId"
-								alt="img"
-							/>
-						</label>
-					</div>
+							alt="img"
+						/>
+					</label>
 				</div>
 			</div>
+		</div>
+		<div v-else>
+			<p>등록된 앨범이 없습니다.</p>
 		</div>
 		<br />
 	</div>
@@ -85,13 +89,15 @@ const route = useRoute();
 const router = useRouter();
 const albumStore = useAlbumStore();
 
+// 아이별 앨범 조회 (선생님) // 번호: kidId
 const myKidAlbumDateList = ref([]);
-
-onMounted(async () => {
-	// 아이별 앨범 조회 (선생님) // 번호: kidId
-	// route.params.id = kidId
+const getKidAlbumDateList = async () => {
 	await albumStore.getKidAlbumDateList(route.params.id, date.value);
 	myKidAlbumDateList.value = albumStore.myKidAlbumDateList;
+};
+
+onMounted(async () => {
+	await getKidAlbumDateList();
 });
 
 // datePicker
@@ -132,6 +138,11 @@ function goBack() {
 </script>
 
 <style scoped>
+.album-box {
+	min-width: 300px;
+	min-height: 250px;
+}
+
 .album {
 	width: 300px;
 	height: 250px;
