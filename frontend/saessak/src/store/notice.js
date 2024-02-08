@@ -13,7 +13,7 @@ export const useNoticeStore = defineStore('notice', () => {
 			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json',
-				Authorization: 'Bearer ' + sessionStorage.getItem('accessToken'),
+				Authorization: 'Bearer ' + localStorage.getItem('accessToken'),
 			},
 		}).then(resp => {
 			fixedNoticeList.value = resp.data.data;
