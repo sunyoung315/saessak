@@ -1,43 +1,84 @@
 <template>
-	<div>
-		<!-- 로그인 전 -->
-		<div v-if="!isLogin" class="font-bold">
-			<div class="text-center mb-20">
-				<h1 class="text-4xl mt-20">{{ title }}</h1>
-				<p class="m-8 whitespace-pre-line">{{ titleContent }}</p>
+	<!-- 로그인 전 -->
+	<div v-if="!isLogin" class="font-bold">
+		<!-- 서비스 소개 -->
+		<div
+			class="mb-20 bg-nav-yellow h-[85vh] flex flex-col justify-center items-start text-center"
+		>
+			<div class="w-full flex justify-center my-10">
+				<img src="/saessak-logo.png" alt="로고" />
 			</div>
-			<div
-				class="flex items-center m-4"
-				v-for="(item, index) in contents"
-				:key="index"
-				:class="{ 'bg-rose-200': index % 2 !== 0 }"
-			>
-				<img
-					v-if="index % 2 === 0"
-					class="img basis-1/4 m-8"
-					:src="item.image"
-					alt="img"
-				/>
-				<div class="flex flex-col basis-3/4 text-center items-center">
-					<h1 class="text-2xl font-bold">{{ item.title }}</h1>
-					<span class="whitespace-pre-line mt-8">{{ item.content }}</span>
-				</div>
-				<img
-					v-if="index % 2 !== 0"
-					class="img basis-1/4 m-8"
-					:src="item.image"
-					alt="img"
-				/>
+			<div class="text-6xl w-full mb-5">{{ title }}</div>
+			<p class="text-3xl leading-10 whitespace-pre-line w-full">
+				{{ titleContent }}
+			</p>
+		</div>
+		<!-- 알림장 -->
+		<div
+			data-aos="fade-up"
+			data-aos-duration="1500"
+			class="flex items-center h-[70vh] mb-12"
+		>
+			<img class="h-[60vh] mx-28" src="/main/diary.png" alt="img" />
+			<div class="flex flex-col basis-1/2 text-center items-center">
+				<div class="text-4xl font-bold">{{ contents[0].title }}</div>
+				<span class="text-2xl whitespace-pre-line mt-8">{{
+					contents[0].content
+				}}</span>
 			</div>
 		</div>
-		<!-- 로그인 후 -->
+		<!-- 앨범 -->
+		<div
+			data-aos="fade-up"
+			data-aos-duration="1500"
+			class="flex items-center h-[70vh] bg-nav-yellow bg-opacity-70"
+		>
+			<div class="flex flex-col basis-1/2 text-center items-center">
+				<div class="text-4xl font-bold">{{ contents[1].title }}</div>
+				<span class="text-2xl whitespace-pre-line mt-8">{{
+					contents[1].content
+				}}</span>
+			</div>
+			<img class="basis-1/2 mx-12" src="/main/album.png" alt="img" />
+		</div>
+		<!-- 문서 열람 -->
+		<div
+			data-aos="fade-up"
+			data-aos-duration="1500"
+			class="flex items-center h-[70vh]"
+		>
+			<img class="h-[60vh] mx-24" src="/main/face-chat.png" alt="img" />
+			<div class="flex flex-col basis-3/4 text-center items-center">
+				<div class="text-4xl font-bold">{{ contents[3].title }}</div>
+				<span class="text-2xl whitespace-pre-line mt-8">{{
+					contents[3].content
+				}}</span>
+			</div>
+		</div>
+		<!-- 화상 채팅 -->
+		<div
+			data-aos="fade-up"
+			data-aos-duration="1500"
+			class="flex items-center h-[70vh] bg-nav-yellow bg-opacity-70"
+		>
+			<div class="flex flex-col basis-1/2 text-center items-center">
+				<div class="text-4xl font-bold">
+					{{ contents[2].title }}
+				</div>
+				<span class="text-2xl whitespace-pre-line mt-8">{{
+					contents[2].content
+				}}</span>
+			</div>
+			<img class="h-[60vh] mx-36" src="/main/document.png" alt="img" />
+		</div>
+	</div>
+	<!-- 로그인 후 -->
+	<div v-else>
+		<div v-if="isTeacher">
+			<MainTeacherVue :loginStore="loginStore" />
+		</div>
 		<div v-else>
-			<div v-if="isTeacher">
-				<MainTeacherVue :loginStore="loginStore" />
-			</div>
-			<div v-else>
-				<MainParentVue :loginStore="loginStore" />
-			</div>
+			<MainParentVue :loginStore="loginStore" />
 		</div>
 	</div>
 </template>
@@ -63,7 +104,7 @@ const contents = [
 			'[새싹일기]에서는 어린이집의 알림장을 통해 아이의 일상을 쉽게 열람할 수 있습니다. \n 건강일지를 통한 시각화된 성장 기록과, 특정 기간 동안의 알림장 요약 리포트 기능을 통해 \n 학부모 여러분의 편의를 최우선으로 생각합니다. \n 함께 성장하는 기쁨을 [새싹일기]에서 느껴보세요.',
 	},
 	{
-		title: '사진첩',
+		title: '앨범',
 		content:
 			'우리 아이들의 소중한 순간을 놓치지 않고 더욱 풍부하게 담을 수 있는 새로운 기능이 등장했습니다! \n [새싹일기]에서는 학부모 여러분이 더 편리하게 어린이집 생활을 체험하실 수 있도록 \n 사진 필터링 및 특별 기능을 소개합니다. \n 사진 필터링을 통해 해당 태그된 아이의 사진첩을 자동으로 만들어줍니다. \n 간편한 사용법으로 원하는 순간을 찾아가세요. 아이의 성장을 함께 감상해보세요.',
 	},
@@ -80,9 +121,4 @@ const contents = [
 ];
 </script>
 
-<style scoped>
-.img {
-	width: 300px;
-	height: 250px;
-}
-</style>
+<style scoped></style>
