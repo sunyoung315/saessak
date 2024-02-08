@@ -16,4 +16,5 @@ public class NoticeDetailReponseDto {
     private String noticeContent;
     private LocalDate noticeTime;
     private String noticeFile;
+    private String noticeFileName;
 }
