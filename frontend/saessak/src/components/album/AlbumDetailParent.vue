@@ -45,14 +45,15 @@
 		</div>
 		<!--전체 보기 -->
 		<div v-if="props.showToggle">
-			<div class="flex items-center" v-if="albumParentList.length > 0">
+			{{ albumDateAllList }}
+			<div class="flex items-center" v-if="albumDateAllList.length">
 				<div class="w-full">
-					<div v-for="album in albumParentList" :key="album.albumId">
+					<div v-for="album in albumDateAllList" :key="album.albumId">
 						<div
 							class="my-2 flex flex-wrap"
 							v-if="
 								isSameDate(album.albumDate, date) &&
-								album.fileResponseDtoList.length > 0
+								album.fileResponseDtoList.length
 							"
 						>
 							<p class="w-full text-2xl font-bold ml-4">
@@ -85,6 +86,9 @@
 						</div>
 					</div>
 				</div>
+			</div>
+			<div v-else>
+				<p>등록된 앨범이 없습니다.</p>
 			</div>
 			<!-- <span>Check 이미지 : {{ checked }}</span> -->
 		</div>
@@ -161,24 +165,23 @@ const checked = ref([]);
 // const showToggle = ref(history.state.isTeacher);
 // 내 아이
 let kidId = props.loginStore.kidList[0].kidId;
-
-// 내 아이 앨범 조회 // 번호: kidId
+// 내 아이 앨범 조회
 const myKidAlbumDateList = ref([]);
 const getKidAlbumDateList = async () => {
 	await albumStore.getKidAlbumDateList(route.params.id, date.value);
 	myKidAlbumDateList.value = albumStore.myKidAlbumDateList;
 };
 
-// 반 전체 앨범 조회 // 번호: classroomId
-const albumParentList = ref([]);
-const getAlbumParentList = async () => {
-	await albumStore.getAlbumParentList(kidId, date.value);
-	albumParentList.value = albumStore.albumParentList;
+// 반 전체 앨범 날짜별 조회
+const albumDateAllList = ref([]);
+const getAlbumDateAllList = async () => {
+	await albumStore.getAlbumDateAllList(kidId, date.value);
+	albumDateAllList.value = albumStore.albumDateAllList;
 };
 
 onMounted(async () => {
 	await getKidAlbumDateList();
-	await getAlbumParentList();
+	await getAlbumDateAllList();
 });
 
 // datePicker
@@ -209,8 +212,8 @@ function isSameDate(albumDate, date) {
 watch(date, async newDate => {
 	await albumStore.getKidAlbumDateList(route.params.id, newDate);
 	myKidAlbumDateList.value = albumStore.myKidAlbumDateList;
-	await albumStore.getAlbumParentList(kidId, newDate);
-	albumParentList.value = albumStore.albumParentList;
+	await albumStore.getAlbumDateAllList(kidId, newDate);
+	albumDateAllList.value = albumStore.albumDateAllList;
 });
 // datePicker 및 날짜 선택 시 데이터 연동 확인 끝
 
