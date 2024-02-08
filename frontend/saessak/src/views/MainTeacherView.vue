@@ -85,12 +85,18 @@
 						<template
 							v-if="menu.menuDate === todayDate && menu.menuType === menuType"
 						>
-							<img
-								:src="menuStore.weeklyMenu[index].menuPath"
-								alt="메뉴사진"
-								class="menu-image"
-							/> </template
-					></template>
+							<template v-if="menuStore.weeklyMenu[index].menuPath">
+								<img
+									:src="menuStore.weeklyMenu[index].menuPath"
+									alt="메뉴사진"
+									class="menu-image"
+								/>
+							</template>
+							<template v-else>
+								<img src="/icons/tray.png" alt="null" class="menu-image" />
+							</template>
+						</template>
+					</template>
 				</div>
 				<template
 					v-for="(menu, index) in menuStore.weeklyMenu"
@@ -138,7 +144,7 @@
 											:key="i.allergyId"
 										>
 											<template v-if="i.allergyId == allergy">
-												<div class="leading-[3rem] font-bold text-lg">
+												<div class="ml-5 leading-10 font-bold text-lg">
 													{{ allergy }}. {{ i.allergyName }}
 												</div>
 											</template>
@@ -265,7 +271,7 @@ onMounted(async () => {
 	@apply w-1/3 h-[20.8rem] bg-nav-yellow p-1 mx-2 rounded shadow-md;
 }
 .menu-image {
-	@apply border border-gray-300 rounded-md bg-gray-50 mt-3 p-2 w-[93%] h-[17.5rem] shadow-md;
+	@apply border border-gray-300 rounded-md bg-gray-50 mt-3 p-2 w-[93%] h-[17rem] shadow-md;
 }
 .menu-item-type {
 	@apply w-1/2 flex flex-col items-center justify-center;
