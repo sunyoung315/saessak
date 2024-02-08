@@ -6,9 +6,7 @@
 					<div class="mr-4 text-lg text-black font-bold">설정</div>
 
 				</div>
-				<button @click="console.log(newKidList)" class="btn my-2 mx-2">
-					등록
-				</button>
+
 			</div>
 			<table class="table">
 				<thead class="table-head">
@@ -26,7 +24,7 @@
 						<td scope="col" class="col">{{ kid.kidGender == 'M' ? '남' : '여' }}</td>
 						<td scope="col" class="col-kidprofile"><img :src="kid.kidProfile" class="h-16 w-16" alt=""></td>
 					</tr>
-					<tr v-for="newKid in newKidList" :key="newKid.kidIndex">
+					<tr v-if="Object.keys(newKid).length !== 0">
 						<td class="col">
 							<input type="text" class="input w-18" v-model="newKid.kidName" required />
 						</td>
@@ -71,15 +69,16 @@
 										</p>
 									</div>
 								</label>
-								<div>{{ newKid.profileName }}</div>
-								<div><button class="btn my-2 mx-2" @click="regsitKid($event, newKid.kidIndex)">등록</button>
+								<div>{{ newKid.kidProfile }}</div>
+								<div><button class="btn my-2 mx-2" @click="regsitKid($event, newKid.Kidindex)">등록</button>
 								</div>
 							</div>
 						</td>
 					</tr>
 
 					<tr class="one-row h-2">
-						<button @click="addOneRow" class="text-center text-dark-navy text-lg font-bold m-7">
+						<button v-if="Object.keys(newKid).length == 0" @click="addOneRow"
+							class="text-center text-dark-navy text-lg font-bold m-7">
 							+ 행 추가
 						</button>
 					</tr>
@@ -87,12 +86,12 @@
 			</table>
 		</div>
 		<div>데이터 테스트</div>
-		<div>{{ newKidList }}</div>
+		<div>{{ transformedList }}</div>
 	</div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { getClassKids } from '@/api/user'
 import axios from 'axios';
 onMounted(() => {
@@ -104,42 +103,56 @@ onMounted(() => {
 	)
 })
 
-const regsitKid = (event, index) => {
+const regsitKid = (event) => {
+	const formData = new FormData()
 
+	console.log(obj)
+	formData.append('file', image.value);
+	formData.append('gender', obj.kidGender);
+	formData.append('kidName', obj.kidName);
+	formData.append('kidBirthday', obj.kidBirth);
+	console.log(formData)
 }
 
-const previewImage = ref([])
+const image = ref(null)
 
 let count = 0;
 const addOneRow = () => {
-	newKidList.value.push({
-		"kidIndex": count,
-		"kidName": "",
-		"kidGender": "",
-		"kidBirth": "",
-		"profileName": "",
-	})
-	count++
-	previewImage.value.push([])
+	newKid.value = {
+		kidIndex: count,
+		kidName: "",
+		kidGender: "",
+		kidBirth: "",
+		profileName: "",
+	}
+
 }
 
-const imageList = ref([])
+const transformedList = computed(() => {
+	return {
+		...newKid.value,
+		kidBirth: formatDate(newKid.value.kidBirth)
+	}
+
+})
+
 const existKidList = ref([])
-const newKidList = ref([])
+const newKid = ref({})
+
+function formatDate(date) {
+	if (!date) return ""
+	const year = date.getFullYear();
+	const month = ('0' + (date.getMonth() + 1)).slice(-2);
+	const day = ('0' + date.getDate()).slice(-2);
+	return `${year}-${month}-${day}`;
+}
 
 const uploadImage = (event, index) => {
 
 	const file = event.target.files[0]
 	if (!file) return
-	console.log(file)
-	newKidList.value[index].profileName = file.name
-	// previewImage.value[index] = file
-	// const reader = new FileReader()
-	// reader.onload = () => {
-	// 	previewImage.value[index] = reader.result;
-	// }
-
-	// reader.readAsDataURL(previewImage.value[index])
+	newKid.value.kidProfile = file.name
+	image.value = file
 }
 
 </script>
