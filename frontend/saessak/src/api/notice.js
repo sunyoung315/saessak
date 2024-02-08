@@ -16,10 +16,24 @@ function noticeListParentAll(kidId, param, sucess, fail) {
 }
 
 function noticeListTeacherAll(param, sucess, fail) {
-    local.get(`${url}/all/teacher`, param, config).then(sucess).catch(fail);
+    const config = {
+        headers: {
+            "Authorization": "Bearer " + sessionStorage.getItem("accessToken")
+        },
+        params: {
+            pageNo: param
+        }
+    }
+    local.get(`${url}/all/teacher`, config).then(sucess).catch(fail);
 }
+
+function noticeDetail(noticeId, sucess, fail) {
+    local.get(`${url}/detail/${noticeId}`, config).then(sucess).catch(fail);
+}
+
 
 export {
     noticeListParentAll,
-    noticeListTeacherAll
+    noticeListTeacherAll,
+    noticeDetail
 }

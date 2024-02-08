@@ -10,6 +10,7 @@ import AlbumDetailParent from '@/components/album/AlbumDetailParent.vue';
 import AlbumDetailTeacher from '@/components/album/AlbumDetailTeacher.vue';
 import AlbumCreate from '@/components/album/AlbumCreate.vue';
 import NoticeView from '@/components/notice/NoticeView.vue';
+import NoticeDetail from '@/components/notice/NoticeDetailView.vue';
 import NoticeList from '@/components/notice/NoticeList.vue';
 import NoticeCreate from '@/components/notice/NoticeCreate.vue';
 import DocumentView from '@/components/document/DocumentView.vue';
@@ -127,6 +128,11 @@ const routes = [
 						path: 'create',
 						name: 'NoticeCreate',
 						component: NoticeCreate,
+					},
+					{
+						path: 'noticeDetail/:noticeId',
+						name: 'NoticeDetail',
+						component: NoticeDetail,
 					},
 				],
 			},

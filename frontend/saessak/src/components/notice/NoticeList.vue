@@ -1,48 +1,45 @@
 <script setup>
-import { onMounted, ref, defineProps } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
-
 import { noticeListParentAll, noticeListTeacherAll } from '@/api/notice'
-
+import { storeToRefs } from 'pinia'
+import { loginStore } from '@/store/loginStore'
 
 const router = useRouter();
 
 // 부를 리스트 나누기
-const isTeacher = loginStore.isTeacher;
-let loginStore = JSON.parse(localStorage.getItem('loginStore'));
-const kidId = loginStore.kidList[0].kidId;
-const teacherToken = 'Bearer ' + sessionStorage.getItem('accessToken');
+const store = loginStore()
+const { isLogin, isTeacher, kidList, isAlarm, curKid, setCurkid } = storeToRefs(store)
 
+//const kidId = loginStore.kidList[0].kidId;
 // 내 아이 귀가동의서 목록 가져오기
 const noticeList = ref([]);
 const paging = ref({
 	pageNo: 0
 })
+
 onMounted(() => {
 
-	if (!isTeacher) {
-
+	if (isLogin) {
+		if (isTeacher.value) {
+			noticeListTeacherAll(paging.value.pageNo, ({ data }) => {
+				noticeList.value = data.data
+			});
+		} else {
+			noticeListParentAll(kidList.value[0].kidId, {
+				params: paging.value
+			}, ({ data }) => {
+				noticeList.value = data.data
+			});
+		}
 	}
-	noticeListParentAll(kidId, {
-		params: paging.value
-	}, ({ data }) => {
-		noticeList.value = data.data
-		console.log(data.data);
-	});
-
-	noticeListTeacherAll({
-		params: paging.value
-	}, ({ data }) => {
-		noticeList.value = data.data
-		console.log(data.data);
-	});
-
+	//console.log(noticeList.value)
 })
 
 
 // 동의서 버튼 동작
 
-function moveNoticeDetail() {
+function moveNoticeDetail(noticeId) {
 	router.push({
 		name: 'NoticeDetail',
 		params: { noticeId },
@@ -84,7 +81,8 @@ function moveNoticeDetail() {
 				</thead>
 				<tbody>
 					<!-- click="moveReplacement(kid.replacementId)" -->
-					<tr v-for="notice in noticeList" :key="notice.noticeId" class="hover:bg-nav-orange">
+					<tr v-for="notice in noticeList" :key="notice.noticeId" class="hover:bg-nav-orange"
+						@click="moveNoticeDetail(notice.noticeId)">
 						<td class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
 							{{ notice.noticeTitle }}
 						</td>
