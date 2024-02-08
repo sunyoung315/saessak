@@ -11,11 +11,29 @@ const config = {
 }
 
 // noticeList 전부 불러오기
-function noticeListAll(kidId, param, sucess, fail) {
-    local.get(`${url}/all/${kidId}`, param).then(sucess).catch(fail);
+function noticeListParentAll(kidId, param, sucess, fail) {
+    local.get(`${url}/all/parent/${kidId}`, param).then(sucess).catch(fail);
+}
+
+function noticeListTeacherAll(param, sucess, fail) {
+    const config = {
+        headers: {
+            "Authorization": "Bearer " + sessionStorage.getItem("accessToken")
+        },
+        params: {
+            pageNo: param
+        }
+    }
+    local.get(`${url}/all/teacher`, config).then(sucess).catch(fail);
+}
+
+function noticeDetail(noticeId, sucess, fail) {
+    local.get(`${url}/detail/${noticeId}`, config).then(sucess).catch(fail);
 }
 
 
 export {
-    noticeListAll
+    noticeListParentAll,
+    noticeListTeacherAll,
+    noticeDetail
 }
