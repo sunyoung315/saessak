@@ -22,6 +22,7 @@ module.exports = {
 				'nav-blue': '#A2B6CD',
 				'nav-navy': '#8B91B9',
 				'nav-purple': '#A68BB4',
+				'nav-gray' : '#bec1d1',
 				'dark-navy': '#333752',
 				'yellow-bg1': '#FFFDF4',
 				'yellow-bg2': '#FFF4B7',
