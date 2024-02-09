@@ -10,5 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 public interface NoticeRepository extends JpaRepository<Notice, Long> {
+
     Page<Notice> findAllByClassroom(Classroom classroom, Pageable pageable);
+    long countByClassroom(Classroom classroom);
 }

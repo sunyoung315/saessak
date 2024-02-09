@@ -39,7 +39,7 @@ public class NoticeService {
     private final S3Upload s3Uploader;
     private final AuthenticationService authenticationService;
 
-    public List<NoticeResponseDto> getAllTeacherNotice(int pageNo) {
+    public NoticeResponseListDto getAllTeacherNotice(int pageNo) {
 
         User user = authenticationService.getUserByAuthentication();
         Classroom classroom = user.getClassroom();
@@ -81,11 +81,14 @@ public class NoticeService {
 
         }
 
-        return noticeResponseDtoList;
+        return NoticeResponseListDto.builder()
+                .list(noticeResponseDtoList)
+                .length(noticeRepository.countByClassroom(classroom))
+                .build();
     }
 
     // 20개씩 페이징
-    public List<NoticeResponseDto> getAllParentNotice(Long userId, int pageNo) {
+    public NoticeResponseListDto getAllParentNotice(Long userId, int pageNo) {
 
         User user = userRepository.findById(userId).get();
         Classroom classroom = user.getClassroom();
@@ -127,7 +130,10 @@ public class NoticeService {
 
         }
 
-        return noticeResponseDtoList;
+        return NoticeResponseListDto.builder()
+                .list(noticeResponseDtoList)
+                .length(noticeRepository.countByClassroom(classroom))
+                .build();
     }
 
     public NoticeDetailReponseDto getDetailNotice(Long noticeId) {
