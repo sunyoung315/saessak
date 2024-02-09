@@ -123,9 +123,9 @@ public class OauthController {
     }
 
     @Operation(summary = "로그아웃")
-    @PostMapping("/logout/{userId}")
-    public ResponseEntity<ResultResponse> logout(@PathVariable("userId") Long userId) {
-        refreshTokenService.deleteRefreshToken(userId);
+    @GetMapping("/logout")
+    public ResponseEntity<ResultResponse> logout() {
+        refreshTokenService.deleteRefreshToken();
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS));
     }
 
