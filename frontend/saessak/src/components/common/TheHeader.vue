@@ -59,7 +59,7 @@
       <!-- Dropdown menu -->
       <div
         id="dropdownNotification"
-        class="z-20 hidden w-72 max-w-sm bg-white divide-y divide-gray-100 rounded-lg shadow-md border border-gray-300"
+        class="z-20 hidden w-72 max-w-sm bg-white divide-y divide-gray-100 rounded-lg shadow-md border border-gray-300 !-left-28"
         aria-labelledby="dropdownNotificationButton"
       >
         <div
@@ -105,15 +105,19 @@
             v-for="alarm in alarmList"
             :key="alarm.alarmId"
             @click="removeAlarm(alarm.alarmId)"
-            class="divide-y divide-gray-100 dark:divide-gray-700"
+            class="divide-y divide-gray-100 border-b border-gray-200 w-[96%] mx-[2%] py-1"
           >
-            <div class="w-full ps-3">
-              <span class="font-semibold text-gray-900 dark:text-white">{{
-                alarm.alarmType
-              }}</span>
-              <div class="text-gray-500 text-sm mb-1.5 dark:text-gray-400">
-                {{ alarm.kidName }} 원아의
-                {{ alarm.alarmType.substring(0, alarm.alarmType.length - 3) }} 확인이 필요합니다!
+            <div class="w-full ps-3 flex justify-between items-center">
+              <div>
+                <span class="font-semibold text-gray-900 ">{{
+                  alarm.alarmType
+                }}</span>
+                <div class="text-gray-500 text-sm mb-1.5 ">
+                  {{ alarm.kidName }} 원아의
+                  {{ alarm.alarmType.substring(0, alarm.alarmType.length - 3) }} 확인이 필요합니다!
+                </div>
+              </div>
+              <div class="mx-3">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 384 512"
@@ -174,7 +178,7 @@
         <!-- Dropdown menu (아이들 목록 보여주기)-->
         <div
           id="dropdownDivider"
-          class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-md w-44 !left-8 !-top-5 !w-36 border"
+          class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-md !left-8 !-top-5 !w-36 border"
         >
           <ul
             v-for="(kid, idx) in kidList"
