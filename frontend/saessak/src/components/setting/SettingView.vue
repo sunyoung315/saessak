@@ -19,11 +19,12 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr v-for="kid in  existKidList" :key="kid.kidId">
+					<tr v-for="(kid,index) in  kidList" :key="kid.kidId">
 						<td scope="col" class="col">{{ kid.kidName }}</td>
 						<td scope="col" class="col-birthday">{{ kid.kidBirthday }}</td>
 						<td scope="col" class="col">{{ kid.kidGender == 'M' ? '남' : '여' }}</td>
 						<td scope="col" class="col-kidprofile"><img :src="kid.kidProfile" class="h-16 w-16" alt=""></td>
+						<td scope="col" class="col-kidcode"><div class="flex justify-around"><p >{{ decodeShow[index]? kid.encoded : "" }}</p> <button @click="toggleCode($event, index)">{{decodeShow[index] ? "숨기기" : "확인"}}</button></div></td>
 					</tr>
 					<tr v-if="newKid">
 						<td class="col">
@@ -96,11 +97,18 @@ import axios from 'axios';
 onMounted(() => {
 	getClassKids(({ data }) => {
 		existKidList.value = data.data
+		decodeShow.value = Array(data.data.length).fill(false)
+
 	}, (error) => {
 		console.log(error)
 	}
 	)
 })
+
+const toggleCode = (event, index) => {
+	// console.log(decodeShow.value)
+	decodeShow.value[index] = !decodeShow.value[index]
+}
 
 const regsistKidinClass = async (event) => {
 	const formData = new FormData()
@@ -116,6 +124,7 @@ const regsistKidinClass = async (event) => {
 		}
 	}).then((response) => {
 		getClassKids(({ data }) => {
+			// console.log(data)
 			existKidList.value = data.data
 		}, (error) => {
 			console.log(error)
@@ -144,6 +153,18 @@ const addOneRow = () => {
 	}
 
 }
+
+const decodeShow = ref([])
+
+const kidList = computed( ()=> {
+	return existKidList.value.map(item => {
+		return {
+			...item, 
+			encoded: btoa(item.kidId + "kid"),
+			isOpen : false
+		}
+	})
+})
 
 const transformed = computed(() => {
 	return {
@@ -202,7 +223,9 @@ const uploadImage = (event) => {
 .col-photo {
 	@apply p-3 w-[30%];
 }
-
+.col-code {
+	@apply p-3 w-[20%]
+}
 .col-btn {
 	@apply w-[5%] text-dark-navy font-bold;
 }
