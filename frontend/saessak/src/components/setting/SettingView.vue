@@ -24,7 +24,7 @@
 						<td scope="col" class="col-birthday">{{ kid.kidBirthday }}</td>
 						<td scope="col" class="col">{{ kid.kidGender == 'M' ? '남' : '여' }}</td>
 						<td scope="col" class="col-kidprofile"><img :src="kid.kidProfile" class="h-16 w-16" alt=""></td>
-						<td scope="col" class="col-kidcode"><div class="flex justify-between"><p >{{ decodeShow[index]? kid.encoded : "" }}</p> <button class="btn my-2 mx-2" @click="toggleCode($event, index)">{{decodeShow[index] ? "숨기기" : "확 인"}}</button></div></td>
+						<td scope="col" class="col-kidcode"><div class="flex justify-between "><div class="flex items-center"><p >{{ decodeShow[index]? kid.encoded : "" }}</p></div> <button class="btn my-2 mx-2" @click="toggleCode($event, index)">{{decodeShow[index] ? "숨기기" : "확 인"}}</button></div></td>
 					</tr>
 					<tr v-if="newKid">
 						<td class="col">
