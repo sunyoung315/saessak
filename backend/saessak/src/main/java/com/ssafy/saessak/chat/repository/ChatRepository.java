@@ -18,4 +18,6 @@ public interface ChatRepository extends JpaRepository<Chat, Long> {
     Chat findFirstByRoomOrderByChatTimeDesc(Room room);
 
     Slice<Chat> findAllByChatTimeBeforeAndRoomOrderByChatTimeDesc(String lastCursor, Room room, PageRequest of);
+
+    List<Chat> findAllByRoom(Room room);
 }
