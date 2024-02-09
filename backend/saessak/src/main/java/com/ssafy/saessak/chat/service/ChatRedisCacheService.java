@@ -7,6 +7,7 @@ import com.ssafy.saessak.chat.dto.ChatMessage;
 import com.ssafy.saessak.chat.dto.ChatPagingRequestDto;
 import com.ssafy.saessak.chat.dto.ChatPagingResponseDto;
 import com.ssafy.saessak.chat.dto.RoomResponseDto;
+import com.ssafy.saessak.chat.repository.ChatJdbcRepository;
 import com.ssafy.saessak.chat.repository.ChatRepository;
 import com.ssafy.saessak.chat.repository.RoomRepository;
 import com.ssafy.saessak.chat.repository.VisitRepository;
@@ -18,8 +19,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ZSetOperations;
+import org.springframework.data.redis.core.*;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -50,6 +50,7 @@ public class ChatRedisCacheService {
     private final UserRepository userRepository;
     private final VisitRepository visitRepository;
     private final RoomRepository roomRepository;
+    private final ChatJdbcRepository chatJdbcRepository;
 
     // Redis의 Chatting data caching 처리
     // 채팅 등록
@@ -239,5 +240,45 @@ public class ChatRedisCacheService {
                         CHAT_SORTED_SET_ + chatMessageSaveDto.getRoomId(),
                         chatMessageSaveDto,
                         changeLocalDateTimeToDouble(chatMessageSaveDto.getChatTime()));
+    }
+
+    public void writeBack(){
+        log.info("[ChatWriteBackScheduling writeBack] Scheduling start");
+        //  여기서부터 읽어오는 과정.
+        BoundZSetOperations<String, ChatMessage> setOperations = chatRedisTemplate.boundZSetOps("NEW_CHAT");
+
+        ScanOptions scanOptions = ScanOptions.scanOptions().build();
+
+        List<Chat> chatList = new ArrayList<>();
+        try (Cursor<ZSetOperations.TypedTuple<ChatMessage>> cursor= setOperations.scan(scanOptions)){
+
+            while (cursor.hasNext()){
+                ZSetOperations.TypedTuple<ChatMessage> chatMessage = cursor.next();
+
+                Room chatroom = roomRepository
+                        .findById(chatMessage.getValue().getRoomId())
+                        .orElse(null);
+
+                if(chatroom == null) {
+                    continue;
+                }
+
+                Chat chat = Chat.builder()
+                        .chatContent(chatMessage.getValue().getChatContent())
+                        .senderId(chatMessage.getValue().getSenderId())
+                        .chatTime(chatMessage.getValue().getChatTime())
+                        .room(chatroom)
+                        .build();
+                chatList.add(chat);
+            }
+            chatJdbcRepository.batchInsertChats(chatList);
+
+            redisTemplate.delete("NEW_CHAT");
+
+        }  catch (Exception e){
+            e.printStackTrace();
+        }
+
+        log.info("Scheduling done");
     }
 }
