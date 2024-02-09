@@ -9,6 +9,8 @@ import 'v-calendar/style.css';
 import VueCal from 'vue-cal';
 import 'vue-cal/dist/vuecal.css';
 import VueApexCharts from 'vue3-apexcharts';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 import '@/assets/style.css';
 import '@/assets/tailwind.css';
 
@@ -28,3 +30,5 @@ app.component('VCalendar', Calendar);
 app.component('VDatePicker', DatePicker);
 app.component('VueCal', VueCal);
 app.mount('#app');
+
+AOS.init();
