@@ -31,7 +31,7 @@ public class NoticeController {
     @Operation(summary = "선생님 공지사항 전체 조회")
     @GetMapping(value = "/all/teacher", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResultResponse> getAllNotice(@RequestParam("pageNo") int pageNo) {
-        List<NoticeResponseDto> list = noticeService.getAllTeacherNotice(pageNo);
+        NoticeResponseListDto list = noticeService.getAllTeacherNotice(pageNo);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, list));
     }
 
@@ -39,7 +39,7 @@ public class NoticeController {
     @GetMapping(value = "/all/parent/{kidId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResultResponse> getAllNotice(@PathVariable("kidId") Long kidId,
                                                        @RequestParam("pageNo") int pageNo) {
-        List<NoticeResponseDto> list = noticeService.getAllParentNotice(kidId, pageNo);
+        NoticeResponseListDto list = noticeService.getAllParentNotice(kidId, pageNo);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, list));
     }
 
@@ -60,17 +60,31 @@ public class NoticeController {
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, noticeId));
     }
 
-    @Operation(summary = "공지사항 고정")
-    @PostMapping(value = "/fixed/add", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResultResponse> addNotice(@RequestBody FixedRequestDto fixedRequestDto) {
-        Long noticeId = noticeService.addFix(fixedRequestDto);
+    @Operation(summary = "학부모 공지사항 고정")
+    @PostMapping(value = "/fixed/parent/add", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResultResponse> addParentFix(@RequestBody FixedRequestDto fixedRequestDto) {
+        Long noticeId = noticeService.addParentFix(fixedRequestDto);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, noticeId));
     }
 
+    @Operation(summary = "학부모 공지사항 고정 해제")
+    @DeleteMapping(value = "/fixed/parent/delete", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResultResponse> deleteParentFix(@RequestBody FixedRequestDto fixedRequestDto) {
+        noticeService.deleteParentFix(fixedRequestDto);
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS));
+    }
+
+    @Operation(summary = "선생님 공지사항 고정")
+    @PostMapping(value = "/fixed/teacher/add", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResultResponse> addTeacherFix(@RequestParam("noticeId") Long noticeId) {
+        noticeService.addTeacherFix(noticeId);
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS));
+    }
+
     @Operation(summary = "공지사항 고정 해제")
-    @DeleteMapping(value = "/fixed/delete", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResultResponse> deleteNotice(@RequestBody FixedRequestDto fixedRequestDto) {
-        noticeService.deleteFix(fixedRequestDto);
+    @DeleteMapping(value = "/fixed/teacher/delete", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResultResponse> deleteTeacherFix(@RequestParam("noticeId") Long noticeId) {
+        noticeService.deleteTeacherFix(noticeId);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS));
     }
 
