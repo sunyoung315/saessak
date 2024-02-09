@@ -19,6 +19,7 @@ import TheView from '@/components/common/TheView.vue';
 import TheFooter from '@/components/common/TheFooter.vue';
 
 const loginStore = JSON.parse(localStorage.getItem('loginStore'));
+console.log(loginStore)
 </script>
 
 <style scoped></style>
