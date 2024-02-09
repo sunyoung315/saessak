@@ -52,5 +52,5 @@ export const loginStore = defineStore("loginStore", () => {
     return {isLogin, isAlarm, isTeacher, teacherName, kidList, curKid, userId, profile,
         setCurkid, setKidlist, setAlarmFlag, setTeacherFlag, setTeachername, setUserid, setlogin, setlogout, setProfile};
 }, {persist : true,
-    strategies: [{ storage: sessionStorage }],
+    strategies: [{ storage: localStorage }],
 });

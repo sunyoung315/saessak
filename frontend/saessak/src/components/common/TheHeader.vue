@@ -324,6 +324,7 @@ onMounted(() => {
 	// isLogin = token == null ? false : true
 	// isTeacher = store.isTeacher;//sTeacher
 	// console.log('나는 선생님인가? ' + isTeacher)
+  console.log(isLogin)
 	if (isLogin) {
 		if (!isTeacher) {
 			kidList.value = JSON.parse(localStorage.getItem('kidList'));
