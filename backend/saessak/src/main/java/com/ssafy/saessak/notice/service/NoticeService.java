@@ -171,9 +171,9 @@ public class NoticeService {
     }
 
     @Transactional
-    public Long addFix(FixedRequestDto fixedRequestDto) {
-        Notice notice = noticeRepository.findById(fixedRequestDto.getNoticeId()).get();
-        User user = userRepository.findById(fixedRequestDto.getKidId()).get();
+    public Long addTeacherFix(Long noticeId) {
+        Notice notice = noticeRepository.findById(noticeId).get();
+        User user = authenticationService.getUserByAuthentication();
 
         Fix fix = Fix.builder()
                 .user(user)
@@ -184,7 +184,27 @@ public class NoticeService {
     }
 
     @Transactional
-    public void deleteFix(FixedRequestDto fixedRequestDto) {
+    public Long addParentFix(FixedRequestDto fixedRequestDto) {
+        Notice notice = noticeRepository.findById(fixedRequestDto.getNoticeId()).get();
+        User user = userRepository.findById(fixedRequestDto.getKidId()).get();
+        Fix fix = Fix.builder()
+                .user(user)
+                .notice(notice)
+                .build();
+
+        return fixRepository.save(fix).getId();
+    }
+
+    @Transactional
+    public void deleteTeacherFix(Long noticeId) {
+        Notice notice = noticeRepository.findById(noticeId).get();
+        User user = authenticationService.getUserByAuthentication();
+        Fix fix = fixRepository.findByNoticeAndUser(notice, user).get();
+        fixRepository.delete(fix);
+    }
+
+    @Transactional
+    public void deleteParentFix(FixedRequestDto fixedRequestDto) {
         Notice notice = noticeRepository.findById(fixedRequestDto.getNoticeId()).get();
         User user = userRepository.findById(fixedRequestDto.getKidId()).get();
         Fix fix = fixRepository.findByNoticeAndUser(notice, user).get();
