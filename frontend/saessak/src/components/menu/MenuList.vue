@@ -343,7 +343,7 @@ onMounted(async () => {
 	@apply text-gray-500 text-sm;
 }
 .menu-image {
-	@apply w-full h-40 border-gray-300 border-2 p-1;
+	@apply w-full h-52 border-gray-300 border-2 p-1;
 }
 .no-menu {
 	@apply text-base font-semibold bg-slate-50 rounded-md border border-gray-200 shadow-md m-1 pl-10 pt-10 pb-20;
