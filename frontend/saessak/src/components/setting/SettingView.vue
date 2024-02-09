@@ -24,11 +24,11 @@
 						<td scope="col" class="col-birthday">{{ kid.kidBirthday }}</td>
 						<td scope="col" class="col">{{ kid.kidGender == 'M' ? '남' : '여' }}</td>
 						<td scope="col" class="col-kidprofile"><img :src="kid.kidProfile" class="h-16 w-16" alt=""></td>
-						<td scope="col" class="col-kidcode"><div class="flex justify-around"><p >{{ decodeShow[index]? kid.encoded : "" }}</p> <button @click="toggleCode($event, index)">{{decodeShow[index] ? "숨기기" : "확인"}}</button></div></td>
+						<td scope="col" class="col-kidcode"><div class="flex justify-between"><p >{{ decodeShow[index]? kid.encoded : "" }}</p> <button class="btn my-2 mx-2" @click="toggleCode($event, index)">{{decodeShow[index] ? "숨기기" : "확 인"}}</button></div></td>
 					</tr>
 					<tr v-if="newKid">
 						<td class="col">
-							<input type="text" class="input w-18" v-model="newKid.kidName" required />
+							<input type="text" class="input w-18" v-model.lazy="newKid.kidName" required />
 						</td>
 						<td scop="col" class="col-birthday">
 							<VDatePicker :select-attribute="selectAttribute" v-model="newKid.kidBirth">
@@ -49,12 +49,13 @@
 						</td>
 						<td>
 							<select id="menu-type" class="selection-input w-20" v-model="newKid.kidGender" required>
+								<option value="" disabled selected>성별</option>
 								<option value="M">남</option>
 								<option value="F">여</option>
 							</select>
 						</td>
 						<!-- 파일업로드  -->
-						<td>
+						<td colspan="2">
 							<div class="flex justify-between">
 
 								<label
@@ -73,18 +74,19 @@
 								</label>
 								<div>{{ newKid.kidProfile }}</div>
 								<div><button class="btn my-2 mx-2" @click="regsistKidinClass($event)">등록</button>
+									<button class="btn my-2 mx-2" @click="cancleRegsit">취소</button>
 								</div>
 							</div>
 						</td>
 					</tr>
 
-					<tr class="one-row h-2">
-						<button v-if="!newKid" @click="addOneRow" class="text-center text-dark-navy text-lg font-bold m-7">
-							아이등록
-						</button>
-					</tr>
 				</tbody>
 			</table>
+			<div class="one-row h-2 flex justify-end">
+				<button v-if="!newKid" @click="addOneRow" class="text-center text-dark-navy text-lg font-bold m-7">
+					아이등록
+				</button>
+			</div>
 		</div>
 
 	</div>
@@ -105,12 +107,29 @@ onMounted(() => {
 	)
 })
 
+const cancleRegsit = () => {
+	newKid.value = ""
+}
+
+
 const toggleCode = (event, index) => {
 	// console.log(decodeShow.value)
 	decodeShow.value[index] = !decodeShow.value[index]
 }
 
+function dataValidate() {
+	if (!image.value) return false;
+	if (!transformed.value.kidName) return false
+	if (!transformed.value.kidGender) return false
+	if (!transformed.value.kidBirth) return false
+	return true
+}
+
 const regsistKidinClass = async (event) => {
+
+	// validation check
+	if( !dataValidate() ) return
+	
 	const formData = new FormData()
 	formData.append('MultipartFile', image.value);
 	formData.append('gender', transformed.value.kidGender)
@@ -221,10 +240,10 @@ const uploadImage = (event) => {
 }
 
 .col-photo {
-	@apply p-3 w-[30%];
+	@apply p-3 w-[20%];
 }
 .col-code {
-	@apply p-3 w-[20%]
+	@apply p-3 w-[30%]
 }
 .col-btn {
 	@apply w-[5%] text-dark-navy font-bold;
