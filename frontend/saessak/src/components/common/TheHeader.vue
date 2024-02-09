@@ -64,24 +64,28 @@
       >
         <div
           @click="removeAllAlarm()"
-          class="block px-4 py-2 text-gray-700 rounded-t-lg bg-gray-50 text-right font-extrabold border-b border-gray-300"
+          class="block px-4 py-1 text-gray-900 text-sm rounded-t-lg bg-gray-100 text-right font-extrabold border-b border-gray-300"
         >
           전체 삭제
         </div>
-        <div v-if="isTeacher == false">
+        <div v-if="isTeacher == false" class="h-60 overflow-auto">
           <div
             v-for="alarm in alarmList"
             :key="alarm.alarmId"
             @click="removeAlarm(alarm.alarmId)"
-            class="divide-y divide-gray-100 dark:divide-gray-700"
+            class="divide-y divide-gray-100 border-b border-gray-200 w-[96%] mx-[2%] py-1"
           >
-            <div class="w-full ps-3">
-              <span class="font-semibold text-gray-900 dark:text-white">{{
-                alarm.alarmType
-              }}</span>
-              <div class="text-gray-500 text-sm mb-1.5 dark:text-gray-400">
-                {{ alarm.alarmDate }}일 {{ alarm.alarmContent.substring(0, 5) }}
-                {{ alarm.alarmType.substring(0, 2) }}하였습니다!
+            <div class="w-full ps-3 flex justify-between items-center">
+              <div>
+                <span class="font-semibold text-gray-900">{{
+                  alarm.alarmType
+                }}</span>
+                <div class="text-gray-500 text-sm">
+                  {{ alarm.alarmDate }}일 {{ alarm.alarmContent.substring(0, 5) }}
+                  {{ alarm.alarmType.substring(0, 2) }}하였습니다!
+                </div>
+              </div>
+              <div class="mx-3">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 384 512"
@@ -96,7 +100,7 @@
             </div>
           </div>
         </div>
-        <div v-if="isTeacher == true">
+        <div v-if="isTeacher == true" class="h-60 overflow-auto">
           <div
             v-for="alarm in alarmList"
             :key="alarm.alarmId"
