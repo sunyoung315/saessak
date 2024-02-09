@@ -25,7 +25,7 @@
 								d="M23.121,9.069,15.536,1.483a5.008,5.008,0,0,0-7.072,0L.879,9.069A2.978,2.978,0,0,0,0,11.19v9.817a3,3,0,0,0,3,3H21a3,3,0,0,0,3-3V11.19A2.978,2.978,0,0,0,23.121,9.069ZM15,22.007H9V18.073a3,3,0,0,1,6,0Zm7-1a1,1,0,0,1-1,1H17V18.073a5,5,0,0,0-10,0v3.934H3a1,1,0,0,1-1-1V11.19a1.008,1.008,0,0,1,.293-.707L9.878,2.9a3.008,3.008,0,0,1,4.244,0l7.585,7.586A1.008,1.008,0,0,1,22,11.19Z"
 							/>
 						</svg>
-						<span class="ms-3">Home</span>
+						<span class="ms-3">시작화면</span>
 					</RouterLink>
 				</li>
 
@@ -141,6 +141,25 @@
 							/>
 						</svg>
 						<span class="flex-1 ms-3 whitespace-nowrap">출석부</span>
+					</RouterLink>
+				</li>
+				<li v-if="flag == true" @click="changeNavColor('bg-nav-gray')">
+					<RouterLink
+						:to="{ name: 'Setting' }"
+						class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 focus:bg-gray-100 dark:hover:bg-gray-700 group"
+					>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							id="Layer_1"
+							data-name="Layer 1"
+							viewBox="0 0 24 24"
+							class="w-6 h-6"
+						>
+							<path
+								d="M11.5 0L14 3L18 3.5L20 6.5L18 10L20 13.5L18 16.5L14 17L11.5 20H8.5L6 17L2 16.5L0 13.5L2 10L0 6.5L2 3.5L6 3L8.5 0H11.5ZM10.562 1.999H9.437L7.0312 4.88666L3.156 5.37L2.35 6.581L4.3035 10L2.35 13.418L3.156 14.629L7.0312 15.1133L9.436 17.999H10.563L12.9688 15.1133L16.843 14.629L17.649 13.418L15.6965 10L17.649 6.581L16.843 5.37L12.9688 4.88666L10.562 1.999ZM10 6C12.2091 6 14 7.79086 14 10C14 12.2091 12.2091 14 10 14C7.79086 14 6 12.2091 6 10C6 7.79086 7.79086 6 10 6ZM10 8C8.89543 8 8 8.89543 8 10C8 11.1046 8.89543 12 10 12C11.1046 12 12 11.1046 12 10C12 8.89543 11.1046 8 10 8Z"
+							/>
+						</svg>
+						<span class="flex-1 ms-3 whitespace-nowrap">우리반 관리</span>
 					</RouterLink>
 				</li>
 			</ul>
