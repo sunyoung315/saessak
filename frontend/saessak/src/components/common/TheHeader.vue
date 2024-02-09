@@ -425,6 +425,15 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const messaging = firebase.messaging();
 
+messaging.onMessage((payload) => {
+    console.log('[클라이언트] 데이터 메시지 수신: ', payload.notification);
+
+    navigator.serviceWorker.controller.postMessage({
+        type: 'foreground',
+        payload: payload.notification
+    });
+});
+
 const tokenBox = ref({
 	token: '',
 });
