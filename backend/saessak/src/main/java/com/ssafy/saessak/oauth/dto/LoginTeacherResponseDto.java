@@ -15,4 +15,5 @@ public class LoginTeacherResponseDto {
     private String teacherProfile;
     private String accessToken;
     private String refreshToken;
+    private String classroomName;
 }
