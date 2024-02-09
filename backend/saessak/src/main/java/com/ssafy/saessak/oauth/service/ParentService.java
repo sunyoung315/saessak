@@ -21,7 +21,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class ParentService {
+public class  ParentService {
 
     private final ParentRepository parentRepository;
     private final UserRepository userRepository;
@@ -71,6 +71,7 @@ public class ParentService {
                     .kidId(kid.getId())
                     .kidName(kid.getNickname())
                     .kidProfile(kid.getProfile())
+                    .classroomName(kid.getClassroom().getClassroomName())
                     .build();
             kidResponseDtoList.add(kidResponseDto);
         }

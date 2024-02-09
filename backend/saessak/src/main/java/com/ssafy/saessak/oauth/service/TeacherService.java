@@ -71,6 +71,7 @@ public class TeacherService {
                 .teacherProfile(teacher.getProfile())
                 .accessToken(loginSuccessResponseDto.getAccessToken())
                 .refreshToken(loginSuccessResponseDto.getRefreshToken())
+                .classroomName(teacher.getClassroom().getClassroomName())
                 .build();
 
         return loginTeacherResponseDto;
