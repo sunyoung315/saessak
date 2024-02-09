@@ -52,7 +52,15 @@
 							<select
 								id="menu-type"
 								class="selection-input w-36"
-								v-model="menu.menuType"
+								:value="menu.menuType"
+								@change="
+									menu.menuType = $event.target.value;
+									menu.emptyMenuType = false;
+								"
+								:class="{
+									'border-2 border-red-500': menu.emptyMenuType,
+									shake: menu.shakeMenuType,
+								}"
 								required
 							>
 								<option value="점심">점심</option>
@@ -64,6 +72,11 @@
 								type="text"
 								class="input w-56"
 								v-model="menu.foodName"
+								@input="menu.emptyFoodName = false"
+								:class="{
+									'border-2 border-red-500': menu.emptyFoodName,
+									shake: menu.shakeFoodName,
+								}"
 								required
 							/>
 						</td>
@@ -159,7 +172,33 @@ const deleteOneRow = index => {
 
 const router = useRouter();
 
+const checkEmptyFields = () => {
+	let hasEmptyFields = false;
+	for (let menu of menuList.value) {
+		if (!menu.foodName) {
+			menu.emptyFoodName = true;
+			menu.shakeFoodName = true;
+			hasEmptyFields = true;
+			setTimeout(() => {
+				menu.shakeFoodName = false;
+			}, 1000);
+		}
+		if (!menu.menuType) {
+			menu.emptyMenuType = true;
+			menu.shakeMenuType = true;
+			hasEmptyFields = true;
+			setTimeout(() => {
+				menu.shakeMenuType = false;
+			}, 1000);
+		}
+	}
+	return hasEmptyFields;
+};
+
 const createMenuList = async menuList => {
+	if (checkEmptyFields()) {
+		return;
+	}
 	// proxy객체는 for...in구문, join 직접 사용 불가
 	menuList.forEach(menu => {
 		menu.foodAllergy = menu.foodAllergy
@@ -211,5 +250,26 @@ const createMenuList = async menuList => {
 }
 .checkbox-label {
 	@apply px-1 text-base;
+}
+@keyframes shake {
+	0% {
+		transform: translateX(0px);
+	}
+	25% {
+		transform: translateX(-5px);
+	}
+	50% {
+		transform: translateX(0px);
+	}
+	75% {
+		transform: translateX(5px);
+	}
+	100% {
+		transform: translateX(0px);
+	}
+}
+.shake {
+	animation: shake 0.2s;
+	animation-iteration-count: 3;
 }
 </style>
