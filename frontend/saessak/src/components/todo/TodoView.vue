@@ -38,4 +38,23 @@ const updateTodoList = () => {
 const todoList = ref([]);
 </script>
 
-<style scoped></style>
+<style scoped>
+::-webkit-scrollbar {
+	width: 0.5rem;
+}
+/* 스크롤바의 트랙(경로)부분 */
+::-webkit-scrollbar-track {
+	background-color: #dcdcdc;
+	border-radius: 1rem;
+	box-shadow: inset 0px 0px 5px white;
+}
+/* 스크롤바의 핸들(드래그하는 부분) */
+::-webkit-scrollbar-thumb {
+	background-color: #777;
+	border-radius: 1rem;
+}
+/* 스크롤바의 핸들을 호버 시 */
+::-webkit-scrollbar-thumb:hover {
+	background: #555;
+}
+</style>

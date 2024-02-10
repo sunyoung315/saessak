@@ -143,13 +143,13 @@ onMounted(async () => {
 	@apply flex flex-wrap justify-start;
 }
 .book-frame {
-	@apply bg-[url('@/assets/BoardFrame.png')] bg-book inline-block w-[13.77rem] h-[16.4rem] mx-3 my-4 bg-white rounded-lg bg-yellow-50 hover:bg-nav-yellow hover:bg-opacity-65;
+	@apply bg-[url('@/assets/board-frame.png')] bg-book inline-block w-[13.77rem] h-[16.4rem] mx-3 my-4 rounded-lg bg-yellow-50 hover:my-0.5;
 }
 .book-title-teacher {
 	@apply relative left-[4.4rem] top-[1.8rem] font-semibold text-base w-24 text-center;
 }
 .book-title-parent {
-	@apply relative left-[5.05rem] top-[1.9rem] mb-1 font-semibold text-sm;
+	@apply relative left-[5.5rem] top-[1.9rem] mb-1 font-semibold text-sm;
 }
 .book-photo-position {
 	@apply relative left-[2.5rem] top-[3.2rem];

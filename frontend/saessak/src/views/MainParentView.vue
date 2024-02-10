@@ -402,4 +402,23 @@ onMounted(async () => {
 .menu-item-foods {
 	@apply w-1/2 flex flex-col items-start justify-center ml-5;
 }
+
+::-webkit-scrollbar {
+	width: 0.4rem;
+}
+/* 스크롤바의 트랙(경로)부분 */
+::-webkit-scrollbar-track {
+	background-color: white;
+	border-radius: 1rem;
+	box-shadow: inset 0px 0px 5px white;
+}
+/* 스크롤바의 핸들(드래그하는 부분) */
+::-webkit-scrollbar-thumb {
+	background-color: #777;
+	border-radius: 1rem;
+}
+/* 스크롤바의 핸들을 호버 시 */
+::-webkit-scrollbar-thumb:hover {
+	background: #555;
+}
 </style>

@@ -19,7 +19,11 @@
 					</div>
 					<!-- VDatePicker -->
 					<div class="report-period">
-						<VDatePicker v-model.range="range">
+						<VDatePicker
+							v-model.range="range"
+							:select-attribute="selectAttribute"
+							:drag-attribute="selectDragAttribute"
+						>
 							<template #default="{ inputValue, inputEvents }">
 								<div class="flex justify-center items-center">
 									<div class="relative max-w-sm">
@@ -126,7 +130,7 @@
 					<div>확인하고 싶은 알림장 기간을 선택하세요 :)</div>
 				</template>
 				<template v-else>
-					<div class="whitespace-pre-line text-base">
+					<div class="h-[25rem] whitespace-pre-line text-base">
 						{{ summary }}
 					</div>
 				</template>
@@ -136,7 +140,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { useBoardStore } from '@/store/board';
 import OpenAI from 'openai';
 
@@ -161,6 +165,16 @@ const range = ref({
 	start: new Date(),
 	end: new Date(),
 });
+
+const selectAttribute = ref({ highlight: 'yellow' });
+
+const selectDragAttribute = computed(() => ({
+	highlight: 'yellow',
+	popover: {
+		visibility: 'hover',
+		isInteractive: false,
+	},
+}));
 
 const isCreating = ref(false);
 
@@ -304,5 +318,24 @@ const getSummaryBoard = async kidId => {
 	99% {
 		height: 18px;
 	}
+}
+
+::-webkit-scrollbar {
+	width: 0.5rem;
+}
+/* 스크롤바의 트랙(경로)부분 */
+::-webkit-scrollbar-track {
+	background-color: #dcdcdc;
+	border-radius: 1rem;
+	box-shadow: inset 0px 0px 5px white;
+}
+/* 스크롤바의 핸들(드래그하는 부분) */
+::-webkit-scrollbar-thumb {
+	background-color: #777;
+	border-radius: 1rem;
+}
+/* 스크롤바의 핸들을 호버 시 */
+::-webkit-scrollbar-thumb:hover {
+	background: #555;
 }
 </style>

@@ -289,27 +289,27 @@ onMounted(async () => {
 	@apply text-gray-700 bg-nav-purple bg-opacity-30 dark:bg-gray-700 dark:text-gray-400;
 }
 .col-name {
-	@apply pl-3 pr-6 py-3 w-1/12;
+	@apply pl-3 pr-6 py-3 w-1/12 text-lg;
 }
 .col-date {
-	@apply px-6 py-3 w-1/6;
+	@apply px-6 py-3 w-1/6 text-lg;
 }
 .one-row {
 	@apply bg-white border-b h-20;
 }
 .kid-name {
-	@apply pl-3 pr-6 py-4 text-gray-900 whitespace-nowrap;
+	@apply pl-3 pr-6 py-4 text-gray-900 text-lg whitespace-nowrap;
 }
 .normal-value {
-	@apply w-20 my-2 mr-2 p-2 border rounded-md text-center text-gray-900 font-medium;
+	@apply w-20 my-2 mr-2 p-2 border shadow rounded-md text-center text-gray-900 font-bold;
 }
 .miss-value {
-	@apply w-20 my-2 mr-2 p-2 border rounded-md text-center text-gray-400 font-medium;
+	@apply w-20 my-2 mr-2 p-2 border shadow rounded-md text-center text-gray-400 font-medium;
 }
 .no-value {
-	@apply w-20 my-2 mr-2 p-2 border rounded-md text-center text-red-600 font-medium;
+	@apply w-20 my-2 mr-2 p-2 border shadow rounded-md text-center text-red-600 font-bold;
 }
 .button {
-	@apply w-20 my-2 mr-2 p-2 border rounded-md bg-dark-navy text-center text-gray-100 font-medium;
+	@apply w-20 my-2 mr-2 p-2 border shadow rounded-md bg-dark-navy text-center text-gray-100 font-medium;
 }
 </style>

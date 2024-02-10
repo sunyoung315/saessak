@@ -11,7 +11,7 @@
     @apply text-3xl mt-10 ml-10 mb-3 mr-5 font-extrabold inline-block;
   }
   .view-frame {
-    @apply min-h-screen mx-10 mb-10 p-2 w-auto border border-gray-200 shadow rounded-lg;
+    @apply min-h-screen mx-10 mb-10 p-6 w-auto border border-gray-200 shadow rounded-lg;
   }
   .group-btn {
     @apply inline-flex rounded-md shadow-sm ml-6 mt-7;
