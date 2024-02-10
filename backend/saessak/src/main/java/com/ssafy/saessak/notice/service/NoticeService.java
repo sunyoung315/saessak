@@ -25,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -60,10 +61,10 @@ public class NoticeService {
                     .build();
             noticeResponseDtoList.add(noticeResponseDto);
         }
-
+        Collections.sort(noticeResponseDtoList);
 
         // 고정 안 한 공지사항 나중에 추가
-        Pageable pageable = PageRequest.of(pageNo, 20-noticeResponseDtoList.size(), Sort.by(Sort.Direction.DESC, "noticeId"));
+        Pageable pageable = PageRequest.of(pageNo, 10-noticeResponseDtoList.size(), Sort.by(Sort.Direction.DESC, "noticeId"));
         Page<Notice> noticeList = noticeRepository.findAllByClassroom(classroom, pageable);
         for(Notice n : noticeList){
             boolean flag = fixRepository.findByNoticeAndUser(n, user).isPresent();
@@ -87,7 +88,7 @@ public class NoticeService {
                 .build();
     }
 
-    // 20개씩 페이징
+    //10개씩 페이징
     public NoticeResponseListDto getAllParentNotice(Long userId, int pageNo) {
 
         User user = userRepository.findById(userId).get();
@@ -109,10 +110,10 @@ public class NoticeService {
                     .build();
             noticeResponseDtoList.add(noticeResponseDto);
         }
-
+        Collections.sort(noticeResponseDtoList);
 
         // 고정 안 한 공지사항 나중에 추가
-        Pageable pageable = PageRequest.of(pageNo, 20-noticeResponseDtoList.size(), Sort.by(Sort.Direction.DESC, "noticeId"));
+        Pageable pageable = PageRequest.of(pageNo, 10-noticeResponseDtoList.size(), Sort.by(Sort.Direction.DESC, "noticeId"));
         Page<Notice> noticeList = noticeRepository.findAllByClassroom(classroom, pageable);
         for(Notice n : noticeList){
             boolean flag = fixRepository.findByNoticeAndUser(n, user).isPresent();
