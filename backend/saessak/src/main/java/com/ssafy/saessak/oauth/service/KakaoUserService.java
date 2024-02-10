@@ -24,7 +24,6 @@ public class KakaoUserService {
     private final UserRepository userRepository;
     private final RefreshTokenService refreshTokenService;
     private final JwtTokenProvider jwtTokenProvider;
-    private final AuthenticationService authenticationService;
 
     public boolean checkUser(KakaoUserResponse kakaoUserResponse) {
         String userEmail = kakaoUserResponse.kakaoAccount().email();
