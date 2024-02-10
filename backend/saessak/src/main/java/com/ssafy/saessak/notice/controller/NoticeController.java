@@ -51,12 +51,11 @@ public class NoticeController {
     }
 
     @Operation(summary = "공지사항 등록")
-    @PostMapping(value = "/{classroomId}", produces = MediaType.APPLICATION_JSON_VALUE , consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ResultResponse> addNotice(@PathVariable("classroomId") Long classroomId,
-                                                    @RequestParam("title") String title,
+    @PostMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE , consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ResultResponse> addNotice(@RequestParam("title") String title,
                                                     @RequestParam("content") String content,
                                                     @RequestPart(value = "noticeFile", required = false) MultipartFile noticeFile) throws IOException {
-        Long noticeId = noticeService.addNotice(classroomId, title, content, noticeFile);
+        Long noticeId = noticeService.addNotice(title, content, noticeFile);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, noticeId));
     }
 
