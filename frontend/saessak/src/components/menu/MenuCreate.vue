@@ -172,10 +172,11 @@ const deleteOneRow = index => {
 
 const router = useRouter();
 
+// 널값처리
 const checkEmptyFields = () => {
 	let hasEmptyFields = false;
 	for (let menu of menuList.value) {
-		if (!menu.foodName) {
+		if (!menu.foodName.trim()) {
 			menu.emptyFoodName = true;
 			menu.shakeFoodName = true;
 			hasEmptyFields = true;
@@ -183,7 +184,7 @@ const checkEmptyFields = () => {
 				menu.shakeFoodName = false;
 			}, 1000);
 		}
-		if (!menu.menuType) {
+		if (!menu.menuType.trim()) {
 			menu.emptyMenuType = true;
 			menu.shakeMenuType = true;
 			hasEmptyFields = true;
@@ -256,13 +257,13 @@ const createMenuList = async menuList => {
 		transform: translateX(0px);
 	}
 	25% {
-		transform: translateX(-5px);
+		transform: translateX(-2px);
 	}
 	50% {
 		transform: translateX(0px);
 	}
 	75% {
-		transform: translateX(5px);
+		transform: translateX(2px);
 	}
 	100% {
 		transform: translateX(0px);
