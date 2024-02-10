@@ -17,4 +17,5 @@ public interface BoardRepository extends JpaRepository<Board,Long> {
     Optional<List<Board>> findByKidAndBoardDateBetween(Kid kid, LocalDate start, LocalDate end);
     Optional<Board> findFirstByKidOrderByBoardDateDesc(Kid kid);
     Optional<List<Board>> findByKidAndBoardDateGreaterThanEqualAndBoardDateLessThanEqualOrderByBoardDate(Kid kid, LocalDate startDate, LocalDate endDate);
+    Optional<Board> findFirstByKidAndBoardDate(Kid kid, LocalDate date);
 }
