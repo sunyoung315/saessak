@@ -13,9 +13,9 @@
 			startWeekOnSunday
 		>
 			<template #title="{ view }">
-				<span v-if="view.id === 'month'"
-					>{{ view.startDate.format('MMMM YYYY') }}년</span
-				>
+				<span v-if="view.id === 'month'">{{
+					view.startDate.format('YYYY년 MMMM')
+				}}</span>
 			</template>
 			<template #cell-date="{ date, view }">
 				<div v-if="view === 'month'">
@@ -131,24 +131,24 @@ onMounted(async () => {
 	@apply border-x border-b border-white rounded-b bg-nav-blue bg-opacity-50 font-bold text-gray-500 pb-2;
 }
 :deep(.vuecal__event.no-event) {
-	@apply border border-white rounded bg-nav-red bg-opacity-50 font-bold text-gray-900 py-5;
+	@apply rounded shadow-md bg-nav-red bg-opacity-50 font-bold text-gray-900 py-5;
 } */
 
 /* white & black version */
 :deep(.vuecal__event.in-event) {
-	@apply rounded-t font-bold  text-gray-900 pt-2;
+	@apply rounded-t text-lg font-bold  text-gray-900 pt-2;
 }
 :deep(.vuecal__event.out-event) {
-	@apply rounded-b font-bold shadow-md text-gray-900 pb-2;
+	@apply rounded-b text-lg font-bold shadow-md text-gray-900 pb-2;
 }
 :deep(.vuecal__event.false-event) {
-	@apply rounded-b font-bold shadow-md text-gray-400 text-sm pt-0.5 pb-2.5;
+	@apply rounded-b text-lg font-bold shadow-md text-gray-400 pt-0.5 pb-2.5;
 }
 :deep(.vuecal__event.no-event) {
-	@apply rounded-md font-bold shadow-md text-red-600 py-5;
+	@apply rounded-md text-lg font-bold shadow-md text-red-600 py-5;
 }
 :deep(.vuecal__cell) {
-	@apply h-28;
+	@apply h-32;
 }
 :deep(.vuecal__cell--selected) {
 	@apply bg-nav-purple bg-opacity-10;

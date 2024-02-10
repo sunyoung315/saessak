@@ -274,4 +274,28 @@ onMounted(async () => {
 .group-button-right-item-focus {
 	@apply h-11 px-6 py-2 text-base border border-gray-200 rounded-e-lg z-10 ring-2 ring-dark-navy text-dark-navy font-bold bg-gray-100;
 }
+
+.shake {
+	animation: shake 0.2s;
+	animation-iteration-count: 3;
+}
+
+::-webkit-scrollbar {
+	width: 0.5rem;
+}
+/* 스크롤바의 트랙(경로)부분 */
+::-webkit-scrollbar-track {
+	background-color: #dcdcdc;
+	border-radius: 1rem;
+	box-shadow: inset 0px 0px 5px white;
+}
+/* 스크롤바의 핸들(드래그하는 부분) */
+::-webkit-scrollbar-thumb {
+	background-color: #777;
+	border-radius: 1rem;
+}
+/* 스크롤바의 핸들을 호버 시 */
+::-webkit-scrollbar-thumb:hover {
+	background: #555;
+}
 </style>

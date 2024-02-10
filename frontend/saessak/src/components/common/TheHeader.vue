@@ -324,7 +324,7 @@ onMounted(() => {
 	// isLogin = token == null ? false : true
 	// isTeacher = store.isTeacher;//sTeacher
 	// console.log('나는 선생님인가? ' + isTeacher)
-  console.log(isLogin)
+	console.log(isLogin);
 	if (isLogin) {
 		if (!isTeacher) {
 			kidList.value = JSON.parse(localStorage.getItem('kidList'));
@@ -426,13 +426,13 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const messaging = firebase.messaging();
 
-messaging.onMessage((payload) => {
-    console.log('[클라이언트] 데이터 메시지 수신: ', payload.notification);
+messaging.onMessage(payload => {
+	console.log('[클라이언트] 데이터 메시지 수신: ', payload.notification);
 
-    navigator.serviceWorker.controller.postMessage({
-        type: 'foreground',
-        payload: payload.notification
-    });
+	navigator.serviceWorker.controller.postMessage({
+		type: 'foreground',
+		payload: payload.notification,
+	});
 });
 
 const tokenBox = ref({
@@ -555,5 +555,24 @@ const kidChange = idx => {
 <style scoped>
 .header-frame {
 	@apply h-20 bg-gray-50 shadow-md;
+}
+
+::-webkit-scrollbar {
+	width: 0.4rem;
+}
+/* 스크롤바의 트랙(경로)부분 */
+::-webkit-scrollbar-track {
+	background-color: #dcdcdc;
+	border-radius: 1rem;
+	box-shadow: inset 0px 0px 5px white;
+}
+/* 스크롤바의 핸들(드래그하는 부분) */
+::-webkit-scrollbar-thumb {
+	background-color: #777;
+	border-radius: 1rem;
+}
+/* 스크롤바의 핸들을 호버 시 */
+::-webkit-scrollbar-thumb:hover {
+	background: #555;
 }
 </style>

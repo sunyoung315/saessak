@@ -12,8 +12,21 @@
 			<div class="block mb-5">
 				<span class="content-title">이름</span>
 				<div class="block mt-1 ml-32 mb-10">
-					<select id="name" class="selection-input" v-model="kidId" required>
-						<template v-for="kid in userStore.kidsList" :key="kid.kidId">
+					<select
+						id="name"
+						class="selection-input"
+						:value="kidId"
+						@change="
+							kidId = $event.target.value;
+							emptyKidId = false;
+						"
+						:class="{
+							'border-2 border-red-500': emptyKidId,
+							shake: shakeKidId,
+						}"
+						required
+					>
+						<template v-for="kid in boardStore.kidList" :key="kid.kidId">
 							<option :value="kid.kidId">{{ kid.kidName }}</option>
 						</template>
 					</select>
@@ -26,6 +39,11 @@
 					class="content-box mb-10 p-4 text-lg"
 					rows="6"
 					v-model="newBoard.boardContent"
+					@input="emptyContent = false"
+					:class="{
+						'!border-2 !border-red-500': emptyContent,
+						shake: shakeContent,
+					}"
 					required
 				></textarea>
 			</label>
@@ -249,11 +267,11 @@
 import { onMounted, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { createBoard } from '@/api/board';
-import { useUserStore } from '@/store/user';
+// import { useUserStore } from '@/store/user';
 import { useBoardStore } from '@/store/board';
 
 const router = useRouter();
-const userStore = useUserStore();
+// const userStore = useUserStore();
 const boardStore = useBoardStore();
 
 // '목록'으로 라우팅
@@ -263,7 +281,8 @@ const goBoardList = () => {
 
 // 작성할 수 있는 반 아이 리스트
 onMounted(async () => {
-	await userStore.getKidsList();
+	await boardStore.getKidList();
+	// await userStore.getKidsList();
 });
 
 const kidId = ref(0);
@@ -380,8 +399,39 @@ const buttonClass = button => {
 };
 ///////////////////////////////////////////////
 
+const emptyKidId = ref(false);
+const shakeKidId = ref(false);
+
+const emptyContent = ref(false);
+const shakeContent = ref(false);
+
+// 널값처리
+const checkEmptyFields = () => {
+	let hasEmptyFields = false;
+	if (!newBoard.value.kidId) {
+		emptyKidId.value = true;
+		shakeKidId.value = true;
+		hasEmptyFields = true;
+		setTimeout(() => {
+			shakeKidId.value = false;
+		}, 1000);
+	}
+	if (!newBoard.value.boardContent.trim()) {
+		emptyContent.value = true;
+		shakeContent.value = true;
+		hasEmptyFields = true;
+		setTimeout(() => {
+			shakeContent.value = false;
+		}, 1000);
+	}
+	return hasEmptyFields;
+};
+
 // 알림장 등록 요청
 const registBoard = () => {
+	if (checkEmptyFields()) {
+		return;
+	}
 	createBoard(newBoard.value);
 	router.push({ name: 'BoardList' });
 };
@@ -441,5 +491,46 @@ const registBoard = () => {
 }
 .number-input {
 	@apply relative flex items-center;
+}
+
+@keyframes shake {
+	0% {
+		transform: translateX(0px);
+	}
+	25% {
+		transform: translateX(-2px);
+	}
+	50% {
+		transform: translateX(0px);
+	}
+	75% {
+		transform: translateX(2px);
+	}
+	100% {
+		transform: translateX(0px);
+	}
+}
+.shake {
+	animation: shake 0.2s;
+	animation-iteration-count: 3;
+}
+
+::-webkit-scrollbar {
+	width: 0.5rem;
+}
+/* 스크롤바의 트랙(경로)부분 */
+::-webkit-scrollbar-track {
+	background-color: #dcdcdc;
+	border-radius: 1rem;
+	box-shadow: inset 0px 0px 5px white;
+}
+/* 스크롤바의 핸들(드래그하는 부분) */
+::-webkit-scrollbar-thumb {
+	background-color: #777;
+	border-radius: 1rem;
+}
+/* 스크롤바의 핸들을 호버 시 */
+::-webkit-scrollbar-thumb:hover {
+	background: #555;
 }
 </style>
