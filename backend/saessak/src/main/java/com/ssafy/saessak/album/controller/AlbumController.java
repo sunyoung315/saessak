@@ -26,6 +26,13 @@ public class AlbumController {
 
     private final AlbumService albumService;
 
+//    @Operation(summary = "albumId로 조회")
+//    @GetMapping("/{albumId}")
+//    public ResponseEntity<ResultResponse> getAlbumUsingAlbumId() {
+//
+//        return
+//    }
+
     @Operation(summary = "반 앨범 전체 조회(선생님)")
     @GetMapping("/classroom")
     public ResponseEntity<ResultResponse> getTeacherClassAlbumList() {
