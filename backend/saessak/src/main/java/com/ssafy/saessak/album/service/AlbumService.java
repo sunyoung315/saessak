@@ -9,6 +9,7 @@ import com.ssafy.saessak.album.dto.KidAlbumResponseDto;
 import com.ssafy.saessak.album.repository.AlbumRepository;
 import com.ssafy.saessak.album.repository.FileRepository;
 import com.ssafy.saessak.exception.code.ExceptionCode;
+import com.ssafy.saessak.exception.model.NotFoundException;
 import com.ssafy.saessak.exception.model.UserException;
 import com.ssafy.saessak.oauth.service.AuthenticationService;
 import com.ssafy.saessak.user.domain.Classroom;
@@ -36,7 +37,13 @@ public class AlbumService {
     private final KidRepository kidRepository;
     private final AuthenticationService authenticationService;
 
-    //엘범 조회W
+    public AlbumResponseDto getAlbumUsingId (Long albumId) {
+        Optional<Album> albumResult = albumRepository.findById(albumId);
+        if(albumResult.isEmpty()) throw new NotFoundException(ExceptionCode.ALBUM_NOT_FOUND);
+        return makeAlbumResponseDto(albumResult.get());
+    }
+
+    //엘범 조회
     public List<AlbumResponseDto> getTeacherClassAlbumList (){
         User user = authenticationService.getUserByAuthentication();
         Classroom classroom = user.getClassroom();
