@@ -26,6 +26,13 @@ public class AlbumController {
 
     private final AlbumService albumService;
 
+    @Operation(summary = "가장 최근 엘범 조회 ( 선생님 ) ")
+    @GetMapping("/class/current")
+    public ResponseEntity<ResultResponse> getClassCurrentAlbum(){
+        AlbumResponseDto albumResponseDto = albumService.getTeacherCurrentAlbum();
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, albumResponseDto));
+    }
+
     @Operation(summary = "albumId로 조회")
     @GetMapping("/detail/{albumId}")
     public ResponseEntity<ResultResponse> getAlbumUsingId(@PathVariable(name = "albumId") Long albumId){

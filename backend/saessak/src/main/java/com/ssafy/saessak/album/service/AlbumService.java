@@ -37,6 +37,14 @@ public class AlbumService {
     private final KidRepository kidRepository;
     private final AuthenticationService authenticationService;
 
+    public AlbumResponseDto getTeacherCurrentAlbum() {
+        User user = authenticationService.getUserByAuthentication();
+        Classroom classroom = user.getClassroom();
+        Optional<Album> albumResult = albumRepository.findFirstByClassroomAndKidIsNull(classroom);
+        if(albumResult.isEmpty()) throw new NotFoundException(ExceptionCode.ALBUM_NOT_FOUND);
+        return makeAlbumResponseDto(albumResult.get());
+    }
+
     public AlbumResponseDto getAlbumUsingId (Long albumId) {
         Optional<Album> albumResult = albumRepository.findById(albumId);
         if(albumResult.isEmpty()) throw new NotFoundException(ExceptionCode.ALBUM_NOT_FOUND);
