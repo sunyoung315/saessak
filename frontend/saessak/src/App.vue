@@ -15,7 +15,7 @@ const {
 	setAlarmFlag,
 } = store;
 const lStore = JSON.parse(localStorage.getItem('loginStore'));
-console.log("loginStore : " + loginStore)
+// console.log("loginStore : " + loginStore)
 if(lStore == null){
     setlogout()
     setCurkid(-1)
