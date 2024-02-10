@@ -1,8 +1,8 @@
 <!-- eslint-disable prettier/prettier -->
 <template>
-  <div class="header-frame flex justify-between items-center">
+  <div class="header-frame top-0 z-40 sticky flex justify-between items-center">
     <RouterLink to="/">
-      <div class="flex items-end mx-2">
+      <div @click="changeColor()" class="flex items-end mx-2">
         <img src="/saessak-logo.png" alt="logo" class="h-16  px-3">
         <span class="text-4xl font-extrabold">새싹일기</span>
       </div>
@@ -241,7 +241,7 @@
 </template>
 
 <script setup>
-import { onMounted, nextTick, shallowRef, ref, watch } from 'vue';
+import { onMounted, nextTick, shallowRef, ref, watch, defineEmits  } from 'vue';
 import { initFlowbite } from 'flowbite';
 import { kidRegister, getkidList } from '@/api/user';
 import { kakaoLogin } from '@/api/oauth';
@@ -276,6 +276,7 @@ const {
 
 const store = loginStore();
 const chStore = chatStore();
+const emits = defineEmits(['headerClick']); // 로고 클릭 이벤트
 
 const router = useRouter();
 // const isLogin = ref(false)
@@ -550,6 +551,11 @@ const kidChange = idx => {
 	kidList.value.unshift(tmp);
 	location.reload();
 };
+
+const changeColor = () => {// 로고 클릭시 이벤트 전달
+  // console.log("emits 전달")
+  emits('headerClick', "click")
+}
 </script>
 
 <style scoped>
