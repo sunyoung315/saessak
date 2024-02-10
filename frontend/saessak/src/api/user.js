@@ -15,7 +15,6 @@ function teacherLogin(sucess, fail){
     local.post(`${url}/teacher/login`).then(sucess).catch(fail);
 }
 
-
 // (선생님) 나의 반 아이들 조회하기
 function getClassKids(sucess, fail){
     local.get(`${url}/kid/list`, config).then(sucess).catch(fail);

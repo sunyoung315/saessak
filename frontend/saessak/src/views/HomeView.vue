@@ -23,6 +23,7 @@ const {
 	setKidlist,
 	setProfile,
 	setTeachername,
+	setClassroomname,
 	setCurkid,
 	setAlarmFlag,
 } = store;
@@ -181,6 +182,7 @@ const KLogin = input => {
 		localStorage.setItem('accessToken', input.data.accessToken);
 		localStorage.setItem('refreshToken', input.data.refreshToken);
 		setTeachername(input.data.teacherName);
+		setClassroomname(input.data.classroomName);
 		setProfile(input.data.teacherProfile);
 		// sessionStorage.setItem('teacherName', input.data.teacherName)
 		// sessionStorage.setItem('teacherId', input.data.teacherId)
