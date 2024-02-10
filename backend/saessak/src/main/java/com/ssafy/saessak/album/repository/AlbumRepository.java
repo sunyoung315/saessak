@@ -22,5 +22,5 @@ public interface AlbumRepository extends JpaRepository<Album,Long> {
     
     Optional<Album> findFirstByKidOrderByAlbumDateDesc(Kid kid);
 
-    Optional<Album> findFirstByClassroomAndKidIsNull(Classroom classroom);
+    Optional<Album> findFirstByClassroomAndKidIsNullOrderByAlbumDateDesc(Classroom classroom);
 }

@@ -40,7 +40,7 @@ public class AlbumService {
     public AlbumResponseDto getTeacherCurrentAlbum() {
         User user = authenticationService.getUserByAuthentication();
         Classroom classroom = user.getClassroom();
-        Optional<Album> albumResult = albumRepository.findFirstByClassroomAndKidIsNull(classroom);
+        Optional<Album> albumResult = albumRepository.findFirstByClassroomAndKidIsNullOrderByAlbumDateDesc(classroom);
         if(albumResult.isEmpty()) throw new NotFoundException(ExceptionCode.ALBUM_NOT_FOUND);
         return makeAlbumResponseDto(albumResult.get());
     }
