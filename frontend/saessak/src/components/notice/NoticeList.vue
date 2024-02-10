@@ -207,5 +207,27 @@ function startFix(notice) {
         </tbody>
       </table>
     </div>
+    <div class="flex justify-center text-2xl font-bold">
+      <button :disabled="paging.pageNo === 0" :class="{ 'text-gray-200': paging.pageNo === 0 }">
+        ←
+      </button>
+
+      <div v-for="index in parseInt(noticeList.length / 10) + 1">
+        <button
+          :key="index"
+          class="m-2 rounded-lg p-2"
+          :class="{ 'bg-nav-orange': paging.pageNo === index }"
+          @click="paging.pageNo = index"
+        >
+          {{ index }}
+        </button>
+      </div>
+      <button
+        :disabled="paging.pageNo === noticeList.length / 10"
+        :class="{ 'text-gray-200': paging.pageNo === parseInt(noticeList.length / 10) }"
+      >
+        →
+      </button>
+    </div>
   </div>
 </template>

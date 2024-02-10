@@ -1,445 +1,177 @@
 <template>
-	<div class="view-frame p-1.5">
-		<div class="flex justify-end items-center mb-10">
-			<button type="button" @click="registBoard()" class="btn mt-7 mr-4 mb-3">
-				등록
-			</button>
-			<button type="button" @click="goBoardList()" class="btn mt-7 mr-7 mb-3">
-				목록
-			</button>
-		</div>
-		<div>
-			<div class="block mb-5">
-				<span class="content-title">이름</span>
-				<div class="block mt-1 ml-32 mb-10">
-					<select id="name" class="selection-input" v-model="kidId" required>
-						<template v-for="kid in userStore.kidsList" :key="kid.kidId">
-							<option :value="kid.kidId">{{ kid.kidName }}</option>
-						</template>
-					</select>
-				</div>
-			</div>
-			<label class="block mt-2 mb-5">
-				<span class="content-title">내용</span>
-				<textarea
-					id="contents"
-					class="content-box mb-10 p-4 text-lg"
-					rows="6"
-					v-model="newBoard.boardContent"
-					required
-				></textarea>
-			</label>
-		</div>
-		<span class="content-title">건강기록 (선택)</span>
-		<div class="content-box mb-0 p-2">
-			<div class="record-flex">
-				<span class="record-title">체온 체크 </span>
-				<div class="number-input">
-					<button type="button" @click="decrementTemp" class="minus-button">
-						<svg
-							class="button-icon"
-							aria-hidden="true"
-							xmlns="http://www.w3.org/2000/svg"
-							fill="none"
-							viewBox="0 0 18 2"
-						>
-							<path
-								stroke="currentColor"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M1 1h16"
-							/>
-						</svg>
-					</button>
-					<input
-						type="text"
-						v-model="newBoard.boardTemperature"
-						class="record-content"
-					/>
-					<button type="button" @click="incrementTemp" class="plus-button">
-						<svg
-							class="button-icon"
-							aria-hidden="true"
-							xmlns="http://www.w3.org/2000/svg"
-							fill="none"
-							viewBox="0 0 18 18"
-						>
-							<path
-								stroke="currentColor"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M9 1v16M1 9h16"
-							/>
-						</svg>
-					</button>
-				</div>
-				<div class="unit">°C</div>
-			</div>
-			<div class="record-flex">
-				<span class="record-title">수면 시간 </span>
-				<div class="number-input">
-					<button type="button" @click="decrementSleep" class="minus-button">
-						<svg
-							class="button-icon"
-							aria-hidden="true"
-							xmlns="http://www.w3.org/2000/svg"
-							fill="none"
-							viewBox="0 0 18 2"
-						>
-							<path
-								stroke="currentColor"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M1 1h16"
-							/>
-						</svg>
-					</button>
-					<input
-						type="text"
-						v-model="newBoard.boardSleepTime"
-						class="record-content"
-					/>
-					<button type="button" @click="incrementSleep" class="plus-button">
-						<svg
-							class="button-icon"
-							aria-hidden="true"
-							xmlns="http://www.w3.org/2000/svg"
-							fill="none"
-							viewBox="0 0 18 18"
-						>
-							<path
-								stroke="currentColor"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M9 1v16M1 9h16"
-							/>
-						</svg>
-					</button>
-				</div>
-				<div class="unit">시간</div>
-			</div>
-			<div>
-				<span class="record-title">배변 상태</span>
-				<div class="group-button" role="group">
-					<button
-						type="button"
-						@click="isFirst()"
-						:class="buttonClass('first')"
-						class="group-button-left"
-					>
-						보통
-					</button>
-					<button
-						type="button"
-						@click="isSecond()"
-						:class="buttonClass('second')"
-						class="group-button-center"
-					>
-						묽음
-					</button>
-					<button
-						type="button"
-						@click="isThird()"
-						:class="buttonClass('third')"
-						class="group-button-right"
-					>
-						딱딱함
-					</button>
-				</div>
-			</div>
-			<div class="record-flex">
-				<span class="record-title">키/몸무게</span>
-				<div class="number-input">
-					<div class="number-input">
-						<button type="button" @click="decrementTall" class="minus-button">
-							<svg
-								class="button-icon"
-								aria-hidden="true"
-								xmlns="http://www.w3.org/2000/svg"
-								fill="none"
-								viewBox="0 0 18 2"
-							>
-								<path
-									stroke="currentColor"
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									stroke-width="2"
-									d="M1 1h16"
-								/>
-							</svg>
-						</button>
-						<input
-							type="text"
-							v-model="newBoard.boardTall"
-							class="record-content"
-						/>
-						<button type="button" @click="incrementTall" class="plus-button">
-							<svg
-								class="button-icon"
-								aria-hidden="true"
-								xmlns="http://www.w3.org/2000/svg"
-								fill="none"
-								viewBox="0 0 18 18"
-							>
-								<path
-									stroke="currentColor"
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									stroke-width="2"
-									d="M9 1v16M1 9h16"
-								/>
-							</svg>
-						</button>
-					</div>
-				</div>
-				<div class="unit">cm</div>
-				<div class="number-input">
-					<button type="button" @click="decrementWeight" class="minus-button">
-						<svg
-							class="button-icon"
-							aria-hidden="true"
-							xmlns="http://www.w3.org/2000/svg"
-							fill="none"
-							viewBox="0 0 18 2"
-						>
-							<path
-								stroke="currentColor"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M1 1h16"
-							/>
-						</svg>
-					</button>
-					<input
-						type="text"
-						v-model="newBoard.boardWeight"
-						class="record-content"
-					/>
-					<button type="button" @click="incrementWeight" class="plus-button">
-						<svg
-							class="button-icon"
-							aria-hidden="true"
-							xmlns="http://www.w3.org/2000/svg"
-							fill="none"
-							viewBox="0 0 18 18"
-						>
-							<path
-								stroke="currentColor"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M9 1v16M1 9h16"
-							/>
-						</svg>
-					</button>
-				</div>
-				<div class="unit">kg</div>
-			</div>
-		</div>
-		<br /><br />
-	</div>
+  <div class="view-frame">
+    <div class="flex justify-end items-center">
+      <button type="button" @click="goNoticeList" class="btn mt-5 mr-7 mb-3">목록</button>
+      <button type="button" @click="submitNotice" class="btn mt-5 mr-7 mb-3">작성</button>
+    </div>
+
+    <div class="block mt-2 mb-5 w-full">
+      <span class="content-title">제목</span>
+      <input
+        id="title"
+        class="content-box mb-10 p-4 text-lg"
+        rows="6"
+        v-model="notice.noticeTitle"
+      />
+    </div>
+
+    <div class="block mt-2 mb-5 w-full">
+      <span class="content-title">내용</span>
+      <textarea
+        id="content"
+        class="content-box mb-10 p-4 text-lg"
+        rows="6"
+        v-model="notice.noticeContent"
+      ></textarea>
+    </div>
+
+    <div class="block mt-2 mb-5 w-full relative">
+      <span class="content-title">파일</span>
+      <div class="content-box-flex w-full mb-10 p-4 text-lg flex justify-between items-center">
+        <div class="flex items-center ml-2">
+          <!-- SVG 아이콘 클릭 시 openFileDialog 함수 호출 -->
+          <svg
+            @click="openFileDialog"
+            xmlns="http://www.w3.org/2000/svg"
+            width="17"
+            height="18"
+            viewBox="0 0 17 18"
+            fill="none"
+          >
+            <path
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M15.7916 11.5833C16.3258 11.5833 16.7661 11.9855 16.8263 12.5035L16.8333 12.625V16.7917C16.8333 17.3259 16.4312 17.7662 15.9131 17.8263L15.7916 17.8333H1.20829C0.674089 17.8333 0.233806 17.4312 0.173634 16.9131L0.166626 16.7917V12.625C0.166626 12.0497 0.632996 11.5833 1.20829 11.5833C1.7425 11.5833 2.18278 11.9855 2.24295 12.5035L2.24996 12.625V15.75H14.75V12.625C14.75 12.0908 15.1521 11.6505 15.6701 11.5903L15.7916 11.5833ZM8.49996 0.125C9.07526 0.125 9.54163 0.59137 9.54163 1.16667L9.54267 10.1083L12.9717 6.6801C13.3472 6.30459 13.9381 6.27571 14.3467 6.59344L14.4449 6.6801C14.8204 7.0556 14.8493 7.64647 14.5315 8.0551L14.4449 8.15324L9.23653 13.3616C8.86102 13.7371 8.27016 13.766 7.86152 13.4482L7.76339 13.3616L2.55506 8.15324C2.14826 7.74644 2.14826 7.08689 2.55506 6.6801C2.93056 6.30459 3.52143 6.27571 3.93006 6.59344L4.0282 6.6801L7.45933 10.1104L7.45829 1.16667C7.45829 0.59137 7.92466 0.125 8.49996 0.125Z"
+              fill="black"
+            />
+          </svg>
+
+          <span :class="{ 'text-gray-500': !fileName, 'ml-4': true }">{{
+            fileName || '첨부파일 없음'
+          }}</span>
+          <input type="file" @change="handleFileUpload" class="hidden" ref="fileInput" />
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup>
-import { onMounted, ref, watch } from 'vue';
-import { useRouter } from 'vue-router';
-import { createBoard } from '@/api/board';
-import { useUserStore } from '@/store/user';
-import { useBoardStore } from '@/store/board';
+import axios from 'axios'
+import { ref, onMounted } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
+import { noticeDetail } from '@/api/notice'
 
-const router = useRouter();
-const userStore = useUserStore();
-const boardStore = useBoardStore();
+const router = useRouter()
+const route = useRoute()
+const noticeId = ref(route.params.noticeId)
+const notice = ref({})
+const fileName = ref('')
+const fileInput = ref(null)
 
-// '목록'으로 라우팅
-const goBoardList = () => {
-	router.push({ name: 'BoardList' });
-};
+onMounted(() => {})
 
-// 작성할 수 있는 반 아이 리스트
-onMounted(async () => {
-	await userStore.getKidsList();
-});
+// 목록으로 이동하는 함수
+const goNoticeList = () => {
+  router.push({ name: 'NoticeList' })
+}
 
-const kidId = ref(0);
-// 새로운 알림장 변수
-const newBoard = ref({
-	kidId,
-	boardDate: new Date(),
-	boardContent: '',
-	boardTemperature: 0.0,
-	boardSleepTime: 0.0,
-	boardPoopStatus: '',
-	boardTall: 0.0,
-	boardWeight: 0.0,
-});
+// 파일 업로드 처리 함수
+const handleFileUpload = (event) => {
+  if (event.target.files.length > 0) {
+    fileName.value = event.target.files[0].name
+    notice.value.noticeFile = event.target.files[0]
+  }
+}
 
-// 아이 선택하면 최근 키/체중 가져오기
-watch(kidId, async newVal => {
-	await boardStore.getCurrentBoard(newVal);
-	if (!boardStore.noContent) {
-		newBoard.value.boardTall = boardStore.oneBoard.boardTall;
-		newBoard.value.boardWeight = boardStore.oneBoard.boardWeight;
-	} else {
-		newBoard.value.boardTall = 0;
-		newBoard.value.boardWeight = 0;
-	}
-});
+// 공지사항 제출 함수
+const submitNotice = async () => {
+  console.log(notice.value.noticeTitle)
+  console.log(notice.value.noticeContent)
+  console.log(notice.value.noticeFile)
 
-// 증감 버튼 함수 ////////////////////////////////////
-const incrementTemp = () => {
-	newBoard.value.boardTemperature = parseFloat(
-		parseFloat(newBoard.value.boardTemperature + 0.1).toFixed(1),
-	);
-};
+  const formData = new FormData()
+  formData.append('title', notice.value.noticeTitle)
+  formData.append('content', notice.value.noticeContent)
+  if (notice.value.noticeFile) {
+    formData.append('file', notice.value.noticeFile)
+  }
 
-const decrementTemp = () => {
-	newBoard.value.boardTemperature = parseFloat(
-		parseFloat(newBoard.value.boardTemperature - 0.1).toFixed(1),
-	);
-};
+  try {
+    await axios.post('/api/notice/', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+    router.push({ name: 'NoticeList' })
+  } catch (error) {
+    console.error(error)
+  }
+}
 
-const incrementSleep = () => {
-	newBoard.value.boardSleepTime = parseFloat(
-		parseFloat(newBoard.value.boardSleepTime + 0.5).toFixed(1),
-	);
-};
-
-const decrementSleep = () => {
-	newBoard.value.boardSleepTime = parseFloat(
-		parseFloat(newBoard.value.boardSleepTime - 0.5).toFixed(1),
-	);
-};
-
-const incrementTall = () => {
-	newBoard.value.boardTall = parseFloat(
-		parseFloat(newBoard.value.boardTall + 0.1).toFixed(1),
-	);
-};
-
-const decrementTall = () => {
-	newBoard.value.boardTall = parseFloat(
-		parseFloat(newBoard.value.boardTall - 0.1).toFixed(1),
-	);
-};
-
-const incrementWeight = () => {
-	newBoard.value.boardWeight = parseFloat(
-		parseFloat(newBoard.value.boardWeight + 0.1).toFixed(1),
-	);
-};
-
-const decrementWeight = () => {
-	newBoard.value.boardWeight = parseFloat(
-		parseFloat(newBoard.value.boardWeight - 0.1).toFixed(1),
-	);
-};
-/////////////////////////////////////////////////
-
-// group button 변경 함수 ///////////////////////
-const isFirst = () => {
-	if (newBoard.value.boardPoopStatus === '보통') {
-		newBoard.value.boardPoopStatus = '';
-	} else {
-		newBoard.value.boardPoopStatus = '보통';
-	}
-};
-const isSecond = () => {
-	if (newBoard.value.boardPoopStatus === '묽음') {
-		newBoard.value.boardPoopStatus = '';
-	} else {
-		newBoard.value.boardPoopStatus = '묽음';
-	}
-};
-const isThird = () => {
-	if (newBoard.value.boardPoopStatus === '딱딱함') {
-		newBoard.value.boardPoopStatus = '';
-	} else {
-		newBoard.value.boardPoopStatus = '딱딱함';
-	}
-};
-
-const buttonClass = button => {
-	if (button === 'first' && newBoard.value.boardPoopStatus === '보통') {
-		return 'group-button-left-selected';
-	} else if (button === 'second' && newBoard.value.boardPoopStatus === '묽음') {
-		return 'group-button-center-selected';
-	} else if (
-		button === 'third' &&
-		newBoard.value.boardPoopStatus === '딱딱함'
-	) {
-		return 'group-button-right-selected';
-	} else {
-		return '';
-	}
-};
-///////////////////////////////////////////////
-
-// 알림장 등록 요청
-const registBoard = () => {
-	createBoard(newBoard.value);
-	router.push({ name: 'BoardList' });
-};
+const openFileDialog = () => {
+  fileInput.value.click()
+}
 </script>
 
 <style scoped>
 .content-title {
-	@apply ml-36 text-gray-900 text-xl font-bold;
+  @apply ml-36 text-gray-900 text-xl font-bold;
 }
+
 .content-box {
-	@apply block ml-32 mt-1 w-9/12 rounded-md border border-neutral-300 shadow;
+  @apply block ml-32 mt-1 w-9/12 rounded-md border border-neutral-300 shadow;
 }
+
+.content-box-flex {
+  @apply flex ml-32 mt-1 w-9/12 rounded-md border border-neutral-300 shadow;
+}
+
 .record-title {
-	@apply inline-block m-5 text-gray-700 text-base font-extrabold;
+  @apply inline-block m-5 text-gray-700 text-base font-extrabold;
 }
+
 .record-flex {
-	@apply flex items-center;
+  @apply flex items-center;
 }
+
 .record-content {
-	@apply block w-20 h-10 py-2.5 bg-white border border-neutral-300 text-center text-gray-900 text-base;
+  @apply block w-20 h-11 py-2.5 bg-gray-100 rounded-md border border-neutral-300 text-center text-gray-900 text-base;
 }
+
 .unit {
-	@apply pl-3 pr-6;
+  @apply pl-3 pr-6;
 }
+
 .no-content {
-	@apply mx-36 mt-8 text-lg;
+  @apply mx-36 mt-8 text-lg;
 }
+
 .group-button {
-	@apply inline-flex h-10 rounded-md shadow-sm;
+  @apply inline-flex h-11 rounded-md shadow-sm;
 }
-.group-button-left {
-	@apply px-5 py-2 text-base font-medium text-gray-900 bg-white border border-gray-200 rounded-s-lg;
+
+.group-button-left-item {
+  @apply h-11 px-6 py-2 text-base font-medium text-gray-900 bg-white border border-gray-200 rounded-s-lg focus:z-10 focus:ring-2 focus:ring-dark-navy focus:text-dark-navy focus:font-bold focus:bg-gray-100;
 }
-.group-button-left-selected {
-	@apply px-5 py-2 text-base rounded-s-lg z-10 ring-2 ring-dark-navy text-dark-navy font-bold bg-gray-100;
+
+.group-button-left-item-focus {
+  @apply h-11 px-6 py-2 text-base border border-gray-200 rounded-s-lg z-10 ring-2 ring-dark-navy text-dark-navy font-bold bg-gray-100;
 }
-.group-button-center {
-	@apply px-5 py-2 text-base font-medium text-gray-900 bg-white border-t border-b border-gray-200;
+
+.group-button-center-item {
+  @apply h-11 px-6 py-2 text-base font-medium text-gray-900 bg-white border-t border-b border-gray-200 focus:z-10 focus:ring-2 focus:ring-dark-navy focus:text-dark-navy focus:font-bold focus:bg-gray-100;
 }
-.group-button-center-selected {
-	@apply px-5 py-2 text-base z-10 ring-2 ring-dark-navy text-dark-navy font-bold bg-gray-100;
+
+.group-button-center-item-focus {
+  @apply h-11 px-6 py-2 text-base border-t border-b border-gray-200 z-10 ring-2 ring-dark-navy text-dark-navy font-bold bg-gray-100;
 }
-.group-button-right {
-	@apply px-5 py-2 text-base font-medium text-gray-900 bg-white border border-gray-200 rounded-e-lg;
+
+.group-button-right-item {
+  @apply h-11 px-6 py-2 text-base font-medium text-gray-900 bg-white border border-gray-200 rounded-e-lg focus:z-10 focus:ring-2 focus:ring-dark-navy focus:text-dark-navy focus:font-bold focus:bg-gray-100;
 }
-.group-button-right-selected {
-	@apply px-5 py-2 text-base rounded-e-lg z-10 ring-2 ring-dark-navy text-dark-navy font-bold bg-gray-100;
-}
-.minus-button {
-	@apply bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded-s-lg p-3 h-10 focus:ring-gray-100 focus:ring-2 focus:outline-none;
-}
-.plus-button {
-	@apply bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded-e-lg p-3 h-10 focus:ring-gray-100 focus:ring-2 focus:outline-none;
-}
-.button-icon {
-	@apply w-3 h-3 text-gray-900;
-}
-.number-input {
-	@apply relative flex items-center;
+
+.group-button-right-item-focus {
+  @apply h-11 px-6 py-2 text-base border border-gray-200 rounded-e-lg z-10 ring-2 ring-dark-navy text-dark-navy font-bold bg-gray-100;
 }
 </style>
