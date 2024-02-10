@@ -14,6 +14,7 @@ import com.ssafy.saessak.oauth.service.AuthenticationService;
 import com.ssafy.saessak.user.domain.Classroom;
 import com.ssafy.saessak.user.domain.Kid;
 import com.ssafy.saessak.user.domain.User;
+import com.ssafy.saessak.user.dto.KidListResponseDto;
 import com.ssafy.saessak.user.repository.KidRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -61,7 +62,26 @@ public class BoardService {
 
         return saveBoard;
     }
+    public List<KidNoBoardResponseDto> getClassKidBoardIsNotWritten() {
+        User user = authenticationService.getUserByAuthentication();
+        Classroom classroom = user.getClassroom();
+        List<Kid> kidList = kidRepository.findAllByClassroom(classroom);
 
+        LocalDate today = LocalDate.now();
+        List<KidNoBoardResponseDto> kidNoBoardResponseDtoList = new ArrayList<>();
+        for(Kid kid : kidList){
+            Optional<Board> boardResult = boardRepository.findFirstByKidAndBoardDate(kid,today);
+            if(boardResult.isPresent()) continue;
+            KidNoBoardResponseDto kidNoBoardResponseDto = KidNoBoardResponseDto.builder()
+                    .kidId(kid.getId())
+                    .kidName(kid.getNickname())
+                    .build();
+            kidNoBoardResponseDtoList.add(kidNoBoardResponseDto);
+        }
+
+
+        return kidNoBoardResponseDtoList;
+    }
     public BoardDetailDto readBoard(Long boardId) {
         Optional<Board> result = boardRepository.findById(boardId);
         if (result.isEmpty()) throw new NotFoundException(ExceptionCode.BOARD_NOT_FOUND);
