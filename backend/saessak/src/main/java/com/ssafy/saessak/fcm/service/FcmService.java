@@ -153,7 +153,7 @@ public class FcmService {
                         .putData("click_action", "https://i10a706.p.ssafy.io")
                         .build();
 
-                FirebaseMessaging.getInstance().send(message); // 알림 보내기
+                FirebaseMessaging.getInstance().sendAsync(message); // 알림 보내기
 
             } catch (Exception e) {
                 throw new FcmException(ExceptionCode.FAIL_FCM_ALARM);
