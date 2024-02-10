@@ -148,14 +148,13 @@ public class NoticeService {
                 .build();
     }
     @Transactional
-    public Long addNotice(Long classroomId, String title, String content,
+    public Long addNotice(String title, String content,
                           MultipartFile noticeFile) throws IOException {
         User user = authenticationService.getUserByAuthentication();
-        Classroom classroom = classroomRepository.findById(classroomId).get();
-        Notice notice = null;
+        Classroom classroom = user.getClassroom();
         if(noticeFile != null) {
             String filePath = s3Uploader.upload(noticeFile, "notice");
-            notice = Notice.builder()
+            Notice notice = Notice.builder()
                     .classroom(classroom)
                     .noticeFile(filePath)
                     .noticeTitle(title)
@@ -164,16 +163,17 @@ public class NoticeService {
                     .noticeContent(content)
                     .noticeTime(LocalDate.now())
                     .build();
+            return noticeRepository.save(notice).getNoticeId();
         }else {
-            notice = Notice.builder()
+            Notice notice = Notice.builder()
                     .classroom(classroom)
                     .noticeTitle(title)
                     .user(user)
                     .noticeContent(content)
                     .noticeTime(LocalDate.now())
                     .build();
+            return noticeRepository.save(notice).getNoticeId();
         }
-        return noticeRepository.save(notice).getNoticeId();
     }
 
     @Transactional
