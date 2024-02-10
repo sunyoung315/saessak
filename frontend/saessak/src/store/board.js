@@ -12,6 +12,21 @@ export const useBoardStore = defineStore('board', () => {
 	}
 	const months = ref([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
 
+	// 선생님ver 알림장이 작성되지 않은 아이들 리스트
+	const kidList = ref([]);
+	const getKidList = async () => {
+		await axios({
+			url: `${REST_BOARD_API}/teacher/day`,
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: 'Bearer ' + localStorage.getItem('accessToken'),
+			},
+		}).then(resp => {
+			kidList.value = resp.data.data;
+		});
+	};
+
 	// 학부모ver 내 아이 알림장 리스트
 	const myKidBoards = ref([]);
 
@@ -160,6 +175,8 @@ export const useBoardStore = defineStore('board', () => {
 	return {
 		years,
 		months,
+		kidList,
+		getKidList,
 		getMyKidMonthlyBoards,
 		myKidBoards,
 		oneBoard,
