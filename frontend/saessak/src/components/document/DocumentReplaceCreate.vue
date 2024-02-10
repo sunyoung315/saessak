@@ -38,7 +38,7 @@
 					</div>
 					<div>
 						<input
-							class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-nav-navy"
+							class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-56 py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-nav-navy"
 							id="inline-full-name"
 							type="text"
 							v-model="kidName"
@@ -51,7 +51,7 @@
 					<div class="flex items-center mb-6">
 						<div>
 							<label
-								class="block w-24 text-gray-500 font-bold mb-1 md:mb-0 pr-4"
+								class="block w-24 text-gray-500 font-bold md:mb-0"
 								for="inline-full-name"
 							>
 								날짜:
@@ -82,7 +82,7 @@
 										<input
 											:value="inputValue"
 											v-on="inputEvents"
-											class="datepicker-input text"
+											class="datepicker-input text w-56"
 										/>
 									</div>
 								</template>
@@ -93,7 +93,7 @@
 					<div class="flex items-center mb-6">
 						<div>
 							<label
-								class="block w-12 text-gray-500 ml-40 font-bold mb-1 md:mb-0 pr-4"
+								class="block w-24 text-gray-500 ml-32 font-bold mb-1 md:mb-0 pr-4"
 								for="inline-full-name"
 							>
 								시간:
@@ -101,11 +101,17 @@
 						</div>
 						<div>
 							<input
-								class="bg-white appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-black leading-tight focus:outline-none focus:bg-white focus:border-nav-navy"
+								class="bg-white appearance-none border-2 border-gray-200 rounded w-56 py-2 px-4 text-black leading-tight focus:outline-none focus:bg-white focus:border-nav-navy"
 								id="inline-full-name"
 								type="time"
 								v-model="registReplacement.replacementTime"
 							/>
+							<p
+								class="text-xs ml-4 mt-2 text-red-500"
+								v-if="!registReplacement.replacementTime && isButtonClicked"
+							>
+								시간을 입력해주셔야합니다.
+							</p>
 						</div>
 					</div>
 				</div>
@@ -121,12 +127,18 @@
 						</div>
 						<div>
 							<input
-								class="bg-white appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-black leading-tight focus:outline-none focus:bg-white focus:border-nav-navy"
+								class="bg-white appearance-none border-2 border-gray-200 rounded w-56 py-2 px-4 text-black leading-tight focus:outline-none focus:bg-white focus:border-nav-navy"
 								id="inline-full-name"
 								type="text"
 								placeholder="보호자 성함을 입력해주세요."
 								v-model="registReplacement.replacementName"
 							/>
+							<p
+								class="text-xs ml-4 mt-2 text-red-500"
+								v-if="!registReplacement.replacementName && isButtonClicked"
+							>
+								보호자 성함을 입력해주셔야합니다.
+							</p>
 						</div>
 					</div>
 					<div class="md:flex md:items-center mb-6">
@@ -140,12 +152,20 @@
 						</div>
 						<div>
 							<input
-								class="bg-white appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-black leading-tight focus:outline-none focus:bg-white focus:border-nav-navy"
+								class="bg-white appearance-none border-2 border-gray-200 rounded w-56 py-2 px-4 text-black leading-tight focus:outline-none focus:bg-white focus:border-nav-navy"
 								id="inline-full-name"
 								type="text"
 								placeholder="원아와의 관계를 입력해주세요."
 								v-model="registReplacement.replacementRelationship"
 							/>
+							<p
+								class="text-xs ml-4 mt-2 text-red-500"
+								v-if="
+									!registReplacement.replacementRelationship && isButtonClicked
+								"
+							>
+								원아와의 관계에 대해 입력해주셔야합니다.
+							</p>
 						</div>
 					</div>
 				</div>
@@ -161,12 +181,18 @@
 						</div>
 						<div>
 							<input
-								class="bg-white appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-black leading-tight focus:outline-none focus:bg-white focus:border-nav-navy"
+								class="bg-white appearance-none border-2 border-gray-200 rounded w-56 py-2 px-4 text-black leading-tight focus:outline-none focus:bg-white focus:border-nav-navy"
 								id="inline-full-name"
 								type="text"
 								placeholder="귀가 방법을 입력해주세요."
 								v-model="registReplacement.replacementVehicle"
 							/>
+							<p
+								class="text-xs ml-4 mt-2 text-red-500"
+								v-if="!registReplacement.replacementVehicle && isButtonClicked"
+							>
+								귀가 방법에 대해 입력해주셔야합니다.
+							</p>
 						</div>
 					</div>
 					<div class="md:flex md:items-center mb-6">
@@ -180,12 +206,18 @@
 						</div>
 						<div>
 							<input
-								class="bg-white appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-black leading-tight focus:outline-none focus:bg-white focus:border-nav-navy"
+								class="bg-white appearance-none border-2 border-gray-200 rounded w-56 py-2 px-4 text-black leading-tight focus:outline-none focus:bg-white focus:border-nav-navy"
 								id="inline-full-name"
 								type="text"
 								placeholder="비상 연락망을 입력해주세요."
 								v-model="registReplacement.replacementNumber"
 							/>
+							<p
+								class="text-xs ml-4 mt-2 text-red-500"
+								v-if="!registReplacement.replacementNumber && isButtonClicked"
+							>
+								비상 상황 시 연락처를 입력해주셔야합니다.
+							</p>
 						</div>
 					</div>
 				</div>
@@ -247,9 +279,10 @@ watchEffect(() => {
 
 // 전자서명
 const replacementSignature = ref();
-
+const isButtonClicked = ref(false);
 // Btn
 async function regist() {
+	isButtonClicked.value = true;
 	// 유효성 검사
 	for (const field of fields) {
 		if (!validateField(field.key, field.message)) {
@@ -324,15 +357,18 @@ const fields = [
 	},
 ];
 
+const errors = ref({});
 const validateField = (field, message) => {
 	if (
 		!registReplacement.value[field] ||
 		!registReplacement.value[field].trim()
 	) {
-		alert(message);
+		errors.value[field] = message;
 		return false;
+	} else {
+		errors.value[field] = '';
+		return true;
 	}
-	return true;
 };
 
 const validateSignature = () => {
