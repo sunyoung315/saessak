@@ -30,4 +30,5 @@ coverage
 *.tsbuildinfo
 
 .env
-/public/firebase-messsaging-sw.js
+firebase-messsaging-sw.js
+public/firebase-messsaging-sw.js

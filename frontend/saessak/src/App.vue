@@ -12,6 +12,7 @@ const {
 	setKidlist,
 	setTeacherFlag,
 	setTeachername,
+    setClassroomname,
 	setAlarmFlag,
 } = store;
 const lStore = JSON.parse(localStorage.getItem('loginStore'));
@@ -22,6 +23,7 @@ if(lStore == null){
     setKidlist()
     setTeacherFlag(false)
     setTeachername("")
+    setClassroomname("")
     setAlarmFlag(false)
 }
 </script>
