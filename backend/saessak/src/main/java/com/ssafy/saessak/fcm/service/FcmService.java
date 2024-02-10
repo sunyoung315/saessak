@@ -139,22 +139,21 @@ public class FcmService {
     }
 
     public void sendNotification(FcmResponseDto fcmResponseDto) {
-        System.out.println("FCM을 보내는 토큰 : "+fcmResponseDto.getToken());
         if(fcmResponseDto.getToken() != null) {
             try {
-                // Firebase Admin SDK 초기화
-                firebaseInit.init();
-
-                // 메시지 생성
-                Message message = Message.builder()
-                        .setToken(fcmResponseDto.getToken()) // 수신자의 FCM 토큰
+                firebaseInit.init(); // Firebase Admin SDK 초기화
+                
+                Message message = Message.builder() // 메시지 생ㅅ어
+                        .setToken(fcmResponseDto.getToken())
                         .setNotification(Notification.builder()
-                                .setTitle(fcmResponseDto.getTitle()) // 알림 제목
-                                .setBody(fcmResponseDto.getBody()) // 알림 내용
+                                .setTitle(fcmResponseDto.getTitle())
+                                .setBody(fcmResponseDto.getBody())
+                                .setImage("https://saessack-photo-album.s3.ap-northeast-2.amazonaws.com/logo/saessak-favicon.png")
                                 .build())
+                        .putData("click_action", "https://i10a706.p.ssafy.io")
                         .build();
 
-                FirebaseMessaging.getInstance().send(message); // 알림 보내기
+                FirebaseMessaging.getInstance().sendAsync(message); // 알림 보내기
 
             } catch (Exception e) {
                 throw new FcmException(ExceptionCode.FAIL_FCM_ALARM);
