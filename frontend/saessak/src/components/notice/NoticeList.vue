@@ -22,7 +22,7 @@ const { isLogin, isTeacher, kidList, isAlarm, curKid, setCurkid } = storeToRefs(
 // 내 아이 귀가동의서 목록 가져오기
 const noticeList = ref([])
 const paging = ref({
-  pageNo: 0
+  pageNo: 1
 })
 
 onMounted(() => {
@@ -32,14 +32,14 @@ onMounted(() => {
 function fetchData() {
   if (isLogin) {
     if (isTeacher.value) {
-      noticeListTeacherAll(paging.value.pageNo, ({ data }) => {
+      noticeListTeacherAll(paging.value.pageNo - 1, ({ data }) => {
         noticeList.value = data.data
       })
     } else {
       noticeListParentAll(
         kidList.value[0].kidId,
         {
-          params: paging.value
+          params: paging.value - 1
         },
         ({ data }) => {
           noticeList.value = data.data
@@ -59,6 +59,10 @@ function moveNoticeDetail(noticeId) {
 }
 
 watch(noticeList, async () => {
+  await fetchData()
+})
+
+watch(paging, async () => {
   await fetchData()
 })
 
@@ -115,9 +119,7 @@ function startFix(notice) {
             </th>
             <th
               class="px-1 border border-solid border-blueGray-100 py-3 uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold"
-            >
-              고정
-            </th>
+            ></th>
           </tr>
         </thead>
         <tbody>
@@ -208,11 +210,15 @@ function startFix(notice) {
       </table>
     </div>
     <div class="flex justify-center text-2xl font-bold">
-      <button :disabled="paging.pageNo === 0" :class="{ 'text-gray-200': paging.pageNo === 0 }">
+      <button
+        :disabled="paging.pageNo === 1"
+        :class="{ 'text-gray-200': paging.pageNo === 1 }"
+        @click="paging.pageNo = paging.pageNo - 1"
+      >
         ←
       </button>
 
-      <div v-for="index in parseInt(noticeList.length / 10) + 1">
+      <div v-for="index in parseInt(noticeList.length / 10)">
         <button
           :key="index"
           class="m-2 rounded-lg p-2"
@@ -223,8 +229,9 @@ function startFix(notice) {
         </button>
       </div>
       <button
-        :disabled="paging.pageNo === noticeList.length / 10"
+        :disabled="paging.pageNo === parseInt(noticeList.length / 10)"
         :class="{ 'text-gray-200': paging.pageNo === parseInt(noticeList.length / 10) }"
+        @click="paging.pageNo = paging.pageNo + 1"
       >
         →
       </button>

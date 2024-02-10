@@ -1,8 +1,8 @@
 <template>
-  <div class="view-frame">
+  <div class="container mt-8 ml-12 mr-16 w-11/12 border border-gray-200 shadow rounded-lg">
     <div class="flex justify-end items-center">
-      <button type="button" @click="goNoticeList" class="btn mt-5 mr-7 mb-3">목록</button>
-      <button type="button" @click="submitNotice" class="btn mt-5 mr-7 mb-3">작성</button>
+      <button type="button" @click="registNotice()" class="btn">등록</button>
+      <button type="button" @click="goBack()" class="btn">목록</button>
     </div>
 
     <div class="block mt-2 mb-5 w-full">
@@ -72,7 +72,7 @@ const fileInput = ref(null)
 onMounted(() => {})
 
 // 목록으로 이동하는 함수
-const goNoticeList = () => {
+const goBack = () => {
   router.push({ name: 'NoticeList' })
 }
 
@@ -85,7 +85,7 @@ const handleFileUpload = (event) => {
 }
 
 // 공지사항 제출 함수
-const submitNotice = async () => {
+const registNotice = async () => {
   console.log(notice.value.noticeTitle)
   console.log(notice.value.noticeContent)
   console.log(notice.value.noticeFile)
@@ -94,13 +94,14 @@ const submitNotice = async () => {
   formData.append('title', notice.value.noticeTitle)
   formData.append('content', notice.value.noticeContent)
   if (notice.value.noticeFile) {
-    formData.append('file', notice.value.noticeFile)
+    formData.append('noticeFile', notice.value.noticeFile)
   }
 
   try {
-    await axios.post('/api/notice/', formData, {
+    await axios.post('https://i10a706.p.ssafy.io/api/notice/', formData, {
       headers: {
-        'Content-Type': 'multipart/form-data'
+        'Content-Type': 'multipart/form-data',
+        Authorization: 'Bearer ' + localStorage.getItem('accessToken')
       }
     })
     router.push({ name: 'NoticeList' })

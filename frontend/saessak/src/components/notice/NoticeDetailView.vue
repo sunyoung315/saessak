@@ -26,7 +26,7 @@
       ></textarea>
     </div>
 
-    <div class="block mt-2 mb-5 w-full relative">
+    <div class="block mt-2 mb-5 w-full relative" v-if="notice.noticeFile != null">
       <span class="content-title">파일</span>
       <div class="content-box-flex w-full mb-10 p-4 text-lg flex justify-between items-center">
         <div class="flex">
@@ -49,10 +49,24 @@
         </div>
 
         <button
-          class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-auto"
-          @click="download()"
+          @click="download"
+          class="flex items-center bg-white hover:bg-gray-200 text-black font-bold py-2 px-4 rounded ml-auto"
         >
-          버튼
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="17"
+            height="18"
+            viewBox="0 0 17 18"
+            fill="none"
+            class="mr-2"
+          >
+            <path
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M15.7916 11.5833C16.3258 11.5833 16.7661 11.9855 16.8263 12.5035L16.8333 12.625V16.7917C16.8333 17.3259 16.4312 17.7662 15.9131 17.8263L15.7916 17.8333H1.20829C0.674089 17.8333 0.233806 17.4312 0.173634 16.9131L0.166626 16.7917V12.625C0.166626 12.0497 0.632996 11.5833 1.20829 11.5833C1.7425 11.5833 2.18278 11.9855 2.24295 12.5035L2.24996 12.625V15.75H14.75V12.625C14.75 12.0908 15.1521 11.6505 15.6701 11.5903L15.7916 11.5833ZM8.49996 0.125C9.07526 0.125 9.54163 0.59137 9.54163 1.16667L9.54267 10.1083L12.9717 6.6801C13.3472 6.30459 13.9381 6.27571 14.3467 6.59344L14.4449 6.6801C14.8204 7.0556 14.8493 7.64647 14.5315 8.0551L14.4449 8.15324L9.23653 13.3616C8.86102 13.7371 8.27016 13.766 7.86152 13.4482L7.76339 13.3616L2.55506 8.15324C2.14826 7.74644 2.14826 7.08689 2.55506 6.6801C2.93056 6.30459 3.52143 6.27571 3.93006 6.59344L4.0282 6.6801L7.45933 10.1104L7.45829 1.16667C7.45829 0.59137 7.92466 0.125 8.49996 0.125Z"
+              fill="black"
+            />
+          </svg>
         </button>
       </div>
     </div>

@@ -4,9 +4,11 @@
     <div class="view-title-parent">
       <span class="nav-title">공지사항</span>
     </div>
-    <template v-if="isTeacher && path !== 'create'">
-      <button type="button" @click="goCreateBoard()" class="btn">작성</button>
-    </template>
+    <div class="flex justify-end items-center">
+      <template v-if="isTeacher && path !== 'create'">
+        <button type="button" @click="goCreateBoard()" class="btn mt-5 mr-7 mb-3">작성</button>
+      </template>
+    </div>
   </div>
   <RouterView />
 </template>
