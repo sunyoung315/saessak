@@ -9,10 +9,10 @@
     </div>
 
     <div class="block mb-8 w-full">
-      <hr class="content-box w-full border-2 mb-8" />
+      <hr class="content-box w-full border-1 border-gray-400 mb-8" />
     </div>
 
-    <div class="block mt-2 mb-10 w-full">
+    <div class="block mt-2 w-full">
       <div class="content-box mb-20 p-4 text-lg whitespace-pre-line">
         {{ notice.noticeContent }}
       </div>
