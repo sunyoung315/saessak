@@ -4,31 +4,23 @@
       <button type="button" @click="goNoticeList()" class="btn mt-5 mr-7 mb-3">목록</button>
     </div>
 
-    <div class="block mt-2 mb-5 w-full">
-      <span class="content-title">제목</span>
-      <input
-        id="contents"
-        class="content-box mb-10 p-4 text-lg"
-        rows="6"
-        :value="notice.noticeTitle"
-        readonly
-      />
+    <div class="block mt-16 mb-4 w-full">
+      <span class="content-title2">{{ notice.noticeTitle }}</span>
     </div>
 
-    <div class="block mt-2 mb-5 w-full">
-      <span class="content-title">내용</span>
-      <textarea
-        id="contents"
-        class="content-box mb-10 p-4 text-lg"
-        rows="6"
-        :value="notice.noticeContent"
-        readonly
-      ></textarea>
+    <div class="block mb-8 w-full">
+      <hr class="content-box w-full border-2 mb-8" />
     </div>
 
-    <div class="block mt-2 mb-5 w-full relative" v-if="notice.noticeFile != null">
+    <div class="block mt-2 mb-10 w-full">
+      <div class="content-box mb-20 p-4 text-lg whitespace-pre-line">
+        {{ notice.noticeContent }}
+      </div>
+    </div>
+
+    <div class="block mt-10 mb-5 w-full relative" v-if="notice.noticeFile != null">
       <span class="content-title">파일</span>
-      <div class="content-box-flex w-full mb-10 p-4 text-lg flex justify-between items-center">
+      <div class="content-box-flex w-full mb-20 p-4 text-lg flex justify-between items-center">
         <div class="flex">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -146,12 +138,16 @@ const download = async () => {
 </script>
 
 <style scoped>
+.content-title2 {
+  @apply mt-9 ml-36 mb-4 text-black text-5xl font-bold;
+}
+
 .content-title {
   @apply ml-36 text-gray-900 text-xl font-bold;
 }
 
 .content-box {
-  @apply block ml-32 mt-1 w-9/12 rounded-md border border-neutral-300 shadow;
+  @apply block ml-32 mt-1 w-9/12 rounded-md;
 }
 
 .content-box-flex {

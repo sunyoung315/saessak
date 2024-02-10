@@ -218,7 +218,7 @@ function startFix(notice) {
         ←
       </button>
 
-      <div v-for="index in parseInt(noticeList.length / 10)">
+      <div v-for="index in parseInt((noticeList.length + 9) / 10)">
         <button
           :key="index"
           class="m-2 rounded-lg p-2"
@@ -229,8 +229,8 @@ function startFix(notice) {
         </button>
       </div>
       <button
-        :disabled="paging.pageNo === parseInt(noticeList.length / 10)"
-        :class="{ 'text-gray-200': paging.pageNo === parseInt(noticeList.length / 10) }"
+        :disabled="paging.pageNo === parseInt((noticeList.length + 9) / 10)"
+        :class="{ 'text-gray-200': paging.pageNo === parseInt((noticeList.length + 9) / 10) }"
         @click="paging.pageNo = paging.pageNo + 1"
       >
         →
