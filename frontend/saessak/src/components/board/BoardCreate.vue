@@ -26,7 +26,7 @@
 						}"
 						required
 					>
-						<template v-for="kid in userStore.kidsList" :key="kid.kidId">
+						<template v-for="kid in boardStore.kidList" :key="kid.kidId">
 							<option :value="kid.kidId">{{ kid.kidName }}</option>
 						</template>
 					</select>
@@ -267,11 +267,11 @@
 import { onMounted, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { createBoard } from '@/api/board';
-import { useUserStore } from '@/store/user';
+// import { useUserStore } from '@/store/user';
 import { useBoardStore } from '@/store/board';
 
 const router = useRouter();
-const userStore = useUserStore();
+// const userStore = useUserStore();
 const boardStore = useBoardStore();
 
 // '목록'으로 라우팅
@@ -281,7 +281,8 @@ const goBoardList = () => {
 
 // 작성할 수 있는 반 아이 리스트
 onMounted(async () => {
-	await userStore.getKidsList();
+	await boardStore.getKidList();
+	// await userStore.getKidsList();
 });
 
 const kidId = ref(0);
