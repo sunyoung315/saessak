@@ -64,7 +64,7 @@ public class NoticeService {
         Collections.sort(noticeResponseDtoList);
 
         // 고정 안 한 공지사항 나중에 추가
-        Pageable pageable = PageRequest.of(pageNo, 10-noticeResponseDtoList.size(), Sort.by(Sort.Direction.DESC, "noticeId"));
+        Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(Sort.Direction.DESC, "noticeId"));
         Page<Notice> noticeList = noticeRepository.findAllByClassroom(classroom, pageable);
         for(Notice n : noticeList){
             boolean flag = fixRepository.findByNoticeAndUser(n, user).isPresent();
@@ -113,7 +113,7 @@ public class NoticeService {
         Collections.sort(noticeResponseDtoList);
 
         // 고정 안 한 공지사항 나중에 추가
-        Pageable pageable = PageRequest.of(pageNo, 10-noticeResponseDtoList.size(), Sort.by(Sort.Direction.DESC, "noticeId"));
+        Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(Sort.Direction.DESC, "noticeId"));
         Page<Notice> noticeList = noticeRepository.findAllByClassroom(classroom, pageable);
         for(Notice n : noticeList){
             boolean flag = fixRepository.findByNoticeAndUser(n, user).isPresent();

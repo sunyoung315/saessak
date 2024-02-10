@@ -32,7 +32,7 @@ public class Notice {
     @Column(name = "notice_title")
     private String noticeTitle;
 
-    @Column(name = "notice_content")
+    @Column(name = "notice_content", length = 1000)
     private String noticeContent;
 
     @Column(name = "notice_time")
