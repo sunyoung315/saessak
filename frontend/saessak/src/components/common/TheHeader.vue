@@ -244,7 +244,7 @@
 import { onMounted, nextTick, shallowRef, ref, watch, defineEmits  } from 'vue';
 import { initFlowbite } from 'flowbite';
 import { kidRegister, getkidList } from '@/api/user';
-import { kakaoLogin } from '@/api/oauth';
+import { userLogout } from '@/api/oauth';
 import { storeToRefs } from 'pinia';
 import { useRouter } from 'vue-router';
 import { loginStore } from '@/store/loginStore';
@@ -365,11 +365,6 @@ const showChat = name => {
 };
 
 const login = () => {
-	// kakaoLogin(({ data }) => {
-	//   // console.log('로그인 가즈아')
-	//   // console.log(data)
-	//   window.location.href = data
-	// })
 	window.location.href =
 		'https://kauth.kakao.com' +
 		'/auth/authorize' +
@@ -381,6 +376,7 @@ const login = () => {
 };
 
 const logout = () => {
+  userLogout();
 	localStorage.removeItem('accessToken');
 	localStorage.removeItem('refreshToken');
 	if (!store.isTeacher) {
