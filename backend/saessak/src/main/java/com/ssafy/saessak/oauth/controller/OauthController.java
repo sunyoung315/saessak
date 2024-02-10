@@ -2,6 +2,7 @@ package com.ssafy.saessak.oauth.controller;
 
 import com.ssafy.saessak.exception.code.ExceptionCode;
 import com.ssafy.saessak.exception.model.UserException;
+import com.ssafy.saessak.jwt.JwtTokenProvider;
 import com.ssafy.saessak.oauth.dto.AccessTokenGetSuccess;
 import com.ssafy.saessak.oauth.dto.LoginSuccessResponseDto;
 import com.ssafy.saessak.oauth.dto.RegistRequestDto;
@@ -40,6 +41,7 @@ public class OauthController {
     private final KakaoUserService kakaoUserService;
     private final ParentService parentService;
     private final TeacherService teacherService;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Operation(summary = "카카오 로그인 창 접근")
     @GetMapping("/kakao/login")
@@ -133,6 +135,12 @@ public class OauthController {
     @DeleteMapping(value = "/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResultResponse> deleteUser(@PathVariable("userId") Long userId) {
         kakaoUserService.deleteUser(userId);
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS));
+    }
+
+    @Operation(summary = "accessToken 유효 여부")
+    @GetMapping(value = "/check")
+    public ResponseEntity<ResultResponse> checkAccessToken() {
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS));
     }
 
