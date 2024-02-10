@@ -43,7 +43,12 @@ public class BoardController {
                 boardService.getMonthlyKidBoardList(kidId, yearMonthRequestDto.getYear(), yearMonthRequestDto.getMonth());
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, result));
     }
-
+    @Operation(summary =  "오늘 작성된 알림장이 없는 아이 리스트 ( 선생님 )")
+    @GetMapping("/teacher/day")
+    public ResponseEntity<ResultResponse> getClassKidBoardIsNotWritten() {
+        List<KidNoBoardResponseDto> result = boardService.getClassKidBoardIsNotWritten();
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, result));
+    }
     // 알림장 등록
     @Operation(summary = "알림장 등록")
     @PostMapping("")
