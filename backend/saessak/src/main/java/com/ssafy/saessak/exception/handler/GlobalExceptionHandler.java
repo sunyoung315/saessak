@@ -1,10 +1,7 @@
 package com.ssafy.saessak.exception.handler;
 
-import com.ssafy.saessak.exception.model.FcmException;
-import com.ssafy.saessak.exception.model.NotFoundException;
-import com.ssafy.saessak.exception.model.UnAuthorizedException;
+import com.ssafy.saessak.exception.model.*;
 import com.ssafy.saessak.exception.dto.ExceptionDto;
-import com.ssafy.saessak.exception.model.UserException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -38,6 +35,13 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(FcmException.class)
     protected ResponseEntity<?> handleFcmException(FcmException exception) {
         log.info("ExceptionHandler FcmException 진입");
+        exception.printStackTrace();
+        return ExceptionDto.toResponseEntity(exception.getStatus(), exception.getCode(), exception.getMessage());
+    }
+
+    @ExceptionHandler(FixOverException.class)
+    protected ResponseEntity<?> handleFixOverException(FixOverException exception) {
+        log.info("ExceptionHandler FixOverException 진입");
         exception.printStackTrace();
         return ExceptionDto.toResponseEntity(exception.getStatus(), exception.getCode(), exception.getMessage());
     }

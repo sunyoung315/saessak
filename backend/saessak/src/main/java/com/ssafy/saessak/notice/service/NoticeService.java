@@ -1,5 +1,7 @@
 package com.ssafy.saessak.notice.service;
 
+import com.ssafy.saessak.exception.code.ExceptionCode;
+import com.ssafy.saessak.exception.model.FixOverException;
 import com.ssafy.saessak.notice.domain.Fix;
 import com.ssafy.saessak.notice.domain.Notice;
 import com.ssafy.saessak.notice.dto.*;
@@ -184,6 +186,8 @@ public class NoticeService {
         Notice notice = noticeRepository.findById(noticeId).get();
         User user = authenticationService.getUserByAuthentication();
 
+        if(fixRepository.countByUser(user) >= 5) throw new FixOverException(ExceptionCode.FIX_OVER_COUNT);
+
         Fix fix = Fix.builder()
                 .user(user)
                 .notice(notice)
@@ -196,6 +200,9 @@ public class NoticeService {
     public Long addParentFix(FixedRequestDto fixedRequestDto) {
         Notice notice = noticeRepository.findById(fixedRequestDto.getNoticeId()).get();
         User user = userRepository.findById(fixedRequestDto.getKidId()).get();
+
+        if(fixRepository.countByUser(user) >= 5) throw new FixOverException(ExceptionCode.FIX_OVER_COUNT);
+
         Fix fix = Fix.builder()
                 .user(user)
                 .notice(notice)
