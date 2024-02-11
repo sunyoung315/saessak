@@ -12,10 +12,8 @@ import java.util.Optional;
 
 @Repository
 public interface KidRepository extends JpaRepository<Kid, Long> {
-
     @EntityGraph(attributePaths = {"parent"})
-    Optional<Kid> findByIdAndParentIsNotNull(Long id);
-
+    List<Kid> findAllByClassroomAndParentIsNotNull(Classroom classroom);
     List<Kid> findAllByClassroom(Classroom classroom);
 
     List<Kid> findAllByParent(Parent parent);
