@@ -38,9 +38,15 @@ public class StompController {
         sendingOperations.convertAndSend("/sub/room/"+message.getRoomId(), message);
     }
 
-    @MessageMapping("/check")
-    public void check(int roomId){
+    @MessageMapping("/request")
+    public void request(int roomId){
+        // 선생님 -> 학부모 화상채팅 요청
+        sendingOperations.convertAndSend("/sub/room/"+roomId, "videoChat allow request");
+    }
+
+    @MessageMapping("/response")
+    public void response(int roomId){
         // 상대에게 alert 을 띄우도록 한다.
-        sendingOperations.convertAndSend("/sub/room/"+roomId, true);
+        sendingOperations.convertAndSend("/sub/room/"+roomId, "videoChat deny response");
     }
 }
