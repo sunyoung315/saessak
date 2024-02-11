@@ -34,11 +34,11 @@ public class BoardController {
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, result));
     }
 
-    @Operation(summary = "알림장이 있는 날짜 리싀트 ")
+    @Operation(summary = "알림장이 있는 날짜 리스트 ")
     @GetMapping("/exist/{kidId}")
     public ResponseEntity<ResultResponse> getDateExistBoard(@PathVariable(name = "kidId") Long kidID){
-//        List<LocalDate> result = boardService
-        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS,""));
+        List<LocalDate> result = boardService.getDateExistBoard(kidID);
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS,result));
     }
 
     @Operation(summary = "아이 알림장 월별 조회 (학부모)")
