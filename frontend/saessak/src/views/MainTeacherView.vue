@@ -1,7 +1,8 @@
 <template>
 	<div class="main-view view-frame">
 		<div class="main-header">
-			<p class="main-title text-2xl">
+			<p class="main-title text-3xl">
+				{{ props.loginStore.classroomName }}
 				{{ props.loginStore.teacherName }}
 			</p>
 			<p class="main-title text-lg">{{ todayDate }}</p>
@@ -257,7 +258,7 @@ onMounted(async () => {
 	@apply font-bold inline-block mx-3;
 }
 .main-header {
-	@apply m-7 mb-3 flex justify-between items-end;
+	@apply mx-7 my-3 flex justify-between items-end;
 }
 .main-half {
 	@apply inline m-2 border-2 border-gray-400 rounded w-1/2 h-96 p-6 bg-nav-yellow bg-opacity-50;
