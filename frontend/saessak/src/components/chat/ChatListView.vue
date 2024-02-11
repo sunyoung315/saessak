@@ -102,6 +102,7 @@ const props = defineProps({
 })
 
 onMounted(() => {
+  // console.log("onMounted 실행")
   getChatList()
 })
 
