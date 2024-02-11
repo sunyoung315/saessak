@@ -33,6 +33,14 @@ public class AlbumController {
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, albumResponseDto));
     }
 
+    @Operation(summary = "엘범이 있는 날짜 리스트 (선생님)")
+    @GetMapping("/class/exist")
+    public ResponseEntity<ResultResponse> getExistAlbumDate() {
+
+        List<LocalDate> result = albumService.getExistAlbumDate();
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, result));
+    }
+
     @Operation(summary = "albumId로 조회")
     @GetMapping("/detail/{albumId}")
     public ResponseEntity<ResultResponse> getAlbumUsingId(@PathVariable(name = "albumId") Long albumId){
