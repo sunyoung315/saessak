@@ -1,12 +1,13 @@
 <template>
+	<div class="view-header">
+		<span class="nav-title">설정</span>
+	</div>
 	<div class="view-frame">
-		<div class="table-box">
-			<div class="flex justify-between">
-				<div class="flex items-center m-2">
-					<div class="mr-4 text-lg text-black font-bold">설정</div>
-
-				</div>
-
+		<div class="table-box overflow-auto">
+			<div class="flex justify-end px-3 pb-3">
+				<button v-if="!newKid" @click="addOneRow" class="btn m-0">
+					아이 등록
+				</button>
 			</div>
 			<table class="table">
 				<thead class="table-head">
@@ -19,249 +20,316 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr v-for="(kid,index) in  kidList" :key="kid.kidId">
-						<td scope="col" class="col">{{ kid.kidName }}</td>
-						<td scope="col" class="col-birthday">{{ kid.kidBirthday }}</td>
-						<td scope="col" class="col">{{ kid.kidGender == 'M' ? '남' : '여' }}</td>
-						<td scope="col" class="col-kidprofile"><img :src="kid.kidProfile" class="h-16 w-16" alt=""></td>
-						<td scope="col" class="col-kidcode"><div class="flex justify-between "><div class="flex items-center"><p >{{ decodeShow[index]? kid.encoded : "**********" }}</p></div> <button class="btn my-2 mx-2" @click="toggleCode($event, index)">{{decodeShow[index] ? "숨기기" : "확 인"}}</button></div></td>
-					</tr>
-					<tr v-if="newKid">
-						<td class="col">
-							<input type="text" class="input w-18" v-model.lazy="newKid.kidName" required />
+					<tr v-if="newKid" class="one-row !border-b-2">
+						<td class="col !px-1">
+							<input
+								type="text"
+								class="input w-18"
+								v-model.lazy="newKid.kidName"
+								required
+							/>
 						</td>
-						<td scop="col" class="col-birthday">
-							<VDatePicker :select-attribute="selectAttribute" v-model="newKid.kidBirth">
+						<td scop="col" class="col-birthday !px-1">
+							<VDatePicker
+								:select-attribute="selectAttribute"
+								v-model="newKid.kidBirth"
+							>
 								<template #default="{ inputValue, inputEvents }">
 									<div class="relative max-w-sm">
 										<div
-											class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
-											<svg class="w-4 h-4 text-gray-900 dark:text-gray-400" aria-hidden="true"
-												xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+											class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none"
+										>
+											<svg
+												class="w-4 h-4 text-gray-900 dark:text-gray-400"
+												aria-hidden="true"
+												xmlns="http://www.w3.org/2000/svg"
+												fill="currentColor"
+												viewBox="0 0 20 20"
+											>
 												<path
-													d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
+													d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"
+												/>
 											</svg>
 										</div>
-										<input :value="inputValue" v-on="inputEvents" class="datepicker-input" />
+										<input
+											:value="inputValue"
+											v-on="inputEvents"
+											class="datepicker-input"
+										/>
 									</div>
 								</template>
 							</VDatePicker>
 						</td>
-						<td>
-							<select id="menu-type" class="selection-input w-20" v-model="newKid.kidGender" required>
+						<td class="col-gender !px-1">
+							<select
+								id="menu-type"
+								class="selection-input w-[13rem]"
+								v-model="newKid.kidGender"
+								required
+							>
 								<option value="" disabled selected>성별</option>
 								<option value="M">남</option>
 								<option value="F">여</option>
 							</select>
 						</td>
 						<!-- 파일업로드  -->
-						<td colspan="2">
+						<td colspan="2" class="col-photo !pl-1">
 							<div class="flex justify-between">
-
 								<label
-									class="flex flex-col justify-center h-14 w-3/5 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
-									<div class="flex flex-col items-center justify-center" @dragover.prevent @drop="onDrop">
-										<input ref="imagefile" id="input" type="file" name="image" accept="image/*"
-											class="hidden" @change="uploadImage($event)" />
-
-										<p class="mb-2 text-sm text-gray-500 dark:text-gray-400">
-											<span class="font-semibold">Click to upload</span> or drag and drop
-										</p>
-										<p class="text-xs text-gray-500 dark:text-gray-400">
-											SVG, PNG, JPG or GIF (MAX. 800x400px)
-										</p>
+									class="flex flex-col justify-center h-14 w-[16rem] border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+								>
+									<div
+										class="flex flex-col items-center justify-center"
+										@dragover.prevent
+										@drop="onDrop"
+									>
+										<input
+											ref="imagefile"
+											id="input"
+											type="file"
+											name="image"
+											accept="image/*"
+											class="hidden"
+											@change="uploadImage($event)"
+										/>
+										<template v-if="!newKid.kidProfile">
+											<p class="mb-2 text-sm text-gray-500 dark:text-gray-400">
+												<span class="font-semibold">Click to upload</span> or
+												drag and drop
+											</p>
+											<p class="text-xs text-gray-500 dark:text-gray-400">
+												SVG, PNG, JPG or GIF (MAX. 800x400px)
+											</p>
+										</template>
+										<template v-else>
+											<div class="font-bold">{{ newKid.kidProfile }}</div>
+										</template>
 									</div>
 								</label>
-								<div>{{ newKid.kidProfile }}</div>
-								<div><button class="btn my-2 mx-2" @click="regsistKidinClass($event)">등록</button>
-									<button class="btn my-2 mx-2" @click="cancleRegsit">취소</button>
+								<div>
+									<button
+										class="btn my-2 mx-2"
+										@click="regsistKidinClass($event)"
+									>
+										등록
+									</button>
+									<button class="btn my-2 mx-2" @click="cancleRegsit">
+										취소
+									</button>
 								</div>
 							</div>
 						</td>
 					</tr>
-
+					<tr v-for="(kid, index) in kidList" :key="kid.kidId" class="one-row">
+						<td scope="col" class="col">{{ kid.kidName }}</td>
+						<td scope="col" class="col-birthday">{{ kid.kidBirthday }}</td>
+						<td scope="col" class="col">
+							{{ kid.kidGender == 'M' ? '남' : '여' }}
+						</td>
+						<td scope="col" class="col-photo">
+							<img
+								:src="kid.kidProfile"
+								class="h-16 w-16 border border-gray-400 rounded"
+								alt=""
+							/>
+						</td>
+						<td scope="col" class="col-code">
+							<div class="flex justify-between">
+								<div class="flex items-center">
+									<p>{{ decodeShow[index] ? kid.encoded : '**********' }}</p>
+								</div>
+								<button @click="toggleCode($event, index)" class="px-3">
+									<template v-if="!decodeShow[index]">
+										<svg
+											xmlns="http://www.w3.org/2000/svg"
+											width="20"
+											height="12"
+											viewBox="0 0 20 12"
+											fill="none"
+										>
+											<path
+												fill-rule="evenodd"
+												clip-rule="evenodd"
+												d="M10 0C12.5773 0 15.9107 2 20 6C15.9107 10 12.5773 12 10 12C7.42267 12 4.08934 10 0 6C4.08934 2 7.42267 0 10 0ZM10 2C8.41651 2 6.12903 3.20868 3.26355 5.70283L2.926 6L2.95433 6.02502C5.86439 8.61416 8.19959 9.91203 9.83348 9.99568L10 10C11.5835 10 13.871 8.79132 16.7364 6.29717L17.073 6L17.0457 5.97498C14.1356 3.38584 11.8004 2.08797 10.1665 2.00432L10 2ZM10 4C11.1046 4 12 4.89543 12 6C12 7.10457 11.1046 8 10 8C8.89543 8 8 7.10457 8 6C8 4.89543 8.89543 4 10 4Z"
+												fill="#000000"
+											/>
+										</svg>
+									</template>
+									<template v-else>
+										<svg
+											xmlns="http://www.w3.org/2000/svg"
+											width="20"
+											height="16"
+											viewBox="0 0 20 16"
+											fill="none"
+										>
+											<path
+												fill-rule="evenodd"
+												clip-rule="evenodd"
+												d="M17.7071 0.292893C17.3166 -0.0976311 16.6834 -0.0976311 16.2929 0.292893L13.5684 3.01736C12.2508 2.33912 11.0613 2 10 2C7.42267 2 4.08934 4 0 8C1.68265 9.6459 3.23731 10.9532 4.66397 11.9218L2.29289 14.2929L2.2097 14.3871C1.90468 14.7794 1.93241 15.3466 2.29289 15.7071C2.68342 16.0976 3.31658 16.0976 3.70711 15.7071L6.43158 12.9826C7.74924 13.6609 8.93871 14 10 14C12.5773 14 15.9107 12 20 8C18.3173 6.35411 16.7627 5.04683 15.336 4.07818L17.7071 1.70711L17.7903 1.6129C18.0953 1.22061 18.0676 0.653377 17.7071 0.292893ZM12.0718 4.51398C11.3589 4.20164 10.7222 4.03277 10.1665 4.00432L10 4C8.41651 4 6.12903 5.20868 3.26355 7.70283L2.926 8L2.95433 8.02502C4.09571 9.04053 5.14865 9.85739 6.10553 10.4803L8.06774 8.51804C8.02356 8.35282 8 8.17916 8 8C8 6.89543 8.89543 6 10 6C10.1792 6 10.3528 6.02356 10.518 6.06774L12.0718 4.51398ZM11.9323 7.48196L13.8945 5.51974C14.8514 6.14261 15.9043 6.95947 17.0457 7.97498L17.073 8L16.7364 8.29717C13.871 10.7913 11.5835 12 10 12L9.83348 11.9957C9.27783 11.9672 8.64108 11.7984 7.92819 11.486L9.48196 9.93226C9.64718 9.97644 9.82084 10 10 10C11.1046 10 12 9.10457 12 8C12 7.82084 11.9764 7.64718 11.9323 7.48196Z"
+												fill="#000000"
+											/>
+										</svg>
+									</template>
+								</button>
+							</div>
+						</td>
+					</tr>
 				</tbody>
 			</table>
-			<div class="one-row h-2 flex justify-end">
-				<button v-if="!newKid" @click="addOneRow" class="text-center text-dark-navy text-lg font-bold m-7">
-					아이등록
-				</button>
-			</div>
 		</div>
-
 	</div>
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue'
-import { getClassKids } from '@/api/user'
+import { ref, onMounted, computed } from 'vue';
+import { getClassKids } from '@/api/user';
 import axios from 'axios';
 onMounted(() => {
-	getClassKids(({ data }) => {
-		existKidList.value = data.data
-		decodeShow.value = Array(data.data.length).fill(false)
-
-	}, (error) => {
-		console.log(error)
-	}
-	)
-})
+	getClassKids(
+		({ data }) => {
+			existKidList.value = data.data;
+			decodeShow.value = Array(data.data.length).fill(false);
+		},
+		error => {
+			console.log(error);
+		},
+	);
+});
 
 const cancleRegsit = () => {
-	newKid.value = ""
-}
-
+	newKid.value = '';
+};
 
 const toggleCode = (event, index) => {
 	// console.log(decodeShow.value)
-	decodeShow.value[index] = !decodeShow.value[index]
-}
+	decodeShow.value[index] = !decodeShow.value[index];
+};
 
 function dataValidate() {
 	if (!image.value) return false;
-	if (!transformed.value.kidName) return false
-	if (!transformed.value.kidGender) return false
-	if (!transformed.value.kidBirth) return false
-	return true
+	if (!transformed.value.kidName) return false;
+	if (!transformed.value.kidGender) return false;
+	if (!transformed.value.kidBirth) return false;
+	return true;
 }
 
-const regsistKidinClass = async (event) => {
-
+const regsistKidinClass = async event => {
 	// validation check
-	if( !dataValidate() ) return
-	
-	const formData = new FormData()
+	if (!dataValidate()) return;
+
+	const formData = new FormData();
 	formData.append('MultipartFile', image.value);
-	formData.append('gender', transformed.value.kidGender)
-	formData.append('kidName', transformed.value.kidName)
-	formData.append('kidBirthday', transformed.value.kidBirth)
+	formData.append('gender', transformed.value.kidGender);
+	formData.append('kidName', transformed.value.kidName);
+	formData.append('kidBirthday', transformed.value.kidBirth);
 
-	axios.post("https://i10a706.p.ssafy.io/api/user/kid/regist", formData, {
-		headers: {
-			'Content-Type': 'multipart/form-data',
-			Authorization: 'Bearer ' + localStorage.getItem("accessToken"),
-		}
-	}).then((response) => {
-		getClassKids(({ data }) => {
-			// console.log(data)
-			existKidList.value = data.data
-		}, (error) => {
-			console.log(error)
+	axios
+		.post('https://i10a706.p.ssafy.io/api/user/kid/regist', formData, {
+			headers: {
+				'Content-Type': 'multipart/form-data',
+				Authorization: 'Bearer ' + localStorage.getItem('accessToken'),
+			},
 		})
-		image.value = ""
-		newKid.value = ""
-	}
-		// console.log(response)
-
-	).catch((error) => {
-		console.log(error)
-	})
+		.then(
+			response => {
+				getClassKids(
+					({ data }) => {
+						// console.log(data)
+						existKidList.value = data.data;
+					},
+					error => {
+						console.log(error);
+					},
+				);
+				image.value = '';
+				newKid.value = '';
+			},
+			// console.log(response)
+		)
+		.catch(error => {
+			console.log(error);
+		});
 	// console.log(formData)
-}
+};
 
-const image = ref(null)
+const image = ref(null);
 
 let count = 0;
 const addOneRow = () => {
 	newKid.value = {
 		kidIndex: count,
-		kidName: "",
-		kidGender: "",
-		kidBirth: "",
-		profileName: "",
-	}
+		kidName: '',
+		kidGender: '',
+		kidBirth: '',
+		profileName: '',
+	};
+};
 
-}
+const decodeShow = ref([]);
 
-const decodeShow = ref([])
-
-const kidList = computed( ()=> {
+const kidList = computed(() => {
 	return existKidList.value.map(item => {
 		return {
-			...item, 
-			encoded: btoa(item.kidId + "kid"),
-			isOpen : false
-		}
-	})
-})
+			...item,
+			encoded: btoa(item.kidId + 'kid'),
+			isOpen: false,
+		};
+	});
+});
 
 const transformed = computed(() => {
 	return {
 		...newKid.value,
-		kidBirth: formatDate(newKid.value.kidBirth)
-	}
+		kidBirth: formatDate(newKid.value.kidBirth),
+	};
+});
 
-})
-
-const existKidList = ref([])
-const newKid = ref("")
+const existKidList = ref([]);
+const newKid = ref('');
 
 function formatDate(date) {
-	if (!date) return ""
+	if (!date) return '';
 	const year = date.getFullYear();
 	const month = ('0' + (date.getMonth() + 1)).slice(-2);
 	const day = ('0' + date.getDate()).slice(-2);
 	return `${year}-${month}-${day}`;
 }
 
-const uploadImage = (event) => {
-
-	const file = event.target.files[0]
-	if (!file) return
-	newKid.value.kidProfile = file.name
-	image.value = file
-}
-
+const uploadImage = event => {
+	const file = event.target.files[0];
+	if (!file) return;
+	newKid.value.kidProfile = file.name;
+	image.value = file;
+};
 </script>
 
 <style scoped>
 .table-box {
 	@apply relative overflow-x-auto min-h-screen m-3;
 }
-
 .table {
-	@apply w-full mt-3 text-base text-left rtl:text-right text-gray-500 dark:text-gray-400;
+	@apply w-full text-base text-left rtl:text-right text-black;
 }
-
 .table-head {
-	@apply text-gray-700 bg-nav-navy bg-opacity-30 dark:bg-gray-700 dark:text-gray-400;
+	@apply bg-nav-gray bg-opacity-40 text-lg;
 }
-
 .col {
-	@apply pl-3 w-[14%];
+	@apply p-3 w-[20%];
 }
-
 .col-gender {
-	@apply p-3 w-[10%];
+	@apply p-3 w-[20%];
 }
-
 .col-birthday {
 	@apply p-3 w-[20%];
 }
-
 .col-photo {
 	@apply p-3 w-[20%];
 }
 .col-code {
-	@apply p-3 w-[30%]
+	@apply p-3 w-[20%];
 }
-.col-btn {
-	@apply w-[5%] text-dark-navy font-bold;
-}
-
 .one-row {
 	@apply bg-white border-b h-20;
-}
-
-.checkbox-frame {
-	@apply pr-3 py-1 inline-block text-black;
-}
-
-.checkbox {
-	@apply px-1;
-}
-
-.checkbox-label {
-	@apply px-1 text-base;
 }
 </style>

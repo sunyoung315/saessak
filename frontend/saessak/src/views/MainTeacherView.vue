@@ -277,7 +277,8 @@ onMounted(async () => {
 	@apply w-1/2 flex flex-col items-center justify-center;
 }
 .menu-item-foods {
-	@apply w-1/2 flex flex-col items-start justify-center;
+	@apply w-1/2 flex flex-col items-start justify-center ml-5 py-4 h-full overflow-auto;
+	/* @apply w-1/2 flex flex-col items-start justify-center ml-5 py-4 h-[20.8rem] overflow-auto; */
 }
 :deep(.vc-header) {
 	@apply mt-6 h-12;
