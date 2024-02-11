@@ -35,7 +35,7 @@
 							v-for="kid in paginatedReplacementList"
 							:key="kid.replacementId"
 							@click="moveReplacement(kid.replacementId)"
-							class="hover:bg-nav-blue hover:bg-opacity-20"
+							class="hover:bg-nav-blue hover:bg-opacity-20 cursor-pointer"
 							@update="callFunction"
 						>
 							<td

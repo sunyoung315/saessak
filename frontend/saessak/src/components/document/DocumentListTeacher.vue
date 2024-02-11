@@ -35,7 +35,7 @@
 							v-for="kid in paginatedReplacementList"
 							:key="kid.replacementId"
 							@click="moveReplacement(kid.replacementId, kid.kidName)"
-							class="hover:bg-nav-blue hover:bg-opacity-20"
+							class="hover:bg-nav-blue hover:bg-opacity-20 cursor-pointer"
 						>
 							<td
 								class="border-t-0 px-6 align-middle border-l-0 border-r-0 text whitespace-nowrap p-4"
@@ -129,7 +129,7 @@
 							v-for="kid in allergyList"
 							:key="kid.kidId"
 							@click="moveAllergy(kid.kidId)"
-							class="hover:bg-nav-blue hover:bg-opacity-20"
+							class="hover:bg-nav-blue hover:bg-opacity-20 cursor-pointer"
 						>
 							<td
 								class="border-t-0 px-6 align-middle border-l-0 border-r-0 text whitespace-nowrap p-4"
