@@ -86,10 +86,6 @@ const handleFileUpload = (event) => {
 
 // 공지사항 제출 함수
 const registNotice = async () => {
-  console.log(notice.value.noticeTitle)
-  console.log(notice.value.noticeContent)
-  console.log(notice.value.noticeFile)
-
   const formData = new FormData()
   formData.append('title', notice.value.noticeTitle)
   formData.append('content', notice.value.noticeContent)
@@ -106,7 +102,7 @@ const registNotice = async () => {
     })
     router.push({ name: 'NoticeList' })
   } catch (error) {
-    console.error(error)
+    //console.error(error)
   }
 }
 

@@ -30,7 +30,7 @@ const goCreateBoard = () => {
 
 // 작성 화면에서는 '작성' 버튼이 보이지 않게 하기 위해 path 확인
 const path = computed(() => {
-  console.log(route.path.substr(8))
+  //console.log(route.path.substr(8))
   return route.path.substr(8)
 })
 
