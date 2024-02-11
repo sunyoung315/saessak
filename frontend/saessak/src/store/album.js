@@ -117,6 +117,36 @@ export const useAlbumStore = defineStore('album', () => {
 			});
 	};
 
+	// 앨범 있는 날짜 리스트
+	const activeDates = ref([]);
+	const getActiveDates = async kidId => {
+		await axios({
+			url: `${REST_ALBUM_API}/exist/${kidId}`,
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: 'Bearer ' + localStorage.getItem('accessToken'),
+			},
+		}).then(resp => {
+			activeDates.value = resp.data.data;
+		});
+	};
+
+	// 앨범 있는 날짜 리스트 (선생님 반 전체 보기)
+	const activeClassDates = ref([]);
+	const getActiveClassDates = async () => {
+		await axios({
+			url: `${REST_ALBUM_API}/exist`,
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: 'Bearer ' + localStorage.getItem('accessToken'),
+			},
+		}).then(resp => {
+			activeClassDates.value = resp.data.data;
+		});
+	};
+
 	return {
 		albumTeacherList,
 		getAlbumTeacherList,
@@ -132,5 +162,9 @@ export const useAlbumStore = defineStore('album', () => {
 		getKidAlbumDateList,
 		recentAlbumList,
 		getRecentAlbumList,
+		activeDates,
+		getActiveDates,
+		activeClassDates,
+		getActiveClassDates,
 	};
 });

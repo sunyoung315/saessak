@@ -12,7 +12,7 @@
 					<img class="px-2" src="@/assets/film.png" alt="필름" />
 					<Carousel
 						:items-to-show="5"
-						:wrap-around="true"
+						:wrap-around="false"
 						snapAlign="start"
 						v-if="kid.albumResponseDto"
 					>
@@ -43,7 +43,7 @@
 						</button>
 
 						<button @click="goDetail(kid.kidId)" class="m-4 text-xl font-bold">
-							→ 전체 조회
+							→ 상세 조회
 						</button>
 					</div>
 				</div>
@@ -186,7 +186,7 @@ onMounted(async () => {
 });
 
 // carousel 시작
-import 'vue3-carousel/dist/carousel.css';
+
 defineComponent({
 	name: 'WrapAround',
 	components: {
