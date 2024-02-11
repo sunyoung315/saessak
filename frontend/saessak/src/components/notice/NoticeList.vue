@@ -100,31 +100,31 @@ function startFix(notice) {
 <template>
   <div class="view-frame p-4">
     <div class="container p-6 flex items-center">
-      <table class="items-center bg-transparent border-collapse mt-4 w-full text-center">
+      <table class="items-center bg-transparent border-collapse mt-4 w-full">
         <thead>
           <tr class="bg-nav-orange">
             <th
-              class="px-48 border border-solid border-blueGray-100 py-3 uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold"
+              class="p-4 w-[40%] border border-solid border-blueGray-100 py-3 uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left"
             >
               제목
             </th>
             <th
-              class="px-2 border border-solid border-blueGray-100 py-3 uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold"
+              class="p-4 w-[10%] border border-solid border-blueGray-100 py-3 uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left"
             >
               작성자
             </th>
             <th
-              class="px-1 border border-solid border-blueGray-100 py-3 uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold"
+              class="p-4 w-[10%] border border-solid border-blueGray-100 py-3 uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left"
             >
               첨부파일
             </th>
             <th
-              class="px-1 border border-solid border-blueGray-100 py-3 uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold"
+              class="p-4 w-[10%] border border-solid border-blueGray-100 py-3 uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left"
             >
               작성일자
             </th>
             <th
-              class="px-1 border border-solid border-blueGray-100 py-3 uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold"
+              class="p-4 w-[10%] border border-solid border-blueGray-100 py-3 uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left"
             ></th>
           </tr>
         </thead>
@@ -133,25 +133,25 @@ function startFix(notice) {
           <tr
             v-for="notice in noticeList.list"
             :key="notice.noticeId"
-            class="hover:bg-nav-orange hover:bg-opacity-20"
+            class="hover:bg-nav-orange hover:bg-opacity-20 cursor-pointer"
           >
             <td
-              class="border-t-0 px-6 align-middle border-l-0 border-r-0 whitespace-nowrap p-4"
+              class="border-t-0 align-middle border-l-0 border-r-0 whitespace-nowrap p-4"
               @click="moveNoticeDetail(notice.noticeId)"
             >
               {{ notice.noticeTitle }}
             </td>
             <td
-              class="border-t-0 px-6 align-middle border-l-0 border-r-0 whitespace-nowrap p-4"
+              class="border-t-0 align-middle border-l-0 border-r-0 whitespace-nowrap p-4"
               @click="moveNoticeDetail(notice.noticeId)"
             >
               {{ notice.teacherName }}
             </td>
             <td
-              class="border-t-0 px-6 align-middle border-l-0 border-r-0 whitespace-nowrap p-4"
+              class="border-t-0 align-middle border-l-0 border-r-0 whitespace-nowrap p-4"
               @click="moveNoticeDetail(notice.noticeId)"
             >
-              <div v-if="notice.fileFlag" class="flex justify-center items-center">
+              <div v-if="notice.fileFlag" class="flex justify-start items-center">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
@@ -169,13 +169,13 @@ function startFix(notice) {
               </div>
             </td>
             <td
-              class="border-t-0 px-6 align-middle border-l-0 border-r-0 whitespace-nowrap p-4"
+              class="border-t-0 align-middle border-l-0 border-r-0 whitespace-nowrap p-4"
               @click="moveNoticeDetail(notice.noticeId)"
             >
               {{ notice.noticeTime }}
             </td>
             <td
-              class="border-t-0 px-6 align-middle border-l-0 border-r-0 whitespace-nowrap p-4"
+              class="border-t-0 align-middle border-l-0 border-r-0 whitespace-nowrap p-4"
               @click="startFix(notice)"
             >
               <div v-if="notice.noticeFlag" class="flex justify-center items-center">
