@@ -62,6 +62,7 @@ public class NoticeService {
             noticeResponseDtoList.add(noticeResponseDto);
         }
         Collections.sort(noticeResponseDtoList);
+        int fixSize = noticeResponseDtoList.size();
 
         // 고정 안 한 공지사항 나중에 추가
         Pageable pageable = PageRequest.of(pageNo, 10-noticeResponseDtoList.size(), Sort.by(Sort.Direction.DESC, "noticeId"));
@@ -78,9 +79,12 @@ public class NoticeService {
                 noticeResponseDtoList.add(noticeResponseDto);
         }
 
+        int tmpLength = (noticeResponseDtoList.size() - fixSize) / (10-fixSize);
+        if((noticeResponseDtoList.size() - fixSize) % (10-fixSize) != 0) tmpLength++;
+
         return NoticeResponseListDto.builder()
                 .list(noticeResponseDtoList)
-                .length(noticeRepository.countByClassroom(classroom))
+                .length(tmpLength)
                 .build();
     }
 
@@ -107,29 +111,29 @@ public class NoticeService {
             noticeResponseDtoList.add(noticeResponseDto);
         }
         Collections.sort(noticeResponseDtoList);
+        int fixSize = noticeResponseDtoList.size();
 
         // 고정 안 한 공지사항 나중에 추가
         Pageable pageable = PageRequest.of(pageNo, 10-noticeResponseDtoList.size(), Sort.by(Sort.Direction.DESC, "noticeId"));
-        Page<Notice> noticeList = noticeRepository.findAllByClassroom(classroom, pageable);
+        Page<Notice> noticeList = noticeRepository.findNoticesNotFixedByUser(classroom, user, pageable);
         for(Notice n : noticeList){
-            boolean flag = fixRepository.findByNoticeAndUser(n, user).isPresent();
-            if(!flag){ // 고정 안 한 공지사항만 고른다.
-                NoticeResponseDto noticeResponseDto = NoticeResponseDto.builder()
-                        .noticeId(n.getNoticeId())
-                        .noticeTitle(n.getNoticeTitle())
-                        .fileFlag(n.getNoticeFile() != null)
-                        .noticeTime(n.getNoticeTime())
-                        .teacherName(n.getUser().getNickname())
-                        .noticeFlag(false)
-                        .build();
-                noticeResponseDtoList.add(noticeResponseDto);
-            }
-
+            NoticeResponseDto noticeResponseDto = NoticeResponseDto.builder()
+                    .noticeId(n.getNoticeId())
+                    .noticeTitle(n.getNoticeTitle())
+                    .fileFlag(n.getNoticeFile() != null)
+                    .noticeTime(n.getNoticeTime())
+                    .teacherName(n.getUser().getNickname())
+                    .noticeFlag(false)
+                    .build();
+            noticeResponseDtoList.add(noticeResponseDto);
         }
+        
+        int tmpLength = (noticeResponseDtoList.size() - fixSize) / (10-fixSize);
+        if((noticeResponseDtoList.size() - fixSize) % (10-fixSize) != 0) tmpLength++;
 
         return NoticeResponseListDto.builder()
                 .list(noticeResponseDtoList)
-                .length(noticeRepository.countByClassroom(classroom))
+                .length(tmpLength)
                 .build();
     }
 
