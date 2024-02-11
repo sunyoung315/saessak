@@ -59,12 +59,12 @@
       <!-- Dropdown menu -->
       <div
         id="dropdownNotification"
-        class="z-20 hidden w-72 max-w-sm bg-white divide-y divide-gray-100 rounded-lg shadow-md border border-gray-300 !-left-28"
+        class="z-20 hidden w-80 max-w-sm bg-white divide-y divide-gray-100 rounded-lg shadow-md border border-gray-300 !-left-28"
         aria-labelledby="dropdownNotificationButton"
       >
         <div
           @click="removeAllAlarm()"
-          class="block px-4 py-1 text-gray-900 text-base rounded-t-lg bg-gray-100 text-right font-extrabold border-b border-gray-300"
+          class="cursor-pointer block px-4 py-1 text-gray-900 text-base rounded-t-lg bg-gray-100 text-right font-extrabold border-b border-gray-300"
         >
           전체 삭제
         </div>
@@ -86,7 +86,7 @@
                     {{ alarm.alarmType.substring(0, 2) }}하였습니다!
                   </div>
                 </div>
-                <div class="mx-3">
+                <div class="mx-3 cursor-pointer">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 384 512"
@@ -123,7 +123,7 @@
                     {{ alarm.alarmType.substring(0, alarm.alarmType.length - 3) }} 확인이 필요합니다!
                   </div>
                 </div>
-                <div class="mx-3">
+                <div class="mx-3 cursor-pointer">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 384 512"
