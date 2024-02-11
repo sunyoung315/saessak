@@ -1,11 +1,11 @@
 <template>
-  <div class="container mt-8 ml-12 mr-16 w-11/12 border border-gray-200 shadow rounded-lg">
+  <div class="view-frame p-4">
     <div class="flex justify-end items-center">
       <button type="button" @click="registNotice()" class="btn">등록</button>
       <button type="button" @click="goBack()" class="btn">목록</button>
     </div>
 
-    <div class="block mt-2 mb-5 w-full">
+    <div class="block mt-16 mb-5 w-full">
       <span class="content-title">제목</span>
       <input
         id="title"
