@@ -246,7 +246,7 @@ const props = defineProps({
 });
 onMounted(() => {
 	// 로그인 여부 판단하기
-	console.log(props.navData);
+	// console.log(props.navData)
 	const token = localStorage.getItem('accessToken');
 	flag.value = token == null ? false : true;
 	// console.log(flag);

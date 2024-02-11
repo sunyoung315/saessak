@@ -53,8 +53,8 @@ function isVaild(success, fail){
 }
 
 // 9. (공통) 채팅방 퇴장 시간 기록하기
-function disconnect(param, success, fail) {
-    local.get(`${url}/disconnect`, {params : param}).then(success).catch(fail);
+async function disconnect(param, success, fail) {
+    await local.get(`${url}/disconnect`, {params : param}).then(success).catch(fail);
 }
 
 

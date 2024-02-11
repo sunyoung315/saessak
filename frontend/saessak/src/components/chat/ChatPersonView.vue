@@ -10,12 +10,12 @@
     </h5>
   </div>
   <div class="flow-root grow">
-    <div class="w-full max-w-sm mt-5 mx-auto bg-yellow-50 dark:bg-gray-800 dark:border-gray-700">
-      <div class="flex flex-wrap pt-5 mt-auto mb-3 justify-evenly">
+    <div class="w-full mt-5 mx-0 my-0 bg-yellow-50 dark:bg-gray-800 dark:border-gray-700">
+      <div class="flex flex-wrap pt-5 w-full mt-auto mb-3 justify-evenly">
         <div
           v-for="person in Person"
           :key="person.id"
-          class="flex flex-col items-center w-5/12 mb-3 border border-gray-300 rounded-lg shadow pb-10mb-4"
+          class="flex flex-col items-center w-6/12 mb-3 border border-gray-300 rounded-lg shadow pb-10mb-4"
         >
           <img
             v-if="isTeacher == true"
@@ -41,7 +41,8 @@
               @click="
                 addChat({
                   id: isTeacher == true ? person.kidId : person.teacherId,
-                  name: isTeacher == true ? person.kidName : person.teacherName
+                  name: isTeacher == true ? person.kidName : person.teacherName,
+                  profile : isTeacher == true ? person.kidProfile : person.profile
                 })
               "
               class="inline-flex items-center px-4 py-2 text-center text-white bg-lime-800 rounded-lg font -medium mt-0text-sm hover:bg-lime-500 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
@@ -94,7 +95,7 @@ const getPersonList = () => {
     // console.log('선생님 - 반 아이 조회')
     getClassKids(
       ({ data }) => {
-        console.log(data.data)
+        // console.log(data.data)
         Person.value = data.data
       },
       (error) => {
@@ -102,10 +103,10 @@ const getPersonList = () => {
       }
     )
   } else {
-    console.log('학부모 - 선생님 조회')
+    // console.log('학부모 - 선생님 조회')
     getMyTeacher(
       ({ data }) => {
-        console.log(data.data)
+        // console.log(data.data)
         Person.value = data.data
       },
       (error) => {
@@ -133,8 +134,7 @@ const addChat = (input) => {
         const roomInfo = {
           roomId: data.data,
           roomName: input.name,
-          width: props.size.width,
-          height: props.size.height
+          chatProfile : input.profile
         }
         emit('chatEvent', roomInfo)
       },
@@ -152,8 +152,7 @@ const addChat = (input) => {
         const roomInfo = {
           roomId: data.data,
           roomName: input.name,
-          width: props.size.width,
-          height: props.size.height
+          chatProfile : input.profile
         }
         emit('chatEvent', roomInfo)
       },
