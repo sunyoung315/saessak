@@ -1,14 +1,12 @@
 <template>
 	<div class="view-header">
-		<span class="nav-title">설정</span>
+		<div class="view-title-teacher">
+			<span class="nav-title">설정</span>
+			<button v-if="!newKid" @click="addOneRow" class="btn">아이 등록</button>
+		</div>
 	</div>
 	<div class="view-frame">
 		<div class="table-box overflow-auto">
-			<div class="flex justify-end px-3 pb-3">
-				<button v-if="!newKid" @click="addOneRow" class="btn m-0">
-					아이 등록
-				</button>
-			</div>
 			<table class="table">
 				<thead class="table-head">
 					<tr>
@@ -67,7 +65,6 @@
 								v-model="newKid.kidGender"
 								required
 							>
-								<option value="" disabled selected>성별</option>
 								<option value="M">남</option>
 								<option value="F">여</option>
 							</select>
@@ -305,6 +302,9 @@ const uploadImage = event => {
 </script>
 
 <style scoped>
+.view-title-teacher {
+	@apply flex justify-between items-center;
+}
 .table-box {
 	@apply relative overflow-x-auto min-h-screen m-3;
 }
