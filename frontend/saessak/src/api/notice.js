@@ -11,8 +11,8 @@ const config = {
 }
 
 // noticeList 전부 불러오기
-function noticeListParentAll(kidId, param, sucess, fail) {
-  local.get(`${url}/all/parent/${kidId}`, param).then(sucess).catch(fail)
+function noticeListParentAll(kidId, pageNo, sucess, fail) {
+  local.get(`${url}/all/parent/${kidId}?pageNo=${pageNo}`).then(sucess).catch(fail)
 }
 
 function noticeListTeacherAll(param, sucess, fail) {
