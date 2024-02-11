@@ -118,7 +118,7 @@ public class BoardService {
         Kid kid = kidResult.get();
 
         List<BoardResponseDto> boardResponseDtoList = new ArrayList<>();
-        Optional<List<Board>> boardResult = boardRepository.findByKid(kid);
+        Optional<List<Board>> boardResult = boardRepository.findByKidOrderByBoardDateDesc(kid);
         if(boardResult.isEmpty()) return boardResponseDtoList;
 
         for(Board board: boardResult.get()){
@@ -145,6 +145,20 @@ public class BoardService {
             boardResponseDtoList.add(boardResponseDto);
         }
         return boardResponseDtoList;
+    }
+
+    public List<LocalDate> getDateExistBoard (Long kidId) {
+        Optional<Kid> kidResult = kidRepository.findById(kidId);
+        if(kidResult.isEmpty()) throw new NotFoundException(ExceptionCode.KID_NOT_FOUND);
+        List<LocalDate> dateList = new ArrayList<>( );
+
+        Optional<List<Board>> boardResult = boardRepository.findByKidOrderByBoardDateDesc(kidResult.get());
+        if(boardResult.isEmpty()) return dateList;
+        for(Board board: boardResult.get()){
+            dateList.add(board.getBoardDate());
+        }
+
+        return dateList;
     }
 
     public BoardDetailDto findByKidAndDate (Long kidId, LocalDate date){
@@ -215,7 +229,7 @@ public class BoardService {
         LocalDate start = date.withDayOfMonth(1);
         LocalDate end = date.withDayOfMonth(date.lengthOfMonth());
         Optional<List<Board>> boardResult =
-                boardRepository.findByKidAndBoardDateGreaterThanEqualAndBoardDateLessThanEqualOrderByBoardDate(kid, start, end);
+                boardRepository.findByKidAndBoardDateGreaterThanEqualAndBoardDateLessThanEqualOrderByBoardDateDesc(kid, start, end);
         List<BoardResponseDto> boardResponseDtoList = new ArrayList<>();
         log.debug("startDate {} , endDate {}", start, end);
         if(boardResult.isEmpty()) return boardResponseDtoList;
@@ -251,7 +265,7 @@ public class BoardService {
         Kid kid = kidResult.get();
         List<PhysicalDto> physicalDtoList= new ArrayList<>();
 
-        Optional<List<Board>> physicalResult = boardRepository.findByKidAndBoardDateBetween(kid,startDate, endDate);
+        Optional<List<Board>> physicalResult = boardRepository.findByKidAndBoardDateBetweenOrderByBoardDate(kid,startDate, endDate);
 
         if(physicalResult.isEmpty()) return null;
         List<Board> boardList = physicalResult.get();
@@ -278,7 +292,7 @@ public class BoardService {
         Optional<Kid> kidResult = kidRepository.findById(kidId);
         if(kidResult.isEmpty()) throw new UserException(ExceptionCode.KID_NOT_FOUND);
         Kid kid = kidResult.get();
-        Optional<List<Board>> boardResult = boardRepository.findByKidAndBoardDateBetween(kid,startDate,endDate);
+        Optional<List<Board>> boardResult = boardRepository.findByKidAndBoardDateBetweenOrderByBoardDate(kid,startDate,endDate);
         if(boardResult.isEmpty()) return null;
 
         for(Board board : boardResult.get()){
