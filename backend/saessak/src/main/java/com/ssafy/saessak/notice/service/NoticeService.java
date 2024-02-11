@@ -79,8 +79,9 @@ public class NoticeService {
                 noticeResponseDtoList.add(noticeResponseDto);
         }
 
-        int tmpLength = (noticeResponseDtoList.size() - fixSize) / (10-fixSize);
-        if((noticeResponseDtoList.size() - fixSize) % (10-fixSize) != 0) tmpLength++;
+        int size = (int)noticeRepository.countByClassroom(classroom);
+        int tmpLength = (size - fixSize) / (10-fixSize);
+        if((size - fixSize) % (10-fixSize) != 0) tmpLength++;
 
         return NoticeResponseListDto.builder()
                 .list(noticeResponseDtoList)
@@ -127,9 +128,10 @@ public class NoticeService {
                     .build();
             noticeResponseDtoList.add(noticeResponseDto);
         }
-        
-        int tmpLength = (noticeResponseDtoList.size() - fixSize) / (10-fixSize);
-        if((noticeResponseDtoList.size() - fixSize) % (10-fixSize) != 0) tmpLength++;
+
+        int size = (int)noticeRepository.countByClassroom(classroom);
+        int tmpLength = (size - fixSize) / (10-fixSize);
+        if((size - fixSize) % (10-fixSize) != 0) tmpLength++;
 
         return NoticeResponseListDto.builder()
                 .list(noticeResponseDtoList)
