@@ -7,12 +7,26 @@
 				<button
 					type="button"
 					@click="check"
-					class="mt-8 mr-6 border border-dark-navy hover:bg-white focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+					class="mt-8 mr-6 border border-dark-navy focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
 					:class="
 						replaceDetailList.replacementCheck
-							? 'text-white bg-dark-navy hover:text-dark-navy'
+							? 'text-white bg-dark-navy cursor-default'
 							: 'text-black bg-white hover:bg-dark-navy'
 					"
+					v-if="loginStore.isTeacher"
+				>
+					{{ replaceDetailList.replacementCheck ? '확인완료' : '미확인' }}
+				</button>
+				<button
+					type="button"
+					disabled
+					class="mt-8 mr-6 border border-dark-navy focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+					:class="
+						replaceDetailList.replacementCheck
+							? 'text-white bg-dark-navy cursor-default'
+							: 'text-black bg-white cursor-default'
+					"
+					v-else
 				>
 					{{ replaceDetailList.replacementCheck ? '확인완료' : '미확인' }}
 				</button>

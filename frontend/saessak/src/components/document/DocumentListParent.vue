@@ -32,7 +32,7 @@
 					</thead>
 					<tbody>
 						<tr
-							v-for="kid in myReplacementList"
+							v-for="kid in paginatedReplacementList"
 							:key="kid.replacementId"
 							@click="moveReplacement(kid.replacementId)"
 							class="hover:bg-nav-blue hover:bg-opacity-20"
@@ -61,7 +61,7 @@
 									:class="
 										kid.replacementCheck
 											? 'bg-nav-blue text-black font-bold rounded-lg p-2'
-											: 'bg-gray-500 text-white font-bold rounded-lg p-2'
+											: ' text-black font-bold rounded-lg p-2'
 									"
 								>
 									{{ kid.replacementCheck ? '확인완료' : '미확인' }}
@@ -70,6 +70,30 @@
 						</tr>
 					</tbody>
 				</table>
+			</div>
+			<div class="pagination flex justify-center text-2xl font-bold">
+				<button
+					@click="prevPage"
+					:disabled="currentPage === 1"
+					:class="{ 'text-gray-200': currentPage === 1 }"
+				>
+					←
+				</button>
+				<button
+					v-for="page in totalPage"
+					:key="page"
+					@click="goToPage(page)"
+					class="m-2 rounded-lg p-2"
+					:class="{ 'bg-nav-blue': currentPage === page }"
+				>
+					{{ page }}
+				</button>
+				<button
+					@click="nextPage"
+					:class="{ 'text-gray-200': currentPage === totalPage }"
+				>
+					→
+				</button>
 			</div>
 		</div>
 		<!-- Parents Version : 알레르기 동의서 -->
@@ -80,7 +104,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref, defineProps } from 'vue';
+import { onMounted, ref, defineProps, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useReplacementStore } from '@/store/replacement';
 import DocumentAllergyDetail from '@/components/document/DocumentAllergyDetail.vue';
@@ -115,6 +139,37 @@ function moveReplacement(replacementId) {
 	});
 }
 // 버튼 끝
+
+////////////// 페이지네이션
+const itemsPerPage = 10;
+const currentPage = ref(1);
+
+const totalPage = computed(() =>
+	Math.ceil(myReplacementList.value.length / itemsPerPage),
+);
+
+const paginatedReplacementList = computed(() => {
+	const start = (currentPage.value - 1) * itemsPerPage;
+	const end = start + itemsPerPage;
+	return myReplacementList.value.slice(start, end);
+});
+
+const nextPage = () => {
+	if (currentPage.value < totalPage.value) {
+		currentPage.value++;
+	}
+};
+
+const goToPage = page => {
+	currentPage.value = page;
+};
+
+const prevPage = () => {
+	if (currentPage.value > 1) {
+		currentPage.value--;
+	}
+};
+///////////////////
 </script>
 
 <style scoped></style>
