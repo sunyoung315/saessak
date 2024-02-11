@@ -56,7 +56,7 @@
 												format(date, 'yyyy-MM-dd').toString() ===
 													menu.menuDate && menu.menuType === '점심'
 											"
-											class="menu-card"
+											class="menu-card min-h-[30rem]"
 										>
 											<template v-if="props.loginStore.isTeacher">
 												<div class="flex justify-between items-center">
@@ -128,7 +128,7 @@
 												format(date, 'yyyy-MM-dd').toString() ===
 													menu.menuDate && menu.menuType === '간식'
 											"
-											class="menu-card"
+											class="menu-card min-h-[22.4rem]"
 										>
 											<template v-if="props.loginStore.isTeacher">
 												<div class="flex justify-between items-center">
@@ -272,9 +272,6 @@ const getWeeklyMenu = async () => {
 	if (props.loginStore.isTeacher) {
 		await store.getTeacherWeeklyMenu(weeklyDate.value);
 	} else {
-		// 임시 kidId ////////////////////////////
-		// await store.getParentWeeklyMenu(weeklyDate.value, props.loginStore.culKid);
-		/////////////////////////////////////////
 		await store.getParentWeeklyMenu(
 			weeklyDate.value,
 			props.loginStore.kidList[0].kidId,
@@ -328,7 +325,7 @@ onMounted(async () => {
 	@apply p-2 m-1 bg-slate-50 rounded-md border border-gray-200 shadow-md;
 }
 .menu-type {
-	@apply text-gray-900 font-extrabold text-lg py-2 px-1;
+	@apply text-gray-900 font-extrabold text-xl py-2 px-2;
 }
 .food-item {
 	@apply flex flex-wrap items-center p-1;
@@ -337,13 +334,13 @@ onMounted(async () => {
 	@apply w-7 h-6 mx-1 mt-1 rounded bg-dark-navy flex justify-center items-center;
 }
 .food-title {
-	@apply text-gray-900 font-bold pr-2;
+	@apply text-gray-900 font-bold text-lg pr-2 py-0.5;
 }
 .food-allergy {
-	@apply text-gray-500 text-sm;
+	@apply text-gray-500 text-base;
 }
 .menu-image {
-	@apply w-full h-52 border-gray-300 border-2 p-1;
+	@apply w-full h-52 border-gray-300 border-2 p-1 mb-2;
 }
 .no-menu {
 	@apply text-base font-semibold bg-slate-50 rounded-md border border-gray-200 shadow-md m-1 pl-10 pt-10 pb-20;

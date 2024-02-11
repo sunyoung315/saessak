@@ -213,7 +213,7 @@ const createMenuList = async menuList => {
 			.join('/');
 	});
 	await createMenu(menuList);
-	await store.getTeacherWeeklyMenu();
+	// await store.getTeacherWeeklyMenu();
 	router.push({ name: 'MenuList' });
 };
 </script>
