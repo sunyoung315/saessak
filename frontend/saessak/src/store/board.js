@@ -63,8 +63,6 @@ export const useBoardStore = defineStore('board', () => {
 	const oneBoard = ref({});
 	// 검색할 날짜
 	const date = ref('');
-	// 알림장이 없을 경우
-	const noContent = ref('');
 
 	// 알림장 상세보기(boardId)
 	const getOneBoard = async boardId => {
@@ -91,13 +89,7 @@ export const useBoardStore = defineStore('board', () => {
 				'Content-Type': 'application/json',
 			},
 		}).then(resp => {
-			if (resp.data.data) {
-				noContent.value = '';
-				oneBoard.value = resp.data.data;
-				date.value = oneBoard.value.boardDate;
-			} else {
-				noContent.value = '등록된 알림장이 없습니다.';
-			}
+			oneBoard.value = resp.data.data;
 		});
 	};
 
@@ -110,12 +102,9 @@ export const useBoardStore = defineStore('board', () => {
 				'Content-Type': 'application/json',
 			},
 		}).then(resp => {
-			if (resp.data.data) {
-				noContent.value = '';
-				oneBoard.value = resp.data.data;
+			oneBoard.value = resp.data.data;
+			if (oneBoard.value) {
 				date.value = oneBoard.value.boardDate;
-			} else {
-				noContent.value = '등록된 알림장이 없습니다.';
 			}
 		});
 	};
@@ -172,6 +161,21 @@ export const useBoardStore = defineStore('board', () => {
 		});
 	};
 
+	// 알림장 있는 날짜 리스트
+	const activeDates = ref([]);
+	const getActiveDates = async kidId => {
+		await axios({
+			url: `${REST_BOARD_API}/exist/${kidId}`,
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: 'Bearer ' + localStorage.getItem('accessToken'),
+			},
+		}).then(resp => {
+			activeDates.value = resp.data.data;
+		});
+	};
+
 	return {
 		years,
 		months,
@@ -183,7 +187,6 @@ export const useBoardStore = defineStore('board', () => {
 		getOneBoard,
 		date,
 		getOneBoardByDate,
-		noContent,
 		getCurrentBoard,
 		summary,
 		boardList,
@@ -193,5 +196,7 @@ export const useBoardStore = defineStore('board', () => {
 		getGrowthList,
 		myKidGrowthList,
 		getMyKidGrowthList,
+		activeDates,
+		getActiveDates,
 	};
 });

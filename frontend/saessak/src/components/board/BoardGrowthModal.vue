@@ -327,7 +327,7 @@ const chartOptionsWeight = ref({
 		y: {
 			formatter: value => {
 				if (value) {
-					return `${value} cm`;
+					return `${value} kg`;
 				}
 			},
 		},
