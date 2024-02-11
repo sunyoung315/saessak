@@ -80,7 +80,7 @@ public class ChatService {
         User user = authenticationService.getUserByAuthentication(); //선생님
 
         Teacher teacher = teacherRepository.findById(user.getId()).get();
-        Kid kid = kidRepository.findById(kidId).get();
+        Kid kid = kidRepository.findByIdAndParentIsNotNull(kidId).get();
         Room room = roomRepository.findByKidAndTeacher(kid, teacher);
 
         if(room == null){
