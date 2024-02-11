@@ -1,7 +1,5 @@
 <template>
-	<div
-		class="container mt-8 ml-12 mr-16 w-11/12 border border-gray-200 shadow rounded-lg"
-	>
+	<div class="view-frame p-4">
 		<div class="flex justify-end items-center">
 			<button type="button" @click="registAlbum()" class="btn">등록</button>
 			<button type="button" @click="goBack()" class="btn">목록</button>
@@ -76,11 +74,6 @@
 						multiple="multiple"
 						class="hidden"
 						@change="uploadImage()"
-						@input="emptyImage = false"
-						:class="{
-							'!border-2 !border-red-500': emptyImage,
-							shake: shakeImage,
-						}"
 						required
 					/>
 					<svg
@@ -166,6 +159,12 @@ function registAlbum() {
 		// 빈 필드가 있다면 등록 중단
 		return;
 	}
+
+	if (count.value === 0) {
+		alert('등록된 앨범이 없습니다.');
+		return;
+	}
+
 	// 앨범 정보 추가
 	form.append('albumTitle', title.value);
 	form.append('albumDate', formattedDate);
@@ -216,10 +215,7 @@ function formatDate(date) {
 const emptyTitle = ref(false);
 const shakeTitle = ref(false);
 
-const emptyImage = ref(false);
-const shakeImage = ref(false);
-
-// 널값처리
+// 널값 처리
 const checkEmptyFields = () => {
 	let hasEmptyFields = false;
 	if (!title.value.trim()) {
@@ -230,14 +226,7 @@ const checkEmptyFields = () => {
 			shakeTitle.value = false;
 		}, 1000);
 	}
-	if (!uploadedFileNames.value.length) {
-		emptyImage.value = true;
-		shakeImage.value = true;
-		hasEmptyFields = true;
-		setTimeout(() => {
-			shakeImage.value = false;
-		}, 1000);
-	}
+
 	// ...
 	return hasEmptyFields;
 };

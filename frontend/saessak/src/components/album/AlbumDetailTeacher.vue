@@ -95,8 +95,50 @@ const getKidAlbumDateList = async () => {
 	myKidAlbumDateList.value = albumStore.myKidAlbumDateList;
 };
 
+// 앨범 있는 날짜 목록
+const activeDates = ref([]);
+// 앨범이 없는 날짜 목록 추출
+const disabledDates = ref([]);
+
 onMounted(async () => {
 	await getKidAlbumDateList();
+
+	// datepicker에서 활성화시킬 날짜 호출
+	await albumStore.getActiveDates(route.params.id);
+	activeDates.value = albumStore.activeDates;
+
+	// 알림장이 있는 날짜들 중 가장 오래된 날짜
+	const startDate = new Date(activeDates.value[activeDates.value.length - 1]);
+	// 앨범 있는 날짜들 중 가장 최근 날짜
+	const endDate = new Date(activeDates.value[0]);
+
+	// DatePicker의 초기 날짜를 가장 최근 앨범 날짜로 설정
+	date.value = endDate;
+
+	// 앨범 있는 기간 중 앨범이 없는 날짜 disabledDates 배열에 추출
+	for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
+		const dateStr = d.toISOString().split('T')[0];
+		if (!activeDates.value.includes(dateStr)) {
+			disabledDates.value.push(dateStr);
+		}
+	}
+
+	const startBefore = new Date(startDate);
+	startBefore.setDate(startBefore.getDate() - 1);
+	const endAfter = new Date(endDate);
+	endAfter.setDate(endAfter.getDate() + 1);
+
+	// 앨범 있는 가장 과거 날짜 이전의 날짜들 모두 비활성화
+	disabledDates.value.push({
+		start: null,
+		end: startBefore,
+	});
+
+	// 앨범 있는 가장 최근 날짜 이후의 날짜들 모두 비활성화
+	disabledDates.value.push({
+		start: endAfter,
+		end: null,
+	});
 });
 
 // datePicker

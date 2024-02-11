@@ -3,7 +3,6 @@
 		<div class="flex justify-between">
 			<!-- DatePicker 시작-->
 			<div class="block mt-1 mb-4">
-				<!-- <span class="content-title">날짜</span> -->
 				<div class="datepicker">
 					<VDatePicker
 						v-model="date"
@@ -132,7 +131,6 @@
 			<div v-else>
 				<p>등록된 앨범이 없습니다.</p>
 			</div>
-			<!-- <span>Check 이미지 : {{ checked }}</span> -->
 		</div>
 	</div>
 </template>
@@ -142,6 +140,7 @@ import { ref, onMounted, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useAlbumStore } from '@/store/album';
 import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
+
 const {
 	VITE_AWS_REGION,
 	VITE_AWS_ACCESS_KEY,
@@ -159,7 +158,6 @@ const router = useRouter();
 const albumStore = useAlbumStore();
 
 const checked = ref([]);
-// const showToggle = ref(history.state.isTeacher);
 // 내 아이
 let kidId = props.loginStore.kidList[0].kidId;
 // 내 아이 앨범 조회
@@ -177,9 +175,48 @@ const postAlbumDateAllList = async () => {
 	albumDateAllList.value = albumStore.albumDateAllList;
 };
 
+// 앨범 있는 날짜 목록
+const activeDates = ref([]);
+// 앨범이 없는 날짜 목록 추출
+const disabledDates = ref([]);
+
 onMounted(async () => {
 	await getKidAlbumDateList();
 	await postAlbumDateAllList();
+
+	// datepicker에서 활성화시킬 날짜 호출
+	await albumStore.getActiveDates(route.params.id);
+	activeDates.value = albumStore.activeDates;
+
+	// 알림장이 있는 날짜들 중 가장 오래된 날짜
+	const startDate = new Date(activeDates.value[activeDates.value.length - 1]);
+	// 앨범 있는 날짜들 중 가장 최근 날짜
+	const endDate = new Date(activeDates.value[0]);
+
+	// 앨범 있는 기간 중 앨범이 없는 날짜 disabledDates 배열에 추출
+	for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
+		const dateStr = d.toISOString().split('T')[0];
+		if (!activeDates.value.includes(dateStr)) {
+			disabledDates.value.push(dateStr);
+		}
+	}
+
+	const startBefore = new Date(startDate);
+	startBefore.setDate(startBefore.getDate() - 1);
+	const endAfter = new Date(endDate);
+	endAfter.setDate(endAfter.getDate() + 1);
+
+	// 앨범 있는 가장 과거 날짜 이전의 날짜들 모두 비활성화
+	disabledDates.value.push({
+		start: null,
+		end: startBefore,
+	});
+
+	// 앨범 있는 가장 최근 날짜 이후의 날짜들 모두 비활성화
+	disabledDates.value.push({
+		start: endAfter,
+		end: null,
+	});
 });
 
 // datePicker
@@ -196,12 +233,6 @@ const selectAttribute = ref({ highlight: 'green' });
 const today = new Date();
 const tomorrow = new Date(today);
 tomorrow.setDate(tomorrow.getDate() + 1);
-const disabledDates = ref([
-	{
-		start: tomorrow,
-		end: null,
-	},
-]);
 
 // 같은 날짜 체크
 function isSameDate(albumDate, date) {
