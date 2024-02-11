@@ -61,23 +61,35 @@ watch(paging, async () => {
 })
 
 function startFix(notice) {
-  if (!isTeacher.value) {
+  if (isTeacher.value) {
     if (!notice.noticeFlag) {
-      parentFix({
-        noticeId: notice.noticeId,
-        kidId: kidList.value[0].kidId
-      })
+      teacherFix(
+        notice.noticeId,
+        ({ response }) => {},
+        ({ error }) => {
+          alert('공지사항은 최대 다섯 개까지 고정 할 수 있습니다.')
+        }
+      )
+    } else {
+      teacherNotFix(notice.noticeId)
+    }
+  } else {
+    if (!notice.noticeFlag) {
+      parentFix(
+        {
+          noticeId: notice.noticeId,
+          kidId: kidList.value[0].kidId
+        },
+        ({ response }) => {},
+        ({ error }) => {
+          alert('공지사항은 최대 다섯 개까지 고정 할 수 있습니다.')
+        }
+      )
     } else {
       parentNotFix({
         noticeId: notice.noticeId,
         kidId: kidList.value[0].kidId
       })
-    }
-  } else {
-    if (!notice.noticeFlag) {
-      teacherFix(notice.noticeId)
-    } else {
-      teacherNotFix(notice.noticeId)
     }
   }
 }
