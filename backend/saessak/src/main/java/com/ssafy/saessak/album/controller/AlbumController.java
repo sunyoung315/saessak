@@ -34,7 +34,7 @@ public class AlbumController {
     }
 
     @Operation(summary = "엘범이 있는 날짜 리스트 (선생님)")
-    @GetMapping("/class/exist")
+    @GetMapping("/exist")
     public ResponseEntity<ResultResponse> getExistAlbumDate() {
 
         List<LocalDate> result = albumService.getExistAlbumDate();
