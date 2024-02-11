@@ -105,13 +105,11 @@
 								id="inline-full-name"
 								type="time"
 								v-model="registReplacement.replacementTime"
+								:class="{
+									'border-2 border-red-500': emptyReplacementTime,
+									shake: shakeReplacementTime,
+								}"
 							/>
-							<p
-								class="text-xs ml-4 mt-2 text-red-500"
-								v-if="!registReplacement.replacementTime && isButtonClicked"
-							>
-								시간을 입력해주셔야합니다.
-							</p>
 						</div>
 					</div>
 				</div>
@@ -132,13 +130,11 @@
 								type="text"
 								placeholder="보호자 성함을 입력해주세요."
 								v-model="registReplacement.replacementName"
+								:class="{
+									'border-2 border-red-500': emptyReplacementName,
+									shake: shakeReplacementName,
+								}"
 							/>
-							<p
-								class="text-xs ml-4 mt-2 text-red-500"
-								v-if="!registReplacement.replacementName && isButtonClicked"
-							>
-								보호자 성함을 입력해주셔야합니다.
-							</p>
 						</div>
 					</div>
 					<div class="md:flex md:items-center mb-6">
@@ -157,15 +153,11 @@
 								type="text"
 								placeholder="원아와의 관계를 입력해주세요."
 								v-model="registReplacement.replacementRelationship"
+								:class="{
+									'border-2 border-red-500': emptyReplacementRelationship,
+									shake: shakeReplacementRelationship,
+								}"
 							/>
-							<p
-								class="text-xs ml-4 mt-2 text-red-500"
-								v-if="
-									!registReplacement.replacementRelationship && isButtonClicked
-								"
-							>
-								원아와의 관계에 대해 입력해주셔야합니다.
-							</p>
 						</div>
 					</div>
 				</div>
@@ -186,13 +178,11 @@
 								type="text"
 								placeholder="귀가 방법을 입력해주세요."
 								v-model="registReplacement.replacementVehicle"
+								:class="{
+									'border-2 border-red-500': emptyReplacementVehicle,
+									shake: shakeReplacementVehicle,
+								}"
 							/>
-							<p
-								class="text-xs ml-4 mt-2 text-red-500"
-								v-if="!registReplacement.replacementVehicle && isButtonClicked"
-							>
-								귀가 방법에 대해 입력해주셔야합니다.
-							</p>
 						</div>
 					</div>
 					<div class="md:flex md:items-center mb-6">
@@ -211,13 +201,11 @@
 								type="text"
 								placeholder="비상 연락망을 입력해주세요."
 								v-model="registReplacement.replacementNumber"
+								:class="{
+									'border-2 border-red-500': emptyReplacementNumber,
+									shake: shakeReplacementNumber,
+								}"
 							/>
-							<p
-								class="text-xs ml-4 mt-2 text-red-500"
-								v-if="!registReplacement.replacementNumber && isButtonClicked"
-							>
-								비상 상황 시 연락처를 입력해주셔야합니다.
-							</p>
 						</div>
 					</div>
 				</div>
@@ -284,10 +272,8 @@ const isButtonClicked = ref(false);
 async function regist() {
 	isButtonClicked.value = true;
 	// 유효성 검사
-	for (const field of fields) {
-		if (!validateField(field.key, field.message)) {
-			return;
-		}
+	if (checkEmptyFields()) {
+		return;
 	}
 
 	if (!validateSignature()) {
@@ -314,7 +300,7 @@ async function regist() {
 			name: 'DocumentList',
 		});
 	} catch (error) {
-		// console.error('실패: ', error);
+		console.error('실패: ', error);
 	}
 }
 
@@ -328,47 +314,6 @@ function goList() {
 // 전자 서명 데이터 가져오기
 const handleSignatureSaved = signature => {
 	replacementSignature.value = signature;
-	// console.log('전자서명 가져옴?');
-	// console.log(replacementSignature.value);
-};
-
-///////////////////  유효성 검사
-const fields = [
-	{
-		key: 'replacementDate',
-		message: '대리인 귀가 날짜를 입력해주시기 바랍니다.',
-	},
-	{
-		key: 'replacementTime',
-		message: '대리인 귀가 시간을 입력해주시기 바랍니다.',
-	},
-	{ key: 'replacementName', message: '보호자 성함을 입력해주시기 바랍니다.' },
-	{
-		key: 'replacementRelationship',
-		message: '원아와의 관계에 대해 입력해주시기 바랍니다.',
-	},
-	{
-		key: 'replacementVehicle',
-		message: '대리인 귀가 방법을 입력해주시기 바랍니다.',
-	},
-	{
-		key: 'replacementNumber',
-		message: '대리인 비상 연락망을 입력해주시기 바랍니다.',
-	},
-];
-
-const errors = ref({});
-const validateField = (field, message) => {
-	if (
-		!registReplacement.value[field] ||
-		!registReplacement.value[field].trim()
-	) {
-		errors.value[field] = message;
-		return false;
-	} else {
-		errors.value[field] = '';
-		return true;
-	}
 };
 
 const validateSignature = () => {
@@ -382,10 +327,101 @@ const validateSignature = () => {
 };
 //////////////////
 
+// 널값 처리를 위한 ref 추가
+const emptyReplacementDate = ref(false);
+const emptyReplacementTime = ref(false);
+const emptyReplacementName = ref(false);
+const emptyReplacementRelationship = ref(false);
+const emptyReplacementVehicle = ref(false);
+const emptyReplacementNumber = ref(false);
+
+const shakeReplacementDate = ref(false);
+const shakeReplacementTime = ref(false);
+const shakeReplacementName = ref(false);
+const shakeReplacementRelationship = ref(false);
+const shakeReplacementVehicle = ref(false);
+const shakeReplacementNumber = ref(false);
+
+// 널값 처리 함수
+const checkEmptyFields = () => {
+	let hasEmptyFields = false;
+	if (!registReplacement.value.replacementDate.trim()) {
+		emptyReplacementDate.value = true;
+		shakeReplacementDate.value = true;
+		hasEmptyFields = true;
+		setTimeout(() => {
+			shakeReplacementDate.value = false;
+		}, 1000);
+	}
+	if (!registReplacement.value.replacementTime.trim()) {
+		emptyReplacementTime.value = true;
+		shakeReplacementTime.value = true;
+		hasEmptyFields = true;
+		setTimeout(() => {
+			shakeReplacementTime.value = false;
+		}, 1000);
+	}
+	if (!registReplacement.value.replacementName.trim()) {
+		emptyReplacementName.value = true;
+		shakeReplacementName.value = true;
+		hasEmptyFields = true;
+		setTimeout(() => {
+			shakeReplacementName.value = false;
+		}, 1000);
+	}
+	if (!registReplacement.value.replacementRelationship.trim()) {
+		emptyReplacementRelationship.value = true;
+		shakeReplacementRelationship.value = true;
+		hasEmptyFields = true;
+		setTimeout(() => {
+			shakeReplacementRelationship.value = false;
+		}, 1000);
+	}
+	if (!registReplacement.value.replacementVehicle.trim()) {
+		emptyReplacementVehicle.value = true;
+		shakeReplacementVehicle.value = true;
+		hasEmptyFields = true;
+		setTimeout(() => {
+			shakeReplacementVehicle.value = false;
+		}, 1000);
+	}
+	if (!registReplacement.value.replacementNumber.trim()) {
+		emptyReplacementNumber.value = true;
+		shakeReplacementNumber.value = true;
+		hasEmptyFields = true;
+		setTimeout(() => {
+			shakeReplacementNumber.value = false;
+		}, 1000);
+	}
+	return hasEmptyFields;
+};
+
 // 문구
 const replaceContent = ref(
 	'영유아의 귀가 시 위 보호자에게 인도하여 주세요. \n \n 위 보호자 이외의 다른 사람에게 인계할 때는 사전에 반드시 연락을 취하겠습니다. \n \n 원에서는 부모가 희망하더라도 영유아를 혼자 귀가시키지 않습니다.',
 );
 </script>
 
-<style scoped></style>
+<style scoped>
+@keyframes shake {
+	0% {
+		transform: translateX(0px);
+	}
+	25% {
+		transform: translateX(-2px);
+	}
+	50% {
+		transform: translateX(0px);
+	}
+	75% {
+		transform: translateX(2px);
+	}
+	100% {
+		transform: translateX(0px);
+	}
+}
+.shake {
+	animation: shake 0.2s;
+	animation-iteration-count: 3;
+}
+</style>
