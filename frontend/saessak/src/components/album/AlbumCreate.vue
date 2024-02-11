@@ -39,14 +39,20 @@
 			<!-- DatePicker 끝-->
 		</div>
 		<div>
-			<label class="block mt-2 mb-5">
+			<label class="block mt-2 mb-5 w-full">
 				<span class="content-title">제목</span>
 				<input
 					type="text"
-					class="block ml-32 mt-2 h-12 px-4 p-2.5 border border-gray-300 text-gray-900 text-base font-bold rounded-lg"
+					class="content-box mb-8 p-2 text-lg"
 					rows="6"
 					placeholder="제목을 입력해주세요."
 					v-model="title"
+					@input="emptyTitle = false"
+					:class="{
+						'!border-2 !border-red-500': emptyTitle,
+						shake: shakeTitle,
+					}"
+					required
 				/>
 			</label>
 		</div>
@@ -54,7 +60,7 @@
 		<span class="content-title">첨부파일 (사진, 동영상: {{ count }}EA)</span>
 		<div class="flex items-center ml-32 w-full">
 			<label
-				class="flex flex-col justify-center w-4/5 h-64 mb-8 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+				class="flex flex-col justify-center w-3/4 h-64 mb-8 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
 			>
 				<div
 					class="flex flex-col items-center justify-center pt-5 pb-6"
@@ -70,6 +76,12 @@
 						multiple="multiple"
 						class="hidden"
 						@change="uploadImage()"
+						@input="emptyImage = false"
+						:class="{
+							'!border-2 !border-red-500': emptyImage,
+							shake: shakeImage,
+						}"
+						required
 					/>
 					<svg
 						class="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
@@ -150,8 +162,10 @@ onMounted(() => {
 
 // 버튼 기능
 function registAlbum() {
-	// console.log('제목: ' + title.value);
-	// console.log('날짜: ' + formattedDate);
+	if (checkEmptyFields()) {
+		// 빈 필드가 있다면 등록 중단
+		return;
+	}
 	// 앨범 정보 추가
 	form.append('albumTitle', title.value);
 	form.append('albumDate', formattedDate);
@@ -197,10 +211,67 @@ function formatDate(date) {
 	const day = ('0' + date.getDate()).slice(-2);
 	return `${year}-${month}-${day}`;
 }
+
+////////////////////// Null 값 처리
+const emptyTitle = ref(false);
+const shakeTitle = ref(false);
+
+const emptyImage = ref(false);
+const shakeImage = ref(false);
+
+// 널값처리
+const checkEmptyFields = () => {
+	let hasEmptyFields = false;
+	if (!title.value.trim()) {
+		emptyTitle.value = true;
+		shakeTitle.value = true;
+		hasEmptyFields = true;
+		setTimeout(() => {
+			shakeTitle.value = false;
+		}, 1000);
+	}
+	if (!uploadedFileNames.value.length) {
+		emptyImage.value = true;
+		shakeImage.value = true;
+		hasEmptyFields = true;
+		setTimeout(() => {
+			shakeImage.value = false;
+		}, 1000);
+	}
+	// ...
+	return hasEmptyFields;
+};
+///////////////////////
 </script>
 
 <style scoped>
 .content-title {
 	@apply ml-36 text-gray-900 text-xl font-bold;
+}
+
+.content-box {
+	@apply block ml-32 mt-1 w-9/12 rounded-md border border-neutral-300 shadow;
+}
+
+@keyframes shake {
+	0% {
+		transform: translateX(0px);
+	}
+	25% {
+		transform: translateX(-2px);
+	}
+	50% {
+		transform: translateX(0px);
+	}
+	75% {
+		transform: translateX(2px);
+	}
+	100% {
+		transform: translateX(0px);
+	}
+}
+.shake {
+	animation: shake 0.2s;
+	animation-iteration-count: 3;
 }
 </style>

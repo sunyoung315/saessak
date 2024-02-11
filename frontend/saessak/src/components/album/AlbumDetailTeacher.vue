@@ -40,7 +40,6 @@
 			</div>
 		</div>
 		<div class="flex items-center" v-if="myKidAlbumDateList.length">
-			<!-- <p>{{ myKidAlbumDateList[0].albumDate }}</p> -->
 			<div
 				class="my-2 flex flex-wrap"
 				v-if="isSameDate(myKidAlbumDateList[0].albumDate, date)"
@@ -108,12 +107,6 @@ const selectAttribute = ref({ highlight: 'green' });
 const today = new Date();
 const tomorrow = new Date(today);
 tomorrow.setDate(tomorrow.getDate() + 1);
-const disabledDates = ref([
-	{
-		start: tomorrow,
-		end: null,
-	},
-]);
 
 // 같은 날짜 체크
 function isSameDate(albumDate, date) {
