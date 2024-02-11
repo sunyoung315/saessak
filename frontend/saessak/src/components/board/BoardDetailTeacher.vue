@@ -42,7 +42,7 @@
 			</div>
 		</div>
 		<!-- Contents -->
-		<template v-if="!store.noContent">
+		<template v-if="store.oneBoard">
 			<div class="block mt-2 mb-5">
 				<span class="content-title">내용</span>
 				<textarea
@@ -152,7 +152,7 @@
 			</div>
 		</template>
 		<template v-else>
-			<div class="no-content">{{ store.noContent }}</div>
+			<div class="no-content">등록된 알림장이 없습니다.</div>
 		</template>
 		<br /><br />
 	</div>
@@ -184,7 +184,9 @@ const oneBoard = ref({});
 const getOneBoard = async kidId => {
 	await store.getCurrentBoard(kidId);
 	oneBoard.value = store.oneBoard;
-	store.date = oneBoard.value.boardDate;
+	if (oneBoard.value) {
+		store.date = oneBoard.value.boardDate;
+	}
 };
 
 // datepicker 설정
@@ -195,12 +197,11 @@ const selectAttribute = ref({ highlight: 'yellow' });
 const today = new Date();
 const tomorrow = new Date(today);
 tomorrow.setDate(tomorrow.getDate() + 1);
-const disabledDates = ref([
-	{
-		start: tomorrow,
-		end: null,
-	},
-]);
+
+// 알림장이 있는 날짜 목록
+const activeDates = ref([]);
+// 알림장이 없는 날짜 목록 추출
+const disabledDates = ref([]);
 
 // datepicker 날짜 변화 감지
 watch(date, newVal => {
@@ -228,6 +229,43 @@ watch(
 
 onMounted(async () => {
 	await getOneBoard(kidId.value);
+	if (store.oneBoard) {
+		date.value = store.oneBoard.boardDate;
+	}
+
+	// datepicker에서 활성화시킬 날짜 호출
+	await store.getActiveDates(kidId.value);
+	activeDates.value = store.activeDates;
+
+	// 알림장이 있는 날짜들 중 가장 오래된 날짜
+	const startDate = new Date(activeDates.value[activeDates.value.length - 1]);
+	// 알림장이 있는 날짜들 중 가장 최근 날짜
+	const endDate = new Date(activeDates.value[0]);
+
+	// 알림장 있는 기간 중 알림장이 없는 날짜 disabledDates 배열에 추출
+	for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
+		const dateStr = d.toISOString().split('T')[0];
+		if (!activeDates.value.includes(dateStr)) {
+			disabledDates.value.push(dateStr);
+		}
+	}
+
+	const startBefore = new Date(startDate);
+	startBefore.setDate(startBefore.getDate() - 1);
+	const endAfter = new Date(endDate);
+	endAfter.setDate(endAfter.getDate() + 1);
+
+	// 알림장 있는 가장 과거 날짜 이전의 날짜들 모두 비활성화
+	disabledDates.value.push({
+		start: null,
+		end: startBefore,
+	});
+
+	// 알림장 있는 가장 최근 날짜 이후의 날짜들 모두 비활성화
+	disabledDates.value.push({
+		start: endAfter,
+		end: null,
+	});
 });
 </script>
 

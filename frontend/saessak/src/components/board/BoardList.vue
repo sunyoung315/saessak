@@ -140,10 +140,10 @@ onMounted(async () => {
 
 <style scoped>
 .book-flex {
-	@apply flex flex-wrap justify-start;
+	@apply grid grid-cols-5;
 }
 .book-frame {
-	@apply bg-[url('@/assets/board-frame.png')] bg-book inline-block w-[13.77rem] h-[16.4rem] mx-3 my-4 rounded-lg bg-yellow-50 hover:my-0.5;
+	@apply bg-[url('@/assets/board-frame.png')] bg-book inline-block w-[13.77rem] h-[16.4rem] mx-2 my-3 rounded-lg bg-yellow-50 hover:my-0.5;
 }
 .book-title-teacher {
 	@apply relative left-[4.4rem] top-[1.8rem] font-semibold text-base w-24 text-center;

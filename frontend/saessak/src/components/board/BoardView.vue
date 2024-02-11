@@ -17,7 +17,7 @@
 			</div>
 		</div>
 		<template v-if="!params">
-			<div class="block mt-10 ml-32 mr-6 flex items-center">
+			<div class="mt-10 ml-32 mr-6 flex items-center">
 				<select id="name" class="selection-input w-24" v-model="year" required>
 					<template v-for="year in years" :key="year">
 						<option :value="year">{{ year }}</option>
