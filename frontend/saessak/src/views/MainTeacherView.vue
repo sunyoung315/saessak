@@ -113,14 +113,16 @@
 								</div>
 							</div>
 							<div class="menu-item-foods">
-								<template
-									v-for="food in menuStore.weeklyMenu[index].foodList"
-									:key="food.foodId"
-								>
-									<div class="leading-[3rem] font-bold text-lg">
-										{{ food.foodName }}
-									</div>
-								</template>
+								<div class="h-66 pl-4 w-full overflow-auto">
+									<template
+										v-for="food in menuStore.weeklyMenu[index].foodList"
+										:key="food.foodId"
+									>
+										<div class="h-10 font-bold text-lg">
+											{{ food.foodName }}
+										</div>
+									</template>
+								</div>
 							</div>
 						</div>
 						<div class="menu-item-color flex">
@@ -134,40 +136,42 @@
 								<div class="font-bold text-xl">유발식품</div>
 							</div>
 							<div class="menu-item-foods">
-								<template v-if="menuType === '점심'">
-									<template
-										v-for="allergy in menuStore.todayLunchAllergy"
-										:key="allergy"
-									>
+								<div class="h-66 pl-4 w-full overflow-auto">
+									<template v-if="menuType === '점심'">
 										<template
-											v-for="i in menuStore.allergyList"
-											:key="i.allergyId"
+											v-for="allergy in menuStore.todayLunchAllergy"
+											:key="allergy"
 										>
-											<template v-if="i.allergyId == allergy">
-												<div class="ml-5 leading-10 font-bold text-lg">
-													{{ allergy }}. {{ i.allergyName }}
-												</div>
+											<template
+												v-for="i in menuStore.allergyList"
+												:key="i.allergyId"
+											>
+												<template v-if="i.allergyId == allergy">
+													<div class="h-10 font-bold text-lg">
+														{{ allergy }}. {{ i.allergyName }}
+													</div>
+												</template>
 											</template>
 										</template>
 									</template>
-								</template>
-								<template v-if="menuType === '간식'">
-									<template
-										v-for="allergy in menuStore.todaySnackAllergy"
-										:key="allergy"
-									>
+									<template v-if="menuType === '간식'">
 										<template
-											v-for="i in menuStore.allergyList"
-											:key="i.allergyId"
+											v-for="allergy in menuStore.todaySnackAllergy"
+											:key="allergy"
 										>
-											<template v-if="i.allergyId == allergy">
-												<div class="leading-[3rem] font-bold text-lg">
-													{{ allergy }}. {{ i.allergyName }}
-												</div>
+											<template
+												v-for="i in menuStore.allergyList"
+												:key="i.allergyId"
+											>
+												<template v-if="i.allergyId == allergy">
+													<div class="h-10 font-bold text-lg">
+														{{ allergy }}. {{ i.allergyName }}
+													</div>
+												</template>
 											</template>
 										</template>
 									</template>
-								</template>
+								</div>
 							</div>
 						</div>
 					</template>
@@ -191,7 +195,7 @@ const props = defineProps({
 const today = new Date();
 const year = today.getFullYear();
 const month = ('0' + (today.getMonth() + 1)).slice(-2);
-const week = getWeekOfMonth(today, { weekStartsOn: 1 });
+const week = getWeekOfMonth(today, { weekStartsOn: 0 });
 const day = ('0' + today.getDate()).slice(-2);
 
 const todayDate = `${year}-${month}-${day}`;
@@ -268,7 +272,7 @@ onMounted(async () => {
 	@apply w-1/3 h-[20.8rem] pl-3;
 }
 .menu-item-color {
-	@apply w-1/3 h-[20.8rem] bg-nav-yellow p-1 mx-2 rounded shadow-md;
+	@apply w-1/3 h-[20.8rem] bg-nav-yellow px-1 py-4 mx-2 rounded shadow-md;
 }
 .menu-image {
 	@apply border border-gray-300 rounded-md bg-gray-50 mt-3 p-2 w-[93%] h-[17rem] shadow-md;
