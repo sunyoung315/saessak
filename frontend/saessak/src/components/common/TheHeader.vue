@@ -59,77 +59,87 @@
       <!-- Dropdown menu -->
       <div
         id="dropdownNotification"
-        class="z-20 hidden w-72 max-w-sm bg-white divide-y divide-gray-100 rounded-lg shadow-md border border-gray-300 !-left-28"
+        class="z-20 hidden w-80 max-w-sm bg-white divide-y divide-gray-100 rounded-lg shadow-md border border-gray-300 !-left-28"
         aria-labelledby="dropdownNotificationButton"
       >
         <div
           @click="removeAllAlarm()"
-          class="block px-4 py-1 text-gray-900 text-sm rounded-t-lg bg-gray-100 text-right font-extrabold border-b border-gray-300"
+          class="cursor-pointer block px-4 py-1 text-gray-900 text-base rounded-t-lg bg-gray-100 text-right font-extrabold border-b border-gray-300"
         >
           전체 삭제
         </div>
         <div v-if="isTeacher == false" class="h-60 overflow-auto">
-          <div
-            v-for="alarm in alarmList"
-            :key="alarm.alarmId"
-            @click="removeAlarm(alarm.alarmId)"
-            class="divide-y divide-gray-100 border-b border-gray-200 w-[96%] mx-[2%] py-1"
-          >
-            <div class="w-full ps-3 flex justify-between items-center">
-              <div>
-                <span class="font-semibold text-gray-900">{{
-                  alarm.alarmType
-                }}</span>
-                <div class="text-gray-500 text-sm">
-                  {{ alarm.alarmDate }}일 {{ alarm.alarmContent.substring(0, 5) }}
-                  {{ alarm.alarmType.substring(0, 2) }}하였습니다!
+          <template v-if="alarmList.length">
+            <div
+              v-for="alarm in alarmList"
+              :key="alarm.alarmId"
+              @click="removeAlarm(alarm.alarmId)"
+              class="divide-y divide-gray-100 border-b border-gray-200 w-[96%] mx-[2%] py-1"
+            >
+              <div class="w-full ps-3 flex justify-between items-center">
+                <div>
+                  <span class="font-semibold text-gray-900">{{
+                    alarm.alarmType
+                  }}</span>
+                  <div class="text-gray-500 text-sm">
+                    {{ alarm.alarmDate }}일 {{ alarm.alarmContent.substring(0, 5) }}
+                    {{ alarm.alarmType.substring(0, 2) }}하였습니다!
+                  </div>
+                </div>
+                <div class="mx-3 cursor-pointer">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 384 512"
+                    width="10"
+                    height="10"
+                  >
+                    <path
+                      d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"
+                    />
+                  </svg>
                 </div>
               </div>
-              <div class="mx-3">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 384 512"
-                  width="10"
-                  height="10"
-                >
-                  <path
-                    d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"
-                  />
-                </svg>
-              </div>
             </div>
+          </template>
+          <div v-else class="px-4 py-2">
+            알람이 없습니다.
           </div>
         </div>
         <div v-if="isTeacher == true" class="h-60 overflow-auto">
-          <div
-            v-for="alarm in alarmList"
-            :key="alarm.alarmId"
-            @click="removeAlarm(alarm.alarmId)"
-            class="divide-y divide-gray-100 border-b border-gray-200 w-[96%] mx-[2%] py-1"
-          >
-            <div class="w-full ps-3 flex justify-between items-center">
-              <div>
-                <span class="font-semibold text-gray-900 ">{{
-                  alarm.alarmType
-                }}</span>
-                <div class="text-gray-500 text-sm mb-1.5 ">
-                  {{ alarm.kidName }} 원아의
-                  {{ alarm.alarmType.substring(0, alarm.alarmType.length - 3) }} 확인이 필요합니다!
+          <template v-if="alarmList.length">
+            <div
+              v-for="alarm in alarmList"
+              :key="alarm.alarmId"
+              @click="removeAlarm(alarm.alarmId)"
+              class="divide-y divide-gray-100 border-b border-gray-200 w-[96%] mx-[2%] py-1"
+            >
+              <div class="w-full ps-3 flex justify-between items-center">
+                <div>
+                  <span class="font-semibold text-gray-900 ">{{
+                    alarm.alarmType
+                  }}</span>
+                  <div class="text-gray-500 text-sm mb-1.5 ">
+                    {{ alarm.kidName }} 원아의
+                    {{ alarm.alarmType.substring(0, alarm.alarmType.length - 3) }} 확인이 필요합니다!
+                  </div>
+                </div>
+                <div class="mx-3 cursor-pointer">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 384 512"
+                    width="10"
+                    height="10"
+                  >
+                    <path
+                      d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"
+                    />
+                  </svg>
                 </div>
               </div>
-              <div class="mx-3">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 384 512"
-                  width="10"
-                  height="10"
-                >
-                  <path
-                    d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"
-                  />
-                </svg>
-              </div>
             </div>
+          </template>
+          <div v-else class="px-4 py-2">
+            알람이 없습니다.
           </div>
         </div>
       </div>
@@ -241,7 +251,7 @@
 </template>
 
 <script setup>
-import { onMounted, nextTick, shallowRef, ref, watch, defineEmits  } from 'vue';
+import { onMounted, nextTick, shallowRef, ref, watch, defineEmits } from 'vue';
 import { initFlowbite } from 'flowbite';
 import { kidRegister, getkidList } from '@/api/user';
 import { userLogout } from '@/api/oauth';
@@ -376,7 +386,7 @@ const login = () => {
 };
 
 const logout = () => {
-  userLogout();
+	userLogout();
 	localStorage.removeItem('accessToken');
 	localStorage.removeItem('refreshToken');
 	if (!store.isTeacher) {
@@ -548,10 +558,11 @@ const kidChange = idx => {
 	location.reload();
 };
 
-const changeColor = () => {// 로고 클릭시 이벤트 전달
-  // console.log("emits 전달")
-  emits('headerClick', "click")
-}
+const changeColor = () => {
+	// 로고 클릭시 이벤트 전달
+	// console.log("emits 전달")
+	emits('headerClick', 'click');
+};
 </script>
 
 <style scoped>

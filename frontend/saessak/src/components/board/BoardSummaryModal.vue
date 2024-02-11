@@ -19,13 +19,13 @@
 					</div>
 					<!-- VDatePicker -->
 					<div class="report-period">
-						<VDatePicker
-							v-model.range="range"
-							:select-attribute="selectAttribute"
-							:drag-attribute="selectDragAttribute"
-						>
-							<template #default="{ inputValue, inputEvents }">
-								<div class="flex justify-center items-center">
+						<div class="flex items-center">
+							<VDatePicker
+								v-model="start"
+								:select-attribute="selectAttribute"
+								:disabled-dates="disabledDates"
+							>
+								<template #default="{ inputValue, inputEvents }">
 									<div class="relative max-w-sm">
 										<div
 											class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none"
@@ -43,27 +43,37 @@
 											</svg>
 										</div>
 										<input
-											:value="inputValue.start"
-											v-on="inputEvents.start"
+											:value="inputValue"
+											v-on="inputEvents"
 											class="datepicker-input"
 										/>
 									</div>
-									<div class="p-2">
-										<svg
-											xmlns="http://www.w3.org/2000/svg"
-											width="24"
-											height="24"
-											viewBox="0 0 24 24"
-											fill="none"
-										>
-											<path
-												fill-rule="evenodd"
-												clip-rule="evenodd"
-												d="M13.6129 6.2097C13.2206 5.90468 12.6534 5.93241 12.2929 6.29289L12.2097 6.3871C11.9047 6.77939 11.9324 7.34662 12.2929 7.70711L15.5852 11H5C4.44772 11 4 11.4477 4 12C4 12.5523 4.44772 13 5 13H15.5852L12.2929 16.2929L12.2097 16.3871C11.9047 16.7794 11.9324 17.3466 12.2929 17.7071C12.6834 18.0976 13.3166 18.0976 13.7071 17.7071L18.7071 12.7071L18.7903 12.6129C19.0953 12.2206 19.0676 11.6534 18.7071 11.2929L13.7071 6.29289L13.6129 6.2097Z"
-												fill="#000000"
-											/>
-										</svg>
-									</div>
+								</template>
+							</VDatePicker>
+							<div class="p-2">
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									width="24"
+									height="24"
+									viewBox="0 0 24 24"
+									fill="none"
+								>
+									<path
+										fill-rule="evenodd"
+										clip-rule="evenodd"
+										d="M13.6129 6.2097C13.2206 5.90468 12.6534 5.93241 12.2929 6.29289L12.2097 6.3871C11.9047 6.77939 11.9324 7.34662 12.2929 7.70711L15.5852 11H5C4.44772 11 4 11.4477 4 12C4 12.5523 4.44772 13 5 13H15.5852L12.2929 16.2929L12.2097 16.3871C11.9047 16.7794 11.9324 17.3466 12.2929 17.7071C12.6834 18.0976 13.3166 18.0976 13.7071 17.7071L18.7071 12.7071L18.7903 12.6129C19.0953 12.2206 19.0676 11.6534 18.7071 11.2929L13.7071 6.29289L13.6129 6.2097Z"
+										fill="#000000"
+									/>
+								</svg>
+							</div>
+							<VDatePicker
+								v-model="end"
+								:select-attribute="selectAttribute"
+								:max-date="maxDate"
+								:min-date="minDate"
+								:disabled-dates="disabledDates"
+							>
+								<template #default="{ inputValue, inputEvents }">
 									<div class="relative max-w-sm">
 										<div
 											class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none"
@@ -81,15 +91,14 @@
 											</svg>
 										</div>
 										<input
-											:value="inputValue.end"
-											v-on="inputEvents.end"
+											:value="inputValue"
+											v-on="inputEvents"
 											class="datepicker-input"
 										/>
 									</div>
-								</div>
-							</template>
-						</VDatePicker>
-						<!-- 완료될 때까지 버튼 비활성화 해놓음! -->
+								</template>
+							</VDatePicker>
+						</div>
 						<button
 							type="button"
 							@click="getSummaryBoard(props.kidId)"
@@ -140,7 +149,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 import { useBoardStore } from '@/store/board';
 import OpenAI from 'openai';
 
@@ -161,20 +170,31 @@ const props = defineProps({
 	kidId: Number,
 });
 
-const range = ref({
-	start: new Date(),
-	end: new Date(),
-});
+const start = ref(new Date());
+const end = ref();
+
+const minDate = ref();
+const maxDate = ref();
 
 const selectAttribute = ref({ highlight: 'yellow' });
 
-const selectDragAttribute = computed(() => ({
-	highlight: 'yellow',
-	popover: {
-		visibility: 'hover',
-		isInteractive: false,
-	},
-}));
+watch(start, newVal => {
+	if (newVal) {
+		const startDate = new Date(newVal);
+		const minDateValue = new Date(startDate);
+		minDateValue.setDate(minDateValue.getDate());
+		minDate.value = minDateValue.toISOString().split('T')[0];
+
+		const maxDateValue = new Date(startDate);
+		maxDateValue.setDate(maxDateValue.getDate() + 14);
+		maxDate.value = maxDateValue.toISOString().split('T')[0];
+
+		end.value = newVal;
+	} else {
+		minDate.value = null;
+		maxDate.value = null;
+	}
+});
 
 const isCreating = ref(false);
 
@@ -217,8 +237,8 @@ const getSummaryBoard = async kidId => {
 	isCreating.value = true;
 	summary.value = '';
 
-	const startDate = `${range.value.start.getFullYear()}-${('0' + (range.value.start.getMonth() + 1)).slice(-2)}-${('0' + range.value.start.getDate()).slice(-2)}`;
-	const endDate = `${range.value.end.getFullYear()}-${('0' + (range.value.end.getMonth() + 1)).slice(-2)}-${('0' + range.value.end.getDate()).slice(-2)}`;
+	const startDate = `${start.value.getFullYear()}-${('0' + (start.value.getMonth() + 1)).slice(-2)}-${('0' + start.value.getDate()).slice(-2)}`;
+	const endDate = `${end.value.getFullYear()}-${('0' + (end.value.getMonth() + 1)).slice(-2)}-${('0' + end.value.getDate()).slice(-2)}`;
 
 	await store.getSummaryBoard(kidId, startDate, endDate);
 
@@ -237,6 +257,47 @@ const getSummaryBoard = async kidId => {
 		summary.value = '조회된 알림장이 없습니다.';
 	}
 };
+
+// 알림장이 있는 날짜 목록
+const activeDates = ref([]);
+// 알림장이 없는 날짜 목록 추출
+const disabledDates = ref([]);
+
+onMounted(async () => {
+	// datepicker에서 활성화시킬 날짜 호출
+	await store.getActiveDates(props.kidId);
+	activeDates.value = store.activeDates;
+
+	// 알림장이 있는 날짜들 중 가장 오래된 날짜
+	const startDate = new Date(activeDates.value[activeDates.value.length - 1]);
+	// 알림장이 있는 날짜들 중 가장 최근 날짜
+	const endDate = new Date(activeDates.value[0]);
+
+	// 알림장 있는 기간 중 알림장이 없는 날짜 disabledDates 배열에 추출
+	for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
+		const dateStr = d.toISOString().split('T')[0];
+		if (!activeDates.value.includes(dateStr)) {
+			disabledDates.value.push(dateStr);
+		}
+	}
+
+	const startBefore = new Date(startDate);
+	startBefore.setDate(startBefore.getDate() - 1);
+	const endAfter = new Date(endDate);
+	endAfter.setDate(endAfter.getDate() + 1);
+
+	// 알림장 있는 가장 과거 날짜 이전의 날짜들 모두 비활성화
+	disabledDates.value.push({
+		start: null,
+		end: startBefore,
+	});
+
+	// 알림장 있는 가장 최근 날짜 이후의 날짜들 모두 비활성화
+	disabledDates.value.push({
+		start: endAfter,
+		end: null,
+	});
+});
 </script>
 
 <style scoped>

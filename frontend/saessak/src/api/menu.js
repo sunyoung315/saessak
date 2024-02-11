@@ -3,7 +3,6 @@ import axios from 'axios';
 const REST_MENU_API = 'https://i10a706.p.ssafy.io/api/menu';
 
 const createMenu = async data => {
-	console.log(data);
 	await axios({
 		url: `${REST_MENU_API}/`,
 		method: 'POST',
@@ -12,13 +11,13 @@ const createMenu = async data => {
 			Authorization: 'Bearer ' + localStorage.getItem('accessToken'),
 		},
 		data,
-	})
-		.then(resp => {
-			console.log(resp.data.data);
-		})
-		.catch(err => {
-			console.log(err);
-		});
+	});
+	// .then(resp => {
+	// 	console.log(resp.data.data);
+	// })
+	// .catch(err => {
+	// 	console.log(err);
+	// });
 };
 
 const registMenuPhoto = async formData => {

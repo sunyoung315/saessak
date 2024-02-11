@@ -4,7 +4,6 @@
 			class="mx-5 my-3"
 			active-view="month"
 			hide-view-selector
-			selected-date="2024-01-27"
 			:disable-views="['years', 'year', 'week', 'day']"
 			show-all-day-events="true"
 			events-on-month-view="true"
@@ -41,10 +40,7 @@ const events = ref([]);
 
 const loginStore = JSON.parse(localStorage.getItem('loginStore'));
 
-// 추후에 학부모가 현재 보고 있는 아이의 kidId가 curKid에 들어갈 예정!!!
-// const kidId = loginStore.curKid;
 const kidId = loginStore.kidList[0].kidId;
-////////////////////////////////////////////////////////////////////
 
 // 내 아이의 출석부 비동기 호출
 const getList = async () => {

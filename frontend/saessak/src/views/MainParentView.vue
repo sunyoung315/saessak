@@ -1,7 +1,8 @@
 <template>
 	<div class="main-view view-frame">
 		<div class="main-header">
-			<p class="main-title text-2xl">
+			<p class="main-title text-3xl">
+				{{ props.loginStore.classroomName }}
 				{{ props.loginStore.kidList[0].kidName }}
 			</p>
 			<p class="main-title text-lg">{{ todayDate }}</p>
@@ -13,8 +14,8 @@
 						<img src="/icons/board.png" alt="icon" class="w-12" />
 						<div class="title">오늘의 알림장</div>
 					</div>
-					<template v-if="boardStore.oneBoard.boardId">
-						<div class="board-content text-ellipsis overflow-auto">
+					<template v-if="boardStore.oneBoard">
+						<div class="board-content whitespace-pre-line overflow-auto">
 							{{ boardStore.oneBoard.boardContent }}
 						</div>
 					</template>
@@ -22,7 +23,7 @@
 						<div class="px-6 pt-8">등록된 알림장이 없습니다.</div>
 					</template>
 				</div>
-				<template v-if="boardStore.oneBoard.boardId">
+				<template v-if="boardStore.oneBoard">
 					<div class="main-half w-1/3 border-l-2">
 						<div class="flex items-end">
 							<img src="/icons/board2.png" alt="icon" class="w-12" />
@@ -73,14 +74,16 @@
 									<span class="pl-1">kg</span>
 								</div>
 							</template>
-							<RouterLink
-								:to="{
-									name: 'BoardDetailParent',
-									params: { id: boardStore.oneBoard.boardId },
-								}"
-								class="block font-bold text-right"
-								>→ 자세히 보기</RouterLink
-							>
+							<template v-if="boardStore.oneBoard.boardId">
+								<RouterLink
+									:to="{
+										name: 'BoardDetailParent',
+										params: { id: boardStore.oneBoard.boardId },
+									}"
+									class="block font-bold text-right"
+									>→ 자세히 보기</RouterLink
+								>
+							</template>
 						</div>
 					</div>
 				</template>
@@ -225,14 +228,16 @@
 								</div>
 							</div>
 							<div class="menu-item-foods">
-								<template
-									v-for="food in menuStore.weeklyMenu[index].foodList"
-									:key="food.foodId"
-								>
-									<div class="leading-[3rem] font-bold text-lg">
-										{{ food.foodName }}
-									</div>
-								</template>
+								<div class="h-66 pl-4 w-full overflow-auto">
+									<template
+										v-for="food in menuStore.weeklyMenu[index].foodList"
+										:key="food.foodId"
+									>
+										<div class="h-10 font-bold text-lg">
+											{{ food.foodName }}
+										</div>
+									</template>
+								</div>
 							</div>
 						</div>
 						<div class="menu-item-color flex">
@@ -246,40 +251,42 @@
 								<div class="font-bold text-xl">유발식품</div>
 							</div>
 							<div class="menu-item-foods">
-								<template v-if="menuType === '점심'">
-									<template
-										v-for="allergy in menuStore.todayLunchAllergy"
-										:key="allergy"
-									>
+								<div class="h-66 pl-4 w-full overflow-auto">
+									<template v-if="menuType === '점심'">
 										<template
-											v-for="i in menuStore.allergyList"
-											:key="i.allergyId"
+											v-for="allergy in menuStore.todayLunchAllergy"
+											:key="allergy"
 										>
-											<template v-if="i.allergyId == allergy">
-												<div class="leading-10 font-bold text-lg">
-													{{ allergy }}. {{ i.allergyName }}
-												</div>
+											<template
+												v-for="i in menuStore.allergyList"
+												:key="i.allergyId"
+											>
+												<template v-if="i.allergyId == allergy">
+													<div class="h-10 font-bold text-lg">
+														{{ allergy }}. {{ i.allergyName }}
+													</div>
+												</template>
 											</template>
 										</template>
 									</template>
-								</template>
-								<template v-if="menuType === '간식'">
-									<template
-										v-for="allergy in menuStore.todaySnackAllergy"
-										:key="allergy"
-									>
+									<template v-if="menuType === '간식'">
 										<template
-											v-for="i in menuStore.allergyList"
-											:key="i.allergyId"
+											v-for="allergy in menuStore.todaySnackAllergy"
+											:key="allergy"
 										>
-											<template v-if="i.allergyId == allergy">
-												<div class="leading-[3rem] font-bold text-lg">
-													{{ allergy }}. {{ i.allergyName }}
-												</div>
+											<template
+												v-for="i in menuStore.allergyList"
+												:key="i.allergyId"
+											>
+												<template v-if="i.allergyId == allergy">
+													<div class="h-10 font-bold text-lg">
+														{{ allergy }}. {{ i.allergyName }}
+													</div>
+												</template>
 											</template>
 										</template>
 									</template>
-								</template>
+								</div>
 							</div>
 						</div>
 					</template>
@@ -307,7 +314,7 @@ const month = ('0' + (today.getMonth() + 1)).slice(-2);
 const day = ('0' + today.getDate()).slice(-2);
 
 const todayDate = `${year}-${month}-${day}`;
-const week = getWeekOfMonth(today, { weekStartsOn: 1 });
+const week = getWeekOfMonth(today, { weekStartsOn: 0 });
 
 const boardStore = useBoardStore();
 const menuStore = useMenuStore();
@@ -358,7 +365,7 @@ onMounted(async () => {
 	@apply font-bold inline-block mx-3;
 }
 .main-header {
-	@apply m-7 mb-3 flex justify-between items-end;
+	@apply mx-7 my-3 flex justify-between items-end;
 }
 .main-one-third {
 	@apply inline m-2 border-2 border-gray-400 rounded w-1/3 h-96 p-6 bg-nav-yellow bg-opacity-50;
@@ -391,7 +398,7 @@ onMounted(async () => {
 	@apply w-1/3 h-[20.8rem];
 }
 .menu-item-color {
-	@apply w-1/3 h-[20.8rem] bg-nav-yellow px-1 py-6 mx-2 rounded shadow-md;
+	@apply w-1/3 h-[20.8rem] bg-nav-yellow px-1 py-4 mx-2 rounded shadow-md;
 }
 .menu-image {
 	@apply border border-gray-300 rounded-md bg-gray-50 mt-3 p-2 w-[93%] h-[17rem] shadow-md;
@@ -400,7 +407,7 @@ onMounted(async () => {
 	@apply w-1/2 flex flex-col items-center justify-center;
 }
 .menu-item-foods {
-	@apply w-1/2 flex flex-col items-start justify-center ml-5;
+	@apply w-1/2 flex flex-col items-start justify-center;
 }
 
 ::-webkit-scrollbar {
