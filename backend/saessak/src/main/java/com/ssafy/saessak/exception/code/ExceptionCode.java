@@ -38,6 +38,7 @@ public enum ExceptionCode {
     TODO_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "T101", "해당 할일이 존재하지 않습니다."),
     ALBUM_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "A201" , "해당 엘범은 존재하지 않습니다."),
 
+    FIX_OVER_COUNT(HttpStatus.INTERNAL_SERVER_ERROR.value(), "N101", "고정 가능한 갯수를 초과했습니다."),
 
     FAIL_FCM_ALARM(HttpStatus.INTERNAL_SERVER_ERROR.value(), "F601", "FCM 알람 전송에 실패했습니다."),
     FCM_TOKEN_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "F602", "FCM 토큰이 존재하지 않습니다."),
