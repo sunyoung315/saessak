@@ -13,7 +13,7 @@
 						<img src="/icons/board.png" alt="icon" class="w-12" />
 						<div class="title">오늘의 알림장</div>
 					</div>
-					<template v-if="boardStore.oneBoard.boardId">
+					<template v-if="boardStore.oneBoard">
 						<div class="board-content whitespace-pre-line overflow-auto">
 							{{ boardStore.oneBoard.boardContent }}
 						</div>
@@ -22,7 +22,7 @@
 						<div class="px-6 pt-8">등록된 알림장이 없습니다.</div>
 					</template>
 				</div>
-				<template v-if="boardStore.oneBoard.boardId">
+				<template v-if="boardStore.oneBoard">
 					<div class="main-half w-1/3 border-l-2">
 						<div class="flex items-end">
 							<img src="/icons/board2.png" alt="icon" class="w-12" />
@@ -73,14 +73,16 @@
 									<span class="pl-1">kg</span>
 								</div>
 							</template>
-							<RouterLink
-								:to="{
-									name: 'BoardDetailParent',
-									params: { id: boardStore.oneBoard.boardId },
-								}"
-								class="block font-bold text-right"
-								>→ 자세히 보기</RouterLink
-							>
+							<template v-if="boardStore.oneBoard.boardId">
+								<RouterLink
+									:to="{
+										name: 'BoardDetailParent',
+										params: { id: boardStore.oneBoard.boardId },
+									}"
+									class="block font-bold text-right"
+									>→ 자세히 보기</RouterLink
+								>
+							</template>
 						</div>
 					</div>
 				</template>
