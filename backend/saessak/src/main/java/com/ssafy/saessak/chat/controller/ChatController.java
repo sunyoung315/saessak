@@ -68,4 +68,10 @@ public class ChatController {
         chatService.setLastVisit(roomId, userId);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS));
     }
+
+    @Operation(summary = "채팅 할 수 있는 반 아이 목록 조회")
+    @GetMapping(value = "/kid/list", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResultResponse> getClassKid() {
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, chatService.getClassKid()));
+    }
 }
