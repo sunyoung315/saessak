@@ -1,7 +1,5 @@
 package com.ssafy.saessak.oauth.controller;
 
-import com.ssafy.saessak.exception.code.ExceptionCode;
-import com.ssafy.saessak.exception.model.UserException;
 import com.ssafy.saessak.jwt.JwtTokenProvider;
 import com.ssafy.saessak.oauth.dto.AccessTokenGetSuccess;
 import com.ssafy.saessak.oauth.dto.LoginSuccessResponseDto;
@@ -25,7 +23,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.nio.charset.StandardCharsets;
-import java.security.Principal;
 import java.util.Base64;
 import java.util.Optional;
 
@@ -135,12 +132,6 @@ public class OauthController {
     @DeleteMapping(value = "/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResultResponse> deleteUser(@PathVariable("userId") Long userId) {
         kakaoUserService.deleteUser(userId);
-        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS));
-    }
-
-    @Operation(summary = "accessToken 유효 여부")
-    @GetMapping(value = "/check")
-    public ResponseEntity<ResultResponse> checkAccessToken() {
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS));
     }
 
