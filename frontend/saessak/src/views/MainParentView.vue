@@ -14,7 +14,7 @@
 						<div class="title">오늘의 알림장</div>
 					</div>
 					<template v-if="boardStore.oneBoard.boardId">
-						<div class="board-content text-ellipsis overflow-auto">
+						<div class="board-content whitespace-pre-line overflow-auto">
 							{{ boardStore.oneBoard.boardContent }}
 						</div>
 					</template>
