@@ -45,6 +45,20 @@ public class AlbumService {
         return makeAlbumResponseDto(albumResult.get());
     }
 
+    public List<LocalDate> getExistAlbumDate() {
+        User user = authenticationService.getUserByAuthentication();
+        Classroom classroom = user.getClassroom();
+        Optional<List<Album>> albumResult = albumRepository.findByClassroomAndKidIsNullOrderByAlbumDateDesc(classroom);
+        List<LocalDate> existDate = new ArrayList<>();
+        if(albumResult.isEmpty()) return existDate;
+        for( Album album : albumResult.get()){
+            existDate.add(album.getAlbumDate());
+        }
+
+        return existDate;
+
+    }
+
     public AlbumResponseDto getAlbumUsingId (Long albumId) {
         Optional<Album> albumResult = albumRepository.findById(albumId);
         if(albumResult.isEmpty()) throw new NotFoundException(ExceptionCode.ALBUM_NOT_FOUND);
@@ -55,7 +69,7 @@ public class AlbumService {
     public List<AlbumResponseDto> getTeacherClassAlbumList (){
         User user = authenticationService.getUserByAuthentication();
         Classroom classroom = user.getClassroom();
-        Optional<List<Album>> albumList = albumRepository.findByClassroomAndKidIsNull(classroom);
+        Optional<List<Album>> albumList = albumRepository.findByClassroomAndKidIsNullOrderByAlbumDateDesc(classroom);
         return albumList.map(this::makeAlbumResponseDtoList).orElse(null);
     }
 
@@ -65,7 +79,7 @@ public class AlbumService {
         Kid kid = kidResult.get();
 
         Classroom classroom = kid.getClassroom();
-        Optional<List<Album>> albumList = albumRepository.findByClassroomAndKidIsNull(classroom);
+        Optional<List<Album>> albumList = albumRepository.findByClassroomAndKidIsNullOrderByAlbumDateDesc(classroom);
         return albumList.map(this::makeAlbumResponseDtoList).orElse(null);
     }
 
