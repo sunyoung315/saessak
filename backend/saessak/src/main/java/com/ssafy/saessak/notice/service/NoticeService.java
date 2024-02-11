@@ -65,10 +65,8 @@ public class NoticeService {
 
         // 고정 안 한 공지사항 나중에 추가
         Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(Sort.Direction.DESC, "noticeId"));
-        Page<Notice> noticeList = noticeRepository.findAllByClassroom(classroom, pageable);
+        Page<Notice> noticeList = noticeRepository.findNoticesNotFixedByUser(classroom, user, pageable);
         for(Notice n : noticeList){
-            boolean flag = fixRepository.findByNoticeAndUser(n, user).isPresent();
-            if(!flag){ // 고정 안 한 공지사항만 고른다.
                 NoticeResponseDto noticeResponseDto = NoticeResponseDto.builder()
                         .noticeId(n.getNoticeId())
                         .noticeTitle(n.getNoticeTitle())
@@ -78,8 +76,6 @@ public class NoticeService {
                         .noticeFlag(false)
                         .build();
                 noticeResponseDtoList.add(noticeResponseDto);
-            }
-
         }
 
         return NoticeResponseListDto.builder()
@@ -113,7 +109,7 @@ public class NoticeService {
         Collections.sort(noticeResponseDtoList);
 
         // 고정 안 한 공지사항 나중에 추가
-        Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(Sort.Direction.DESC, "noticeId"));
+        Pageable pageable = PageRequest.of(pageNo, 10-noticeResponseDtoList.size(), Sort.by(Sort.Direction.DESC, "noticeId"));
         Page<Notice> noticeList = noticeRepository.findAllByClassroom(classroom, pageable);
         for(Notice n : noticeList){
             boolean flag = fixRepository.findByNoticeAndUser(n, user).isPresent();
