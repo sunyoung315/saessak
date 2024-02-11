@@ -36,6 +36,8 @@ public enum ExceptionCode {
     ATTENDANCE_KID_AND_DATE_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "R201", "아이의 등원 기록이 없습니다"),
     BOARD_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "B101", "해당 알림장은 존재하지 않습니다."),
     TODO_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "T101", "해당 할일이 존재하지 않습니다."),
+    ALBUM_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "A201" , "해당 엘범은 존재하지 않습니다."),
+
 
     FAIL_FCM_ALARM(HttpStatus.INTERNAL_SERVER_ERROR.value(), "F601", "FCM 알람 전송에 실패했습니다."),
     FCM_TOKEN_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "F602", "FCM 토큰이 존재하지 않습니다."),
