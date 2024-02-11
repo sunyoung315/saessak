@@ -89,7 +89,6 @@ const notice = ref({})
 
 onMounted(() => {
   noticeDetail(noticeId.value, ({ data }) => {
-    console.log(data.data)
     notice.value = data.data
   })
 })
@@ -121,7 +120,6 @@ const download = async () => {
     // S3 객체 다운로드
     const { Body, ContentType } = await s3Client.send(getObjectCommand)
     const byteArray = await Body.transformToByteArray()
-    console.log(ContentType)
     const type = ContentType.split('/')[1]
     const blob = new Blob([byteArray], { type: ContentType })
 
@@ -132,7 +130,7 @@ const download = async () => {
     downloadLink.remove()
     URL.revokeObjectURL(downloadLink.href)
   } catch (error) {
-    console.log(error)
+    //console.log(error)
   }
 }
 </script>
