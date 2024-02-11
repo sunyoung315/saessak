@@ -37,7 +37,7 @@
 						@click="goDetail(kidId, album.albumDate)"
 						class="m-4 text-xl font-bold flex justify-end cursor-pointer"
 					>
-						→ 전체 조회
+						→ 상세 조회
 					</div>
 				</div>
 			</div>
@@ -188,8 +188,8 @@ watch(
 const currentPageAlbums = computed(() => {
 	// 현재 페이지에 맞는 앨범 데이터 반환
 	return props.showToggle
-		? albumParentListDivided.value[currentPage.value]
-		: kidAlbumListDivided.value[currentPage.value];
+		? kidAlbumListDivided.value[currentPage.value]
+		: albumParentListDivided.value[currentPage.value];
 });
 
 const totalPage = computed(() => {
