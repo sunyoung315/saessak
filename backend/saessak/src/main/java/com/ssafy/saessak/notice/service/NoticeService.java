@@ -64,7 +64,7 @@ public class NoticeService {
         Collections.sort(noticeResponseDtoList);
 
         // 고정 안 한 공지사항 나중에 추가
-        Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(Sort.Direction.DESC, "noticeId"));
+        Pageable pageable = PageRequest.of(pageNo, 10-noticeResponseDtoList.size(), Sort.by(Sort.Direction.DESC, "noticeId"));
         Page<Notice> noticeList = noticeRepository.findNoticesNotFixedByUser(classroom, user, pageable);
         for(Notice n : noticeList){
                 NoticeResponseDto noticeResponseDto = NoticeResponseDto.builder()
