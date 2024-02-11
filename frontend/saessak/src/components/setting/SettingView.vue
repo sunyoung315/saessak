@@ -24,6 +24,7 @@
 								type="text"
 								class="input w-18"
 								v-model.lazy="newKid.kidName"
+								
 								required
 							/>
 						</td>
@@ -31,6 +32,7 @@
 							<VDatePicker
 								:select-attribute="selectAttribute"
 								v-model="newKid.kidBirth"
+								
 							>
 								<template #default="{ inputValue, inputEvents }">
 									<div class="relative max-w-sm">
@@ -60,8 +62,9 @@
 						</td>
 						<td class="col-gender !px-1">
 							<select
-								id="menu-type"
+								id="gender-type"
 								class="selection-input w-[13rem]"
+								
 								v-model="newKid.kidGender"
 								required
 							>
@@ -74,7 +77,8 @@
 							<div class="flex justify-between">
 								<label
 									class="flex flex-col justify-center h-14 w-[16rem] border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
-								>
+									
+									>
 									<div
 										class="flex flex-col items-center justify-center"
 										@dragover.prevent
@@ -106,7 +110,7 @@
 								<div>
 									<button
 										class="btn my-2 mx-2"
-										@click="regsistKidinClass($event)"
+										@click="registKid($event)"
 									>
 										등록
 									</button>
@@ -180,8 +184,7 @@
 
 <script setup>
 import { ref, onMounted, computed } from 'vue';
-import { getClassKids } from '@/api/user';
-import axios from 'axios';
+import { getClassKids, registKidInClass } from '@/api/user';
 onMounted(() => {
 	getClassKids(
 		({ data }) => {
@@ -203,34 +206,75 @@ const toggleCode = (event, index) => {
 	decodeShow.value[index] = !decodeShow.value[index];
 };
 
+const emptyKidName = ref(false)
+const emptyKidGender = ref(false)
+const emptyKidBirth = ref(false)
+const emptyKidProfile = ref(false)
+
+
+const shakeKidName = ref(false);
+const shakeKidGender = ref(false);
+const shakeKidBirth = ref(false);
+const shakeKidProfile = ref(false);
+
+// 흔들흔들 적용 함수 
+// date picker 적용안됨...
 function dataValidate() {
-	if (!image.value) return false;
-	if (!transformed.value.kidName) return false;
-	if (!transformed.value.kidGender) return false;
-	if (!transformed.value.kidBirth) return false;
-	return true;
+	let isValidate = true
+	if (!image.value) {
+		isValidate = false	
+		shakeKidProfile.value = true
+		emptyKidProfile.value = true
+		setTimeout(() => {
+			shakeKidProfile.value = false;
+		}, 1000);
+	} 
+	if (!transformed.value.kidName) {
+		isValidate = false
+		shakeKidName.value = true
+		emptyKidName.value = true
+		setTimeout(() => {
+			shakeKidName.value = false;
+		}, 1000);
+	}
+	if (!transformed.value.kidGender) {
+		isValidate = false
+		shakeKidGender.value = true
+		emptyKidGender.value = true
+		setTimeout(() => {
+			shakeKidGender.value = false;
+		}, 1000);
+	};
+	if (!transformed.value.kidBirth.trim()) {
+		isValidate = false
+		shakeKidBirth.value = true
+		emptyKidBirth.value = true
+		setTimeout(() => {
+			shakeKidBirth.value = false;
+		}, 1000);
+	}
+	return isValidate;
 }
 
-const regsistKidinClass = async event => {
-	// validation check
-	if (!dataValidate()) return;
 
+
+
+
+const registKid = async event => {
+	// validation check
+	if (!dataValidate()) {
+		// 흔들흔들 추가 ?
+
+		return;
+	}
 	const formData = new FormData();
 	formData.append('MultipartFile', image.value);
 	formData.append('gender', transformed.value.kidGender);
 	formData.append('kidName', transformed.value.kidName);
 	formData.append('kidBirthday', transformed.value.kidBirth);
 
-	axios
-		.post('https://i10a706.p.ssafy.io/api/user/kid/regist', formData, {
-			headers: {
-				'Content-Type': 'multipart/form-data',
-				Authorization: 'Bearer ' + localStorage.getItem('accessToken'),
-			},
-		})
-		.then(
-			response => {
-				getClassKids(
+	registKidInClass(formData, response => {
+		getClassKids(
 					({ data }) => {
 						// console.log(data)
 						existKidList.value = data.data;
@@ -241,13 +285,10 @@ const regsistKidinClass = async event => {
 				);
 				image.value = '';
 				newKid.value = '';
-			},
-			// console.log(response)
-		)
-		.catch(error => {
-			console.log(error);
-		});
-	// console.log(formData)
+	}, (error) => {
+		console.log(error)
+	})
+
 };
 
 const image = ref(null);
@@ -302,6 +343,27 @@ const uploadImage = event => {
 </script>
 
 <style scoped>
+@keyframes shake {
+	0% {
+		transform: translateX(0px);
+	}
+	25% {
+		transform: translateX(-2px);
+	}
+	50% {
+		transform: translateX(0px);
+	}
+	75% {
+		transform: translateX(2px);
+	}
+	100% {
+		transform: translateX(0px);
+	}
+}
+.shake {
+	animation: shake 0.2s;
+	animation-iteration-count: 3;
+}
 .view-title-teacher {
 	@apply flex justify-between items-center;
 }
