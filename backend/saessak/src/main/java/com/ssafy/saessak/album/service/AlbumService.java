@@ -8,6 +8,8 @@ import com.ssafy.saessak.album.dto.FileResponseDto;
 import com.ssafy.saessak.album.dto.KidAlbumResponseDto;
 import com.ssafy.saessak.album.repository.AlbumRepository;
 import com.ssafy.saessak.album.repository.FileRepository;
+import com.ssafy.saessak.exception.code.ExceptionCode;
+import com.ssafy.saessak.exception.model.UserException;
 import com.ssafy.saessak.oauth.service.AuthenticationService;
 import com.ssafy.saessak.user.domain.Classroom;
 import com.ssafy.saessak.user.domain.Kid;
@@ -34,24 +36,49 @@ public class AlbumService {
     private final KidRepository kidRepository;
     private final AuthenticationService authenticationService;
 
-    //엘범 조회
-    public List<AlbumResponseDto> getClassAlbumList (Long classroomId){
-        Classroom classroom = classroomRepository.findById(classroomId).get();
-        List<Album> albumList = albumRepository.findByClassroomAndKidIsNull(classroom).get();
-        return makeAlbumResponseDtoList(albumList);
+    //엘범 조회W
+    public List<AlbumResponseDto> getTeacherClassAlbumList (){
+        User user = authenticationService.getUserByAuthentication();
+        Classroom classroom = user.getClassroom();
+        Optional<List<Album>> albumList = albumRepository.findByClassroomAndKidIsNull(classroom);
+        return albumList.map(this::makeAlbumResponseDtoList).orElse(null);
+    }
+
+    public List<AlbumResponseDto> getParentClassAlbumList(Long kidId) {
+        Optional<Kid> kidResult = kidRepository.findById(kidId);
+        if(kidResult.isEmpty()) throw new UserException(ExceptionCode.KID_NOT_FOUND);
+        Kid kid = kidResult.get();
+
+        Classroom classroom = kid.getClassroom();
+        Optional<List<Album>> albumList = albumRepository.findByClassroomAndKidIsNull(classroom);
+        return albumList.map(this::makeAlbumResponseDtoList).orElse(null);
     }
 
     public List<AlbumResponseDto> getKidAlbumList (Long kidId){
-        Kid kid = kidRepository.findById(kidId).get();
-        List<Album> albumList = albumRepository.findByKid(kid).get();
-        return makeAlbumResponseDtoList(albumList);
+        Optional<Kid> kidResult = kidRepository.findById(kidId);
+        if(kidResult.isEmpty()) throw new UserException(ExceptionCode.KID_NOT_FOUND);
+        Kid kid = kidResult.get();
+
+        Optional<List<Album>> albumList = albumRepository.findByKid(kid);
+        return albumList.map(this::makeAlbumResponseDtoList).orElse(null);
     }
 
     public List<AlbumResponseDto> getKidAlbum(Long kidId, LocalDate date){
-        Kid kid = kidRepository.findById(kidId).get();
-        List<Album> albumList = albumRepository.findByKidAndAlbumDate(kid,date).get();
-        return makeAlbumResponseDtoList(albumList);
+        Optional<Kid> kidResult = kidRepository.findById(kidId);
+        if(kidResult.isEmpty()) throw new UserException(ExceptionCode.KID_NOT_FOUND);
+        Kid kid = kidResult.get();
+
+        Optional<List<Album>> albumList = albumRepository.findByKidAndAlbumDate(kid,date);
+        return albumList.map(this::makeAlbumResponseDtoList).orElse(null);
     }
+
+    public List<AlbumResponseDto> getTeacherClassAlbum(LocalDate date){
+        User user = authenticationService.getUserByAuthentication();
+        Optional<List<Album>> albumResult = albumRepository.findByClassroomAndAlbumDateAndKidIsNull(user.getClassroom(),date);
+        return albumResult.map(this::makeAlbumResponseDtoList).orElse(null);
+
+    }
+
     // 선생
     public List<KidAlbumResponseDto> getKidsCurrentAlbum (){
         User user = authenticationService.getUserByAuthentication();
@@ -63,7 +90,7 @@ public class AlbumService {
             KidAlbumResponseDto kidAlbumResponseDto = KidAlbumResponseDto.builder()
                     .kidId(kid.getId())
                     .kidName(kid.getNickname())
-                    .albumResponseDto(album.isPresent()? makeAlbumResponseDto(album.get()) : null)
+                    .albumResponseDto(album.map(this::makeAlbumResponseDto).orElse(null))
                     .build();
             albumList.add(kidAlbumResponseDto);
         }
@@ -72,10 +99,14 @@ public class AlbumService {
     }
 
 
-    public List<AlbumResponseDto> getClassAlbum(Long classroomId, LocalDate date){
-        Classroom classroom = classroomRepository.findById(classroomId).get();
-        List<Album> albumList = albumRepository.findByClassroomAndAlbumDateAndKidIsNull(classroom, date).get();
-        return makeAlbumResponseDtoList(albumList);
+    public List<AlbumResponseDto> getClassAlbum(Long kidId, LocalDate date){
+        Optional<Kid> kidResult = kidRepository.findById(kidId);
+        if(kidResult.isEmpty()) throw new UserException(ExceptionCode.KID_NOT_FOUND);
+        Kid kid = kidResult.get();
+
+        Classroom classroom = kid.getClassroom();
+        Optional<List<Album>> albumList = albumRepository.findByClassroomAndAlbumDateAndKidIsNull(classroom, date);
+        return albumList.map(this::makeAlbumResponseDtoList).orElse(null);
     }
 
 

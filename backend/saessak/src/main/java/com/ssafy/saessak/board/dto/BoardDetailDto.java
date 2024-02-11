@@ -15,7 +15,7 @@ public class BoardDetailDto {
     private Long classroomId;
     private LocalDate boardDate;
     private String boardContent;
-    private String boardTemperature;
+    private Float boardTemperature;
     private Float boardSleepTime;
     private String boardPoopStatus;
     private Float boardTall;

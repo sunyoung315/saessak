@@ -16,4 +16,6 @@ public class RoomResponseDto {
     private String teacherName;
     private String lastChat;
     private boolean flag; // 이미 다 읽었으면 true
+    private String kidProfile;
+    private String teacherProfile;
 }

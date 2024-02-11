@@ -38,10 +38,7 @@ public class ChatService {
     private final VisitRepository visitRepository;
     private final UserRepository userRepository;
     private final ChatRedisCacheService chatRedisCacheService;
-
-
-
-
+    private final ChatRepository chatRepository;
 
     // 채팅방 학부모 생성
     public Long addParentRoom(Long teacherId) {
@@ -112,7 +109,6 @@ public class ChatService {
         for(Chat c : room.getChatList()){
             ChatMessageResponse chatMessageResponse = ChatMessageResponse.builder()
                     .senderId(c.getSenderId())
-                    .receiverId(c.getReceiverId())
                     .chatContent(c.getChatContent())
                     .chatTime(c.getChatTime().toString())
                     .build();
@@ -130,7 +126,11 @@ public class ChatService {
         Room room = roomRepository.findById(roomId).get();
         User user = userRepository.findById(userId).get();
         Visit visit = visitRepository.findByUserAndRoom(user, room);
-        visit.updateVisitTime(LocalDateTime.now());
+
+        chatRedisCacheService.writeBack();
+        if(chatRepository.findAllByRoom(room) == null || chatRepository.findAllByRoom(room).size() == 0){
+            roomRepository.delete(room);
+        } else visit.updateVisitTime(LocalDateTime.now());
     }
 
     public List<RoomResponseDto> getRoomByParent() {
@@ -160,6 +160,8 @@ public class ChatService {
         }
         return roomResponseDtoList;
     }
+
+
 }
 
 

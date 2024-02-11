@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -30,6 +31,29 @@ public class BoardController {
     @GetMapping("/{kidId}")
     public ResponseEntity<ResultResponse> getBoardList(@PathVariable(name = "kidId") Long kidId){
         List<BoardResponseDto> result = boardService.findByKid(kidId);
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, result));
+    }
+
+    @Operation(summary = "알림장이 있는 날짜 리싀트 ")
+    @GetMapping("/exist/{kidId}")
+    public ResponseEntity<ResultResponse> getDateExistBoard(@PathVariable(name = "kidId") Long kidID){
+//        List<LocalDate> result = boardService
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS,""));
+    }
+
+    @Operation(summary = "아이 알림장 월별 조회 (학부모)")
+    @PostMapping("/month/{kidId}")
+    public ResponseEntity<ResultResponse> getMonthlyBoardList
+            (@PathVariable(name="kidId") Long kidId , @RequestBody YearMonthRequestDto yearMonthRequestDto){
+        log.debug("controller data : {}", yearMonthRequestDto );
+        List<BoardResponseDto> result =
+                boardService.getMonthlyKidBoardList(kidId, yearMonthRequestDto.getYear(), yearMonthRequestDto.getMonth());
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, result));
+    }
+    @Operation(summary =  "오늘 작성된 알림장이 없는 아이 리스트 ( 선생님 )")
+    @GetMapping("/teacher/day")
+    public ResponseEntity<ResultResponse> getClassKidBoardIsNotWritten() {
+        List<KidNoBoardResponseDto> result = boardService.getClassKidBoardIsNotWritten();
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, result));
     }
     // 알림장 등록

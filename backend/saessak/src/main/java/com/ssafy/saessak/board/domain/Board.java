@@ -32,7 +32,7 @@ public class Board {
     private String boardContent;
 
     @Column
-    private String boardTemperature;
+    private Float boardTemperature;
 
     @Column(name = "board_sleeptime")
     private Float boardSleepTime;

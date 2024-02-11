@@ -1,10 +1,10 @@
 package com.ssafy.saessak.oauth.service;
 
+import com.ssafy.saessak.exception.model.UnAuthorizedException;
 import com.ssafy.saessak.oauth.client.KakaoApiClient;
 import com.ssafy.saessak.oauth.client.KakaoAuthApiClient;
 import com.ssafy.saessak.oauth.dto.kakao.KakaoAccessTokenResponse;
 import com.ssafy.saessak.oauth.dto.kakao.KakaoUserResponse;
-import com.ssafy.saessak.exception.BadRequestException;
 import com.ssafy.saessak.exception.code.ExceptionCode;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
@@ -41,20 +41,18 @@ public class KakaoSocialService {
         return KAKAO_AUTH_URI+"/oauth/authorize"
                 +"?client_id="+KAKAO_CLIENT_ID
                 +"&redirect_uri="+KAKAO_REDIRECT_URL
-                +"&response_type=code";
+                +"&response_type=code&prompt=login";
     }
 
     @Transactional
     public KakaoUserResponse login(String authorizationCode) {
         String accessToken = "";
         try {
-            // 인가 코드로 Access Token + Refresh Token 받아오기
-            accessToken = getOAuth2Authentication(authorizationCode);
+            accessToken = getOAuth2Authentication(authorizationCode); // 인가 코드로 Access Token + Refresh Token 받아오기
         } catch (FeignException e) {
-            throw new BadRequestException(ExceptionCode.AUTHENTICATION_CODE_EXPIRED);
+            throw new UnAuthorizedException(ExceptionCode.AUTHENTICATION_CODE_EXPIRED);
         }
-        // Access Token으로 유저 정보 불러오기
-        return getUserInfo(accessToken);
+        return getUserInfo(accessToken); // Access Token으로 유저 정보 불러오기
     }
 
 
@@ -71,7 +69,7 @@ public class KakaoSocialService {
         return tokenResponse.accessToken();
     }
 
-    private KakaoUserResponse getUserInfo (final String accessToken ) {
+    public KakaoUserResponse getUserInfo (final String accessToken ) {
         return kakaoApiClient.getUserInformation("Bearer " + accessToken);
     }
 
