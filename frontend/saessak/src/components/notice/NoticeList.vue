@@ -36,15 +36,9 @@ function fetchData() {
         noticeList.value = data.data
       })
     } else {
-      noticeListParentAll(
-        kidList.value[0].kidId,
-        {
-          params: paging.value - 1
-        },
-        ({ data }) => {
-          noticeList.value = data.data
-        }
-      )
+      noticeListParentAll(kidList.value[0].kidId, paging.value.pageNo - 1, ({ data }) => {
+        noticeList.value = data.data
+      })
     }
   }
 }
@@ -67,23 +61,35 @@ watch(paging, async () => {
 })
 
 function startFix(notice) {
-  if (!isTeacher.value) {
+  if (isTeacher.value) {
     if (!notice.noticeFlag) {
-      parentFix({
-        noticeId: notice.noticeId,
-        kidId: kidList.value[0].kidId
-      })
+      teacherFix(
+        notice.noticeId,
+        ({ response }) => {},
+        ({ error }) => {
+          alert('공지사항은 최대 다섯 개까지 고정 할 수 있습니다.')
+        }
+      )
+    } else {
+      teacherNotFix(notice.noticeId)
+    }
+  } else {
+    if (!notice.noticeFlag) {
+      parentFix(
+        {
+          noticeId: notice.noticeId,
+          kidId: kidList.value[0].kidId
+        },
+        ({ response }) => {},
+        ({ error }) => {
+          alert('공지사항은 최대 다섯 개까지 고정 할 수 있습니다.')
+        }
+      )
     } else {
       parentNotFix({
         noticeId: notice.noticeId,
         kidId: kidList.value[0].kidId
       })
-    }
-  } else {
-    if (!notice.noticeFlag) {
-      teacherFix(notice.noticeId)
-    } else {
-      teacherNotFix(notice.noticeId)
     }
   }
 }
@@ -218,7 +224,7 @@ function startFix(notice) {
         ←
       </button>
 
-      <div v-for="index in parseInt((noticeList.length + 9) / 10)">
+      <div v-for="index in noticeList.length">
         <button
           :key="index"
           class="m-2 rounded-lg p-2"
@@ -229,8 +235,8 @@ function startFix(notice) {
         </button>
       </div>
       <button
-        :disabled="paging.pageNo === parseInt((noticeList.length + 9) / 10)"
-        :class="{ 'text-gray-200': paging.pageNo === parseInt((noticeList.length + 9) / 10) }"
+        :disabled="paging.pageNo === noticeList.length"
+        :class="{ 'text-gray-200': paging.pageNo === noticeList.length }"
         @click="paging.pageNo = paging.pageNo + 1"
       >
         →
