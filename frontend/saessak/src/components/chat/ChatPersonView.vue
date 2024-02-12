@@ -58,7 +58,7 @@
 
 <script setup>
 import { getClassKids, getMyTeacher } from '@/api/user'
-import { teacherNewChat, parentNewChat } from '@/api/chat'
+import { getClassList, teacherNewChat, parentNewChat } from '@/api/chat'
 import { nextTick, ref, onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import { loginStore } from '@/store/loginStore'
@@ -93,7 +93,7 @@ const getPersonList = () => {
   // console.log(isTeacher.value)
   if (isTeacher.value) {
     // console.log('선생님 - 반 아이 조회')
-    getClassKids(
+    getClassList(
       ({ data }) => {
         // console.log(data.data)
         Person.value = data.data
