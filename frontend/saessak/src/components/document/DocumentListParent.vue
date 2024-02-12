@@ -4,7 +4,7 @@
 		<div v-if="props.isReplace === true">
 			<div class="container p-6 flex items-center">
 				<table
-					class="items-center bg-transparent border-collapse mt-4 w-full text-center"
+					class="items-center bg-transparent border-collapse mt-4 w-full text-left"
 				>
 					<thead>
 						<tr class="bg-nav-blue">
@@ -35,7 +35,7 @@
 							v-for="kid in paginatedReplacementList"
 							:key="kid.replacementId"
 							@click="moveReplacement(kid.replacementId)"
-							class="hover:bg-nav-blue hover:bg-opacity-20"
+							class="hover:bg-nav-blue hover:bg-opacity-20 cursor-pointer"
 							@update="callFunction"
 						>
 							<td
@@ -71,7 +71,10 @@
 					</tbody>
 				</table>
 			</div>
-			<div class="pagination flex justify-center text-2xl font-bold">
+			<div
+				class="pagination flex justify-center text-2xl font-bold"
+				v-if="myReplacementList.length"
+			>
 				<button
 					@click="prevPage"
 					:disabled="currentPage === 1"
@@ -94,6 +97,9 @@
 				>
 					→
 				</button>
+			</div>
+			<div v-if="!myReplacementList.length" class="ml-8">
+				<p>등록된 귀가동의서가 없습니다.</p>
 			</div>
 		</div>
 		<!-- Parents Version : 알레르기 동의서 -->
