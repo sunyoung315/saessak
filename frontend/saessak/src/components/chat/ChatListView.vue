@@ -8,7 +8,7 @@
   </div>
   <div class="flow-root mt-12 grow h-screen">
     <ul role="list" class="" v-for="chatItem in chat" :key="chatItem.chatId">
-      <li v-if="chatItem.flag === false" class="py-3 mb-2 border border-gray-300 shadow rounded-lg sm:py-4">
+      <li v-if="chatItem.flag === false" class="cursor-pointer py-3 mb-2 border border-gray-300 shadow rounded-lg sm:py-4">
         <div
           @click="
             chatDetail({
@@ -44,7 +44,7 @@
       </li>
       <li
         v-else
-        class="relative py-3 mb-2 border-2 border-yellow-100 rounded-lg bg-amber-200 sm:py-4"
+        class="relative py-3 mb-2 cursor-pointer  border-2 border-yellow-100 rounded-lg bg-amber-200 sm:py-4"
       >
         <div
           class="absolute left-0.5 w-2 h-2 transform -translate-x-1/2 -translate-y-1/2 bg-yellow-500 rounded-full top-1"
