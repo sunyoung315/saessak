@@ -12,6 +12,10 @@
         class="content-box mb-10 p-4 text-lg"
         rows="6"
         v-model="notice.noticeTitle"
+        :class="{
+          '!border-2 !border-red-500': emptyNoticeTitle,
+          shake: shakeNoticeTitle
+        }"
       />
     </div>
 
@@ -22,6 +26,10 @@
         class="content-box mb-10 p-4 text-lg"
         rows="6"
         v-model="notice.noticeContent"
+        :class="{
+          '!border-2 !border-red-500': emptyNoticeContent,
+          shake: shakeNoticeContent
+        }"
       ></textarea>
     </div>
 
@@ -58,16 +66,19 @@
 import axios from 'axios'
 import { ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { noticeDetail } from '@/api/notice'
 
 const router = useRouter()
 const route = useRoute()
-const noticeId = ref(route.params.noticeId)
-const notice = ref({})
 const fileName = ref('')
 const fileInput = ref(null)
 
 onMounted(() => {})
+
+const notice = ref({
+  noticeTitle: '',
+  noticeContent: '',
+  noticeFile: null
+})
 
 // 목록으로 이동하는 함수
 const goBack = () => {
@@ -84,6 +95,9 @@ const handleFileUpload = (event) => {
 
 // 공지사항 제출 함수
 const registNotice = async () => {
+  if (checkEmptyFields()) {
+    return
+  }
   const formData = new FormData()
   formData.append('title', notice.value.noticeTitle)
   formData.append('content', notice.value.noticeContent)
@@ -107,6 +121,34 @@ const registNotice = async () => {
 const openFileDialog = () => {
   fileInput.value.click()
 }
+
+// 널값처리
+const emptyNoticeTitle = ref(false)
+const shakeNoticeTitle = ref(false)
+
+const emptyNoticeContent = ref(false)
+const shakeNoticeContent = ref(false)
+
+const checkEmptyFields = () => {
+  let hasEmptyFields = false
+  if (!notice.value.noticeTitle.trim()) {
+    emptyNoticeTitle.value = true
+    shakeNoticeTitle.value = true
+    hasEmptyFields = true
+    setTimeout(() => {
+      shakeNoticeTitle.value = false
+    }, 1000)
+  }
+  if (!notice.value.noticeContent.trim()) {
+    emptyNoticeContent.value = true
+    shakeNoticeContent.value = true
+    hasEmptyFields = true
+    setTimeout(() => {
+      shakeNoticeContent.value = false
+    }, 1000)
+  }
+  return hasEmptyFields
+}
 </script>
 
 <style scoped>
@@ -122,51 +164,25 @@ const openFileDialog = () => {
   @apply flex ml-32 mt-1 w-9/12 rounded-md border border-neutral-300 shadow;
 }
 
-.record-title {
-  @apply inline-block m-5 text-gray-700 text-base font-extrabold;
+@keyframes shake {
+  0% {
+    transform: translateX(0px);
+  }
+  25% {
+    transform: translateX(-2px);
+  }
+  50% {
+    transform: translateX(0px);
+  }
+  75% {
+    transform: translateX(2px);
+  }
+  100% {
+    transform: translateX(0px);
+  }
 }
-
-.record-flex {
-  @apply flex items-center;
-}
-
-.record-content {
-  @apply block w-20 h-11 py-2.5 bg-gray-100 rounded-md border border-neutral-300 text-center text-gray-900 text-base;
-}
-
-.unit {
-  @apply pl-3 pr-6;
-}
-
-.no-content {
-  @apply mx-36 mt-8 text-lg;
-}
-
-.group-button {
-  @apply inline-flex h-11 rounded-md shadow-sm;
-}
-
-.group-button-left-item {
-  @apply h-11 px-6 py-2 text-base font-medium text-gray-900 bg-white border border-gray-200 rounded-s-lg focus:z-10 focus:ring-2 focus:ring-dark-navy focus:text-dark-navy focus:font-bold focus:bg-gray-100;
-}
-
-.group-button-left-item-focus {
-  @apply h-11 px-6 py-2 text-base border border-gray-200 rounded-s-lg z-10 ring-2 ring-dark-navy text-dark-navy font-bold bg-gray-100;
-}
-
-.group-button-center-item {
-  @apply h-11 px-6 py-2 text-base font-medium text-gray-900 bg-white border-t border-b border-gray-200 focus:z-10 focus:ring-2 focus:ring-dark-navy focus:text-dark-navy focus:font-bold focus:bg-gray-100;
-}
-
-.group-button-center-item-focus {
-  @apply h-11 px-6 py-2 text-base border-t border-b border-gray-200 z-10 ring-2 ring-dark-navy text-dark-navy font-bold bg-gray-100;
-}
-
-.group-button-right-item {
-  @apply h-11 px-6 py-2 text-base font-medium text-gray-900 bg-white border border-gray-200 rounded-e-lg focus:z-10 focus:ring-2 focus:ring-dark-navy focus:text-dark-navy focus:font-bold focus:bg-gray-100;
-}
-
-.group-button-right-item-focus {
-  @apply h-11 px-6 py-2 text-base border border-gray-200 rounded-e-lg z-10 ring-2 ring-dark-navy text-dark-navy font-bold bg-gray-100;
+.shake {
+  animation: shake 0.2s;
+  animation-iteration-count: 3;
 }
 </style>

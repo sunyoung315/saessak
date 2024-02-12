@@ -20,7 +20,10 @@ const { isLogin, isTeacher, kidList, isAlarm, curKid, setCurkid } = storeToRefs(
 
 //const kidId = loginStore.kidList[0].kidId;
 // 내 아이 귀가동의서 목록 가져오기
-const noticeList = ref([])
+const noticeList = ref({
+  list: [],
+  length: 0
+})
 const paging = ref({
   pageNo: 1
 })
@@ -128,7 +131,7 @@ function startFix(notice) {
             ></th>
           </tr>
         </thead>
-        <tbody>
+        <tbody v-if="noticeList.list.length > 0">
           <!-- click="moveReplacement(kid.replacementId)" -->
           <tr
             v-for="notice in noticeList.list"
@@ -213,9 +216,12 @@ function startFix(notice) {
             </td>
           </tr>
         </tbody>
+        <tbody v-else>
+          <div class="m-6">등록된 공지사항이 없습니다.</div>
+        </tbody>
       </table>
     </div>
-    <div class="flex justify-center text-2xl font-bold">
+    <div v-if="noticeList.list.length > 0" class="flex justify-center text-2xl font-bold">
       <button
         :disabled="paging.pageNo === 1"
         :class="{ 'text-gray-200': paging.pageNo === 1 }"
