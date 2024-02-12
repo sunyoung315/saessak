@@ -305,7 +305,6 @@ const registKid = async event => {
 	formData.append('kidName', transformed.value.kidName);
 	formData.append('kidBirthday', transformed.value.kidBirth);
 
-
 	registKidInClass(
 		formData,
 		response => {
