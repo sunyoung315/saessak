@@ -169,7 +169,7 @@
       </div>
       <!-- 알람 드롭다운 끝나따-->
       <button v-if="isLogin == false" type="button" @click="login()">
-        <img src="/icons/kakao_login.png" alt="login" class="mx-5" />
+        <img src="/icons/kakao_login.png" alt="login" class="mx-5 shadow-md" />
       </button>
       <button
         v-if="isLogin == true && isTeacher == true"
