@@ -65,7 +65,7 @@ public class BoardService {
     public List<KidNoBoardResponseDto> getClassKidBoardIsNotWritten() {
         User user = authenticationService.getUserByAuthentication();
         Classroom classroom = user.getClassroom();
-        List<Kid> kidList = kidRepository.findAllByClassroom(classroom);
+        List<Kid> kidList = kidRepository.findAllByClassroomOrderByNickname(classroom);
 
         LocalDate today = LocalDate.now();
         List<KidNoBoardResponseDto> kidNoBoardResponseDtoList = new ArrayList<>();
