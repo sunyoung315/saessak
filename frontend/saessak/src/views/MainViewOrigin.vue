@@ -2,35 +2,16 @@
 	<!-- 로그인 전 -->
 	<div v-if="!isLogin">
 		<!-- 서비스 소개 -->
-		<div class="mb-20 bg-nav-yellow h-[85vh]">
-			<!-- <div class="mb-20 bg-[url('/main-page.jpg')] bg-cover h-screen"> -->
-			<img
-				src="/main/logo-bubble.png"
-				alt=""
-				class="absolute right-[23rem] top-1/2 transform translate-y-[-55%] w-[46rem] -rotate-12 opacity-65"
-			/>
-			<div
-				class="absolute right-[31.5rem] top-1/2 transform translate-y-[-76%] text-[9rem] font-bold"
-			>
-				새싹일기
+		<div
+			class="mb-20 bg-nav-yellow h-[85vh] flex flex-col justify-center items-start text-center"
+		>
+			<div class="w-full flex justify-center my-10">
+				<img src="/saessak-logo.png" alt="로고" />
 			</div>
-			<div
-				class="absolute right-[35rem] top-1/2 transform translate-y-[15%] text-[2rem]"
-			>
-				어린이집 커뮤니케이션 플랫폼
-			</div>
-			<div class="image-container">
-				<img
-					class="w-[52rem] top-48 left-48"
-					:class="{ 'image-visible': isHandUpRef }"
-					src="/main/hands-up.png"
-				/>
-				<img
-					class="w-[52rem] top-48 left-48"
-					:class="{ 'image-visible': !isHandUpRef }"
-					src="/main/hands-down.png"
-				/>
-			</div>
+			<div class="text-6xl font-bold w-full mb-5">{{ title }}</div>
+			<p class="text-3xl leading-10 whitespace-pre-line w-full">
+				{{ titleContent }}
+			</p>
 		</div>
 		<!-- 알림장 -->
 		<div
@@ -106,24 +87,6 @@
 import MainTeacherVue from '@/views/MainTeacherView.vue';
 import MainParentVue from '@/views/MainParentView.vue';
 
-import { ref, onMounted, onUnmounted } from 'vue';
-
-const isHandUpRef = ref(true);
-
-let intervalId = null;
-
-const toggleHand = () => {
-	isHandUpRef.value = !isHandUpRef.value;
-};
-
-onMounted(() => {
-	intervalId = setInterval(toggleHand, 500);
-});
-
-onUnmounted(() => {
-	clearInterval(intervalId);
-});
-
 const loginStore = JSON.parse(localStorage.getItem('loginStore'));
 const isLogin = loginStore.isLogin;
 let isTeacher;
@@ -131,9 +94,9 @@ if (isLogin) {
 	isTeacher = loginStore.isTeacher;
 }
 
-// const title = '우리 아이가 잘 생활하고 있을까요...';
-// const titleContent =
-// 	'안녕하세요. [ 새싹일기 ] 입니다. \n 우리 아이의 어린이집 생활을 더 가까이에서 공유하고 싶은 학부모 여러분을 위한 특별한 서비스입니다. \n [ 새싹일기 ] 는 우리 아이의 소중한 순간들을 담아 학부모와 공유하는 플랫폼입니다.';
+const title = '우리 아이가 잘 생활하고 있을까요...';
+const titleContent =
+	'안녕하세요. [ 새싹일기 ] 입니다. \n 우리 아이의 어린이집 생활을 더 가까이에서 공유하고 싶은 학부모 여러분을 위한 특별한 서비스입니다. \n [ 새싹일기 ] 는 우리 아이의 소중한 순간들을 담아 학부모와 공유하는 플랫폼입니다.';
 const contents = [
 	{
 		title: '알림장',
@@ -158,17 +121,4 @@ const contents = [
 ];
 </script>
 
-<style scoped>
-.image-container {
-	position: relative;
-}
-
-.image-container img {
-	position: absolute;
-	opacity: 0;
-}
-
-.image-container img.image-visible {
-	opacity: 1;
-}
-</style>
+<style scoped></style>
