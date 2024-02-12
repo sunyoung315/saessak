@@ -8,8 +8,11 @@
       <span class="content-title2">{{ notice.noticeTitle }}</span>
     </div>
 
-    <div class="block mb-8 w-full">
-      <hr class="content-box w-full border-1 border-gray-400 mb-8" />
+    <div class="block mb-24 w-full relative content-box">
+      <hr class="w-full border-1 border-gray-400" />
+      <div class="absolute top-full right-0">
+        {{ notice.noticeTime }}
+      </div>
     </div>
 
     <div class="block mt-2 w-full">
