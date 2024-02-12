@@ -2,7 +2,8 @@
 	<div class="view-frame p-4">
 		<!-- Teacher Version -->
 		<template v-if="props.loginStore.isTeacher">
-			<div class="book-flex">
+			<div v-if="!kidsList.length" class="m-6">등록된 원아가 없습니다.</div>
+			<div v-else class="book-flex">
 				<div v-for="kid in kidsList" :key="kid.kidId">
 					<RouterLink
 						:to="{
@@ -28,7 +29,10 @@
 
 		<!-- Parent Version -->
 		<template v-else>
-			<div class="book-flex">
+			<div v-if="!myKidBoards.length" class="m-6">
+				등록된 알림장이 없습니다.
+			</div>
+			<div v-else class="book-flex">
 				<div v-for="(board, index) in myKidBoards" :key="board.boardId">
 					<RouterLink
 						:to="{
