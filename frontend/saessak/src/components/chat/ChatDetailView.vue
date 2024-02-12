@@ -1,7 +1,7 @@
 <template>
   <!-- border border-gray-200 shadow -->
   <div
-    class="flex flex-col w-full h-full px-0 mx-auto my-10 rounded-lg  bg-yellow-50 sm:p-8 dark:bg-gray-800 dark:border-gray-700">
+    class="flex flex-col w-full h-full px-0 mx-auto my-0 rounded-lg  bg-yellow-50 sm:p-8 dark:bg-gray-800 dark:border-gray-700">
     <div
       class="fixed w-1/3 top-0 right-0 flex justify-between px-3 py-3 border-l-2 border-l-gray-300 bg-yellow-50 pb-0 mx-auto">
       <h3 class="mb-5 text-lg font-bold text-center left-1/2">
@@ -17,7 +17,7 @@
 
     <!-- message -->
     <!--scrollbar-hide -->
-    <div ref="chatbox" class="chatbox flex flex-col scrollbar-hide overflow-y-scroll w-full h-5/6 mt-0 px-5">
+    <div ref="chatbox" class="chatbox flex flex-col scrollbar-hide overflow-y-scroll w-full h-full mt-0 mb-0 my-0 px-5 py-0">
       <div v-for="msg in recvList" :key="msg.chatId" class="flex flex-col mt-5">
         <!--발신 메시지(오른쪽)-->
         <div class="flex w-0 h-0 text-yellow-50">{{ msg.chatTime }}</div>
@@ -39,16 +39,7 @@
     </div>
     <!-- end message(오른쪽) -->
 
-    <!-- 화상채팅 버튼 -->
-    <button v-if="isTeacher == true" @click="startFaceChat()" class="block text-white" type="button">
-      <div class="h-7 w-7 ml-auto mr-2.5 border rounded-full bg-neutral-500">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-          <path fill="#ffffff" fill-rule="evenodd"
-            d="M14 7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7Zm2 9.387 4.684 1.562A1 1 0 0 0 22 17V7a1 1 0 0 0-1.316-.949L16 7.613v8.774Z"
-            clip-rule="evenodd" />
-        </svg>
-      </div>
-    </button>
+
 
     <!-- <div   
         class="fixed bottom-0 right-0 flex items-end justify-between mt-auto left-3"
@@ -66,6 +57,16 @@
             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
               d="M1 5h12m0 0L9 1m4 4L9 9" />
           </svg>
+        </button>
+        <!-- 화상채팅 버튼 -->
+        <button v-if="isTeacher == true" @click="startFaceChat()" class="block text-white" type="button">
+          <div class="h-9 w-9 mb-1 ml-auto mr-2.5 border rounded-full bg-neutral-500">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <path fill="#ffffff" fill-rule="evenodd"
+                d="M14 7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7Zm2 9.387 4.684 1.562A1 1 0 0 0 22 17V7a1 1 0 0 0-1.316-.949L16 7.613v8.774Z"
+                clip-rule="evenodd"/>
+            </svg>
+          </div>
         </button>
       </div>
     </div>
@@ -175,7 +176,7 @@ onMounted(() => {
     if (data.data.length == 0) {
       // console.log("처음왔니?") 
       cursor.value = {
-        chatTime : null
+        chatTime: null
       }
 
     } else {
@@ -220,7 +221,7 @@ const emit = defineEmits(['exitChat']) // 채팅방 퇴장 처리
 
 // console.log(props.roomInfo)
 const roomId = props.roomInfo.roomId // 채팅방 번호
-const roomName = props.roomInfo.roomName
+const roomName = props.roomInfo.roomName + (isTeacher == true ? " 학부모와" : " 선생님과")
 setChatroom(roomId)
 setChatname(roomName)
 
@@ -303,6 +304,7 @@ let headers = {
 // chat 메세지 정보에서 리시버id 안받을거임 / 백에서는 내가 보낸 토큰으로 senderid 지정함
 // 그럼 내가 받을땐?
 // console.log(roomId);
+const newWindow = ref()
 stomp.connect(
   headers,
   (frame) => {
@@ -322,13 +324,20 @@ stomp.connect(
         // 받은 데이터를 json으로 파싱하고 리스트에 넣어줍니다.
         // console.log(JSON.parse(res.body).chatContent)
         // console.log(isTeacher.value)
-        if (res.body == 'true') {
+        if (res.body == 'videoChat allow request') {
           if (isTeacher.value == false) {
             // console.log('check flag')
             const isConfirmed = window.confirm('화상채팅 할거긔?')
             if (isConfirmed) {
               window.open('/facechat', '_blank', 'width=720, height=720')
+            } else {
+              stomp.send('/pub/response', roomId, headers)
             }
+          }
+        } else if (res.body == 'videoChat deny response') {
+          if (isTeacher.value) {
+            alert("거절이긔")
+            // newWindow.close()
           }
         } else {
           recvList.value.push(JSON.parse(res.body))
@@ -420,8 +429,8 @@ const startFaceChat = () => {
   let popupY = window.screen.height / 2 - popupHeight / 2
   // 만들 팝업창 height 크기의 1/2 만큼 보정값으로 빼주었음
 
-  stomp.send('/pub/check', roomId, headers)
-  window.open(
+  stomp.send('/pub/request', roomId, headers)
+  newWindow.value = window.open(
     '/facechat',
     '',
     'status=no, height=' +

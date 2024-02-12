@@ -9,13 +9,13 @@
     {{ isTeacher == true ? '학부모 목록' : '선생님 목록' }}
     </h5>
   </div>
-  <div class="flow-root grow">
-    <div class="w-full mt-5 mx-0 my-0 bg-yellow-50 dark:bg-gray-800 dark:border-gray-700">
-      <div class="flex flex-wrap pt-5 w-full mt-auto mb-3 justify-evenly">
+  <div class="flow-root grow ">
+    <div class="w-full mt-5 mx-0 my-0 bg-yellow-50 dark:bg-gray-800 dark:border-gray-700  ">
+      <div class="flex flex-wrap  pt-5 w-full mt-auto mb-3 justify-evenly">
         <div
           v-for="person in Person"
           :key="person.id"
-          class="flex flex-col items-center w-6/12 mb-3 border border-gray-300 rounded-lg shadow pb-10mb-4"
+          class="flex flex-col items-center  w-6/12 mb-3 border border-gray-300 rounded-lg shadow pb-10mb-4"
         >
           <img
             v-if="isTeacher == true"

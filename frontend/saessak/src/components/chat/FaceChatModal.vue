@@ -16,7 +16,7 @@
       </div> -->
         <!-- 모든 캠 -->
         <section id="video-container" class="relative">
-          <div id="session-title" class="absolute top-14 left-1/3">{{ chatName }}과의 화상채팅</div>
+          <div id="session-title" class="absolute top-14 left-1/3">{{ chatName }}의 화상채팅</div>
           <sub-section class="absolute w-1/4 z-10 h-16 top-4 right-4">
             <UserVideo
               class="justify-end border-2 border-yellow-300"
@@ -150,7 +150,7 @@ function joinSession() {
 
   // On every asynchronous exception...
   session.value.on('exception', ({ exception }) => {
-    console.warn(exception)
+    // console.warn(exception)
   })
 
   // --- 4) Connect to the session with a valid user token ---
@@ -365,7 +365,7 @@ async function replaceCameraTrack(deviceId) {
     const newVideoTrack = newStream.getVideoTracks()[0]
     await publisher.value.replaceTrack(newVideoTrack)
   } catch (error) {
-    console.error('Error replacing video track:', error)
+    // console.error('Error replacing video track:', error)
   }
 }
 
@@ -384,7 +384,7 @@ async function replaceAudioTrack(deviceId) {
     const newAudioTrack = newStream.getAudioTracks()[0]
     await publisher.value.replaceTrack(newAudioTrack)
   } catch (error) {
-    console.error('Error replacing audio track:', error)
+    // console.error('Error replacing audio track:', error)
   }
 }
 </script>
