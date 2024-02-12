@@ -6,7 +6,7 @@ const url = "/chat";
 
 const config = {
     headers : {
-        "Authorization" : "Bearer " + sessionStorage.getItem("accessToken")
+        "Authorization" : "Bearer " + localStorage.getItem("accessToken")
     }
 } // 헤더에 accessToken 담아서 전송하기!!
 
@@ -43,13 +43,18 @@ function parentNewChat(teacherId, sucess, fail){
 }
 
 // 7. (공통) 채팅방 진입 시 이전에 저장된 채팅 내역 불러오기
-function loadChat(roomId, sucess, fail){
-    local.get(`${url}/room/list/${roomId}`).then(sucess).catch(fail);
+function loadChat(roomId, param, sucess, fail){
+    local.post(`${url}/room/list/${roomId}`, JSON.stringify(param)).then(sucess).catch(fail);
 }
 
 // 8. (공통) 채팅방 진입 전 userId 받아오기
 function isVaild(success, fail){
     local.get(`${url}/isVaild`, config).then(success).catch(fail);
+}
+
+// 9. (공통) 채팅방 퇴장 시간 기록하기
+async function disconnect(param, success, fail) {
+    await local.get(`${url}/disconnect`, {params : param}).then(success).catch(fail);
 }
 
 
@@ -60,5 +65,6 @@ export {
     teacherNewChat,
     parentNewChat,
     loadChat,
-    isVaild
+    isVaild,
+    disconnect
 }

@@ -5,13 +5,13 @@
 
 @layer components {
   .view-header {
-    @apply container p-6;
+    @apply p-6;
   }
   .nav-title {
-    @apply text-3xl mt-10 ml-14 mb-3 mr-5 font-extrabold inline-block;
+    @apply text-3xl mt-10 ml-10 mb-3 mr-5 font-extrabold inline-block;
   }
   .view-frame {
-    @apply container min-h-screen mx-16 mb-10 p-8 w-auto border border-gray-200 shadow rounded-lg;
+    @apply min-h-screen mx-10 mb-10 p-6 w-auto border border-gray-200 shadow rounded-lg;
   }
   .group-btn {
     @apply inline-flex rounded-md shadow-sm ml-6 mt-7;
@@ -23,9 +23,18 @@
     @apply px-6 py-3 text-base font-bold text-dark-navy bg-white border border-gray-200 rounded-r-lg hover:bg-dark-navy hover:text-white focus:z-10 focus:ring-2 focus:ring-dark-navy focus:text-dark-navy;
   }
   .btn {
-    @apply text-white text-base font-medium rounded-lg mt-9 mr-12 px-5 py-2.5 text-center border border-dark-navy bg-dark-navy hover:text-dark-navy hover:bg-white focus:outline-none;
+    @apply text-white text-base font-medium rounded-lg mt-9 mr-10 px-5 py-2.5 text-center border border-dark-navy bg-dark-navy hover:text-dark-navy hover:bg-white focus:outline-none;
+  }
+  .datepicker {
+    @apply flex justify-between items-center m-5;
   }
   .datepicker-input {
-    @apply block w-60 h-14 ps-10 p-2.5 border border-gray-300 text-gray-900 text-base font-bold rounded-lg;
+    @apply block w-52 h-12 ps-10 p-2.5 border border-gray-300 text-gray-900 text-base font-bold rounded-lg;
+  }
+  .selection-input {
+    @apply block w-52 h-12 p-2.5 border border-gray-300 text-gray-900 text-base font-bold rounded-lg;
+  }
+  .input {
+    @apply block w-52 h-12 p-2.5 border border-gray-300 text-gray-900 text-base font-bold rounded-lg;
   }
 }

@@ -1,24 +1,32 @@
 <template>
   <div
-    class="fixed w-1/3 top-0 right-0 flex items-center justify-between px-3 py-5 pb-4 mx-auto bg-yellow-50"
+    class="fixed w-1/3 top-0 right-0 flex items-center justify-between px-3 py-5 pb-4  mx-auto border-l-2 border-l-gray-300 bg-yellow-50"
   >
     <h5
-      class="flex items-center justify-center text-xl font-bold leading-none text-gray-900 dark:text-white"
+      class="flex items-center justify-center text-xl font-bold leading-none  text-gray-900 dark:text-white"
     >
-      학부모 목록
+      
+    {{ isTeacher == true ? '학부모 목록' : '선생님 목록' }}
     </h5>
   </div>
   <div class="flow-root grow">
-    <div class="w-full max-w-sm mt-3 mx-auto bg-white dark:bg-gray-800 dark:border-gray-700">
-      <div class="flex flex-wrap pt-5 mt-auto mb-3 justify-evenly">
+    <div class="w-full mt-5 mx-0 my-0 bg-yellow-50 dark:bg-gray-800 dark:border-gray-700">
+      <div class="flex flex-wrap pt-5 w-full mt-auto mb-3 justify-evenly">
         <div
           v-for="person in Person"
           :key="person.id"
-          class="flex flex-col items-center w-5/12 mb-3 border border-gray-200 rounded-lg shadow pb-10mb-4"
+          class="flex flex-col items-center w-6/12 mb-3 border border-gray-300 rounded-lg shadow pb-10mb-4"
         >
           <img
+            v-if="isTeacher == true"
             class="w-24 h-24 my-2 mb-3 rounded-full shadow-lg"
-            src="https://flowbite.com/docs/images/people/profile-picture-3.jpg"
+            :src="person.kidProfile"
+            alt="Bonnie image"
+          />
+          <img
+            v-if="isTeacher == false"
+            class="w-24 h-24 my-2 mb-3 rounded-full shadow-lg"
+            :src="person.profile"
             alt="Bonnie image"
           />
           <h5 class="text-xl font-medium text-gray-900 dark:text-white">
@@ -33,10 +41,11 @@
               @click="
                 addChat({
                   id: isTeacher == true ? person.kidId : person.teacherId,
-                  name: isTeacher == true ? person.kidName : person.teacherName
+                  name: isTeacher == true ? person.kidName : person.teacherName,
+                  profile : isTeacher == true ? person.kidProfile : person.profile
                 })
               "
-              class="inline-flex items-center px-4 py-2 text-center text-white bg-lime-500 rounded-lg font -medium mt-0text-sm hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+              class="inline-flex items-center px-4 py-2 text-center text-white bg-lime-800 rounded-lg font -medium mt-0text-sm hover:bg-lime-500 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
             >
               TALK
             </button>
@@ -122,8 +131,11 @@ const addChat = (input) => {
       input.id,
       ({ data }) => {
         // console.log(data)
-        const roomInfo = { roomId: data.data, roomName: input.name, 
-          width : props.size.width, height : props.size.height }
+        const roomInfo = {
+          roomId: data.data,
+          roomName: input.name,
+          chatProfile : input.profile
+        }
         emit('chatEvent', roomInfo)
       },
       (error) => {
@@ -137,8 +149,11 @@ const addChat = (input) => {
       input.id,
       ({ data }) => {
         // console.log(data)
-        const roomInfo = { roomId: data.data, roomName: input.name,
-          width : props.size.width, height : props.size.height }
+        const roomInfo = {
+          roomId: data.data,
+          roomName: input.name,
+          chatProfile : input.profile
+        }
         emit('chatEvent', roomInfo)
       },
       (error) => {
