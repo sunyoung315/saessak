@@ -82,6 +82,7 @@ public class FcmService {
         Kid kid = kidRepository.findById(kidId)
                 .orElseThrow(() -> new UserException(ExceptionCode.KID_NOT_FOUND));
         Parent parent = kid.getParent();
+        if(parent == null) return null;
 
         Optional<FcmToken> fcmToken = fcmRepository.findById(parent.getId());
         if(fcmToken.isPresent()) return fcmToken.get().getFcmToken();
