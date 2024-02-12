@@ -251,7 +251,7 @@ onMounted(() => {
 	flag.value = token == null ? false : true;
 	// console.log(flag);
 	const now = route.path.slice(1);
-	console.log('now : ' + now);
+	// console.log('now : ' + now);
 	if (now == '') {
 		selected.value = 'home';
 	} else {

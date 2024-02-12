@@ -243,7 +243,7 @@
   <!-- (채팅) drawer component -->
   <div
     id="drawer-right-example"
-    class="scrollbar-hide fixed top-0 right-0 z-40 h-screen border-l-2 border-l-gray-300 p-4 overflow-y-auto transition-transform translate-x-full bg-yellow-50 w-1/3 dark:bg-gray-800"
+    class="scrollbar-hide fixed top-0 right-0 z-40 h-screen border-l-2 border-l-gray-300 p-4 overflow-auto transition-transform translate-x-full bg-yellow-50 w-1/3 dark:bg-gray-800"
     tabindex="-1"
     ref="drawer"
     aria-labelledby="drawer-right-label"
@@ -349,7 +349,7 @@ onMounted(() => {
   // isLogin = token == null ? false : true
   // isTeacher = store.isTeacher;//sTeacher
   // console.log('나는 선생님인가? ' + isTeacher)
-  console.log(isLogin)
+  // console.log(isLogin)
   if (isLogin) {
     if (!isTeacher) {
       kidList.value = JSON.parse(localStorage.getItem('kidList'))
@@ -403,6 +403,7 @@ const logout = () => {
 	userLogout();
 	localStorage.removeItem('accessToken');
 	localStorage.removeItem('refreshToken');
+	localStorage.removeItem('navColor');
 	if (!store.isTeacher) {
 		setKidlist('');
 	}
