@@ -4,6 +4,7 @@
 		<div class="datepicker">
 			<VDatePicker
 				:select-attribute="selectAttribute"
+				:disabled-dates="disabledDates"
 				v-model="selectedDate"
 				@change="getWeekOfMonth"
 			>
@@ -230,6 +231,14 @@ const registPhotoModal = ref();
 let selectedDate = ref(new Date().toISOString().split('T')[0]);
 
 const selectAttribute = ref({ highlight: 'purple' });
+
+const disabledDates = ref([
+	{
+		repeat: {
+			weekdays: [1, 7],
+		},
+	},
+]);
 
 const dayOfTheWeek = ['(월)', '(화)', '(수)', '(목)', '(금)'];
 
