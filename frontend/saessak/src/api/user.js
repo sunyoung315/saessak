@@ -19,6 +19,12 @@ function teacherLogin(sucess, fail){
 function getClassKids(sucess, fail){
     local.get(`${url}/kid/list`, config).then(sucess).catch(fail);
 }
+// (선생님) 반에 아이 등록하기
+function registKidInClass(form, success, fail) {
+    const multipartConfig = { ...config }
+    multipartConfig.headers['Content-Type'] = 'multipart/form-data'
+    local.post(`${url}/kid/regist`, form, multipartConfig).then(success).catch(fail)
+}
 
 // (학부모) 나의 아이 담당 선생님 조회하기
 function getMyTeacher(sucess, fail){
@@ -40,5 +46,6 @@ export {
     getMyTeacher,
     teacherLogin,
     kidRegister,
-    getkidList
+    getkidList,
+    registKidInClass
 };

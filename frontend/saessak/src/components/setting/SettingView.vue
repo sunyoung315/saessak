@@ -1,7 +1,7 @@
 <template>
 	<div class="view-header">
 		<div class="view-title-teacher">
-			<span class="nav-title">설정</span>
+			<span class="nav-title">우리반 관리</span>
 			<button v-if="!newKid" @click="addOneRow" class="btn">아이 등록</button>
 		</div>
 	</div>
@@ -23,7 +23,12 @@
 							<input
 								type="text"
 								class="input w-18"
-								v-model.lazy="newKid.kidName"
+								v-model="newKid.kidName"
+								@input="emptyKidName = false"
+								:class="{
+									'!border-2 !border-red-500': emptyKidName,
+									shake: shakeKidName,
+								}"
 								required
 							/>
 						</td>
@@ -31,6 +36,7 @@
 							<VDatePicker
 								:select-attribute="selectAttribute"
 								v-model="newKid.kidBirth"
+								@click="emptyKidBirth = false"
 							>
 								<template #default="{ inputValue, inputEvents }">
 									<div class="relative max-w-sm">
@@ -53,6 +59,10 @@
 											:value="inputValue"
 											v-on="inputEvents"
 											class="datepicker-input"
+											:class="{
+												'border-2 border-red-500': emptyKidBirth,
+												shake: shakeKidBirth,
+											}"
 										/>
 									</div>
 								</template>
@@ -60,9 +70,17 @@
 						</td>
 						<td class="col-gender !px-1">
 							<select
-								id="menu-type"
+								id="gender-type"
 								class="selection-input w-[13rem]"
 								v-model="newKid.kidGender"
+								@change="
+									newKid.kidGender = $event.target.value;
+									emptyKidGender = false;
+								"
+								:class="{
+									'border-2 border-red-500': emptyKidGender,
+									shake: shakeKidGender,
+								}"
 								required
 							>
 								<option value="M">남</option>
@@ -70,10 +88,14 @@
 							</select>
 						</td>
 						<!-- 파일업로드  -->
-						<td colspan="2" class="col-photo !pl-1">
+						<td scop="col" class="col-photo !pl-1">
 							<div class="flex justify-between">
 								<label
-									class="flex flex-col justify-center h-14 w-[16rem] border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+									class="flex flex-col justify-center h-14 w-[14rem] border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+									:class="{
+										'border-2 border-red-500': emptyKidProfile,
+										shake: shakeKidProfile,
+									}"
 								>
 									<div
 										class="flex flex-col items-center justify-center"
@@ -87,33 +109,37 @@
 											name="image"
 											accept="image/*"
 											class="hidden"
-											@change="uploadImage($event)"
+											@change="
+												uploadImage($event);
+												newKid.kidProfile = $event.target.value;
+												emptyKidProfile = false;
+											"
 										/>
 										<template v-if="!newKid.kidProfile">
 											<p class="mb-2 text-sm text-gray-500 dark:text-gray-400">
-												<span class="font-semibold">Click to upload</span> or
-												drag and drop
+												<span class="font-semibold">Click to upload</span>
 											</p>
 											<p class="text-xs text-gray-500 dark:text-gray-400">
 												SVG, PNG, JPG or GIF (MAX. 800x400px)
 											</p>
 										</template>
 										<template v-else>
-											<div class="font-bold">{{ newKid.kidProfile }}</div>
+											<div class="font-bold">
+												{{ newKid.kidProfile }}
+											</div>
 										</template>
 									</div>
 								</label>
-								<div>
-									<button
-										class="btn my-2 mx-2"
-										@click="regsistKidinClass($event)"
-									>
-										등록
-									</button>
-									<button class="btn my-2 mx-2" @click="cancleRegsit">
-										취소
-									</button>
-								</div>
+							</div>
+						</td>
+						<td class="col-code !px-1">
+							<div>
+								<button class="btn my-2 ml-1 mr-2" @click="registKid($event)">
+									등록
+								</button>
+								<button class="btn my-2 mx-2" @click="cancleRegsit">
+									취소
+								</button>
 							</div>
 						</td>
 					</tr>
@@ -179,9 +205,13 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue';
-import { getClassKids } from '@/api/user';
-import axios from 'axios';
+import { ref, onMounted, computed, watch } from 'vue';
+import { getClassKids, registKidInClass } from '@/api/user';
+
+const selectAttribute = ref({
+	highlight: 'gray',
+});
+
 onMounted(() => {
 	getClassKids(
 		({ data }) => {
@@ -196,6 +226,15 @@ onMounted(() => {
 
 const cancleRegsit = () => {
 	newKid.value = '';
+	emptyKidName.value = false;
+	emptyKidGender.value = false;
+	emptyKidBirth.value = false;
+	emptyKidProfile.value = false;
+
+	shakeKidName.value = false;
+	shakeKidGender.value = false;
+	shakeKidBirth.value = false;
+	shakeKidProfile.value = false;
 };
 
 const toggleCode = (event, index) => {
@@ -203,51 +242,88 @@ const toggleCode = (event, index) => {
 	decodeShow.value[index] = !decodeShow.value[index];
 };
 
+const emptyKidName = ref(false);
+const emptyKidGender = ref(false);
+const emptyKidBirth = ref(false);
+const emptyKidProfile = ref(false);
+
+const shakeKidName = ref(false);
+const shakeKidGender = ref(false);
+const shakeKidBirth = ref(false);
+const shakeKidProfile = ref(false);
+
+// 흔들흔들 적용 함수
+// date picker 적용안됨...
 function dataValidate() {
-	if (!image.value) return false;
-	if (!transformed.value.kidName) return false;
-	if (!transformed.value.kidGender) return false;
-	if (!transformed.value.kidBirth) return false;
-	return true;
+	let isValidate = true;
+	if (!image.value) {
+		isValidate = false;
+		shakeKidProfile.value = true;
+		emptyKidProfile.value = true;
+		setTimeout(() => {
+			shakeKidProfile.value = false;
+		}, 1000);
+	}
+	if (!transformed.value.kidName) {
+		isValidate = false;
+		shakeKidName.value = true;
+		emptyKidName.value = true;
+		setTimeout(() => {
+			shakeKidName.value = false;
+		}, 1000);
+	}
+	if (!transformed.value.kidGender) {
+		isValidate = false;
+		shakeKidGender.value = true;
+		emptyKidGender.value = true;
+		setTimeout(() => {
+			shakeKidGender.value = false;
+		}, 1000);
+	}
+
+	if (!transformed.value.kidBirth) {
+		isValidate = false;
+		shakeKidBirth.value = true;
+		emptyKidBirth.value = true;
+		setTimeout(() => {
+			shakeKidBirth.value = false;
+		}, 1000);
+	} else {
+		emptyKidBirth.value = false;
+	}
+	return isValidate;
 }
 
-const regsistKidinClass = async event => {
+const registKid = async event => {
 	// validation check
-	if (!dataValidate()) return;
-
+	if (!dataValidate()) {
+		return;
+	}
 	const formData = new FormData();
 	formData.append('MultipartFile', image.value);
 	formData.append('gender', transformed.value.kidGender);
 	formData.append('kidName', transformed.value.kidName);
 	formData.append('kidBirthday', transformed.value.kidBirth);
 
-	axios
-		.post('https://i10a706.p.ssafy.io/api/user/kid/regist', formData, {
-			headers: {
-				'Content-Type': 'multipart/form-data',
-				Authorization: 'Bearer ' + localStorage.getItem('accessToken'),
-			},
-		})
-		.then(
-			response => {
-				getClassKids(
-					({ data }) => {
-						// console.log(data)
-						existKidList.value = data.data;
-					},
-					error => {
-						console.log(error);
-					},
-				);
-				image.value = '';
-				newKid.value = '';
-			},
-			// console.log(response)
-		)
-		.catch(error => {
+	registKidInClass(
+		formData,
+		response => {
+			getClassKids(
+				({ data }) => {
+					// console.log(data)
+					existKidList.value = data.data;
+				},
+				error => {
+					console.log(error);
+				},
+			);
+			image.value = '';
+			newKid.value = '';
+		},
+		error => {
 			console.log(error);
-		});
-	// console.log(formData)
+		},
+	);
 };
 
 const image = ref(null);
@@ -278,6 +354,7 @@ const kidList = computed(() => {
 const transformed = computed(() => {
 	return {
 		...newKid.value,
+		kidName : newKid.value.kidName.trim(),
 		kidBirth: formatDate(newKid.value.kidBirth),
 	};
 });
@@ -302,6 +379,27 @@ const uploadImage = event => {
 </script>
 
 <style scoped>
+@keyframes shake {
+	0% {
+		transform: translateX(0px);
+	}
+	25% {
+		transform: translateX(-2px);
+	}
+	50% {
+		transform: translateX(0px);
+	}
+	75% {
+		transform: translateX(2px);
+	}
+	100% {
+		transform: translateX(0px);
+	}
+}
+.shake {
+	animation: shake 0.2s;
+	animation-iteration-count: 3;
+}
 .view-title-teacher {
 	@apply flex justify-between items-center;
 }
