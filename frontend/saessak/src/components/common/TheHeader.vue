@@ -448,7 +448,7 @@ firebase.initializeApp(firebaseConfig)
 const messaging = firebase.messaging()
 
 messaging.onMessage((payload) => {
-  console.log('[클라이언트] 데이터 메시지 수신: ', payload.notification)
+  // console.log('[클라이언트] 데이터 메시지 수신: ', payload.notification)
 
   navigator.serviceWorker.controller.postMessage({
     type: 'foreground',
@@ -468,6 +468,8 @@ const saveFcmToken = () => {
           tokenBox.value.token = tokenValue
           saveToken(tokenBox.value)
         })
+      } else {
+        alert("사용자가 알림 수신을 거부했습니다")
       }
     })
   } else {
