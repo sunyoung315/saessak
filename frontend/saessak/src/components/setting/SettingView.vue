@@ -1,7 +1,7 @@
 <template>
 	<div class="view-header">
 		<div class="view-title-teacher">
-			<span class="nav-title">설정</span>
+			<span class="nav-title">우리반 관리</span>
 			<button v-if="!newKid" @click="addOneRow" class="btn">아이 등록</button>
 		</div>
 	</div>
