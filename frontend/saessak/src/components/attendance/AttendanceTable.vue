@@ -59,7 +59,11 @@
 					</tr>
 				</thead>
 				<tbody>
+					<tr v-if="!attendanceList.length">
+						<td colspan="6" class="p-6">등록된 원아가 없습니다.</td>
+					</tr>
 					<tr
+						v-else
 						class="one-row"
 						v-for="oneKid in attendanceList"
 						:key="oneKid.kidId"
