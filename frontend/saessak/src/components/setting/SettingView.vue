@@ -23,7 +23,12 @@
 							<input
 								type="text"
 								class="input w-18"
-								v-model.lazy="newKid.kidName"
+								v-model="newKid.kidName"
+								@input="emptyKidName = false"
+								:class="{
+									'!border-2 !border-red-500': emptyKidName,
+									shake: shakeKidName,
+								}"
 								required
 							/>
 						</td>
@@ -31,6 +36,7 @@
 							<VDatePicker
 								:select-attribute="selectAttribute"
 								v-model="newKid.kidBirth"
+								@click="emptyKidBirth = false"
 							>
 								<template #default="{ inputValue, inputEvents }">
 									<div class="relative max-w-sm">
@@ -53,6 +59,10 @@
 											:value="inputValue"
 											v-on="inputEvents"
 											class="datepicker-input"
+											:class="{
+												'border-2 border-red-500': emptyKidBirth,
+												shake: shakeKidBirth,
+											}"
 										/>
 									</div>
 								</template>
@@ -63,6 +73,14 @@
 								id="gender-type"
 								class="selection-input w-[13rem]"
 								v-model="newKid.kidGender"
+								@change="
+									newKid.kidGender = $event.target.value;
+									emptyKidGender = false;
+								"
+								:class="{
+									'border-2 border-red-500': emptyKidGender,
+									shake: shakeKidGender,
+								}"
 								required
 							>
 								<option value="M">남</option>
@@ -74,6 +92,10 @@
 							<div class="flex justify-between">
 								<label
 									class="flex flex-col justify-center h-14 w-[14rem] border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+									:class="{
+										'border-2 border-red-500': emptyKidProfile,
+										shake: shakeKidProfile,
+									}"
 								>
 									<div
 										class="flex flex-col items-center justify-center"
@@ -87,7 +109,11 @@
 											name="image"
 											accept="image/*"
 											class="hidden"
-											@change="uploadImage($event)"
+											@change="
+												uploadImage($event);
+												newKid.kidProfile = $event.target.value;
+												emptyKidProfile = false;
+											"
 										/>
 										<template v-if="!newKid.kidProfile">
 											<p class="mb-2 text-sm text-gray-500 dark:text-gray-400">
@@ -99,7 +125,9 @@
 											</p>
 										</template>
 										<template v-else>
-											<div class="font-bold">{{ newKid.kidProfile }}</div>
+											<div class="font-bold">
+												{{ newKid.kidProfile }}
+											</div>
 										</template>
 									</div>
 								</label>
@@ -178,8 +206,13 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, watch } from 'vue';
 import { getClassKids, registKidInClass } from '@/api/user';
+
+const selectAttribute = ref({
+	highlight: 'gray',
+});
+
 onMounted(() => {
 	getClassKids(
 		({ data }) => {
@@ -194,6 +227,15 @@ onMounted(() => {
 
 const cancleRegsit = () => {
 	newKid.value = '';
+	emptyKidName.value = false;
+	emptyKidGender.value = false;
+	emptyKidBirth.value = false;
+	emptyKidProfile.value = false;
+
+	shakeKidName.value = false;
+	shakeKidGender.value = false;
+	shakeKidBirth.value = false;
+	shakeKidProfile.value = false;
 };
 
 const toggleCode = (event, index) => {
@@ -239,13 +281,16 @@ function dataValidate() {
 			shakeKidGender.value = false;
 		}, 1000);
 	}
-	if (!transformed.value.kidBirth.trim()) {
+
+	if (!transformed.value.kidBirth) {
 		isValidate = false;
 		shakeKidBirth.value = true;
 		emptyKidBirth.value = true;
 		setTimeout(() => {
 			shakeKidBirth.value = false;
 		}, 1000);
+	} else {
+		emptyKidBirth.value = false;
 	}
 	return isValidate;
 }
@@ -253,8 +298,6 @@ function dataValidate() {
 const registKid = async event => {
 	// validation check
 	if (!dataValidate()) {
-		// 흔들흔들 추가 ?
-
 		return;
 	}
 	const formData = new FormData();
