@@ -24,7 +24,6 @@
 								type="text"
 								class="input w-18"
 								v-model.lazy="newKid.kidName"
-								
 								required
 							/>
 						</td>
@@ -32,7 +31,6 @@
 							<VDatePicker
 								:select-attribute="selectAttribute"
 								v-model="newKid.kidBirth"
-								
 							>
 								<template #default="{ inputValue, inputEvents }">
 									<div class="relative max-w-sm">
@@ -64,7 +62,6 @@
 							<select
 								id="gender-type"
 								class="selection-input w-[13rem]"
-								
 								v-model="newKid.kidGender"
 								required
 							>
@@ -73,12 +70,11 @@
 							</select>
 						</td>
 						<!-- 파일업로드  -->
-						<td colspan="2" class="col-photo !pl-1">
+						<td scop="col" class="col-photo !pl-1">
 							<div class="flex justify-between">
 								<label
-									class="flex flex-col justify-center h-14 w-[16rem] border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
-									
-									>
+									class="flex flex-col justify-center h-14 w-[14rem] border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+								>
 									<div
 										class="flex flex-col items-center justify-center"
 										@dragover.prevent
@@ -107,17 +103,16 @@
 										</template>
 									</div>
 								</label>
-								<div>
-									<button
-										class="btn my-2 mx-2"
-										@click="registKid($event)"
-									>
-										등록
-									</button>
-									<button class="btn my-2 mx-2" @click="cancleRegsit">
-										취소
-									</button>
-								</div>
+							</div>
+						</td>
+						<td class="col-code !px-1">
+							<div>
+								<button class="btn my-2 ml-1 mr-2" @click="registKid($event)">
+									등록
+								</button>
+								<button class="btn my-2 mx-2" @click="cancleRegsit">
+									취소
+								</button>
 							</div>
 						</td>
 					</tr>
@@ -206,59 +201,54 @@ const toggleCode = (event, index) => {
 	decodeShow.value[index] = !decodeShow.value[index];
 };
 
-const emptyKidName = ref(false)
-const emptyKidGender = ref(false)
-const emptyKidBirth = ref(false)
-const emptyKidProfile = ref(false)
-
+const emptyKidName = ref(false);
+const emptyKidGender = ref(false);
+const emptyKidBirth = ref(false);
+const emptyKidProfile = ref(false);
 
 const shakeKidName = ref(false);
 const shakeKidGender = ref(false);
 const shakeKidBirth = ref(false);
 const shakeKidProfile = ref(false);
 
-// 흔들흔들 적용 함수 
+// 흔들흔들 적용 함수
 // date picker 적용안됨...
 function dataValidate() {
-	let isValidate = true
+	let isValidate = true;
 	if (!image.value) {
-		isValidate = false	
-		shakeKidProfile.value = true
-		emptyKidProfile.value = true
+		isValidate = false;
+		shakeKidProfile.value = true;
+		emptyKidProfile.value = true;
 		setTimeout(() => {
 			shakeKidProfile.value = false;
 		}, 1000);
-	} 
+	}
 	if (!transformed.value.kidName) {
-		isValidate = false
-		shakeKidName.value = true
-		emptyKidName.value = true
+		isValidate = false;
+		shakeKidName.value = true;
+		emptyKidName.value = true;
 		setTimeout(() => {
 			shakeKidName.value = false;
 		}, 1000);
 	}
 	if (!transformed.value.kidGender) {
-		isValidate = false
-		shakeKidGender.value = true
-		emptyKidGender.value = true
+		isValidate = false;
+		shakeKidGender.value = true;
+		emptyKidGender.value = true;
 		setTimeout(() => {
 			shakeKidGender.value = false;
 		}, 1000);
-	};
+	}
 	if (!transformed.value.kidBirth.trim()) {
-		isValidate = false
-		shakeKidBirth.value = true
-		emptyKidBirth.value = true
+		isValidate = false;
+		shakeKidBirth.value = true;
+		emptyKidBirth.value = true;
 		setTimeout(() => {
 			shakeKidBirth.value = false;
 		}, 1000);
 	}
 	return isValidate;
 }
-
-
-
-
 
 const registKid = async event => {
 	// validation check
@@ -273,22 +263,25 @@ const registKid = async event => {
 	formData.append('kidName', transformed.value.kidName);
 	formData.append('kidBirthday', transformed.value.kidBirth);
 
-	registKidInClass(formData, response => {
-		getClassKids(
-					({ data }) => {
-						// console.log(data)
-						existKidList.value = data.data;
-					},
-					error => {
-						console.log(error);
-					},
-				);
-				image.value = '';
-				newKid.value = '';
-	}, (error) => {
-		console.log(error)
-	})
-
+	registKidInClass(
+		formData,
+		response => {
+			getClassKids(
+				({ data }) => {
+					// console.log(data)
+					existKidList.value = data.data;
+				},
+				error => {
+					console.log(error);
+				},
+			);
+			image.value = '';
+			newKid.value = '';
+		},
+		error => {
+			console.log(error);
+		},
+	);
 };
 
 const image = ref(null);
