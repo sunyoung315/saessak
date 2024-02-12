@@ -117,8 +117,7 @@
 										/>
 										<template v-if="!newKid.kidProfile">
 											<p class="mb-2 text-sm text-gray-500 dark:text-gray-400">
-												<span class="font-semibold">Click to upload</span> or
-												drag and drop
+												<span class="font-semibold">Click to upload</span>
 											</p>
 											<p class="text-xs text-gray-500 dark:text-gray-400">
 												SVG, PNG, JPG or GIF (MAX. 800x400px)
@@ -306,6 +305,9 @@ const registKid = async event => {
 	formData.append('kidName', transformed.value.kidName);
 	formData.append('kidBirthday', transformed.value.kidBirth);
 
+	for (let form of formData) {
+		console.log(form)
+	}
 	registKidInClass(
 		formData,
 		response => {
@@ -355,6 +357,7 @@ const kidList = computed(() => {
 const transformed = computed(() => {
 	return {
 		...newKid.value,
+		kidName : newKid.value.kidName.trim(),
 		kidBirth: formatDate(newKid.value.kidBirth),
 	};
 });
