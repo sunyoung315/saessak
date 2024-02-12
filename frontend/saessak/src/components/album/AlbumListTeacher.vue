@@ -142,13 +142,14 @@ const props = defineProps({
 const date = ref(new Date());
 // 색상
 const selectAttribute = ref({ highlight: 'green' });
+// 날짜
 const today = new Date();
 const tomorrow = new Date(today);
 tomorrow.setDate(tomorrow.getDate() + 1);
 
 function formatDate(date) {
 	const year = date.getFullYear();
-	const month = `0${date.getMonth() + 1}`.slice(-2); // 월은 0부터 시작하므로 1을 더해줍니다.
+	const month = `0${date.getMonth() + 1}`.slice(-2); // 월은 0부터 시작하므로 1을 더해주기
 	const day = `0${date.getDate()}`.slice(-2);
 
 	return `${year}-${month}-${day}`;
@@ -159,7 +160,7 @@ watch(date, async newDate => {
 	await postAlbumClassroomDateList(albumDate);
 });
 
-// 반 아이들 최신 앨범 리스트 조회 (Carousel) - o -
+// 반 아이들 최신 앨범 리스트 조회 (Carousel)
 const recentAlbumList = ref([]);
 const getRecentAlbumList = async () => {
 	await albumStore.getRecentAlbumList();
@@ -240,8 +241,6 @@ function goDetail(kidId) {
 		params: { id: kidId },
 	});
 }
-
-// Btn 끝
 </script>
 
 <style scoped>

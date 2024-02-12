@@ -58,7 +58,7 @@ function registAlbum() {
 }
 
 const groupBtnVisible = computed(() => {
-	// URL path가 '/album/:id' 형태일 때 (':id'는 아무 숫자나 문자열이 될 수 있음)
+	// URL path가 '/album/:id' 형태일 때
 	if (/^\/album\/.+$/.test(route.path)) {
 		// 로그인한 사용자가 선생님이면 false, 그렇지 않으면 true
 		return !loginStore.isTeacher;

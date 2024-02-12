@@ -163,6 +163,8 @@ const getKidAlbumList = async () => {
 	kidAlbumListDivided.value = divideAlbumsByFive(kidAlbumList.value);
 };
 
+///////////////////////////////////////////////// Pagination
+// 데이터 5개씩 분리
 function divideAlbumsByFive(albums) {
 	let divided = [];
 	let filteredAlbums = albums.filter(
@@ -175,10 +177,10 @@ function divideAlbumsByFive(albums) {
 
 	return divided;
 }
+// 현재 페이지 기록
+const currentPage = ref(0);
 
-///////////////////////////////////////////////// Pagination
-const currentPage = ref(0); // 현재 페이지 기록
-
+// 페이지 변화 체크
 watch(
 	() => props.showToggle,
 	(newVal, oldVal) => {
@@ -209,7 +211,6 @@ function movePage(num) {
 	}
 	currentPage.value = num;
 }
-
 ///////////////////////////////////////////////////
 
 onMounted(async () => {

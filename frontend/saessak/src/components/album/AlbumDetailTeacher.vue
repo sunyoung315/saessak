@@ -95,6 +95,30 @@ const getKidAlbumDateList = async () => {
 	myKidAlbumDateList.value = albumStore.myKidAlbumDateList;
 };
 
+// datePicker
+const date = ref(new Date());
+// 색상
+const selectAttribute = ref({ highlight: 'green' });
+
+const today = new Date();
+const tomorrow = new Date(today);
+tomorrow.setDate(tomorrow.getDate() + 1);
+
+// 같은 날짜 체크
+function isSameDate(albumDate, date) {
+	const albumDateObj = new Date(albumDate);
+	return (
+		albumDateObj.getFullYear() === date.getFullYear() &&
+		albumDateObj.getMonth() === date.getMonth() &&
+		albumDateObj.getDate() === date.getDate()
+	);
+}
+
+watch(date, async newDate => {
+	await albumStore.getKidAlbumDateList(route.params.id, newDate);
+	myKidAlbumDateList.value = albumStore.myKidAlbumDateList;
+});
+
 // 앨범 있는 날짜 목록
 const activeDates = ref([]);
 // 앨범이 없는 날짜 목록 추출
@@ -139,30 +163,6 @@ onMounted(async () => {
 		start: endAfter,
 		end: null,
 	});
-});
-
-// datePicker
-const date = ref(new Date());
-// 색상
-const selectAttribute = ref({ highlight: 'green' });
-
-const today = new Date();
-const tomorrow = new Date(today);
-tomorrow.setDate(tomorrow.getDate() + 1);
-
-// 같은 날짜 체크
-function isSameDate(albumDate, date) {
-	const albumDateObj = new Date(albumDate);
-	return (
-		albumDateObj.getFullYear() === date.getFullYear() &&
-		albumDateObj.getMonth() === date.getMonth() &&
-		albumDateObj.getDate() === date.getDate()
-	);
-}
-
-watch(date, async newDate => {
-	await albumStore.getKidAlbumDateList(route.params.id, newDate);
-	myKidAlbumDateList.value = albumStore.myKidAlbumDateList;
 });
 // datePicker 및 날짜 선택 시 데이터 연동 확인 끝
 

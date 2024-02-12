@@ -156,8 +156,8 @@ const props = defineProps({
 const route = useRoute();
 const router = useRouter();
 const albumStore = useAlbumStore();
-
 const checked = ref([]);
+
 // 내 아이
 let kidId = props.loginStore.kidList[0].kidId;
 // 내 아이 앨범 조회
@@ -174,6 +174,39 @@ const postAlbumDateAllList = async () => {
 	await albumStore.postAlbumDateAllList(kidId, formattedDate);
 	albumDateAllList.value = albumStore.albumDateAllList;
 };
+
+// datePicker
+const date = ref(new Date(route.query.date));
+function formatDate(date) {
+	const year = date.getFullYear();
+	const month = `0${date.getMonth() + 1}`.slice(-2); // 월은 0부터 시작하므로 1을 더해줍니다.
+	const day = `0${date.getDate()}`.slice(-2);
+
+	return `${year}-${month}-${day}`;
+}
+
+const selectAttribute = ref({ highlight: 'green' });
+const today = new Date();
+const tomorrow = new Date(today);
+tomorrow.setDate(tomorrow.getDate() + 1);
+
+// 같은 날짜 체크
+function isSameDate(albumDate, date) {
+	const albumDateObj = new Date(albumDate);
+	return (
+		albumDateObj.getFullYear() === date.getFullYear() &&
+		albumDateObj.getMonth() === date.getMonth() &&
+		albumDateObj.getDate() === date.getDate()
+	);
+}
+
+// 날짜 변경 감지
+watch(date, async newDate => {
+	await albumStore.getKidAlbumDateList(route.params.id, newDate);
+	myKidAlbumDateList.value = albumStore.myKidAlbumDateList;
+	await albumStore.postAlbumDateAllList(kidId, newDate);
+	albumDateAllList.value = albumStore.albumDateAllList;
+});
 
 // 앨범 있는 날짜 목록
 const activeDates = ref([]);
@@ -218,39 +251,6 @@ onMounted(async () => {
 		end: null,
 	});
 });
-
-// datePicker
-const date = ref(new Date(route.query.date));
-function formatDate(date) {
-	const year = date.getFullYear();
-	const month = `0${date.getMonth() + 1}`.slice(-2); // 월은 0부터 시작하므로 1을 더해줍니다.
-	const day = `0${date.getDate()}`.slice(-2);
-
-	return `${year}-${month}-${day}`;
-}
-
-const selectAttribute = ref({ highlight: 'green' });
-const today = new Date();
-const tomorrow = new Date(today);
-tomorrow.setDate(tomorrow.getDate() + 1);
-
-// 같은 날짜 체크
-function isSameDate(albumDate, date) {
-	const albumDateObj = new Date(albumDate);
-	return (
-		albumDateObj.getFullYear() === date.getFullYear() &&
-		albumDateObj.getMonth() === date.getMonth() &&
-		albumDateObj.getDate() === date.getDate()
-	);
-}
-
-// 날짜 변경 감지
-watch(date, async newDate => {
-	await albumStore.getKidAlbumDateList(route.params.id, newDate);
-	myKidAlbumDateList.value = albumStore.myKidAlbumDateList;
-	await albumStore.postAlbumDateAllList(kidId, newDate);
-	albumDateAllList.value = albumStore.albumDateAllList;
-});
 // datePicker 및 날짜 선택 시 데이터 연동 확인 끝
 
 // 버튼
@@ -258,6 +258,8 @@ function goBack() {
 	router.go(-1);
 }
 
+////////////////// File Download 시작
+// key 설정
 const s3Client = new S3Client({
 	region: VITE_AWS_REGION, // AWS 리전 (예: us-east-1)
 	credentials: {
@@ -266,9 +268,10 @@ const s3Client = new S3Client({
 	},
 });
 
+// s3
 const bucketName = VITE_AWS_BUCKET_NAME;
 const removeUrl = `https://${bucketName}.s3.${VITE_AWS_REGION}.amazonaws.com/`;
-// File Download 시작
+
 const download = async () => {
 	for (let i = 0; i < checked.value.length; i++) {
 		const fileKey = checked.value[i].replace(removeUrl, '');
@@ -293,7 +296,7 @@ const download = async () => {
 			downloadLink.remove();
 			URL.revokeObjectURL(downloadLink.href);
 		} catch (error) {
-			// console.log(error)
+			console.log(error);
 		}
 	}
 }; // File Download 끝
