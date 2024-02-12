@@ -43,7 +43,7 @@ public class UserController {
     @Operation(summary = "반 아이 목록 조회")
     @GetMapping(value = "/kid/list", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResultResponse> getClassKid() {
-        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, userService.getClassKid()));
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, userService.getClassKidOrderByKidName()));
     }
 
     @Operation(summary = "학부모가 자신의 선생님 목록 확인")

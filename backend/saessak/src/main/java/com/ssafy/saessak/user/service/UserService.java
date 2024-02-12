@@ -69,6 +69,34 @@ public class UserService {
         return kid.getId();
     }
 
+
+    public List<KidListResponseDto> getClassKidOrderByKidName() {
+        User user = authenticationService.getUserByAuthentication();
+        Classroom classroom = user.getClassroom();
+        List<Kid> kidList = kidRepository.findAllByClassroomOrderByNickname(classroom);
+        if(kidList == null) {
+            return Collections.emptyList();
+        }
+        List<KidListResponseDto> kidListResponseDtoList = new ArrayList<>();
+        for(Kid k : kidList){
+            KidListResponseDto kidListResponseDto = KidListResponseDto.builder()
+                    .kidId(k.getId())
+                    .kidName(k.getNickname())
+                    .kidBirthday(k.getKidBirthday())
+                    .kidAllergy(k.getKidAllergy())
+                    .kidProfile(k.getProfile())
+                    .kidAllergySignature(k.getKidAllergySignature())
+                    .kidAllergyDate(k.getKidAllergyDate())
+                    .parentId(Optional.ofNullable(k.getParent()).map(Parent::getId).orElse(null))
+                    .kidGender(k.getGender())
+                    .classroomId(k.getClassroom().getClassroomId())
+                    .build();
+            kidListResponseDtoList.add(kidListResponseDto);
+        }
+        return kidListResponseDtoList;
+
+    }
+
     public List<KidListResponseDto> getClassKid() {
         User user = authenticationService.getUserByAuthentication();
         Classroom classroom = user.getClassroom();

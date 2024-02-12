@@ -12,6 +12,6 @@ import java.util.List;
 public interface KidRepository extends JpaRepository<Kid, Long> {
 
     List<Kid> findAllByClassroom(Classroom classroom);
-
+    List<Kid> findAllByClassroomOrderByNickname(Classroom classroom);
     List<Kid> findAllByParent(Parent parent);
 }
