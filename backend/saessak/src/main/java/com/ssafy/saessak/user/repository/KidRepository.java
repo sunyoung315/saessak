@@ -15,6 +15,6 @@ public interface KidRepository extends JpaRepository<Kid, Long> {
     @EntityGraph(attributePaths = {"parent"})
     List<Kid> findAllByClassroomAndParentIsNotNull(Classroom classroom);
     List<Kid> findAllByClassroom(Classroom classroom);
-
+    List<Kid> findAllByClassroomOrderByNickname(Classroom classroom);
     List<Kid> findAllByParent(Parent parent);
 }

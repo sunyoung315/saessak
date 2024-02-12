@@ -128,7 +128,7 @@ public class AlbumService {
     public List<KidAlbumResponseDto> getKidsCurrentAlbum (){
         User user = authenticationService.getUserByAuthentication();
         Classroom classroom = user.getClassroom();
-        List<Kid> kids = kidRepository.findAllByClassroom(classroom);
+        List<Kid> kids = kidRepository.findAllByClassroomOrderByNickname(classroom);
         List<KidAlbumResponseDto> albumList = new ArrayList<>();
         for(Kid kid : kids){
             Optional<Album> album = albumRepository.findFirstByKidOrderByAlbumDateDesc(kid);

@@ -84,7 +84,7 @@ public class AttendanceService {
         User user = authenticationService.getUserByAuthentication();
         Classroom classroom = user.getClassroom();
         // 반에서 아이 찾기
-        List<Kid> kidList = kidRepository.findAllByClassroom(classroom);
+        List<Kid> kidList = kidRepository.findAllByClassroomOrderByNickname(classroom);
         LocalDate startDate = null;
         LocalDate endDate = null;
 
