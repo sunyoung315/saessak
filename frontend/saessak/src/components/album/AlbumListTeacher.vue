@@ -105,7 +105,7 @@
 							/>
 							<label
 								:for="file.fileId"
-								class="inline-flex items-center justify-between w-full p-4 text-gray-500 bg-white border-2 border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 hover:text-gray-600 dark:peer-checked:text-gray-300 peer-checked:text-gray-600 hover:bg-gray-50 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700"
+								class="inline-flex items-center justify-between w-full p-4 text-gray-500 bg-white border-2 border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 hover:text-gray-600 dark:peer-checked:text-gray-300 peer-checked:text-gray-600 hover:bg-gray-50 cursor-default"
 							>
 								<img
 									class="album rounded"
@@ -142,19 +142,14 @@ const props = defineProps({
 const date = ref(new Date());
 // 색상
 const selectAttribute = ref({ highlight: 'green' });
+// 날짜
 const today = new Date();
 const tomorrow = new Date(today);
 tomorrow.setDate(tomorrow.getDate() + 1);
-const disabledDates = ref([
-	{
-		start: tomorrow,
-		end: null,
-	},
-]);
 
 function formatDate(date) {
 	const year = date.getFullYear();
-	const month = `0${date.getMonth() + 1}`.slice(-2); // 월은 0부터 시작하므로 1을 더해줍니다.
+	const month = `0${date.getMonth() + 1}`.slice(-2); // 월은 0부터 시작하므로 1을 더해주기
 	const day = `0${date.getDate()}`.slice(-2);
 
 	return `${year}-${month}-${day}`;
@@ -165,7 +160,7 @@ watch(date, async newDate => {
 	await postAlbumClassroomDateList(albumDate);
 });
 
-// 반 아이들 최신 앨범 리스트 조회 (Carousel) - o -
+// 반 아이들 최신 앨범 리스트 조회 (Carousel)
 const recentAlbumList = ref([]);
 const getRecentAlbumList = async () => {
 	await albumStore.getRecentAlbumList();
@@ -180,9 +175,51 @@ const postAlbumClassroomDateList = async () => {
 	albumClassroomDateList.value = albumStore.albumClassroomDateList;
 };
 
+// 앨범 있는 날짜 목록
+const activeDates = ref([]);
+// 앨범이 없는 날짜 목록 추출
+const disabledDates = ref([]);
+
 onMounted(async () => {
 	await getRecentAlbumList();
 	await postAlbumClassroomDateList();
+
+	// datepicker에서 활성화시킬 날짜 호출
+	await albumStore.getActiveClassDates();
+	activeDates.value = albumStore.activeClassDates;
+
+	// 알림장이 있는 날짜들 중 가장 오래된 날짜
+	const startDate = new Date(activeDates.value[activeDates.value.length - 1]);
+	// 앨범 있는 날짜들 중 가장 최근 날짜
+	const endDate = new Date(activeDates.value[0]);
+
+	// DatePicker의 초기 날짜를 가장 최근 앨범 날짜로 설정
+	date.value = endDate;
+
+	// 앨범 있는 기간 중 앨범이 없는 날짜 disabledDates 배열에 추출
+	for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
+		const dateStr = d.toISOString().split('T')[0];
+		if (!activeDates.value.includes(dateStr)) {
+			disabledDates.value.push(dateStr);
+		}
+	}
+
+	const startBefore = new Date(startDate);
+	startBefore.setDate(startBefore.getDate() - 1);
+	const endAfter = new Date(endDate);
+	endAfter.setDate(endAfter.getDate() + 1);
+
+	// 앨범 있는 가장 과거 날짜 이전의 날짜들 모두 비활성화
+	disabledDates.value.push({
+		start: null,
+		end: startBefore,
+	});
+
+	// 앨범 있는 가장 최근 날짜 이후의 날짜들 모두 비활성화
+	disabledDates.value.push({
+		start: endAfter,
+		end: null,
+	});
 });
 
 // carousel 시작
@@ -204,8 +241,6 @@ function goDetail(kidId) {
 		params: { id: kidId },
 	});
 }
-
-// Btn 끝
 </script>
 
 <style scoped>
