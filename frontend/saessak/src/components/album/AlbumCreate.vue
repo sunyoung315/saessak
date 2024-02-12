@@ -172,7 +172,7 @@ function registAlbum() {
 	form.append('images', images.value);
 
 	// console.log(form);
-	const token = sessionStorage.getItem('accessToken');
+	const token = localStorage.getItem('accessToken');
 
 	// post 경로 변경 필요함.
 	axios
