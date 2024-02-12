@@ -2,7 +2,7 @@
 	<div class="view-header flex justify-between">
 		<div class="flex items-center">
 			<span class="nav-title">앨범</span>
-			<div class="group-btn" v-show="groupBtnVisible">
+			<div class="toggle" v-show="groupBtnVisible">
 				<label class="relative inline-flex items-center me-5 cursor-pointer">
 					<input
 						type="checkbox"
@@ -58,7 +58,7 @@ function registAlbum() {
 }
 
 const groupBtnVisible = computed(() => {
-	// URL path가 '/album/:id' 형태일 때 (':id'는 아무 숫자나 문자열이 될 수 있음)
+	// URL path가 '/album/:id' 형태일 때
 	if (/^\/album\/.+$/.test(route.path)) {
 		// 로그인한 사용자가 선생님이면 false, 그렇지 않으면 true
 		return !loginStore.isTeacher;
@@ -69,4 +69,8 @@ const groupBtnVisible = computed(() => {
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+.toggle {
+	@apply inline-flex rounded-md ml-6 mt-7;
+}
+</style>

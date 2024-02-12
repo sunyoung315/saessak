@@ -60,7 +60,7 @@
 					/>
 					<label
 						:for="file.fileId"
-						class="inline-flex items-center justify-between w-full p-4 text-gray-500 bg-white border-2 border-gray-200 rounded-lg cursor-pointer"
+						class="inline-flex items-center justify-between w-full p-4 text-gray-500 bg-white border-2 border-gray-200 rounded-lg cursor-default"
 					>
 						<img
 							class="album rounded"
@@ -94,6 +94,30 @@ const getKidAlbumDateList = async () => {
 	await albumStore.getKidAlbumDateList(route.params.id, date.value);
 	myKidAlbumDateList.value = albumStore.myKidAlbumDateList;
 };
+
+// datePicker
+const date = ref(new Date());
+// 색상
+const selectAttribute = ref({ highlight: 'green' });
+
+const today = new Date();
+const tomorrow = new Date(today);
+tomorrow.setDate(tomorrow.getDate() + 1);
+
+// 같은 날짜 체크
+function isSameDate(albumDate, date) {
+	const albumDateObj = new Date(albumDate);
+	return (
+		albumDateObj.getFullYear() === date.getFullYear() &&
+		albumDateObj.getMonth() === date.getMonth() &&
+		albumDateObj.getDate() === date.getDate()
+	);
+}
+
+watch(date, async newDate => {
+	await albumStore.getKidAlbumDateList(route.params.id, newDate);
+	myKidAlbumDateList.value = albumStore.myKidAlbumDateList;
+});
 
 // 앨범 있는 날짜 목록
 const activeDates = ref([]);
@@ -139,30 +163,6 @@ onMounted(async () => {
 		start: endAfter,
 		end: null,
 	});
-});
-
-// datePicker
-const date = ref(new Date());
-// 색상
-const selectAttribute = ref({ highlight: 'green' });
-
-const today = new Date();
-const tomorrow = new Date(today);
-tomorrow.setDate(tomorrow.getDate() + 1);
-
-// 같은 날짜 체크
-function isSameDate(albumDate, date) {
-	const albumDateObj = new Date(albumDate);
-	return (
-		albumDateObj.getFullYear() === date.getFullYear() &&
-		albumDateObj.getMonth() === date.getMonth() &&
-		albumDateObj.getDate() === date.getDate()
-	);
-}
-
-watch(date, async newDate => {
-	await albumStore.getKidAlbumDateList(route.params.id, newDate);
-	myKidAlbumDateList.value = albumStore.myKidAlbumDateList;
 });
 // datePicker 및 날짜 선택 시 데이터 연동 확인 끝
 

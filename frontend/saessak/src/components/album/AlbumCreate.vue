@@ -130,6 +130,7 @@ const selectAttribute = ref({ highlight: 'green' });
 let count = ref(0);
 let uploadedFileNames = ref([]);
 
+// 파일, 이미지, 링크 변수 지정
 let form = new FormData();
 let images = ref([]);
 let imageRef = ref(null);
@@ -215,7 +216,6 @@ function formatDate(date) {
 const emptyTitle = ref(false);
 const shakeTitle = ref(false);
 
-// 널값 처리
 const checkEmptyFields = () => {
 	let hasEmptyFields = false;
 	if (!title.value.trim()) {
@@ -227,7 +227,6 @@ const checkEmptyFields = () => {
 		}, 1000);
 	}
 
-	// ...
 	return hasEmptyFields;
 };
 ///////////////////////
