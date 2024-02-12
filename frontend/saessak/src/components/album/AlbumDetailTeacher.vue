@@ -60,7 +60,7 @@
 					/>
 					<label
 						:for="file.fileId"
-						class="inline-flex items-center justify-between w-full p-4 text-gray-500 bg-white border-2 border-gray-200 rounded-lg cursor-pointer"
+						class="inline-flex items-center justify-between w-full p-4 text-gray-500 bg-white border-2 border-gray-200 rounded-lg cursor-default"
 					>
 						<img
 							class="album rounded"

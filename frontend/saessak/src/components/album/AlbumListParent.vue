@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<!-- 반 전체 보기 -->
+		<!-- 내 아이 보기 -->
 		<div v-if="props.showToggle">
 			<div v-for="album in currentPageAlbums" :key="album.albumId">
 				<div
@@ -41,8 +41,11 @@
 					</div>
 				</div>
 			</div>
+			<div v-if="!kidAlbumList.length">
+				<p>등록된 앨범이 없습니다.</p>
+			</div>
 		</div>
-		<!-- 내 아이만 보기 -->
+		<!-- 반 전체 보기 -->
 		<div v-else>
 			<div v-for="album in currentPageAlbums" :key="album.albumId">
 				<div
@@ -79,12 +82,15 @@
 						@click="goDetail(kidId, album.albumDate)"
 						class="m-4 text-xl font-bold flex justify-end cursor-pointer"
 					>
-						→ 전체 조회
+						→ 상세 조회
 					</div>
 				</div>
 			</div>
 		</div>
-		<div class="flex justify-center text-2xl font-bold">
+		<div
+			class="flex justify-center text-2xl font-bold"
+			v-if="kidAlbumList.length"
+		>
 			<button
 				@click="movePage(currentPage - 1)"
 				:disabled="currentPage === 0"
@@ -92,7 +98,6 @@
 			>
 				←
 			</button>
-
 			<button
 				v-for="(page, index) in totalPage"
 				:key="index"
