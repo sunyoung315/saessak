@@ -259,9 +259,9 @@ onMounted(() => {
 	}
 });
 
-// 메인페이지 알림장, 공지사항 '자세히 보기'로 이동 시 Nav 컬러 추적
+// 메인페이지 알림장, 공지사항 '자세히 보기'로 이동, 아이 변경 시 Nav 컬러 추적
 const path = computed(() => route.path.substr(1));
-watch(path, () => {
+watch(path, newVal => {
 	if (route.path.substr(1, 5) === 'board') {
 		selected.value = 'board';
 		navColor.value = 'bg-nav-yellow';
@@ -270,6 +270,10 @@ watch(path, () => {
 		selected.value = 'notice';
 		navColor.value = 'bg-nav-orange';
 		localStorage.setItem('navColor', 'bg-nav-orange');
+	} else if (newVal === '') {
+		selected.value = 'home';
+		navColor.value = 'bg-nav-red';
+		localStorage.setItem('navColor', 'bg-nav-red');
 	}
 });
 

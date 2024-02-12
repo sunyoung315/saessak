@@ -16,14 +16,6 @@
 					view.startDate.format('YYYY년 MMMM')
 				}}</span>
 			</template>
-			<template #cell-date="{ date, view }">
-				<div v-if="view === 'month'">
-					{{ date.getDate() }}
-					<span class="tooltip">
-						{{ date.toISOString() }}
-					</span>
-				</div>
-			</template>
 		</vue-cal>
 	</div>
 </template>
@@ -135,13 +127,13 @@ onMounted(async () => {
 	@apply rounded-t text-lg font-bold  text-gray-900 pt-2;
 }
 :deep(.vuecal__event.out-event) {
-	@apply rounded-b text-lg font-bold shadow-md text-gray-900 pb-2;
+	@apply rounded-b text-lg font-bold shadow-md text-gray-900 pt-0.5 pb-2.5;
 }
 :deep(.vuecal__event.false-event) {
-	@apply rounded-b text-lg font-bold shadow-md text-gray-400 pt-0.5 pb-2.5;
+	@apply rounded-b text-lg font-medium shadow-md text-gray-400 pt-0.5 pb-2.5;
 }
 :deep(.vuecal__event.no-event) {
-	@apply rounded-md text-lg font-bold shadow-md text-red-600 py-5;
+	@apply rounded-md text-lg font-bold shadow-md text-red-600 py-6;
 }
 :deep(.vuecal__cell) {
 	@apply h-32;
