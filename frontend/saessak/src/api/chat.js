@@ -10,7 +10,10 @@ const config = {
     }
 } // 헤더에 accessToken 담아서 전송하기!!
 
-// 1. (선생님) 나의 반 학부모 목록 조회 --> user에서 가져오기
+// 1. (선생님) 나의 반 학부모 목록 조회
+function getClassList(success, fail){
+    local.get(`${url}/kid/list`, config).then(success).catch(fail);
+}
 
 // 2. (학부모) 나의 전체 아이 선생님 목록 조회 - parentId --> user에서 가져오기
 
@@ -59,6 +62,7 @@ async function disconnect(param, success, fail) {
 
 
 export {
+    getClassList,
     chatListParent,
     chatListTeacher,
     detailChat,
