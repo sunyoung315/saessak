@@ -2,7 +2,7 @@
 	<div class="view-header flex justify-between">
 		<div class="flex items-center">
 			<span class="nav-title">앨범</span>
-			<div class="group-btn" v-show="groupBtnVisible">
+			<div class="toggle" v-show="groupBtnVisible">
 				<label class="relative inline-flex items-center me-5 cursor-pointer">
 					<input
 						type="checkbox"
@@ -69,4 +69,8 @@ const groupBtnVisible = computed(() => {
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+.toggle {
+	@apply inline-flex rounded-md ml-6 mt-7;
+}
+</style>

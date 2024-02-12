@@ -110,8 +110,6 @@
 				→
 			</button>
 		</div>
-		{{ props.showToggle }}
-		{{ currentPage }}
 	</div>
 </template>
 
@@ -195,8 +193,8 @@ const currentPageAlbums = computed(() => {
 const totalPage = computed(() => {
 	// 전체 페이지 개수 계산
 	return props.showToggle
-		? Math.ceil(albumParentListDivided.value.length)
-		: Math.ceil(kidAlbumListDivided.value.length);
+		? Math.ceil(kidAlbumListDivided.value.length)
+		: Math.ceil(albumParentListDivided.value.length);
 });
 
 // 페이지 이동 함수
