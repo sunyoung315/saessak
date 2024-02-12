@@ -5,7 +5,11 @@
 				<div class="flex items-center m-2">
 					<div class="mr-4 text-lg text-black font-bold">날짜</div>
 					<div>
-						<VDatePicker :select-attribute="selectAttribute" v-model="menuDate">
+						<VDatePicker
+							:select-attribute="selectAttribute"
+							:disabled-dates="disabledDates"
+							v-model="menuDate"
+						>
 							<template #default="{ inputValue, inputEvents }">
 								<div class="relative max-w-sm">
 									<div
@@ -124,6 +128,14 @@ import { useRouter } from 'vue-router';
 import { createMenu } from '@/api/menu';
 
 const selectAttribute = ref({ highlight: 'blue' });
+
+const disabledDates = ref([
+	{
+		repeat: {
+			weekdays: [1, 7],
+		},
+	},
+]);
 
 const menuDate = ref(new Date());
 
