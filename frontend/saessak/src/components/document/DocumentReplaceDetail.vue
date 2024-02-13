@@ -6,11 +6,11 @@
 					v-if="loginStore.isTeacher"
 					type="button"
 					@click="check"
-					class="btn mt-7 mr-4 mb-3"
+					class="mt-7 mr-4 mb-3"
 					:class="
 						replaceDetailList.replacementCheck
-							? 'text-white bg-dark-navy cursor-default'
-							: 'text-black bg-gray-300 font-semibold !border-0 hover:bg-white'
+							? 'bg-dark-navy w-20 text-white rounded-md p-3 py-[0.6rem] cursor-default'
+							: 'bg-gray-300 w-20 text-black font-semibold rounded-md py-[0.65rem] px-[1.1rem] cursor-pointer hover:bg-dark-navy hover:text-white'
 					"
 				>
 					{{ replaceDetailList.replacementCheck ? '확인완료' : '미확인' }}
