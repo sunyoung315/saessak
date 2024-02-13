@@ -7,6 +7,7 @@
     </h5>
   </div>
   <div class="flow-root mt-12 grow h-screen">
+    <div v-if="chat.length == 0" class="text-xl text-center mt-96">생성된 채팅방이 없습니다.</div>
     <ul role="list" class="" v-for="chatItem in chat" :key="chatItem.chatId">
       <li v-if="chatItem.flag === false" class="cursor-pointer py-3 mb-2 border border-gray-300 shadow rounded-lg sm:py-4">
         <div
@@ -102,7 +103,6 @@ const props = defineProps({
 })
 
 onMounted(() => {
-  // console.log("onMounted 실행")
   getChatList()
 })
 
@@ -110,30 +110,22 @@ const store = loginStore()
 const { isTeacher } = storeToRefs(store)
 const userId = ref(3)
 const getChatList = () => {
-  // console.log('채팅 리스트 조회')
   if (isTeacher.value) {
     // 선생님 조회
     chatListTeacher(
       ({ data }) => {
-        // console.log('선생님 조회')
-        // console.log(data.data)
         chat.value = data.data
-        // console.log(chat);
       },
       (error) => {
-        // console.log(error)
       }
     )
   } else {
     // 학부모 조회
     chatListParent(
       ({ data }) => {
-        // console.log('학부모 조회')
-        // console.log(data.data)
         chat.value = data.data
       },
       (error) => {
-        // console.log(error)
       }
     )
   }
@@ -143,8 +135,6 @@ const emit = defineEmits(['chatEvent'])
 const chat = ref([])
 
 const chatDetail = (roomInfo) => {
-  // console.log("chatlistview - chatDetail");
-  // console.log(roomInfo)
   emit('chatEvent', roomInfo)
 }
 </script>

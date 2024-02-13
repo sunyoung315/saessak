@@ -16,7 +16,7 @@
       </div> -->
         <!-- 모든 캠 -->
         <section id="video-container" class="relative">
-          <div id="session-title" class="absolute top-14 left-1/3">{{ chatName }}의 화상채팅</div>
+          <div id="session-title" class="text-xl absolute top-14 left-1/3">{{ chatName }}의 화상채팅</div>
           <sub-section class="absolute w-1/4 z-10 h-16 top-4 right-4">
             <UserVideo
               class="justify-end border-2 border-yellow-300"
