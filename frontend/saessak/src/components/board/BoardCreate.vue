@@ -11,7 +11,7 @@
 		<div>
 			<div class="block mb-5">
 				<span class="content-title">이름</span>
-				<div class="w-[80%] mx-[10%] block mt-1 mb-10">
+				<div class="w-[70%] mx-[15%] block mt-1 mb-10">
 					<select
 						id="name"
 						class="selection-input"
@@ -57,7 +57,7 @@
 					}"
 					required
 				></textarea>
-				<p class="w-[80%] mx-[10%] mb-10 text-right font-bold text-lg">
+				<p class="w-[70%] mx-[15%] pr-4 mb-10 text-right font-bold text-lg">
 					{{ contentLength }} / 500자
 				</p>
 			</label>
@@ -526,10 +526,10 @@ const registBoard = () => {
 
 <style scoped>
 .content-title {
-	@apply w-[80%] mx-[10%] px-2 text-gray-900 text-xl font-bold;
+	@apply w-[70%] mx-[15%] px-2 text-gray-900 text-xl font-bold;
 }
 .content-box {
-	@apply block w-[80%] mx-[10%] mt-1 rounded-md border border-neutral-300 shadow;
+	@apply block w-[70%] mx-[15%] mt-1 rounded-md border border-neutral-300 shadow;
 }
 .record-title {
 	@apply inline-block m-5 text-gray-700 text-base font-extrabold;

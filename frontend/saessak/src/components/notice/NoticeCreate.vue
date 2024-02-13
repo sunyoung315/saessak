@@ -9,7 +9,7 @@
 			</button>
 		</div>
 
-		<div class="block mt-16 mb-5 w-full">
+		<div class="block mt-16 mb-5">
 			<span class="content-title">제목</span>
 			<input
 				id="title"
@@ -41,7 +41,7 @@
 			<span class="content-title">파일</span>
 			<div
 				@click="openFileDialog"
-				class="content-box-flex w-full mb-10 p-4 text-lg flex justify-between items-center cursor-pointer"
+				class="content-box mb-10 p-4 text-lg cursor-pointer"
 			>
 				<div class="flex items-center ml-2">
 					<svg
@@ -167,11 +167,11 @@ const checkEmptyFields = () => {
 
 <style scoped>
 .content-title {
-	@apply ml-36 text-gray-900 text-xl font-bold;
+	@apply w-[70%] mx-[15%] px-2 text-gray-900 text-xl font-bold;
 }
 
 .content-box {
-	@apply block ml-32 mt-1 w-9/12 rounded-md border border-neutral-300 shadow;
+	@apply block  w-[70%] mx-[15%] px-2 mt-1 rounded-md border border-neutral-300 shadow;
 }
 
 .content-box-flex {
