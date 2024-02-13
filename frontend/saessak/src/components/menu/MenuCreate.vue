@@ -89,13 +89,13 @@
 								<span class="checkbox-frame">
 									<input
 										type="checkbox"
-										class="checkbox"
+										class="checkbox cursor-pointer"
 										:value="allergy.allergyId"
 										v-model="menu.foodAllergy"
 										:id="`${allergy.allergyId}${index}`"
 									/>
 									<label
-										class="checkbox-label"
+										class="checkbox-label cursor-pointer"
 										:for="`${allergy.allergyId}${index}`"
 										>{{ allergy.allergyName }}</label
 									>

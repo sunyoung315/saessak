@@ -1,5 +1,5 @@
 <template>
-	<div class="view-frame p-4">
+	<div class="view-frame">
 		<div v-if="props.loginStore.isTeacher">
 			<DocumentListTeacher :isReplace="props.isReplace" />
 		</div>

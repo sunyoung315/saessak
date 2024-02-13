@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<div class="view-header flex justify-between">
-			<div>
+			<div class="flex items-center">
 				<span class="nav-title">동의서</span>
 				<div
 					class="group-btn"
@@ -42,8 +42,9 @@
 					path !== 'allery/create' &&
 					path !== 'replacement/create'
 				"
+				class="mt-10 ml-32 mr-6"
 			>
-				<button type="button" @click="createDocument()" class="btn">
+				<button type="button" @click="createDocument()" class="btn m-0">
 					작성
 				</button>
 			</div>
