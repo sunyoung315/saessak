@@ -7,16 +7,15 @@
 					<button
 						type="button"
 						@click="check()"
-						class="btn mt-7 mr-4 mb-3"
+						class="mt-7 mr-4 mb-3"
 						:class="
 							myKidAllergyList.kidAllergyCheck
-								? 'text-white bg-dark-navy cursor-default'
-								: 'text-black bg-gray-300 font-semibold !border-0 hover:bg-white'
+								? 'bg-dark-navy w-20 text-white rounded-md p-3 py-[0.6rem] cursor-default'
+								: 'bg-gray-300 w-20 text-black font-semibold rounded-md py-[0.65rem] px-[1.1rem] cursor-pointer hover:bg-dark-navy hover:text-white'
 						"
 					>
 						{{ myKidAllergyList.kidAllergyCheck ? '확인완료' : '미확인' }}
 					</button>
-					<!-- {{ myKidAllergyList }} -->
 					<button type="button" @click="goBack()" class="btn mt-7 mr-7 mb-3">
 						목록
 					</button>
@@ -37,7 +36,7 @@
 					class="text-center whitespace-pre-line border border-gray-200 shadow rounded mx-32"
 				>
 					<br />
-					<p class="text-lg underline font-bold">※ 알레르기 유발식품 ※</p>
+					<p class="text-xl underline font-bold">※ 알레르기 유발식품 ※</p>
 					<br />
 					<div class="flex flex-wrap justify-center mx-16 mb-8">
 						<template v-for="allergy in allergyList" :key="allergy.no">
@@ -104,9 +103,23 @@
 				</div>
 			</div>
 		</div>
-		<div v-else>
+		<template v-else>
 			<!-- Parents Version -->
-			<div class="flex justify-end items-center mb-10"></div>
+			<div class="flex justify-end items-center mb-10">
+				<button
+					type="button"
+					disabled
+					@click="check()"
+					class="-mt-2.5 mr-5"
+					:class="
+						myKidAllergyList.kidAllergyCheck
+							? 'bg-dark-navy w-20 text-white rounded-md p-3 py-[0.6rem] cursor-default'
+							: 'bg-gray-300 w-20 text-black font-semibold rounded-md py-[0.65rem] px-[1.1rem] cursor-default'
+					"
+				>
+					{{ myKidAllergyList.kidAllergyCheck ? '확인완료' : '미확인' }}
+				</button>
+			</div>
 			<div>
 				<p class="text-black text-4xl font-bold text-center">
 					식품 알레르기 조사서
@@ -123,7 +136,7 @@
 				class="text-center whitespace-pre-line border border-gray-200 shadow rounded mx-32"
 			>
 				<br />
-				<p class="text-lg underline font-bold">※ 알레르기 유발식품 ※</p>
+				<p class="text-xl underline font-bold">※ 알레르기 유발식품 ※</p>
 				<br />
 				<div class="flex flex-wrap justify-center mx-16 mb-8">
 					<template v-for="allergy in allergyList" :key="allergy.no">
@@ -184,7 +197,7 @@
 					</div>
 				</div>
 			</div>
-		</div>
+		</template>
 	</div>
 </template>
 
