@@ -10,5 +10,5 @@ import java.util.List;
 @Repository
 public interface ReplacementRepository extends JpaRepository<Replacement, Long> {
 
-    List<Replacement> findByKidOrderByReplacementDay(Kid kid);
+    List<Replacement> findByKidOrderByReplacementDayDesc(Kid kid);
 }
