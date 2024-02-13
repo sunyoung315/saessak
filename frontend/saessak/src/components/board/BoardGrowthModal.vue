@@ -361,15 +361,13 @@ onMounted(async () => {
 
 	// x: numberOfMonth, y: boardTall로 데이터 추출
 	const myKidTallData = myKidGrowthList.value.physicalDtoList.map(tall => ({
-		x:
-			Math.abs(
-				new Date(tall.boardDate).getFullYear() -
-					myKidBirthday.value.getFullYear(),
-			) *
-				12 +
-			Math.abs(
-				new Date(tall.boardDate).getMonth() - myKidBirthday.value.getMonth(),
+		x: Math.abs(
+			Math.round(
+				(new Date(tall.boardDate).getTime() - myKidBirthday.value.getTime()) /
+					1000 /
+					(60 * 60 * 24 * 30),
 			),
+		),
 		y: tall.boardTall,
 	}));
 
@@ -414,15 +412,13 @@ onMounted(async () => {
 
 	// x: numberOfMonth, y: boardTall로 데이터 추출
 	const myKidWeightData = myKidGrowthList.value.physicalDtoList.map(weight => ({
-		x:
-			Math.abs(
-				new Date(weight.boardDate).getFullYear() -
-					myKidBirthday.value.getFullYear(),
-			) *
-				12 +
-			Math.abs(
-				new Date(weight.boardDate).getMonth() - myKidBirthday.value.getMonth(),
+		x: Math.abs(
+			Math.round(
+				(new Date(weight.boardDate).getTime() - myKidBirthday.value.getTime()) /
+					1000 /
+					(60 * 60 * 24 * 30),
 			),
+		),
 		y: weight.boardWeight,
 	}));
 
