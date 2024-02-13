@@ -199,7 +199,7 @@ const emit = defineEmits(['exitChat']) // 채팅방 퇴장 처리
 const roomId = props.roomInfo.roomId // 채팅방 번호
 const roomName = props.roomInfo.roomName 
 setChatroom(roomId)
-setChatname(roomName + (isTeacher == true ? " 학부모와" : " 선생님과"))
+setChatname(roomName + (isTeacher.value == true ? " 학부모와" : " 선생님과"))
 
 // 화상채팅 전달, 하단 메뉴 클릭 flag를 위한 스토어 저장
 const connected = ref(false) // 소켓 연결 여부
