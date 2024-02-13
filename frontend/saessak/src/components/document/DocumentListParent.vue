@@ -51,6 +51,9 @@
 							</td>
 						</tr>
 					</tbody>
+					<div v-if="!myReplacementList.length" class="m-6">
+						<p>등록된 귀가동의서가 없습니다.</p>
+					</div>
 				</table>
 			</div>
 			<div
@@ -96,9 +99,6 @@
 						/>
 					</svg>
 				</button>
-			</div>
-			<div v-if="!myReplacementList.length" class="m-6">
-				<p>등록된 귀가동의서가 없습니다.</p>
 			</div>
 		</div>
 		<!-- Parents Version : 알레르기 동의서 -->

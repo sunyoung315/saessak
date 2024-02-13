@@ -89,7 +89,12 @@
 									<span>(인 또는 서명)</span>
 								</div>
 							</div>
-							<div v-else>등록된 서명이 없습니다.</div>
+							<div
+								class="border relative text-center items-center text-lg font-medium h-32 w-64"
+								v-else
+							>
+								등록된 서명이 없습니다.
+							</div>
 						</div>
 					</div>
 				</div>
@@ -163,7 +168,16 @@
 							<span>(인 또는 서명)</span>
 						</div>
 					</div>
-					<div v-else>등록된 서명이 없습니다.</div>
+					<div
+						class="border relative text-center items-center text-xl h-32 w-64"
+						v-else
+					>
+						<div
+							class="z-10 relative flex items-center justify-center text-lg font-medium h-full"
+						>
+							<span>등록된 서명이 없습니다.</span>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
