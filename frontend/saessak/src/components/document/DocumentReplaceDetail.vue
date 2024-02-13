@@ -51,13 +51,13 @@
 					</div>
 					<div class="flex items-center justify-between mb-6">
 						<div
-							class="w-48 text-black font-bold md:mb-0 text-black text-lg"
+							class="w-48 text-black font-bold md:mb-0 text-lg"
 							for="inline-full-name"
 						>
 							날짜: {{ replaceDetailList.replacementDate }}
 						</div>
 						<div
-							class="w-48 text-black font-bold md:mb-0 text-black text-lg"
+							class="w-48 text-black font-bold md:mb-0 text-lg"
 							for="inline-full-name"
 						>
 							시간: {{ replaceDetailList.replacementTime }}
@@ -65,13 +65,13 @@
 					</div>
 					<div class="flex items-center justify-between mb-6">
 						<div
-							class="w-48 text-black font-bold md:mb-0 text-black text-lg"
+							class="w-48 text-black font-bold md:mb-0 text-lg"
 							for="inline-full-name"
 						>
 							보호자: {{ replaceDetailList.replacementName }}
 						</div>
 						<div
-							class="w-48 text-black font-bold md:mb-0 text-black text-lg"
+							class="w-48 text-black font-bold md:mb-0 text-lg"
 							for="inline-full-name"
 						>
 							보호자 관계: {{ replaceDetailList.replacementRelationship }}
@@ -79,13 +79,13 @@
 					</div>
 					<div class="flex items-center justify-between mb-6">
 						<div
-							class="w-48 text-black font-bold md:mb-0 text-black text-lg"
+							class="w-48 text-black font-bold md:mb-0 text-lg"
 							for="inline-full-name"
 						>
 							귀가 방법: {{ replaceDetailList.replacementVehicle }}
 						</div>
 						<div
-							class="w-48 text-black font-bold md:mb-0 text-black text-lg"
+							class="w-48 text-black font-bold md:mb-0 text-lg"
 							for="inline-full-name"
 						>
 							비상연락망: {{ replaceDetailList.replacementNumber }}

@@ -44,7 +44,7 @@
 						<div class="flex items-center mb-6">
 							<div>
 								<label
-									class="block w-24 text-black font-bold md:mb-0 text-black text-lg"
+									class="block w-24 text-black font-bold md:mb-0 text-lg"
 									for="inline-full-name"
 								>
 									날짜:
