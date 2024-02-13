@@ -1,68 +1,69 @@
 <template>
 	<div>
 		<!--Only Parents Version-->
-		<div
-			class="container mx-16 p-1.5 w-auto border border-gray-200 shadow rounded-lg"
-		>
+		<div class="view-frame p-1.5">
 			<div class="flex justify-end items-center mb-10">
-				<button
-					type="button"
-					@click="regist()"
-					class="mt-8 mr-6 text-white hover:text-dark-navy border border-dark-navy bg-dark-navy hover:bg-white focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
-				>
+				<button type="button" @click="regist()" class="btn mt-7 mr-4 mb-3">
 					등록
 				</button>
-				<button
-					type="button"
-					@click="goBack()"
-					class="mt-8 mr-8 text-white hover:text-dark-navy border border-dark-navy bg-dark-navy hover:bg-white focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
-				>
+				<button type="button" @click="goBack()" class="btn mt-7 mr-7 mb-3">
 					목록
 				</button>
 			</div>
 			<div>
-				<p class="text-gray-700 text-3xl font-bold text-center">
+				<p class="text-black text-4xl font-bold text-center">
 					식품 알레르기 조사서
 				</p>
 			</div>
 			<div>
-				<p class="text-wrap text-center text-xl whitespace-pre-line m-8">
+				<p
+					class="text-wrap text-center text-lg whitespace-pre-line m-8 leading-10"
+				>
 					{{ allergyContent }}
 				</p>
 			</div>
 			<div
-				class="text-center whitespace-pre-line border border-gray-200 shadow rounded-lg m-8"
+				class="text-center whitespace-pre-line border border-gray-200 shadow rounded mx-32"
 			>
 				<br />
-				<p class="text-xl underline font-bold">※ 알레르기 유발식품</p>
+				<p class="text-lg underline font-bold">※ 알레르기 유발식품</p>
 				<br />
-				<p class="mb-8">{{ allergyType }}</p>
+				<div class="flex flex-wrap justify-center mx-16 mb-8">
+					<template v-for="allergy in allergyList" :key="allergy.no">
+						<span class="inline-block text-base mr-8 py-2"
+							>{{ allergy.no }}. {{ allergy.name }}</span
+						>
+					</template>
+				</div>
 			</div>
-			<div class="flex items-center flex-wrap">
+			<div class="flex items-center flex-wrap mx-32 mt-8">
 				<template v-for="allergy in allergyList" :key="allergy.no">
-					<div class="w-1/5 p-2">
+					<div class="w-1/5 p-1 flex items-center">
 						<input
 							:id="'checked-checkbox' + allergy.no"
 							type="checkbox"
 							:value="allergy.no"
 							@change="updateAllergy($event, allergy.no)"
-							class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+							class="w-4 h-4 border-gray-100 rounded cursor-pointer"
 						/>
 						<label
 							:for="'checked-checkbox' + allergy.no"
-							class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+							class="px-3 text-lg font-medium text-black cursor-pointer"
 						>
-							{{ allergy.name }}
+							{{ allergy.no }}. {{ allergy.name }}
 						</label>
 					</div>
 				</template>
 			</div>
-			<!-- {{ registAllergy }} -->
 			<div class="flex justify-end">
-				<div class="flex-col text-gray-700 text-xl font-bold m-8">
-					<p class="mb-8">이름 : {{ registAllergy.kidName }}</p>
+				<div class="flex-col text-black font-bold m-8">
+					<p class="my-3 mx-1 text-black text-xl font-bold">
+						이름 : {{ registAllergy.kidName }}
+					</p>
 					<div>
-						<h2>전자 서명: {{ registAllergy.kidAllergySignature }}</h2>
+						<h2 class="mx-1 mb-1 text-xl">
+							전자 서명: {{ registAllergy.kidAllergySignature }}
+						</h2>
 						<document-signature @signature-saved="handleSignatureSaved" />
 					</div>
 				</div>
@@ -77,7 +78,7 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAllergyStore } from '@/store/allergy';
 import DocumentSignature from '@/components/document/DocumentSignature.vue';
-import Swal from 'sweetalert2'
+import Swal from 'sweetalert2';
 
 const router = useRouter();
 const allergyStore = useAllergyStore();
@@ -220,10 +221,7 @@ function goBack() {
 
 // 문구
 const allergyContent = ref(
-	'원아들의 식품 알레르기에 관한 실태를 파악하고 \n \n 발병 등에 대한 예방조치와 제거 및 대체식품의 필요여부를 확인하고자 하오니 \n \n 특정 식품에 대한 알레르기 반응이 있는 식품을 확인하여 체크해주시기 바랍니다.',
-);
-const allergyType = ref(
-	'1. 난류 2. 우유 3. 메밀 4. 땅콩 5. 대두 6. 밀 7.고등어 8. 게 9. 새우 10. 돼지고기 \n 11. 복숭아 12. 토마토 13. 아황산류 14. 호두 15. 닭고기 16. 쇠고기 17. 오징어 18. 조개 19. 잣',
+	'원아들의 식품 알레르기에 관한 실태를 파악하고 발병 등에 대한 예방조치와 제거 및 대체식품의 필요여부를  \n 확인하고자 하오니 특정 식품에 대한 알레르기 반응이 있는 식품을 확인하여 체크해주시기 바랍니다.',
 );
 
 // checkbox 선택된 allergy 번호 배열을 전달할 string 형식으로 변환
@@ -246,9 +244,9 @@ const validateSignature = () => {
 		Swal.fire({
 			icon: 'warning',
 			title: '전자 서명을 완료해주시기 바랍니다.',
-			text : '서명 작성 후 저장 버튼을 누르셔야 등록이 완료됩니다.',
-			confirmButtonText: '확인'
-		})
+			text: '서명 작성 후 저장 버튼을 누르셔야 등록이 완료됩니다.',
+			confirmButtonText: '확인',
+		});
 		return false;
 	}
 	return true;

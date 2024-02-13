@@ -1,17 +1,15 @@
 <template>
 	<div>
-		<div
-			class="container mx-16 p-1.5 w-auto border border-gray-200 shadow rounded-lg"
-		>
+		<div class="view-frame p-1.5">
 			<div class="flex justify-end items-center mb-10">
 				<button
 					type="button"
 					@click="check"
-					class="mt-8 mr-6 border border-dark-navy focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+					class="btn mt-7 mr-4 mb-3"
 					:class="
 						replaceDetailList.replacementCheck
 							? 'text-white bg-dark-navy cursor-default'
-							: 'text-black bg-white hover:bg-dark-navy'
+							: 'text-black bg-gray-300 font-semibold !border-0 hover:bg-white'
 					"
 					v-if="loginStore.isTeacher"
 				>
@@ -20,115 +18,93 @@
 				<button
 					type="button"
 					disabled
-					class="mt-8 mr-6 border border-dark-navy focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+					class="mt-7 mr-4 mb-3"
 					:class="
 						replaceDetailList.replacementCheck
-							? 'text-white bg-dark-navy cursor-default'
-							: 'text-black bg-white cursor-default'
+							? 'bg-dark-navy w-20 text-white rounded-md p-3 py-[0.6rem] cursor-default'
+							: 'bg-gray-300 w-20 text-black font-semibold rounded-md py-[0.65rem] px-[1.1rem] cursor-default'
 					"
 					v-else
 				>
 					{{ replaceDetailList.replacementCheck ? '확인완료' : '미확인' }}
 				</button>
-				<button
-					type="button"
-					@click="goList()"
-					class="mt-8 mr-8 text-white hover:text-dark-navy border border-dark-navy bg-dark-navy hover:bg-white focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
-				>
+				<button type="button" @click="goList()" class="btn mt-7 mr-7 mb-3">
 					목록
 				</button>
 			</div>
 			<div>
-				<p class="text-gray-700 text-4xl font-bold text-center">
-					귀 가 동 의 서
-				</p>
+				<p class="text-black text-4xl font-bold text-center">귀 가 동 의 서</p>
 			</div>
-			<div
-				class="flex flex-col text-left text-lg whitespace-pre-line ml-80 mt-12 font-bold"
-			>
-				<div class="md:flex md:items-center mb-6">
-					<div>
-						<label
-							class="block text-black font-bold mb-1 md:mb-0 pr-4"
+			<div class="flex justify-center">
+				<div
+					class="flex flex-col text-left mt-16 font-bold justify-center w-[50%]"
+				>
+					<div class="md:flex md:items-center mb-6">
+						<div>
+							<label
+								class="block text-black font-bold mb-1 md:mb-0 pr-4 text-lg"
+								for="inline-full-name"
+							>
+								이름: {{ kidName }}
+							</label>
+						</div>
+					</div>
+					<div class="flex items-center justify-between mb-6">
+						<div
+							class="w-48 text-black font-bold md:mb-0 text-black text-lg"
 							for="inline-full-name"
 						>
-							이름: {{ kidName }}
-						</label>
-					</div>
-				</div>
-				<div class="flex justify-start">
-					<div class="flex items-center mb-6">
-						<div>
-							<label
-								class="block w-48 text-black font-bold mb-1 md:mb-0 pr-4"
-								for="inline-full-name"
-							>
-								날짜: {{ replaceDetailList.replacementDate }}
-							</label>
+							날짜: {{ replaceDetailList.replacementDate }}
 						</div>
-						<div>
-							<label
-								class="block w-72 text-black ml-40 font-bold mb-1 md:mb-0 pr-4"
-								for="inline-full-name"
-							>
-								시간: {{ replaceDetailList.replacementTime }}
-							</label>
+						<div
+							class="w-48 text-black font-bold md:mb-0 text-black text-lg"
+							for="inline-full-name"
+						>
+							시간: {{ replaceDetailList.replacementTime }}
 						</div>
 					</div>
-				</div>
-				<div class="flex justify-start">
-					<div class="flex items-center mb-6">
-						<div>
-							<label
-								class="block w-48 text-black font-bold mb-1 md:mb-0 pr-4"
-								for="inline-full-name"
-							>
-								보호자: {{ replaceDetailList.replacementName }}
-							</label>
+					<div class="flex items-center justify-between mb-6">
+						<div
+							class="w-48 text-black font-bold md:mb-0 text-black text-lg"
+							for="inline-full-name"
+						>
+							보호자: {{ replaceDetailList.replacementName }}
 						</div>
-						<div>
-							<label
-								class="block w-72 text-black ml-40 font-bold mb-1 md:mb-0 pr-4"
-								for="inline-full-name"
-							>
-								보호자 관계: {{ replaceDetailList.replacementRelationship }}
-							</label>
+						<div
+							class="w-48 text-black font-bold md:mb-0 text-black text-lg"
+							for="inline-full-name"
+						>
+							보호자 관계: {{ replaceDetailList.replacementRelationship }}
 						</div>
 					</div>
-				</div>
-				<div class="flex justify-start">
-					<div class="flex items-center mb-6">
-						<div>
-							<label
-								class="block w-48 text-black font-bold mb-1 md:mb-0 pr-4"
-								for="inline-full-name"
-							>
-								귀가 방법: {{ replaceDetailList.replacementVehicle }}
-							</label>
+					<div class="flex items-center justify-between mb-6">
+						<div
+							class="w-48 text-black font-bold md:mb-0 text-black text-lg"
+							for="inline-full-name"
+						>
+							귀가 방법: {{ replaceDetailList.replacementVehicle }}
 						</div>
-						<div>
-							<label
-								class="block w-72 text-black ml-40 font-bold mb-1 md:mb-0 pr-4"
-								for="inline-full-name"
-							>
-								비상연락망: {{ replaceDetailList.replacementNumber }}
-							</label>
+						<div
+							class="w-48 text-black font-bold md:mb-0 text-black text-lg"
+							for="inline-full-name"
+						>
+							비상연락망: {{ replaceDetailList.replacementNumber }}
 						</div>
 					</div>
 				</div>
 			</div>
-			<div class="text-wrap text-center text-xl whitespace-pre-line m-12">
+			<div class="text-wrap text-center text-lg whitespace-pre-line m-12 mt-16">
 				<p>{{ replaceContent }}</p>
 				<p class="m-8 font-bold">금일 자녀의 귀가를 선생님께 의뢰합니다.</p>
 			</div>
 
 			<div class="flex justify-end">
-				<div class="flex-col text-gray-700 font-bold m-8">
+				<div class="flex-col text-black m-8">
 					<div>
-						<h2 class="mb-2 text-xl">전자 서명:</h2>
+						<h2 class="ml-2 mb-1 text-lg font-bold">전자 서명:</h2>
 						<div
 							v-if="replaceDetailList.replacementSignature"
-							class="border relative text-center items-center font-bold text-xl h-32 w-64"
+							class="border relative text-center items-center font-bold text-lg h-32 w-64"
 						>
 							<img
 								:src="replaceDetailList.replacementSignature"
@@ -138,7 +114,7 @@
 							<div
 								class="z-10 relative flex items-center justify-center h-full"
 							>
-								<span>(인 또는 서명)</span>
+								<span class>(인 또는 서명)</span>
 							</div>
 						</div>
 						<div v-else>등록된 서명이 없습니다.</div>
