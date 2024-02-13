@@ -119,7 +119,7 @@ public class ReplacementService {
             replacementResponseDtoList.add(replacementResponseDto);
         }
 
-        return replacementResponseDtoList;
+        return sortReplacementListByReplacementDay(replacementResponseDtoList);
     }
 
     public List<ReplacementResponseDto> listOfclassroomId() {
