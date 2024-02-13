@@ -8,7 +8,7 @@
 		<!-- datepicker -->
 		<div class="block mb-5">
 			<span class="content-title">날짜</span>
-			<div class="block mt-1 ml-32 mb-10">
+			<div class="w-[70%] mx-[15%] block mt-1 mb-10">
 				<VDatePicker
 					v-model="date"
 					:select-attribute="selectAttribute"
@@ -271,10 +271,10 @@ onMounted(async () => {
 
 <style scoped>
 .content-title {
-	@apply ml-36 text-gray-900 text-xl font-bold;
+	@apply w-[70%] mx-[15%] px-2 text-gray-900 text-xl font-bold;
 }
 .content-box {
-	@apply block ml-32 mt-1 w-9/12 rounded-md border border-neutral-300 shadow;
+	@apply block w-[70%] mx-[15%] mt-1 rounded-md border border-neutral-300 shadow;
 }
 .record-title {
 	@apply inline-block m-5 text-gray-700 text-base font-extrabold;

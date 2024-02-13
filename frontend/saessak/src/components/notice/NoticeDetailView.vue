@@ -7,7 +7,7 @@
 		</div>
 
 		<div class="flex justify-center mb-2">
-			<div class="flex justify-between items-end mt-8 mb-4 w-[78%]">
+			<div class="flex justify-between items-end mt-8 mb-4 w-[70%]">
 				<span class="content-title2">{{ notice.noticeTitle }}</span>
 				<div class="text-lg">
 					{{ notice.noticeTime }}
@@ -16,22 +16,25 @@
 		</div>
 
 		<div class="flex justify-center">
-			<hr class="w-[80%] border-1 border-gray-400" />
+			<hr class="w-[72%] border-1 border-gray-400" />
 		</div>
 
-		<div class="block mt-2 w-full">
-			<div
-				class="content-box w-[78%] mb-20 pt-8 mx-1 text-lg whitespace-pre-line leading-9"
-			>
+		<div class="mt-2 w-full flex justify-center">
+			<div class="w-[70%] mb-20 pt-8 text-lg whitespace-pre-line leading-9">
 				{{ notice.noticeContent }}
 			</div>
 		</div>
 
 		<template v-if="notice.noticeFile != null">
-			<span class="content-title">파일</span>
-			<button @click="download" class="block mt-1 mb-5 w-full relative">
+			<div class="flex justify-center">
+				<span class="content-title">파일</span>
+			</div>
+			<button
+				@click="download"
+				class="mt-1 mb-5 -mx-1 w-full flex justify-center"
+			>
 				<div
-					class="content-box-flex w-full mb-20 p-4 text-lg flex justify-between items-center hover:bg-gray-100"
+					class="content-box-flex mb-20 p-4 text-lg flex justify-between items-center hover:bg-gray-100"
 				>
 					<div class="flex justify-start items-center">
 						<svg
@@ -152,14 +155,14 @@ const download = async () => {
 }
 
 .content-title {
-	@apply ml-36 text-gray-900 text-xl font-bold;
+	@apply w-[70%] px-2 text-gray-900 text-xl font-bold;
 }
 
 .content-box {
-	@apply block ml-32 mt-1 rounded-md;
+	@apply block mt-1 rounded-md;
 }
 
 .content-box-flex {
-	@apply flex ml-32 mt-1 w-9/12 rounded-md border border-neutral-300 shadow;
+	@apply flex mt-1 w-[70%] rounded-md border border-neutral-300 shadow;
 }
 </style>
