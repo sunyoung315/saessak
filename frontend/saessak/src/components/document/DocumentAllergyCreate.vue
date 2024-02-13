@@ -77,6 +77,7 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAllergyStore } from '@/store/allergy';
 import DocumentSignature from '@/components/document/DocumentSignature.vue';
+import Swal from 'sweetalert2'
 
 const router = useRouter();
 const allergyStore = useAllergyStore();
@@ -242,9 +243,12 @@ function updateAllergy(e, allergyNo) {
 // 유효성 검사
 const validateSignature = () => {
 	if (!(kidAllergySignature.value instanceof Blob)) {
-		alert(
-			'전자 서명을 완료해주시기 바랍니다. 서명 작성 후 저장 버튼을 누르셔야 등록이 완료됩니다.',
-		);
+		Swal.fire({
+			icon: 'warning',
+			title: '전자 서명을 완료해주시기 바랍니다.',
+			text : '서명 작성 후 저장 버튼을 누르셔야 등록이 완료됩니다.',
+			confirmButtonText: '확인'
+		})
 		return false;
 	}
 	return true;

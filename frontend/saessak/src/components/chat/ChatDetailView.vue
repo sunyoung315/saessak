@@ -4,7 +4,7 @@
     class="flex flex-col w-full h-full px-0 mx-auto my-0 rounded-lg  bg-yellow-50 sm:p-8 dark:bg-gray-800 dark:border-gray-700">
     <div
       class="fixed w-1/3 top-0 right-0 flex justify-between px-3 py-3 border-l-2 border-l-gray-300 bg-yellow-50 pb-0 mx-auto">
-      <h3 class="mb-5 text-lg font-bold text-center left-1/2">
+      <h3 class="mb-5 text-xl font-bold text-center left-1/2">
         {{ roomName }} {{ isTeacher == true ? '학부모' : '선생님' }}
       </h3>
       <button type="button" @click="discon()">
@@ -17,7 +17,8 @@
 
     <!-- message -->
     <!--scrollbar-hide -->
-    <div ref="chatbox" class="chatbox flex flex-col scrollbar-hide overflow-y-scroll w-full h-full mt-0 mb-0 my-0 px-5 py-0">
+    <div ref="chatbox"
+      class="chatbox flex flex-col scrollbar-hide overflow-y-scroll w-full h-full mt-0 mb-0 my-0 px-5 py-0">
       <div v-for="msg in recvList" :key="msg.chatId" class="flex flex-col mt-5">
         <!--발신 메시지(오른쪽)-->
         <div class="flex w-0 h-0 text-yellow-50">{{ msg.chatTime }}</div>
@@ -64,7 +65,7 @@
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
               <path fill="#ffffff" fill-rule="evenodd"
                 d="M14 7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7Zm2 9.387 4.684 1.562A1 1 0 0 0 22 17V7a1 1 0 0 0-1.316-.949L16 7.613v8.774Z"
-                clip-rule="evenodd"/>
+                clip-rule="evenodd" />
             </svg>
           </div>
         </button>
@@ -89,8 +90,6 @@ const props = defineProps({
       roomId: 0,
       roomName: '',
       chatProfile: '',
-      // senderId: 0,
-      // receiverId: 0
     })
   }
 })
@@ -146,21 +145,14 @@ const handleBeforeUnload = (event) => {
 }
 
 onMounted(() => {
-  // console.log(profile.value)
-  // console.log(props.roomInfo.chatProfile)
 
   myProfile.value = isTeacher.value == true ? profile.value : kidList.value[0].kidProfile
-  // console.log("myProfile : " + myProfile)
-  // console.log('선생님이니')
-  // console.log(isTeacher.value)
   window.addEventListener('beforeunload', handleBeforeUnload) // 브라우저 종료 이벤트 등록
   if (chatbox.value) {
     chatbox.value.addEventListener('scroll', handleScroll)
   } // 스크롤 감지 이벤트 등록
   // 접속하면 1. userId 받아오기
   isVaild(({ data }) => {
-    // console.log('userId : ')
-    // console.log(data)
     userId.value = data.data
   })
 
@@ -170,11 +162,7 @@ onMounted(() => {
     cursor: convertDate(currentDate)
   }
   loadChat(props.roomInfo.roomId, cursor.value, ({ data }) => {
-    // console.log('채팅 내역 조회')
-    // console.log(data)
-    // console.log(data.data[0].chatTime)
     if (data.data.length == 0) {
-      // console.log("처음왔니?") 
       cursor.value = {
         chatTime: null
       }
@@ -194,18 +182,7 @@ onMounted(() => {
     oldHeight = chatbox.value.scrollHeight
     downScroll()
   })
-  // console.log("printMsg")
-  // console.log(printMsg.value);
-  // console.log(printMsg.value.length)
-  // console.log(printMsg.value[printMsg.value.length - 1])
 
-  // watch(recvList, (newList, oldList) => {
-  //   console.log("new msg list : ");
-  //   console.log(newList)
-  //   console.log("old msg list : ");
-  //   console.log(oldList)
-  //   console.log(printMsg.value)
-  // }, {deep : true});
 })
 
 onBeforeUnmount(() => {
@@ -219,11 +196,10 @@ const userId = ref(-1) // 채팅 유저 구분을 위한 현재 로그인한 use
 const chatbox = ref(null)
 const emit = defineEmits(['exitChat']) // 채팅방 퇴장 처리
 
-// console.log(props.roomInfo)
 const roomId = props.roomInfo.roomId // 채팅방 번호
-const roomName = props.roomInfo.roomName + (isTeacher == true ? " 학부모와" : " 선생님과")
+const roomName = props.roomInfo.roomName 
 setChatroom(roomId)
-setChatname(roomName)
+setChatname(roomName + (isTeacher == true ? " 학부모와" : " 선생님과"))
 
 // 화상채팅 전달, 하단 메뉴 클릭 flag를 위한 스토어 저장
 const connected = ref(false) // 소켓 연결 여부
@@ -237,27 +213,17 @@ const handleScroll = () => {
   // 스크롤 맨 위로 올렸을 때 감지하기
   // 현재 스크롤 위치를 가져옵니다.
   const scrollTop = chatbox.value.scrollTop || document.documentElement.scrollTop
-  // console.log('현재 스크롤 : ' + scrollTop)
   let currentDate = new Date()
   if (scrollTop === 0) {
-    // console.log('스크롤 맨 위긔.')
     // 1. 현재 커서를 기준으로 다시 메세지 불러오기(revList 맨 앞에 추가하기)
 
-    // console.log('재조회를 위한 커서 : ')
-    // console.log(cursor.value)
-    // let oldHeight = chatbox.value.scrollHeight // 불러오기 전의 스크롤 길이 저장
     if (cursor.value.chatTime == null) {
       // 모든 채팅 불러온 경우
-      // console.log('모든 채팅 불러왔긔')
       return
     }
     loadChat(props.roomInfo.roomId, cursor.value, ({ data }) => {
-      // console.log('이전 채팅 내역 조회')
-      // console.log(data)
-      // console.log(data.data[0])
       if (data.data.length == 0) {
         cursor.value.chatTime = null
-        // console.log('모든 채팅 불러왔긔')
       } else {
         const newArr = [...data.data, ...recvList.value] // 새로 불러온 채팅 + 기존 채팅
         lastChat.value = data.data[data.data.length - 1].chatTime
@@ -267,20 +233,13 @@ const handleScroll = () => {
           senderId: data.data[0].senderId,
           chatTime: data.data[0].chatTime
         }
-        // console.log(newArr)
         recvList.value = newArr
-        // console.log(
-        //   oldHeight + ' / ' + chatbox.value.scrollHeight + ' / ' + chatbox.value.clientHeight
-        // )
-        // console.log(chatbox.value.scrollHeight - oldHeight + 100)
         chatbox.value.scrollTo({ left: 0, top: chatbox.value.clientHeight }) // 올리고 나서 스크롤 위치 어따 둘건지???
-        // console.log(chatbox.value.scrollTop)
         oldHeight = chatbox.value.scrollHeight
       }
     })
     // 2. 지금 불러온 메세지 중 첫번째 메세지의 시간을 커서로 변경
     // 3. 더 이상 불러올 매세지 없으면 api 호출X
-    // console.log(recvList.value)
   }
 }
 
@@ -299,45 +258,44 @@ let headers = {
   userId: userId
 }
 
-// console.log('소켓 연결 시작')
-// console.log('roomId : ' + roomId)
 // chat 메세지 정보에서 리시버id 안받을거임 / 백에서는 내가 보낸 토큰으로 senderid 지정함
 // 그럼 내가 받을땐?
-// console.log(roomId);
 const newWindow = ref()
 stomp.connect(
   headers,
   (frame) => {
     // 소켓 연결 성공
-    // console.log('after frame')
     connected.value = true
     setIsopen(true)
-    // console.log('소켓 연결 성공', frame)
-    // console.log(stomp)
     // 서버의 메시지 전송 endpoint를 구독합니다.
     // 이런형태를 pub sub 구조라고 합니다.
     stomp.subscribe(
       '/sub/room/' + roomId,
       (res) => {
-        // console.log('구독으로 받은 메시지 입니다.')
-        // console.log(res.body)
         // 받은 데이터를 json으로 파싱하고 리스트에 넣어줍니다.
-        // console.log(JSON.parse(res.body).chatContent)
-        // console.log(isTeacher.value)
         if (res.body == 'videoChat allow request') {
           if (isTeacher.value == false) {
-            // console.log('check flag')
-            const isConfirmed = window.confirm('화상채팅 할거긔?')
-            if (isConfirmed) {
-              window.open('/facechat', '_blank', 'width=720, height=720')
-            } else {
-              stomp.send('/pub/response', roomId, headers)
-            }
+            Swal.fire({
+              icon: 'question',
+              title: '화상 채팅에 참여하시겠습니까?',
+              confirmButtonText: '승인',
+              showCancelButton : true,
+              cancelButtonText : '거절',
+            }).then(result => {
+              if(result.isConfirmed){
+                window.open('/facechat', '_blank', 'width=720, height=720')
+              }else if(result.isDismissed){
+                stomp.send('/pub/response', roomId, headers)
+              }
+            })
           }
         } else if (res.body == 'videoChat deny response') {
           if (isTeacher.value) {
-            alert("거절이긔")
-            // newWindow.close()
+            Swal.fire({
+              icon: 'info',
+              title: '화상 채팅 요청이 거절되었습니다.',
+              confirmButtonText: '확인'
+            })
           }
         } else {
           recvList.value.push(JSON.parse(res.body))
@@ -381,21 +339,6 @@ const send = () => {
       msg.value = ''
     }
   }
-
-  // var formattedDate =
-  //   currentDate.getFullYear() +
-  //   '-' +
-  //   addZero(currentDate.getMonth() + 1) +
-  //   '-' +
-  //   addZero(currentDate.getDate()) +
-  //   ' ' +
-  //   addZero(currentDate.getHours()) +
-  //   ':' +
-  //   addZero(currentDate.getMinutes()) +
-  //   ':' +
-  //   addZero(currentDate.getSeconds()) +
-  //   '.' +
-  //   currentDate.getMilliseconds()
 }
 
 const discon = () => {
@@ -407,10 +350,8 @@ const discon = () => {
   disconnect(
     params,
     ({ response }) => {
-      // console.log(response)
     },
     ({ error }) => {
-      // console.log(error)
     }
   )
   //Theheader로 ChatListView로 바꾸겠다고 전송해야됨
@@ -442,7 +383,6 @@ const startFaceChat = () => {
     ', top=' +
     popupY
   )
-  // window.open('/facechat', '_blank', 'width=720, height=720')
 }
 </script>
 

@@ -76,12 +76,9 @@ const props = defineProps({
 }) // drawer 사이즈 정보 상속
 onMounted(() => {
   if (isLogin.value) {
-    // console.log('getPersonList 실행')
     getPersonList()
   }
   nextTick(() => {
-    // console.log('사이즈 받아왔니')
-    // console.log(props.size)
   })
 })
 const userId = ref(3)
@@ -89,28 +86,20 @@ const classroomId = ref(1)
 const { isTeacher } = storeToRefs(store)
 
 const getPersonList = () => {
-  // console.log('선생님이니?')
-  // console.log(isTeacher.value)
   if (isTeacher.value) {
-    // console.log('선생님 - 반 아이 조회')
     getClassList(
       ({ data }) => {
-        // console.log(data.data)
         Person.value = data.data
       },
       (error) => {
-        // console.log(error)
       }
     )
   } else {
-    // console.log('학부모 - 선생님 조회')
     getMyTeacher(
       ({ data }) => {
-        // console.log(data.data)
         Person.value = data.data
       },
       (error) => {
-        // console.log(error)
       }
     )
   }
@@ -120,17 +109,12 @@ const Person = ref([])
 const emit = defineEmits(['chatEvent']) // CHAT 버튼 눌렀을 때 채팅방으로 이동
 
 const addChat = (input) => {
-  // console.log('addChat 실행')
-  // console.log(input)
   let tId = isTeacher.value == false ? userId.value : input[0] // 선생님 화면일때 : 학부모 화면일때
   let kId = isTeacher.value == false ? input : input[1]
-  // console.log(tId + '/' + kId)
   if (isTeacher.value) {
-    // console.log('선생님 드가자')
     teacherNewChat(
       input.id,
       ({ data }) => {
-        // console.log(data)
         const roomInfo = {
           roomId: data.data,
           roomName: input.name,
@@ -139,16 +123,12 @@ const addChat = (input) => {
         emit('chatEvent', roomInfo)
       },
       (error) => {
-        // console.log(error)
       }
     )
   } else {
-    // console.log('학부모 드가자')
-    // console.log(input)
     parentNewChat(
       input.id,
       ({ data }) => {
-        // console.log(data)
         const roomInfo = {
           roomId: data.data,
           roomName: input.name,
@@ -157,7 +137,6 @@ const addChat = (input) => {
         emit('chatEvent', roomInfo)
       },
       (error) => {
-        // console.log(error)
       }
     )
   }
