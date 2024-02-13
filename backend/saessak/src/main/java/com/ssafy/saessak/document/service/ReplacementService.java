@@ -30,7 +30,9 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.awt.SystemColor.menu;
 
@@ -43,6 +45,19 @@ public class ReplacementService {
     private final AuthenticationService authenticationService;
     private final FcmService fcmService;
     private final S3Upload s3Uploader;
+
+    class ReplacementDtoComparator implements Comparator<ReplacementResponseDto> {
+        @Override
+        public int compare(ReplacementResponseDto dto1, ReplacementResponseDto dto2) {
+            return dto2.getReplacementDay().compareTo(dto1.getReplacementDay());
+        }
+    }
+
+    public List<ReplacementResponseDto> sortReplacementListByReplacementDay(List<ReplacementResponseDto> replacementResponseDtoList) {
+        return replacementResponseDtoList.stream()
+                .sorted(new ReplacementDtoComparator())
+                .collect(Collectors.toList());
+    }
 
     @Transactional
     public Long insert(ReplacementRequestDto requestDto) {
@@ -89,7 +104,7 @@ public class ReplacementService {
     public List<ReplacementResponseDto> listOfkidId(Long kidId) {
         Kid kid = kidRepository.findById(kidId)
                 .orElseThrow(() -> new UserException(ExceptionCode.KID_NOT_FOUND));
-        List<Replacement> replacementList = replacementRepository.findByKidOrderByReplacementDayDesc(kid);
+        List<Replacement> replacementList = replacementRepository.findByKid(kid);
 
         List<ReplacementResponseDto> replacementResponseDtoList = new ArrayList<>();
 
@@ -115,7 +130,7 @@ public class ReplacementService {
         List<ReplacementResponseDto> replacementResponseDtoList = new ArrayList<>();
 
         for(Kid kid : kidList) {
-            List<Replacement> replacementList = replacementRepository.findByKidOrderByReplacementDayDescKidNickname(kid);
+            List<Replacement> replacementList = replacementRepository.findByKid(kid);
 
             for(Replacement replacement : replacementList) {
                 ReplacementResponseDto replacementResponseDto = ReplacementResponseDto.builder()
@@ -129,7 +144,7 @@ public class ReplacementService {
             }
         }
 
-        return replacementResponseDtoList;
+        return sortReplacementListByReplacementDay(replacementResponseDtoList);
     }
 
     public ReplacementDetailResponseDto detail(Long replacementId) {
