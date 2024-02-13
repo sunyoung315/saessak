@@ -7,7 +7,7 @@
     </h5>
   </div>
   <div class="flow-root mt-12 grow h-screen">
-    <div v-if="chat.length == 0" class="text-xl text-center mt-96">생성된 채팅방이 없습니다.</div>
+    <div v-if="isEmpty == false" class="text-xl text-center mt-56">생성된 채팅방이 없습니다.</div>
     <ul role="list" class="" v-for="chatItem in chat" :key="chatItem.chatId">
       <li v-if="chatItem.flag === false" class="cursor-pointer py-3 mb-2 border border-gray-300 shadow rounded-lg sm:py-4">
         <div
@@ -65,10 +65,13 @@
             <div
               class="absolute top-0 left-0 h-2 transform -translate-x-1/2 -translate-y-1/2 bg-yellow-500 rounded-full"
             ></div>
+            <img v-if="isTeacher == true" 
+              class="w-8 h-8 rounded-full" 
+              :src="chatItem.kidProfile" />
             <img
+              v-if="isTeacher == false"
               class="w-8 h-8 rounded-full"
-              src="https://flowbite.com/docs/images/people/profile-picture-4.jpg"
-              alt="Bonnie image"
+              :src="chatItem.teacherProfile"
             />
           </div>
           <div class="flex-1 min-w-0 ms-4">
@@ -109,12 +112,16 @@ onMounted(() => {
 const store = loginStore()
 const { isTeacher } = storeToRefs(store)
 const userId = ref(3)
+const isEmpty = ref(true)
 const getChatList = () => {
   if (isTeacher.value) {
     // 선생님 조회
     chatListTeacher(
       ({ data }) => {
         chat.value = data.data
+        if(chat.value.length == 0){
+          isEmpty.value = false
+        }
       },
       (error) => {
       }
@@ -124,6 +131,9 @@ const getChatList = () => {
     chatListParent(
       ({ data }) => {
         chat.value = data.data
+        if(chat.value.length == 0){
+          isEmpty.value = false
+        }
       },
       (error) => {
       }
