@@ -41,11 +41,13 @@ const route = useRoute()
 const store = loginStore()
 const code = ref(null)
 
-const { isLogin, isTeacher, kidList, userId, isAlarm } = storeToRefs(store)
-const { setUserid, setlogin, setTeacherFlag, setKidlist, setTeachername, setAlarmFlag} = store
+const { isLogin, isTeacher, kidList, userId } = storeToRefs(store)
+const { setUserid, setlogin, setTeacherFlag, setKidlist, setTeachername} = store
 const joinCode = ref('') // 가입 인증 코드
 onMounted(() => {
   if (userId != 0) {
+    // console.log('전송받은 userId : ');
+    // console.log(userId.value)
   }
 })
 
@@ -53,16 +55,16 @@ const KLogin = (input) => {
   if (input.data.isTeacher) {
     // 선생님 로그인
     setTeacherFlag(true)
-    setAlarmFlag(input.data.alarm)
-    localStorage.setItem('refreshToken', input.data.refreshToken)
-    localStorage.setItem('accessToken', input.data.accessToken)
+    sessionStorage.setItem('refreshToken', input.data.refreshToken)
+    sessionStorage.setItem('accessToken', input.data.accessToken)
     setTeachername(input.data.teacherName)
   } else {
     // 학부모 로그인
     setTeacherFlag(false)
-    setAlarmFlag(input.data.alarm)
-    localStorage.setItem('accessToken', input.data.accessToken)
-    localStorage.setItem('refreshToken', input.data.refreshToken) // 토큰만 세션에 저장
+    // sessionStorage.setItem('isTeacher', input.data.isTeacher)
+    sessionStorage.setItem('accessToken', input.data.accessToken)
+    sessionStorage.setItem('refreshToken', input.data.refreshToken) // 토큰만 세션에 저장
+    // sessionStorage.setItem('kidList', JSON.stringify(input.data.kidList))
     setKidlist(input.data.kidList) // 나머지 정보는 pinia 저장
   }
   // console.log('KLogin 실행')
@@ -75,6 +77,8 @@ const Join = () => {
     userId: userId.value,
     registCode: joinCode.value
   }
+  // console.log('전송 data ')
+  // console.log(data)
   axios
     .post('https://i10a706.p.ssafy.io/api/oauth/kakao/join', data)
     // 발급된 코드를 갖고 신규/기존 회원 여부 판별하는 axios 호출

@@ -25,7 +25,7 @@ export const useAttendanceStore = defineStore('attendance', () => {
 			data,
 			headers: {
 				'Content-Type': 'application/json',
-				Authorization: 'Bearer ' + localStorage.getItem('accessToken'),
+				Authorization: 'Bearer ' + sessionStorage.getItem('accessToken'),
 			},
 		}).then(resp => {
 			weeklyList.value = resp.data.data;
@@ -113,7 +113,7 @@ export const useAttendanceStore = defineStore('attendance', () => {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
-				Authorization: 'Bearer ' + localStorage.getItem('accessToken'),
+				Authorization: 'Bearer ' + sessionStorage.getItem('accessToken'),
 			},
 		}).then(resp => {
 			let time = resp.data.data.attendanceTime;
@@ -131,7 +131,7 @@ export const useAttendanceStore = defineStore('attendance', () => {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
-				Authorization: 'Bearer ' + localStorage.getItem('accessToken'),
+				Authorization: 'Bearer ' + sessionStorage.getItem('accessToken'),
 			},
 		}).then(resp => {
 			let time = resp.data.data.attendanceTime;

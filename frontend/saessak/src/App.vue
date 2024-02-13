@@ -1,31 +1,17 @@
 <template>
-    <RouterView></RouterView>
+	<TheHeader />
+	<div class="flex">
+		<TheNav />
+		<TheView />
+	</div>
+	<TheFooter />
 </template>
 
 <script setup>
-import {loginStore} from '@/store/loginStore';
-
-const store = loginStore();
-const {
-	setlogout,
-	setCurkid,
-	setKidlist,
-	setTeacherFlag,
-	setTeachername,
-    setClassroomname,
-	setAlarmFlag,
-} = store;
-const lStore = JSON.parse(localStorage.getItem('loginStore'));
-// console.log("loginStore : " + loginStore)
-if(lStore == null){
-    setlogout()
-    setCurkid(-1)
-    setKidlist()
-    setTeacherFlag(false)
-    setTeachername("")
-    setClassroomname("")
-    setAlarmFlag(false)
-}
+import TheHeader from '@/components/common/TheHeader.vue';
+import TheNav from '@/components/common/TheNav.vue';
+import TheView from '@/components/common/TheView.vue';
+import TheFooter from '@/components/common/TheFooter.vue';
 </script>
 
 <style scoped></style>

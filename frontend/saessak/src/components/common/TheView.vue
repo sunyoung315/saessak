@@ -1,5 +1,5 @@
 <template>
-	<div class="w-full">
+	<div class="w-3/4">
 		<RouterView></RouterView>
 	</div>
 </template>
