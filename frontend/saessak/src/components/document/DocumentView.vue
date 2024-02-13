@@ -13,7 +13,7 @@
 					"
 				>
 					<button
-						@click="documentClick()"
+						@click="replaceClick()"
 						class="group-btn-left-item"
 						:class="
 							isReplace
@@ -24,7 +24,7 @@
 						귀가동의서
 					</button>
 					<button
-						@click="documentClick()"
+						@click="allergyClick()"
 						class="group-btn-right-item"
 						:class="
 							!isReplace
@@ -49,7 +49,11 @@
 				</button>
 			</div>
 		</div>
-		<router-view :loginStore="loginStore" :isReplace="isReplace" />
+		<router-view
+			:loginStore="loginStore"
+			:isReplace="isReplace"
+			:isAllergy="isAllergy"
+		/>
 	</div>
 </template>
 
@@ -64,10 +68,17 @@ let isTeacher = loginStore.isTeacher;
 
 // boolean 설정, isReplace: 귀가동의서(T)/식품 알레르기 동의서(F) 버튼
 const isReplace = ref(true);
+const isAllergy = ref(false);
 
 // 동의서 버튼 동작
-function documentClick() {
-	isReplace.value = !isReplace.value;
+function replaceClick() {
+	isReplace.value = true;
+	isAllergy.value = false;
+}
+
+function allergyClick() {
+	isReplace.value = false;
+	isAllergy.value = true;
 }
 
 const path = computed(() => {

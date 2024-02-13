@@ -124,6 +124,7 @@ const kidId = loginStore.kidList[0].kidId;
 // isReplace : 귀가 동의서(T), 식품 알레르기 조사서(F) 구분
 const props = defineProps({
 	isReplace: Boolean,
+	isAllergy: Boolean,
 });
 
 // 내 아이 귀가동의서 목록 가져오기
