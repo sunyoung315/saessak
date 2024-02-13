@@ -13,7 +13,7 @@ export const useUserStore = defineStore('user', () => {
 			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json',
-				Authorization: 'Bearer ' + localStorage.getItem('accessToken'),
+				Authorization: 'Bearer ' + sessionStorage.getItem('accessToken'),
 			},
 		}).then(resp => {
 			kidsList.value = resp.data.data;

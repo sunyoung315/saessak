@@ -4,21 +4,17 @@ const local = localAxios();
 
 const url = "/oauth";
 
-const config = {
-    headers : {
-        "Authorization" : "Bearer " + localStorage.getItem("accessToken")
+
+function kakaoLogin(sucess, fail){
+    const config = {
+        headers : {
+            'Origin' : 'http://localhost:5173/'
+        }
     }
-} // 헤더에 accessToken 담아서 전송하기!!
 
-function userLogout(success, fail) {
-    local.get(`${url}/logout`, config).then(success).catch(fail);
-}
-
-async function userDelete(userId, success, fail){
-    await local.delete(`${url}/${userId}`).then(success).catch(fail);
+    local.get(`${url}/kakao/login`).then(sucess).catch(fail);
 }
 
 export {
-    userLogout,
-    userDelete
+    kakaoLogin
 }

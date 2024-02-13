@@ -2,7 +2,7 @@
 	<div>
 		<canvas
 			ref="canvas"
-			width="400"
+			width="500"
 			height="200"
 			style="border: 1px solid #000"
 			@mousedown="startDrawing"
@@ -20,7 +20,6 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 
-// 전자서명
 const canvas = ref(null);
 let ctx = null;
 let drawing = ref(false);
@@ -30,8 +29,6 @@ let lastY = 0;
 onMounted(() => {
 	ctx = canvas.value.getContext('2d');
 });
-
-const emit = defineEmits(['signature-saved']);
 
 const startDrawing = e => {
 	drawing.value = true;
@@ -57,26 +54,12 @@ const stopDrawing = () => {
 	drawing.value = false;
 };
 
-const dataURItoBlob = dataURI => {
-	var binary = atob(dataURI.split(',')[1]);
-	var array = [];
-	for (var i = 0; i < binary.length; i++) {
-		array.push(binary.charCodeAt(i));
-	}
-	return new Blob([new Uint8Array(array)], { type: 'image/png' });
-};
-
 const saveSignature = () => {
 	const dataUrl = canvas.value.toDataURL();
-	// 서명 데이터 이벤트 전달
-	// emit('signature-saved', dataUrl);
-	// console.log(dataUrl);
-	const blobData = dataURItoBlob(dataUrl);
-	// console.log(blobData);
-	emit('signature-saved', blobData);
+	console.log(dataUrl);
 
 	// File Download
-	const image = canvas.value.toDataURL('image/png');
+	// const image = canvas.value.toDataURL('image/png');
 	// const link = document.createElement('a');
 	// link.href = image;
 	// link.download = 'signature';

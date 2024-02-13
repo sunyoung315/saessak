@@ -8,7 +8,7 @@ const createBoard = async data => {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
-			Authorization: 'Bearer ' + localStorage.getItem('accessToken'),
+			Authorization: 'Bearer ' + sessionStorage.getItem('accessToken'),
 		},
 		data,
 	});
