@@ -5,29 +5,64 @@ import { defineStore } from 'pinia';
 const REST_BOARD_API = 'https://i10a706.p.ssafy.io/api/board';
 
 export const useBoardStore = defineStore('board', () => {
-	// 학부모ver 내 아이 알림장 리스트
-	const myKidBoards = ref([]);
+	const thisYear = new Date().getFullYear();
+	const years = ref([]);
+	for (let i = 0; i < 10; i++) {
+		years.value[i] = thisYear - i;
+	}
+	const months = ref([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
 
-	// 학부모ver 내 아이 알림장 리스트 요청
-	const getMyKidBoards = async kidId => {
+	// 선생님ver 알림장이 작성되지 않은 아이들 리스트
+	const kidList = ref([]);
+	const getKidList = async () => {
 		await axios({
-			url: `${REST_BOARD_API}/${kidId}`,
+			url: `${REST_BOARD_API}/teacher/day`,
 			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json',
-				Authorization: 'Bearer ' + sessionStorage.getItem('accessToken'),
+				Authorization: 'Bearer ' + localStorage.getItem('accessToken'),
+			},
+		}).then(resp => {
+			kidList.value = resp.data.data;
+		});
+	};
+
+	// 학부모ver 내 아이 알림장 리스트
+	const myKidBoards = ref([]);
+
+	// 학부모ver 내 아이 알림장 월별 리스트 요청
+	const getMyKidMonthlyBoards = async (kidId, year, month) => {
+		await axios({
+			url: `${REST_BOARD_API}/month/${kidId}`,
+			method: 'POST',
+			data: { year, month },
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: 'Bearer ' + localStorage.getItem('accessToken'),
 			},
 		}).then(resp => {
 			myKidBoards.value = resp.data.data;
 		});
 	};
 
+	// // 학부모ver 내 아이 알림장 리스트 요청
+	// const getMyKidBoards = async kidId => {
+	// 	await axios({
+	// 		url: `${REST_BOARD_API}/${kidId}`,
+	// 		method: 'GET',
+	// 		headers: {
+	// 			'Content-Type': 'application/json',
+	// 			Authorization: 'Bearer ' + localStorage.getItem('accessToken'),
+	// 		},
+	// 	}).then(resp => {
+	// 		myKidBoards.value = resp.data.data;
+	// 	});
+	// };
+
 	// 알림장 1개
 	const oneBoard = ref({});
 	// 검색할 날짜
 	const date = ref('');
-	// 알림장이 없을 경우
-	const noContent = ref('');
 
 	// 알림장 상세보기(boardId)
 	const getOneBoard = async boardId => {
@@ -53,17 +88,9 @@ export const useBoardStore = defineStore('board', () => {
 			headers: {
 				'Content-Type': 'application/json',
 			},
-		})
-			.then(resp => {
-				noContent.value = '';
-				oneBoard.value = resp.data.data;
-				date.value = oneBoard.value.boardDate;
-			})
-			.catch(error => {
-				if (error.response.status === 500) {
-					noContent.value = '등록된 알림장이 없습니다.';
-				}
-			});
+		}).then(resp => {
+			oneBoard.value = resp.data.data;
+		});
 	};
 
 	// 알림장 상세보기(kidId, 최신 알림장)
@@ -75,12 +102,9 @@ export const useBoardStore = defineStore('board', () => {
 				'Content-Type': 'application/json',
 			},
 		}).then(resp => {
-			if (resp.data.data) {
-				noContent.value = '';
-				oneBoard.value = resp.data.data;
+			oneBoard.value = resp.data.data;
+			if (oneBoard.value) {
 				date.value = oneBoard.value.boardDate;
-			} else {
-				noContent.value = '등록된 알림장이 없습니다.';
 			}
 		});
 	};
@@ -88,7 +112,7 @@ export const useBoardStore = defineStore('board', () => {
 	// 선택 기간의 알림장 조회
 	const summary = ref({});
 	const boardList = ref([]);
-	const getSummaryBoard = async (kidId, { startDate, endDate }) => {
+	const getSummaryBoard = async (kidId, startDate, endDate) => {
 		await axios({
 			url: `${REST_BOARD_API}/summary/${kidId}`,
 			method: 'POST',
@@ -104,26 +128,22 @@ export const useBoardStore = defineStore('board', () => {
 	// 성장도표 조회
 	const tallList = ref([]);
 	const weightList = ref([]);
-	const getGrowthList = async (gender, myKidMonths) => {
+	const getGrowthList = async gender => {
 		await axios({
 			url: 'https://i10a706.p.ssafy.io/api/growth',
 			method: 'POST',
 			data: {
 				gender,
-				startMonth: myKidMonths - 48,
-				endMonth: myKidMonths + 12,
+				startMonth: 1,
+				endMonth: 100,
 			},
 			headers: {
 				'Content-Type': 'application/json',
 			},
-		})
-			.then(resp => {
-				tallList.value = resp.data.data.tallList;
-				weightList.value = resp.data.data.weightList;
-			})
-			.catch(err => {
-				console.log(err);
-			});
+		}).then(resp => {
+			tallList.value = resp.data.data.tallList;
+			weightList.value = resp.data.data.weightList;
+		});
 	};
 
 	// 선택기간 아이의 성장 기록 조회
@@ -141,14 +161,32 @@ export const useBoardStore = defineStore('board', () => {
 		});
 	};
 
+	// 알림장 있는 날짜 리스트
+	const activeDates = ref([]);
+	const getActiveDates = async kidId => {
+		await axios({
+			url: `${REST_BOARD_API}/exist/${kidId}`,
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: 'Bearer ' + localStorage.getItem('accessToken'),
+			},
+		}).then(resp => {
+			activeDates.value = resp.data.data;
+		});
+	};
+
 	return {
+		years,
+		months,
+		kidList,
+		getKidList,
+		getMyKidMonthlyBoards,
 		myKidBoards,
-		getMyKidBoards,
 		oneBoard,
 		getOneBoard,
 		date,
 		getOneBoardByDate,
-		noContent,
 		getCurrentBoard,
 		summary,
 		boardList,
@@ -158,5 +196,7 @@ export const useBoardStore = defineStore('board', () => {
 		getGrowthList,
 		myKidGrowthList,
 		getMyKidGrowthList,
+		activeDates,
+		getActiveDates,
 	};
 });

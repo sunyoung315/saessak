@@ -14,11 +14,19 @@
 				<div class="block mt-1 ml-32 mb-10">
 					<select
 						id="name"
-						class="datepicker-input px-5 text-[18px]"
-						v-model="kidId"
+						class="selection-input"
+						:value="kidId"
+						@change="
+							kidId = $event.target.value;
+							emptyKidId = false;
+						"
+						:class="{
+							'border-2 border-red-500': emptyKidId,
+							shake: shakeKidId,
+						}"
 						required
 					>
-						<template v-for="kid in userStore.kidsList" :key="kid.kidId">
+						<template v-for="kid in boardStore.kidList" :key="kid.kidId">
 							<option :value="kid.kidId">{{ kid.kidName }}</option>
 						</template>
 					</select>
@@ -31,11 +39,16 @@
 					class="content-box mb-10 p-4 text-lg"
 					rows="6"
 					v-model="newBoard.boardContent"
+					@input="emptyContent = false"
+					:class="{
+						'!border-2 !border-red-500': emptyContent,
+						shake: shakeContent,
+					}"
 					required
 				></textarea>
 			</label>
 		</div>
-		<span class="content-title">건강기록</span>
+		<span class="content-title">건강기록 (선택)</span>
 		<div class="content-box mb-0 p-2">
 			<div class="record-flex">
 				<span class="record-title">체온 체크 </span>
@@ -254,11 +267,11 @@
 import { onMounted, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { createBoard } from '@/api/board';
-import { useUserStore } from '@/store/user';
+// import { useUserStore } from '@/store/user';
 import { useBoardStore } from '@/store/board';
 
 const router = useRouter();
-const userStore = useUserStore();
+// const userStore = useUserStore();
 const boardStore = useBoardStore();
 
 // '목록'으로 라우팅
@@ -268,7 +281,8 @@ const goBoardList = () => {
 
 // 작성할 수 있는 반 아이 리스트
 onMounted(async () => {
-	await userStore.getKidsList();
+	await boardStore.getKidList();
+	// await userStore.getKidsList();
 });
 
 const kidId = ref(0);
@@ -348,13 +362,25 @@ const decrementWeight = () => {
 
 // group button 변경 함수 ///////////////////////
 const isFirst = () => {
-	newBoard.value.boardPoopStatus = '보통';
+	if (newBoard.value.boardPoopStatus === '보통') {
+		newBoard.value.boardPoopStatus = '';
+	} else {
+		newBoard.value.boardPoopStatus = '보통';
+	}
 };
 const isSecond = () => {
-	newBoard.value.boardPoopStatus = '묽음';
+	if (newBoard.value.boardPoopStatus === '묽음') {
+		newBoard.value.boardPoopStatus = '';
+	} else {
+		newBoard.value.boardPoopStatus = '묽음';
+	}
 };
 const isThird = () => {
-	newBoard.value.boardPoopStatus = '딱딱함';
+	if (newBoard.value.boardPoopStatus === '딱딱함') {
+		newBoard.value.boardPoopStatus = '';
+	} else {
+		newBoard.value.boardPoopStatus = '딱딱함';
+	}
 };
 
 const buttonClass = button => {
@@ -373,8 +399,39 @@ const buttonClass = button => {
 };
 ///////////////////////////////////////////////
 
+const emptyKidId = ref(false);
+const shakeKidId = ref(false);
+
+const emptyContent = ref(false);
+const shakeContent = ref(false);
+
+// 널값처리
+const checkEmptyFields = () => {
+	let hasEmptyFields = false;
+	if (!newBoard.value.kidId) {
+		emptyKidId.value = true;
+		shakeKidId.value = true;
+		hasEmptyFields = true;
+		setTimeout(() => {
+			shakeKidId.value = false;
+		}, 1000);
+	}
+	if (!newBoard.value.boardContent.trim()) {
+		emptyContent.value = true;
+		shakeContent.value = true;
+		hasEmptyFields = true;
+		setTimeout(() => {
+			shakeContent.value = false;
+		}, 1000);
+	}
+	return hasEmptyFields;
+};
+
 // 알림장 등록 요청
 const registBoard = () => {
+	if (checkEmptyFields()) {
+		return;
+	}
 	createBoard(newBoard.value);
 	router.push({ name: 'BoardList' });
 };
@@ -406,19 +463,19 @@ const registBoard = () => {
 	@apply inline-flex h-10 rounded-md shadow-sm;
 }
 .group-button-left {
-	@apply px-5 py-2 text-base font-medium text-gray-900 bg-white border border-gray-200 rounded-s-lg focus:z-10 focus:ring-2 focus:ring-dark-navy focus:text-dark-navy focus:font-bold focus:bg-gray-100;
+	@apply px-5 py-2 text-base font-medium text-gray-900 bg-white border border-gray-200 rounded-s-lg;
 }
 .group-button-left-selected {
 	@apply px-5 py-2 text-base rounded-s-lg z-10 ring-2 ring-dark-navy text-dark-navy font-bold bg-gray-100;
 }
 .group-button-center {
-	@apply px-5 py-2 text-base font-medium text-gray-900 bg-white border-t border-b border-gray-200 focus:z-10 focus:ring-2 focus:ring-dark-navy focus:text-dark-navy focus:font-bold focus:bg-gray-100;
+	@apply px-5 py-2 text-base font-medium text-gray-900 bg-white border-t border-b border-gray-200;
 }
 .group-button-center-selected {
 	@apply px-5 py-2 text-base z-10 ring-2 ring-dark-navy text-dark-navy font-bold bg-gray-100;
 }
 .group-button-right {
-	@apply px-5 py-2 text-base font-medium text-gray-900 bg-white border border-gray-200 rounded-e-lg focus:z-10 focus:ring-2 focus:ring-dark-navy focus:text-dark-navy focus:font-bold focus:bg-gray-100;
+	@apply px-5 py-2 text-base font-medium text-gray-900 bg-white border border-gray-200 rounded-e-lg;
 }
 .group-button-right-selected {
 	@apply px-5 py-2 text-base rounded-e-lg z-10 ring-2 ring-dark-navy text-dark-navy font-bold bg-gray-100;
@@ -434,5 +491,46 @@ const registBoard = () => {
 }
 .number-input {
 	@apply relative flex items-center;
+}
+
+@keyframes shake {
+	0% {
+		transform: translateX(0px);
+	}
+	25% {
+		transform: translateX(-2px);
+	}
+	50% {
+		transform: translateX(0px);
+	}
+	75% {
+		transform: translateX(2px);
+	}
+	100% {
+		transform: translateX(0px);
+	}
+}
+.shake {
+	animation: shake 0.2s;
+	animation-iteration-count: 3;
+}
+
+::-webkit-scrollbar {
+	width: 0.5rem;
+}
+/* 스크롤바의 트랙(경로)부분 */
+::-webkit-scrollbar-track {
+	background-color: #dcdcdc;
+	border-radius: 1rem;
+	box-shadow: inset 0px 0px 5px white;
+}
+/* 스크롤바의 핸들(드래그하는 부분) */
+::-webkit-scrollbar-thumb {
+	background-color: #777;
+	border-radius: 1rem;
+}
+/* 스크롤바의 핸들을 호버 시 */
+::-webkit-scrollbar-thumb:hover {
+	background: #555;
 }
 </style>

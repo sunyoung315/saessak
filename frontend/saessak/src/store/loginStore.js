@@ -1,46 +1,81 @@
-import { kakaoLogin } from "@/api/oauth";
-import { defineStore } from "pinia";
+import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
 import createPersistedState from 'pinia-plugin-persistedstate';
 
-export const loginStore = defineStore("loginStore", () => {
-    const isLogin = ref(false);
-    const isTeacher = ref(false)
-    const teacherName = ref("")
-    const kidList = ref([])
-    const curKid = ref(-1)
-    const userId = ref(0)
+export const loginStore = defineStore(
+	'loginStore',
+	() => {
+		const isLogin = ref(false);
+		const isAlarm = ref(false);
+		const isTeacher = ref(false);
+		const teacherName = ref('');
+		const classroomName = ref('');
+		const kidList = ref([]);
+		const curKid = ref(-1);
+		const userId = ref(0);
+		const profile = ref('');
 
-    function setlogin(){
-        isLogin.value = true;
-    }
+		function setlogin() {
+			isLogin.value = true;
+		}
 
-    function setlogout(){
-        isLogin.value = false;
-    }
+		function setlogout() {
+			isLogin.value = false;
+		}
 
-    function setTeacherFlag(input){
-        isTeacher.value = input;
-    }
+		function setAlarmFlag(input) {
+			isAlarm.value = input;
+		}
 
-    function setTeachername(name){
-        teacherName.value = name;
-    }
+		function setTeacherFlag(input) {
+			isTeacher.value = input;
+		}
 
-    function setKidlist(list){
-        kidList.value = list;
-    }
+		function setTeachername(name) {
+			teacherName.value = name;
+		}
 
-    function setUserid(id){
-        userId.value = id;
-    }
+		function setClassroomname(name) {
+			classroomName.value = name;
+		}
 
-    function setCurkid(kid){
-        curKid.value = kid;
-    }
+		function setKidlist(list) {
+			kidList.value = list;
+		}
 
-    return {isLogin, isTeacher, teacherName, kidList, curKid, userId,
-        setCurkid, setKidlist, setTeacherFlag, setTeachername, setUserid, setlogin, setlogout};
-}, {persist : true,
-    strategies: [{ storage: sessionStorage }],
-});
+		function setUserid(id) {
+			userId.value = id;
+		}
+
+		function setCurkid(kid) {
+			curKid.value = kid;
+		}
+
+		function setProfile(url) {
+			profile.value = url;
+		}
+
+		return {
+			isLogin,
+			isAlarm,
+			isTeacher,
+			teacherName,
+			classroomName,
+			kidList,
+			curKid,
+			userId,
+			profile,
+			setCurkid,
+			setKidlist,
+			setAlarmFlag,
+			setTeacherFlag,
+			setTeachername,
+			setClassroomname,
+			setUserid,
+			setlogin,
+			setlogout,
+			setProfile,
+		};
+	},
+	{ persist: true, strategies: [{ storage: localStorage }] },
+);

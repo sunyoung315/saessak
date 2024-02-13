@@ -1,18 +1,23 @@
 <template>
 	<aside
 		id="default-sidebar"
-		class="top-0 left-0 z-40 w-64 h-auto min-h-full transition-transform -translate-x-full sm:translate-x-0"
+		class="top-0 left-0 z-30 w-64 min-h-screen transition-transform -translate-x-full sm:translate-x-0"
 		aria-label="Sidebar"
 	>
+		<!-- overflow-y-auto <-- sticky 할려면 얘 없어야함 -->
 		<div
-			class="h-full min-h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800"
+			class="relative h-full min-h-full px-3 py-4 bg-gray-50 dark:bg-gray-800"
 			:class="navColor"
 		>
-			<ul class="space-y-5 space-x-3 font-bold text-base">
+			<ul class="sticky top-28 space-y-3 space-x-3 font-bold text-base">
 				<li></li>
-				<li @click="changeNavColor('bg-nav-red')">
+				<li @click="changeNavColor({ color: 'bg-nav-red', name: 'home' })">
 					<RouterLink
 						:to="{ name: 'Home' }"
+						id="Home"
+						:style="{
+							backgroundColor: selected === 'home' ? 'white' : 'inherit',
+						}"
 						class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 focus:bg-gray-100 dark:hover:bg-gray-700 group"
 					>
 						<svg
@@ -25,13 +30,20 @@
 								d="M23.121,9.069,15.536,1.483a5.008,5.008,0,0,0-7.072,0L.879,9.069A2.978,2.978,0,0,0,0,11.19v9.817a3,3,0,0,0,3,3H21a3,3,0,0,0,3-3V11.19A2.978,2.978,0,0,0,23.121,9.069ZM15,22.007H9V18.073a3,3,0,0,1,6,0Zm7-1a1,1,0,0,1-1,1H17V18.073a5,5,0,0,0-10,0v3.934H3a1,1,0,0,1-1-1V11.19a1.008,1.008,0,0,1,.293-.707L9.878,2.9a3.008,3.008,0,0,1,4.244,0l7.585,7.586A1.008,1.008,0,0,1,22,11.19Z"
 							/>
 						</svg>
-						<span class="ms-3">Home</span>
+						<span class="ms-3">시작화면</span>
 					</RouterLink>
 				</li>
 
-				<li v-if="flag == true" @click="changeNavColor('bg-nav-orange')">
+				<li
+					v-if="flag == true"
+					@click="changeNavColor({ color: 'bg-nav-orange', name: 'notice' })"
+				>
 					<RouterLink
-						:to="{ name: 'Notice' }"
+						:to="{ name: 'NoticeList' }"
+						id="Notice"
+						:style="{
+							backgroundColor: selected === 'notice' ? 'white' : 'inherit',
+						}"
 						class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 focus:bg-gray-100 dark:hover:bg-gray-700 group"
 					>
 						<svg
@@ -48,9 +60,16 @@
 						<span class="flex-1 ms-3 whitespace-nowrap">공지사항</span>
 					</RouterLink>
 				</li>
-				<li v-if="flag == true" @click="changeNavColor('bg-nav-yellow')">
+				<li
+					v-if="flag == true"
+					@click="changeNavColor({ color: 'bg-nav-yellow', name: 'board' })"
+				>
 					<RouterLink
 						:to="{ name: 'BoardList' }"
+						id="Board"
+						:style="{
+							backgroundColor: selected === 'board' ? 'white' : 'inherit',
+						}"
 						class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 focus:bg-gray-100 dark:hover:bg-gray-700 group"
 					>
 						<svg
@@ -67,9 +86,16 @@
 						<span class="flex-1 ms-3 whitespace-nowrap">알림장</span>
 					</RouterLink>
 				</li>
-				<li v-if="flag == true" @click="changeNavColor('bg-nav-green')">
+				<li
+					v-if="flag == true"
+					@click="changeNavColor({ color: 'bg-nav-green', name: 'album' })"
+				>
 					<RouterLink
 						:to="{ name: 'AlbumList' }"
+						id="Album"
+						:style="{
+							backgroundColor: selected === 'album' ? 'white' : 'inherit',
+						}"
 						class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 focus:bg-gray-100 dark:hover:bg-gray-700 group"
 					>
 						<svg
@@ -86,9 +112,16 @@
 						<span class="flex-1 ms-3 whitespace-nowrap">앨범</span>
 					</RouterLink>
 				</li>
-				<li v-if="flag == true" @click="changeNavColor('bg-nav-blue')">
+				<li
+					v-if="flag == true"
+					@click="changeNavColor({ color: 'bg-nav-blue', name: 'document' })"
+				>
 					<RouterLink
 						:to="{ name: 'DocumentList' }"
+						id="Document"
+						:style="{
+							backgroundColor: selected === 'document' ? 'white' : 'inherit',
+						}"
 						class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 focus:bg-gray-100 dark:hover:bg-gray-700 group"
 					>
 						<svg
@@ -105,9 +138,16 @@
 						<span class="flex-1 ms-3 whitespace-nowrap">동의서</span>
 					</RouterLink>
 				</li>
-				<li v-if="flag == true" @click="changeNavColor('bg-nav-navy')">
+				<li
+					v-if="flag == true"
+					@click="changeNavColor({ color: 'bg-nav-navy', name: 'menu' })"
+				>
 					<RouterLink
-						:to="{ name: 'Menu' }"
+						:to="{ name: 'MenuList' }"
+						id="Menu"
+						:style="{
+							backgroundColor: selected === 'menu' ? 'white' : 'inherit',
+						}"
 						class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 focus:bg-gray-100 dark:hover:bg-gray-700 group"
 					>
 						<svg
@@ -124,9 +164,18 @@
 						<span class="flex-1 ms-3 whitespace-nowrap">식단표</span>
 					</RouterLink>
 				</li>
-				<li v-if="flag == true" @click="changeNavColor('bg-nav-purple')">
+				<li
+					v-if="flag == true"
+					@click="
+						changeNavColor({ color: 'bg-nav-purple', name: 'attendance' })
+					"
+				>
 					<RouterLink
 						:to="{ name: 'Attendance' }"
+						id="Attendance"
+						:style="{
+							backgroundColor: selected === 'attendance' ? 'white' : 'inherit',
+						}"
 						class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 focus:bg-gray-100 dark:hover:bg-gray-700 group"
 					>
 						<svg
@@ -143,32 +192,116 @@
 						<span class="flex-1 ms-3 whitespace-nowrap">출석부</span>
 					</RouterLink>
 				</li>
+				<li
+					v-if="flag == true && isTeacher"
+					@click="changeNavColor({ color: 'bg-nav-gray', name: 'setting' })"
+				>
+					<RouterLink
+						:to="{ name: 'Setting' }"
+						id="Setting"
+						:style="{
+							backgroundColor: selected === 'setting' ? 'white' : 'inherit',
+						}"
+						class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 focus:bg-gray-100 dark:hover:bg-gray-700 group"
+					>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							id="Layer_1"
+							data-name="Layer 1"
+							viewBox="0 0 24 24"
+							class="w-6 h-6"
+						>
+							<path
+								d="M11.5 0L14 3L18 3.5L20 6.5L18 10L20 13.5L18 16.5L14 17L11.5 20H8.5L6 17L2 16.5L0 13.5L2 10L0 6.5L2 3.5L6 3L8.5 0H11.5ZM10.562 1.999H9.437L7.0312 4.88666L3.156 5.37L2.35 6.581L4.3035 10L2.35 13.418L3.156 14.629L7.0312 15.1133L9.436 17.999H10.563L12.9688 15.1133L16.843 14.629L17.649 13.418L15.6965 10L17.649 6.581L16.843 5.37L12.9688 4.88666L10.562 1.999ZM10 6C12.2091 6 14 7.79086 14 10C14 12.2091 12.2091 14 10 14C7.79086 14 6 12.2091 6 10C6 7.79086 7.79086 6 10 6ZM10 8C8.89543 8 8 8.89543 8 10C8 11.1046 8.89543 12 10 12C11.1046 12 12 11.1046 12 10C12 8.89543 11.1046 8 10 8Z"
+							/>
+						</svg>
+						<span class="flex-1 ms-3 whitespace-nowrap">우리반 관리</span>
+					</RouterLink>
+				</li>
 			</ul>
 		</div>
 	</aside>
 </template>
 
 <script setup>
-import { onMounted, ref, watch } from 'vue';
+import { onMounted, ref, watch, defineProps, defineEmits, computed } from 'vue';
+import { useRoute } from 'vue-router';
+import { loginStore } from '@/store/loginStore';
+import { storeToRefs } from 'pinia';
+
+const route = useRoute();
+const store = loginStore();
 
 // Local Storage에서 색상을 가져와서 설정 or 기본으로 bg-nav-red로 설정
 const navColor = ref(localStorage.getItem('navColor') || 'bg-nav-red');
 const flag = ref(false); // 로그인 여부 저장
+const selected = ref('');
+const { isTeacher } = storeToRefs(store);
+const emits = defineEmits(['headerClick']); // 메뉴 클릭 이벤트
+const props = defineProps({
+	navData: {
+		type: String,
+		default: '',
+	},
+});
 onMounted(() => {
 	// 로그인 여부 판단하기
-	const token = sessionStorage.getItem('accessToken');
+	// console.log(props.navData)
+	const token = localStorage.getItem('accessToken');
 	flag.value = token == null ? false : true;
 	// console.log(flag);
+	const now = route.path.slice(1);
+	// console.log('now : ' + now);
+	if (now == '') {
+		selected.value = 'home';
+	} else {
+		selected.value = now;
+	}
+});
+
+// 메인페이지 알림장, 공지사항 '자세히 보기'로 이동, 아이 변경 시 Nav 컬러 추적
+const path = computed(() => route.path.substr(1));
+watch(path, newVal => {
+	if (route.path.substr(1, 5) === 'board') {
+		selected.value = 'board';
+		navColor.value = 'bg-nav-yellow';
+		localStorage.setItem('navColor', 'bg-nav-yellow');
+	} else if (route.path.substr(1, 6) === 'notice') {
+		selected.value = 'notice';
+		navColor.value = 'bg-nav-orange';
+		localStorage.setItem('navColor', 'bg-nav-orange');
+	} else if (newVal === '') {
+		selected.value = 'home';
+		navColor.value = 'bg-nav-red';
+		localStorage.setItem('navColor', 'bg-nav-red');
+	}
 });
 
 // navColor가 변경될 때 Local Storage에 저장
 watch(navColor, newColor => {
 	localStorage.setItem('navColor', newColor);
+	// console.log("color 변경됨")
 });
 
+watch(
+	() => props.navData,
+	(newValue, oldValue) => {
+		if (newValue == 'click') {
+			navColor.value = 'bg-nav-red';
+			localStorage.setItem('navColor', 'bg-nav-red');
+			selected.value = 'home';
+		}
+		//   console.log('props.navData changed:', newValue, oldValue);
+	},
+);
+
 // 각 색상 변경 함수. 선택한 색상을 Local Storage에 저장
-const changeNavColor = color => {
-	navColor.value = color;
+const changeNavColor = input => {
+	emits('navClick', '');
+	navColor.value = input.color;
+	selected.value = input.name;
+	localStorage.setItem('logoClick', false);
+	// console.log("selected : " + selected.value)
 };
 </script>
 
