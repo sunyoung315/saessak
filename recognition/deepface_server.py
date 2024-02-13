@@ -37,29 +37,17 @@ app = Flask(__name__)
 jwt_secret = config("JWT_SECRET_KEY")
 token_validator = Validator(jwt_secret)
 
-models = [
-  "VGG-Face", 
-  "Facenet", 
-  "Facenet512", 
-  "OpenFace", 
-  "DeepFace", 
-  "DeepID", 
-  "ArcFace", 
-  "SFace",
-]
 
-normals = [
-    'base', 'raw', 'Facenet', 'Facenet2018', 'VGGFace', 'VGGFace2', 'ArcFace'
-]
-
-model = "VGG-Face"
-normal = "VGGFace2"
+model = "Facenet512"
+normal = "Facenet2018"
+detector = "opencv"
+weight = 1.0968750000000003
 CORS(app, origins="*")  
 
 def get_face_embeddings (img ): 
     represent_objs = DeepFace.represent(
         img_path=img,
-        detector_backend="mtcnn",
+        detector_backend=detector,
         enforce_detection=False,
         model_name=model,
         normalization=normal
@@ -71,33 +59,6 @@ def get_face_embeddings (img ):
 
     return embedding_list
 
-# @app.route("/ai/auth" , methods=["POST"])
-# def refactor():
-#     ## 토큰 유효성 검사
-#     auth_header = request.headers.get('Authorization')
-#     if not auth_header : return jsonify({"status" : HTTPStatus.UNAUTHORIZED,"code" : "A105"})
-#     if auth_header.startswith("Bearer ") :
-#         # 헤더에 Bearer 토큰이 있을 때
-#         access_token = auth_header.split(' ')[1]
-#         result = token_validator.validate_token(access_token)
-#         data = result["data"]
-#         classroomId = data["classroom_id"]
-#         if not result["isValid"] :
-#             return jsonify(result)
-        
-#     else :
-#         # 헤더에 Bearer 토큰이 없을 떄
-#         return jsonify({"status" : HTTPStatus.UNAUTHORIZED , "code": "A104"})
-
-#     try : 
-#         images = request.files.getlist("images")
-#         album_date = request.form.get("albumDate")
-#         album_title = request.form.get("albumTitle")
-        
-
-#         return jsonify({"status" : HTTPStatus.CREATED, "message" : "success"})
-#     except Exception as e:
-#         return jsonify({"error" : str(e)})
 
 @app.route("/ai/album" , methods=["POST"])
 def verifyAlbum():
@@ -194,15 +155,15 @@ def verifyAlbum():
                                 dst.l2_normalize(kid_embed), dst.l2_normalize(image_embed)
                             )
                             threshold_euclidean_l2 = dst.findThreshold(model_name=model,distance_metric="euclidean_l2")
-                            if distance_euclidean_l2 > threshold_euclidean_l2*0.890625 : continue
+                            if distance_euclidean_l2 > threshold_euclidean_l2*weight : continue
                             
                             threshold_cosine = dst.findThreshold(model_name=model,distance_metric="cosine")
                             distance_cosine = dst.findCosineDistance(kid_embed, image_embed)
-                            if distance_cosine > threshold_cosine*0.84375 : continue
+                            if distance_cosine > threshold_cosine*weight : continue
                             
                             threshold_euclidean = dst.findThreshold(model_name=model,distance_metric="euclidean")
                             distance_euclidean = dst.findEuclideanDistance(kid_embed, image_embed)
-                            if distance_euclidean > threshold_euclidean*0.890625 : continue
+                            if distance_euclidean > threshold_euclidean*weight : continue
                                 
                             kid_album[kid_id].append(add_object.copy())
                             break
@@ -400,80 +361,49 @@ def verifyAlbum():
 #     except Exception as e:
 #         return jsonify({"error" : str(e)})
 
-@app.route("/ai/album/upload/<classroomId>", methods=["POST"])
-def uploadS3(classroomId) :
-    if(request.method == "POST") :
-        try : 
-            album_date = request.form.get("albumDate")
-            album_title= request.form.get("albumTitle")
-            files = request.files.getlist("images")
-            with engine.connect() as conn : 
-                result = conn.execute(
-                    insert(album_table),
-                    {
-                        "album_date" : album_date,
-                        "classroom_id" : classroomId,
-                        "album_title" : album_title
-                    }
-                )
-                album_id = result.inserted_primary_key[0]
-                photo = []
-                for file in files :
-                    file_name, file_extension = os.path.splitext(file.filename)
+# @app.route("/ai/album/upload/<classroomId>", methods=["POST"])
+# def uploadS3(classroomId) :
+#     if(request.method == "POST") :
+#         try : 
+#             album_date = request.form.get("albumDate")
+#             album_title= request.form.get("albumTitle")
+#             files = request.files.getlist("images")
+#             with engine.connect() as conn : 
+#                 result = conn.execute(
+#                     insert(album_table),
+#                     {
+#                         "album_date" : album_date,
+#                         "classroom_id" : classroomId,
+#                         "album_title" : album_title
+#                     }
+#                 )
+#                 album_id = result.inserted_primary_key[0]
+#                 photo = []
+#                 for file in files :
+#                     file_name, file_extension = os.path.splitext(file.filename)
 
-                    file_uuid = str(uuid.uuid4())
-                    path = "album/" + file_uuid + "." + file_extension
-                    s3.upload_fileobj(file.stream, s3_bucket_name, path)
-                    photo.append({
-                        "album_id" : album_id,
-                        "file_name" : file_name,
-                        "file_path" : db_base_url + path,
-                    })
-                conn.execute(
-                    insert(file_table),
-                    photo
-                ) 
+#                     file_uuid = str(uuid.uuid4())
+#                     path = "album/" + file_uuid + "." + file_extension
+#                     s3.upload_fileobj(file.stream, s3_bucket_name, path)
+#                     photo.append({
+#                         "album_id" : album_id,
+#                         "file_name" : file_name,
+#                         "file_path" : db_base_url + path,
+#                     })
+#                 conn.execute(
+#                     insert(file_table),
+#                     photo
+#                 ) 
 
-                conn.commit()
-                # db 저장 url 
-                return jsonify({"status" : HTTPStatus.OK , "message" : "upload success", "data" : {"albumId" : album_id}} )
-        except SQLAlchemyError as sqlerror:
-            print(str(sqlerror))
-            return jsonify({"status" : HTTPStatus.INTERNAL_SERVER_ERROR , "message" : "interner server error"})
-        except Exception as e:
-            return jsonify({"status" : HTTPStatus.BAD_REQUEST , "message" : "internal server error"})
+#                 conn.commit()
+#                 # db 저장 url 
+#                 return jsonify({"status" : HTTPStatus.OK , "message" : "upload success", "data" : {"albumId" : album_id}} )
+#         except SQLAlchemyError as sqlerror:
+#             print(str(sqlerror))
+#             return jsonify({"status" : HTTPStatus.INTERNAL_SERVER_ERROR , "message" : "interner server error"})
+#         except Exception as e:
+#             return jsonify({"status" : HTTPStatus.BAD_REQUEST , "message" : "internal server error"})
 
-# models = [
-#   "VGG-Face", 
-#   "Facenet", 
-#   "Facenet512", 
-#   "OpenFace", 
-#   "DeepFace", 
-#   "DeepID", 
-#   "ArcFace", 
-#   "Dlib", 
-#   "SFace",
-# ]
-
-# metrics = ["cosine", "euclidean", "euclidean_l2"]
-
-# def verify_image(image1, image2):
-#         '''
-#         params
-#         image1 : np array
-#         image2 : np array
-#         '''
-#         result = DeepFace.verify(image1, image2, 
-#                                  model_name="VGG-Face",
-#                                  normalization="base", 
-#                                  align=True, 
-#                                  detector_backend="opencv",
-#                                  enforce_detection=False,
-#                                  distance_metric="euclidean_l2"
-#                                  )
-#             # 결과 반환
-        
-#         return result
 
 if __name__ == '__main__':
     app.run(debug=True)
