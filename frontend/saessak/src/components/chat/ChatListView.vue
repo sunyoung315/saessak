@@ -1,5 +1,7 @@
 <template>
-  <div class="fixed w-1/3 top-0 right-0 flex px-3 py-5 pb-5 mx-auto border-l-2 border-l-gray-300 bg-yellow-50">
+  <div
+    class="fixed w-1/3 top-0 right-0 flex px-3 py-5 pb-5 mx-auto border-l-2 border-l-gray-300 bg-yellow-50"
+  >
     <h5
       class="flex items-center justify-center text-xl font-bold leading-none text-gray-900 dark:text-white"
     >
@@ -7,15 +9,18 @@
     </h5>
   </div>
   <div class="flow-root mt-12 grow h-screen">
-    <div v-if="chat.length == 0" class="text-xl text-center mt-96">생성된 채팅방이 없습니다.</div>
+    <div v-if="isEmpty == false" class="text-xl text-center mt-56">생성된 채팅방이 없습니다.</div>
     <ul role="list" class="" v-for="chatItem in chat" :key="chatItem.chatId">
-      <li v-if="chatItem.flag === false" class="cursor-pointer py-3 mb-2 border border-gray-300 shadow rounded-lg sm:py-4">
+      <li
+        v-if="chatItem.flag === false"
+        class="cursor-pointer py-3 mb-2 border border-gray-300 shadow rounded-lg sm:py-4"
+      >
         <div
           @click="
             chatDetail({
               roomId: chatItem.roomId,
               roomName: isTeacher == true ? chatItem.kidName : chatItem.teacherName,
-              chatProfile : isTeacher == true ? chatItem.kidProfile : chatItem.teacherProfile
+              chatProfile: isTeacher == true ? chatItem.kidProfile : chatItem.teacherProfile
             })
           "
           class="flex items-center px-3"
@@ -23,9 +28,7 @@
           <!--학부모->아이ID는 현재의 아이모드를 구분하기 위해 pinia에 저장해서 거기서 가져오기-->
           <!--선생님 화면에서 본인의 teacherId는 로그인 정보에서 가져오기-->
           <div class="flex-shrink-0">
-            <img v-if="isTeacher == true" 
-              class="w-8 h-8 rounded-full" 
-              :src="chatItem.kidProfile" />
+            <img v-if="isTeacher == true" class="w-8 h-8 rounded-full" :src="chatItem.kidProfile" />
             <img
               v-if="isTeacher == false"
               class="w-8 h-8 rounded-full"
@@ -45,7 +48,7 @@
       </li>
       <li
         v-else
-        class="relative py-3 mb-2 cursor-pointer  border-2 border-yellow-100 rounded-lg bg-amber-200 sm:py-4"
+        class="relative py-3 mb-2 cursor-pointer border-2 border-yellow-100 rounded-lg bg-amber-200 sm:py-4"
       >
         <div
           class="absolute left-0.5 w-2 h-2 transform -translate-x-1/2 -translate-y-1/2 bg-yellow-500 rounded-full top-1"
@@ -56,7 +59,7 @@
             chatDetail({
               roomId: chatItem.roomId,
               roomName: isTeacher == true ? chatItem.kidName : chatItem.teacherName,
-              chatProfile : isTeacher == true ? chatItem.kidProfile : chatItem.teacherProfile
+              chatProfile: isTeacher == true ? chatItem.kidProfile : chatItem.teacherProfile
             })
           "
           class="relative flex items-center px-3"
@@ -65,10 +68,11 @@
             <div
               class="absolute top-0 left-0 h-2 transform -translate-x-1/2 -translate-y-1/2 bg-yellow-500 rounded-full"
             ></div>
+            <img v-if="isTeacher == true" class="w-8 h-8 rounded-full" :src="chatItem.kidProfile" />
             <img
+              v-if="isTeacher == false"
               class="w-8 h-8 rounded-full"
-              src="https://flowbite.com/docs/images/people/profile-picture-4.jpg"
-              alt="Bonnie image"
+              :src="chatItem.teacherProfile"
             />
           </div>
           <div class="flex-1 min-w-0 ms-4">
@@ -109,26 +113,37 @@ onMounted(() => {
 const store = loginStore()
 const { isTeacher } = storeToRefs(store)
 const userId = ref(3)
+const isEmpty = ref(true)
 const getChatList = () => {
   if (isTeacher.value) {
     // 선생님 조회
     chatListTeacher(
       ({ data }) => {
         chat.value = data.data
+        if (chat.value.length == 0) {
+          isEmpty.value = false
+        }
       },
-      (error) => {
-      }
+      (error) => {}
     )
   } else {
     // 학부모 조회
     chatListParent(
       ({ data }) => {
         chat.value = data.data
+        console.log(chat.value.length)
+        if (chat.value.length == 0) {
+          isEmpty.value = false
+        }
       },
-      (error) => {
-      }
+      (error) => {}
     )
   }
+  // console.log(chat.value.length)
+  // console.log(chat.value)
+  // if (chat.value.length == 0) {
+  //   isEmpty.value = false
+  // }
 }
 
 const emit = defineEmits(['chatEvent'])
