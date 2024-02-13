@@ -186,6 +186,7 @@ public class NoticeService {
         Notice notice = noticeRepository.findById(noticeId).get();
         User user = authenticationService.getUserByAuthentication();
 
+        if(fixRepository.findByNoticeAndUser(notice, user).isPresent()) return null;
         if(fixRepository.countByUser(user) >= 5) throw new FixOverException(ExceptionCode.FIX_OVER_COUNT);
 
         Fix fix = Fix.builder()
@@ -201,6 +202,7 @@ public class NoticeService {
         Notice notice = noticeRepository.findById(fixedRequestDto.getNoticeId()).get();
         User user = userRepository.findById(fixedRequestDto.getKidId()).get();
 
+        if(fixRepository.findByNoticeAndUser(notice, user).isPresent()) return null;
         if(fixRepository.countByUser(user) >= 5) throw new FixOverException(ExceptionCode.FIX_OVER_COUNT);
 
         Fix fix = Fix.builder()
