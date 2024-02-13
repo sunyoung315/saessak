@@ -115,7 +115,7 @@ public class ReplacementService {
         List<ReplacementResponseDto> replacementResponseDtoList = new ArrayList<>();
 
         for(Kid kid : kidList) {
-            List<Replacement> replacementList = replacementRepository.findByKidOrderByReplacementDayDesc(kid);
+            List<Replacement> replacementList = replacementRepository.findByKidOrderByReplacementDayDescKidNickname(kid);
 
             for(Replacement replacement : replacementList) {
                 ReplacementResponseDto replacementResponseDto = ReplacementResponseDto.builder()
@@ -155,7 +155,7 @@ public class ReplacementService {
     public ReplacementParentAlarmResponseDto checkReplacement(Long kidId) {
         Kid kid = kidRepository.findById(kidId)
                 .orElseThrow(() -> new UserException(ExceptionCode.KID_NOT_FOUND));
-        List<Replacement> replacementList = replacementRepository.findByKidOrderByReplacementDayDesc(kid);
+        List<Replacement> replacementList = replacementRepository.findByKid(kid);
 
         boolean check = false;
         for(Replacement replacement : replacementList) {
