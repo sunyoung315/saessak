@@ -218,7 +218,6 @@ public class FcmService {
         String TITLE = "알러지 알림";
         List<Kid> kidList = kidRepository.findAll();
         for(Kid kid : kidList) {
-            System.out.println("점심 알러지 알림 check "+kid.getId());
             if(checkKidAndAllergy(kid, menuType)) {
                 sendAllergyParent(kid, menuType);
                 sendAllergyTeacher(kid, menuType);
