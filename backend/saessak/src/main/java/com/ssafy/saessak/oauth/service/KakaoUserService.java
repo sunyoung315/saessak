@@ -9,12 +9,18 @@ import com.ssafy.saessak.oauth.dto.RegistResponseDto;
 import com.ssafy.saessak.oauth.dto.kakao.KakaoUserResponse;
 import com.ssafy.saessak.jwt.JwtTokenProvider;
 import com.ssafy.saessak.jwt.refreshToken.service.RefreshTokenService;
+import com.ssafy.saessak.user.domain.Kid;
+import com.ssafy.saessak.user.domain.Parent;
 import com.ssafy.saessak.user.domain.User;
+import com.ssafy.saessak.user.repository.KidRepository;
 import com.ssafy.saessak.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @Slf4j
@@ -22,6 +28,7 @@ import org.springframework.stereotype.Service;
 public class KakaoUserService {
 
     private final UserRepository userRepository;
+    private final KidRepository kidRepository;
     private final RefreshTokenService refreshTokenService;
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -75,6 +82,21 @@ public class KakaoUserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(ExceptionCode.USER_NOT_FOUND));
         userRepository.delete(user);
+    }
+
+    @Scheduled(cron = "0 */1 * * * ?")
+    public void deleteAnonymousUser() {
+        List<User> userList = userRepository.findAllByClassroomIsNull();
+        for(User user : userList) {
+            if(user instanceof Parent) {
+                List<Kid> kidList = kidRepository.findAllByParent((Parent) user);
+                if(kidList.size() == 0) {
+                    userRepository.delete(user);
+                }
+            } else {
+                userRepository.delete(user);
+            }
+        }
     }
 
 }
