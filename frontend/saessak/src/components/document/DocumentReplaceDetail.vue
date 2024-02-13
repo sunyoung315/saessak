@@ -3,6 +3,7 @@
 		<div class="view-frame p-1.5">
 			<div class="flex justify-end items-center mb-10">
 				<button
+					v-if="loginStore.isTeacher"
 					type="button"
 					@click="check"
 					class="btn mt-7 mr-4 mb-3"
@@ -11,11 +12,11 @@
 							? 'text-white bg-dark-navy cursor-default'
 							: 'text-black bg-gray-300 font-semibold !border-0 hover:bg-white'
 					"
-					v-if="loginStore.isTeacher"
 				>
 					{{ replaceDetailList.replacementCheck ? '확인완료' : '미확인' }}
 				</button>
 				<button
+					v-else
 					type="button"
 					disabled
 					class="mt-7 mr-4 mb-3"
@@ -24,7 +25,6 @@
 							? 'bg-dark-navy w-20 text-white rounded-md p-3 py-[0.6rem] cursor-default'
 							: 'bg-gray-300 w-20 text-black font-semibold rounded-md py-[0.65rem] px-[1.1rem] cursor-default'
 					"
-					v-else
 				>
 					{{ replaceDetailList.replacementCheck ? '확인완료' : '미확인' }}
 				</button>

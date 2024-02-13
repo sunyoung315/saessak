@@ -113,7 +113,7 @@
 					</thead>
 					<tbody>
 						<tr
-							v-for="kid in allergyList"
+							v-for="kid in filteredAllergyList"
 							:key="kid.kidId"
 							@click="moveAllergy(kid.kidId)"
 							class="hover:bg-nav-blue hover:bg-opacity-20 cursor-pointer border-b"
@@ -169,8 +169,6 @@ const router = useRouter();
 const replacementStore = useReplacementStore();
 const allergyStore = useAllergyStore();
 
-// boolean 설정, isTeacher: 선생님/학부모, isReplace: 귀가동의서/알러지
-
 // 데이터 목록 가져오기
 const replacementList = ref([]);
 const getReplacementList = async () => {
@@ -183,8 +181,14 @@ const getAllergyList = async () => {
 	allergyList.value = allergyStore.allergyList;
 };
 
+// kidAllergyDate = null인 경우, 알러지표 작성 안한 것
+const filteredAllergyList = computed(() => {
+	return allergyList.value.filter(kid => kid.kidAllergyDate);
+});
+
 const props = defineProps({
 	isReplace: Boolean,
+	isAllergy: Boolean,
 });
 
 onMounted(async () => {

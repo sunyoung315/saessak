@@ -16,7 +16,6 @@
 					>
 						{{ myKidAllergyList.kidAllergyCheck ? '확인완료' : '미확인' }}
 					</button>
-					<!-- {{ myKidAllergyList }} -->
 					<button type="button" @click="goBack()" class="btn mt-7 mr-7 mb-3">
 						목록
 					</button>
@@ -106,7 +105,21 @@
 		</div>
 		<div v-else>
 			<!-- Parents Version -->
-			<div class="flex justify-end items-center mb-10"></div>
+			<div class="flex justify-end items-center mb-10">
+				<button
+					type="button"
+					disabled
+					@click="check()"
+					class="mt-0 mr-5"
+					:class="
+						myKidAllergyList.kidAllergyCheck
+							? 'bg-dark-navy w-20 text-white rounded-md p-3 py-[0.6rem] cursor-default'
+							: 'bg-gray-300 w-20 text-black font-semibold rounded-md py-[0.65rem] px-[1.1rem] cursor-default'
+					"
+				>
+					{{ myKidAllergyList.kidAllergyCheck ? '확인완료' : '미확인' }}
+				</button>
+			</div>
 			<div>
 				<p class="text-black text-4xl font-bold text-center">
 					식품 알레르기 조사서
