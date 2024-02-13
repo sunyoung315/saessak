@@ -2,7 +2,7 @@
 	<div class="main-view view-frame">
 		<div class="main-header">
 			<p class="main-title text-3xl">
-				{{ props.loginStore.classroomName }}
+				{{ props.loginStore.kidList[0].classroomName }}
 				{{ props.loginStore.kidList[0].kidName }}
 			</p>
 			<p class="main-title text-lg">{{ todayDate }}</p>
