@@ -10,9 +10,13 @@
 			@mouseup="stopDrawing"
 			@mouseout="stopDrawing"
 		></canvas>
-		<div class="flex justify-end">
-			<button class="mr-8" @click="clearCanvas">다시 쓰기</button>
-			<button @click="saveSignature">서명 저장</button>
+		<div class="flex justify-end mt-1 mr-1">
+			<button class="mr-8 text-black text-lg" @click="clearCanvas">
+				다시 쓰기
+			</button>
+			<button @click="saveSignature" class="text-black text-lg">
+				서명 저장
+			</button>
 		</div>
 	</div>
 </template>

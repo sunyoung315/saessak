@@ -17,10 +17,10 @@
     @apply inline-flex rounded-md shadow-sm ml-6 mt-7;
   }
   .group-btn-left-item {
-    @apply px-6 py-3 text-base font-bold text-dark-navy bg-white border border-gray-200 rounded-l-lg hover:bg-dark-navy hover:text-white focus:z-10 focus:ring-2 focus:ring-dark-navy focus:text-dark-navy;
+    @apply px-6 py-3 text-base font-bold text-dark-navy bg-white border border-gray-200 rounded-l-lg hover:bg-dark-navy hover:text-white focus:z-10 focus:ring-dark-navy focus:text-dark-navy;
   }
   .group-btn-right-item {
-    @apply px-6 py-3 text-base font-bold text-dark-navy bg-white border border-gray-200 rounded-r-lg hover:bg-dark-navy hover:text-white focus:z-10 focus:ring-2 focus:ring-dark-navy focus:text-dark-navy;
+    @apply px-6 py-3 text-base font-bold text-dark-navy bg-white border border-gray-200 rounded-r-lg hover:bg-dark-navy hover:text-white focus:z-10 focus:ring-dark-navy focus:text-dark-navy;
   }
   .btn {
     @apply text-white text-base font-medium rounded-lg mt-9 mr-10 px-5 py-2.5 text-center border border-dark-navy bg-dark-navy hover:text-dark-navy hover:bg-white focus:outline-none;

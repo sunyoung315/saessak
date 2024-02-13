@@ -1,158 +1,218 @@
 <template>
 	<div>
-		<div class="container mx-16 p-1.5 w-auto border border-gray-200 shadow rounded-lg">
+		<div class="view-frame p-1.5">
 			<div class="flex justify-end items-center mb-10">
-				<button type="button" @click.prevent="regist()"
-					class="mt-8 mr-6 text-white hover:text-dark-navy border border-dark-navy bg-dark-navy hover:bg-white focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">
+				<button
+					type="button"
+					@click.prevent="regist()"
+					class="btn mt-7 mr-4 mb-3"
+				>
 					등록
 				</button>
-				<button type="button" @click="goList()"
-					class="mt-8 mr-8 text-white hover:text-dark-navy border border-dark-navy bg-dark-navy hover:bg-white focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">
+				<button type="button" @click="goList()" class="btn mt-7 mr-7 mb-3">
 					목록
 				</button>
 			</div>
 			<div>
-				<p class="text-gray-700 text-4xl font-bold text-center">
-					귀 가 동 의 서
-				</p>
+				<p class="text-black text-4xl font-bold text-center">귀 가 동 의 서</p>
 			</div>
-			<div class="flex flex-col text-left whitespace-pre-line ml-48 mt-12 font-bold">
-				<div class="md:flex md:items-center mb-6">
-					<div>
-						<label class="block w-24 text-gray-500 font-bold mb-1 md:mb-0 pr-4" for="inline-full-name">
-							이름:
-						</label>
-					</div>
-					<div>
-						<input
-							class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-56 py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-nav-navy"
-							id="inline-full-name" type="text" v-model="kidName" readonly />
-					</div>
-				</div>
-				<div class="flex justify-start">
-					<!-- DatePicker 시작-->
-					<div class="flex items-center mb-6">
+			<div class="flex justify-center">
+				<div
+					class="flex flex-col text-left mt-12 font-bold justify-center w-[65%]"
+				>
+					<div class="md:flex md:items-center mb-6">
 						<div>
-							<label class="block w-24 text-gray-500 font-bold md:mb-0" for="inline-full-name">
-								날짜:
+							<label
+								class="block w-24 text-black font-bold mb-1 md:mb-0 pr-4 text-lg"
+								for="inline-full-name"
+							>
+								이름:
 							</label>
 						</div>
 						<div>
-							<VDatePicker v-model="registReplacement.replacementDate" :select-attribute="selectAttribute">
-								<template #default="{ inputValue, inputEvents }">
-									<div class="relative max-w-sm">
-										<div
-											class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
-											<svg class="w-4 h-4 text-gray-900" aria-hidden="true"
-												xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-												<path
-													d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
-											</svg>
+							<input
+								class="bg-gray-200 input w-56"
+								id="inline-full-name"
+								type="text"
+								v-model="kidName"
+								readonly
+							/>
+						</div>
+					</div>
+					<div class="flex items-center justify-between">
+						<!-- DatePicker 시작-->
+						<div class="flex items-center mb-6">
+							<div>
+								<label
+									class="block w-24 text-black font-bold md:mb-0 text-black text-lg"
+									for="inline-full-name"
+								>
+									날짜:
+								</label>
+							</div>
+							<div>
+								<VDatePicker
+									v-model="registReplacement.replacementDate"
+									:select-attribute="selectAttribute"
+								>
+									<template #default="{ inputValue, inputEvents }">
+										<div class="relative max-w-sm">
+											<div
+												class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none"
+											>
+												<svg
+													class="w-4 h-4 text-gray-900"
+													aria-hidden="true"
+													xmlns="http://www.w3.org/2000/svg"
+													fill="currentColor"
+													viewBox="0 0 20 20"
+												>
+													<path
+														d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"
+													/>
+												</svg>
+											</div>
+											<input
+												:value="inputValue"
+												v-on="inputEvents"
+												class="datepicker-input w-56"
+											/>
 										</div>
-										<input :value="inputValue" v-on="inputEvents" class="datepicker-input text w-56" />
-									</div>
-								</template>
-							</VDatePicker>
+									</template>
+								</VDatePicker>
+							</div>
+						</div>
+						<!-- DatePicker 끝-->
+						<div class="flex items-center mb-6">
+							<div>
+								<label
+									class="block w-24 font-bold mb-1 md:mb-0 pr-4 text-black text-lg"
+									for="inline-full-name"
+								>
+									시간:
+								</label>
+							</div>
+							<div>
+								<input
+									class="input w-56"
+									id="inline-full-name"
+									type="time"
+									v-model="registReplacement.replacementTime"
+									:class="{
+										'border-2 border-red-500': emptyReplacementTime,
+										shake: shakeReplacementTime,
+									}"
+								/>
+							</div>
 						</div>
 					</div>
-					<!-- DatePicker 끝-->
-					<div class="flex items-center mb-6">
-						<div>
-							<label class="block w-24 text-gray-500 ml-32 font-bold mb-1 md:mb-0 pr-4"
-								for="inline-full-name">
-								시간:
-							</label>
+					<div class="flex items-center justify-between">
+						<div class="flex items-center mb-6">
+							<div>
+								<label
+									class="block w-24 text-black text-lg font-bold mb-1 md:mb-0 pr-4"
+									for="inline-full-name"
+								>
+									보호자 성함:
+								</label>
+							</div>
+							<div>
+								<input
+									class="input w-56"
+									id="inline-full-name"
+									type="text"
+									placeholder="보호자 성함을 입력해주세요."
+									v-model="registReplacement.replacementName"
+									:class="{
+										'border-2 border-red-500': emptyReplacementName,
+										shake: shakeReplacementName,
+									}"
+								/>
+							</div>
 						</div>
-						<div>
-							<input
-								class="bg-white appearance-none border-2 border-gray-200 rounded w-56 py-2 px-4 text-black leading-tight focus:outline-none focus:bg-white focus:border-nav-navy"
-								id="inline-full-name" type="time" v-model="registReplacement.replacementTime" :class="{
-									'border-2 border-red-500': emptyReplacementTime,
-									shake: shakeReplacementTime,
-								}" />
-						</div>
-					</div>
-				</div>
-				<div class="flex items-center">
-					<div class="flex items-center mb-6">
-						<div>
-							<label class="block w-24 text-gray-500 font-bold mb-1 md:mb-0 pr-4" for="inline-full-name">
-								보호자 성함:
-							</label>
-						</div>
-						<div>
-							<input
-								class="bg-white appearance-none border-2 border-gray-200 rounded w-56 py-2 px-4 text-black leading-tight focus:outline-none focus:bg-white focus:border-nav-navy"
-								id="inline-full-name" type="text" placeholder="보호자 성함을 입력해주세요."
-								v-model="registReplacement.replacementName" :class="{
-									'border-2 border-red-500': emptyReplacementName,
-									shake: shakeReplacementName,
-								}" />
-						</div>
-					</div>
-					<div class="md:flex md:items-center mb-6">
-						<div>
-							<label class="block w-24 text-gray-500 ml-32 font-bold mb-1 md:mb-0 pr-4"
-								for="inline-full-name">
-								보호자 관계:
-							</label>
-						</div>
-						<div>
-							<input
-								class="bg-white appearance-none border-2 border-gray-200 rounded w-56 py-2 px-4 text-black leading-tight focus:outline-none focus:bg-white focus:border-nav-navy"
-								id="inline-full-name" type="text" placeholder="원아와의 관계를 입력해주세요."
-								v-model="registReplacement.replacementRelationship" :class="{
-									'border-2 border-red-500': emptyReplacementRelationship,
-									shake: shakeReplacementRelationship,
-								}" />
+						<div class="md:flex md:items-center mb-6">
+							<div>
+								<label
+									class="block w-24 text-black text-lg font-bold mb-1 md:mb-0 pr-4"
+									for="inline-full-name"
+								>
+									보호자 관계:
+								</label>
+							</div>
+							<div>
+								<input
+									class="input w-56"
+									id="inline-full-name"
+									type="text"
+									placeholder="원아와의 관계를 입력해주세요."
+									v-model="registReplacement.replacementRelationship"
+									:class="{
+										'border-2 border-red-500': emptyReplacementRelationship,
+										shake: shakeReplacementRelationship,
+									}"
+								/>
+							</div>
 						</div>
 					</div>
-				</div>
-				<div class="flex items-center">
-					<div class="flex items-center mb-6">
-						<div>
-							<label class="block w-24 text-gray-500 font-bold mb-1 md:mb-0 pr-4" for="inline-full-name">
-								귀가 방법:
-							</label>
+					<div class="flex items-center justify-between">
+						<div class="flex items-center mb-6">
+							<div>
+								<label
+									class="block w-24 text-black text-lg font-bold mb-1 md:mb-0 pr-4"
+									for="inline-full-name"
+								>
+									귀가 방법:
+								</label>
+							</div>
+							<div>
+								<input
+									class="input w-56"
+									id="inline-full-name"
+									type="text"
+									placeholder="귀가 방법을 입력해주세요."
+									v-model="registReplacement.replacementVehicle"
+									:class="{
+										'border-2 border-red-500': emptyReplacementVehicle,
+										shake: shakeReplacementVehicle,
+									}"
+								/>
+							</div>
 						</div>
-						<div>
-							<input
-								class="bg-white appearance-none border-2 border-gray-200 rounded w-56 py-2 px-4 text-black leading-tight focus:outline-none focus:bg-white focus:border-nav-navy"
-								id="inline-full-name" type="text" placeholder="귀가 방법을 입력해주세요."
-								v-model="registReplacement.replacementVehicle" :class="{
-									'border-2 border-red-500': emptyReplacementVehicle,
-									shake: shakeReplacementVehicle,
-								}" />
-						</div>
-					</div>
-					<div class="md:flex md:items-center mb-6">
-						<div>
-							<label class="block w-24 text-gray-500 ml-32 font-bold mb-1 md:mb-0 pr-4"
-								for="inline-full-name">
-								비상 연락망:
-							</label>
-						</div>
-						<div>
-							<input
-								class="bg-white appearance-none border-2 border-gray-200 rounded w-56 py-2 px-4 text-black leading-tight focus:outline-none focus:bg-white focus:border-nav-navy"
-								id="inline-full-name" type="text" placeholder="비상 연락망을 입력해주세요."
-								v-model="registReplacement.replacementNumber" :class="{
-									'border-2 border-red-500': emptyReplacementNumber,
-									shake: shakeReplacementNumber,
-								}" />
+						<div class="md:flex md:items-center mb-6">
+							<div>
+								<label
+									class="block w-24 text-black text-lg font-bold mb-1 md:mb-0 pr-4"
+									for="inline-full-name"
+								>
+									비상 연락망:
+								</label>
+							</div>
+							<div>
+								<input
+									class="input w-56"
+									id="inline-full-name"
+									type="text"
+									placeholder="비상 연락망을 입력해주세요."
+									v-model="registReplacement.replacementNumber"
+									:class="{
+										'border-2 border-red-500': emptyReplacementNumber,
+										shake: shakeReplacementNumber,
+									}"
+								/>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-			<div class="text-wrap text-center text-xl whitespace-pre-line m-12">
+			<div class="text-wrap text-center text-lg whitespace-pre-line m-12">
 				<p>{{ replaceContent }}</p>
 				<p class="m-8 font-bold">금일 자녀의 귀가를 선생님께 의뢰합니다.</p>
 			</div>
 
 			<div class="flex justify-end">
-				<div class="flex-col text-gray-700 text-xl font-bold m-8">
+				<div class="flex-col text-black text-lg font-bold m-8">
 					<div>
-						<h2>전자 서명:</h2>
+						<h2 class="ml-2 mb-1 text-lg">전자 서명:</h2>
 						<document-signature @signature-saved="handleSignatureSaved" />
 					</div>
 				</div>
@@ -165,7 +225,7 @@
 import { ref, watchEffect } from 'vue';
 import { useRouter } from 'vue-router';
 import { useReplacementStore } from '@/store/replacement';
-import Swal from 'sweetalert2'
+import Swal from 'sweetalert2';
 import DocumentSignature from '@/components/document/DocumentSignature.vue';
 
 const router = useRouter();
@@ -256,9 +316,9 @@ const validateSignature = () => {
 		Swal.fire({
 			icon: 'warning',
 			title: '전자 서명을 완료해주시기 바랍니다.',
-			text : '서명 작성 후 저장 버튼을 누르셔야 등록이 완료됩니다.',
-			confirmButtonText: '확인'
-		})
+			text: '서명 작성 후 저장 버튼을 누르셔야 등록이 완료됩니다.',
+			confirmButtonText: '확인',
+		});
 		return false;
 	}
 	return true;
