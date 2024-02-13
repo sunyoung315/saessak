@@ -30,18 +30,18 @@ const paging = ref({
 	pageNo: 1,
 });
 
-onMounted(() => {
-	fetchData();
+onMounted(async () => {
+	await fetchData();
 });
 
-function fetchData() {
+const fetchData = async () => {
 	if (isLogin) {
 		if (isTeacher.value) {
-			noticeListTeacherAll(paging.value.pageNo - 1, ({ data }) => {
+			await noticeListTeacherAll(paging.value.pageNo - 1, ({ data }) => {
 				noticeList.value = data.data;
 			});
 		} else {
-			noticeListParentAll(
+			await noticeListParentAll(
 				kidList.value[0].kidId,
 				paging.value.pageNo - 1,
 				({ data }) => {
@@ -50,7 +50,7 @@ function fetchData() {
 			);
 		}
 	}
-}
+};
 
 // 동의서 버튼 동작
 
@@ -61,18 +61,10 @@ function moveNoticeDetail(noticeId) {
 	});
 }
 
-watch(noticeList, async () => {
-	await fetchData();
-});
-
-watch(paging, async () => {
-	await fetchData();
-});
-
-function startFix(notice) {
+const startFix = async notice => {
 	if (isTeacher.value) {
 		if (!notice.noticeFlag) {
-			teacherFix(
+			await teacherFix(
 				notice.noticeId,
 				({ response }) => {},
 				({ error }) => {
@@ -84,12 +76,14 @@ function startFix(notice) {
 					// alert('공지사항은 최대 다섯 개까지 고정 할 수 있습니다.')
 				},
 			);
+			await fetchData();
 		} else {
-			teacherNotFix(notice.noticeId);
+			await teacherNotFix(notice.noticeId);
+			await fetchData();
 		}
 	} else {
 		if (!notice.noticeFlag) {
-			parentFix(
+			await parentFix(
 				{
 					noticeId: notice.noticeId,
 					kidId: kidList.value[0].kidId,
@@ -104,14 +98,16 @@ function startFix(notice) {
 					// alert('공지사항은 최대 다섯 개까지 고정 할 수 있습니다.')
 				},
 			);
+			await fetchData();
 		} else {
-			parentNotFix({
+			await parentNotFix({
 				noticeId: notice.noticeId,
 				kidId: kidList.value[0].kidId,
 			});
+			await fetchData();
 		}
 	}
-}
+};
 </script>
 
 <style scoped>
