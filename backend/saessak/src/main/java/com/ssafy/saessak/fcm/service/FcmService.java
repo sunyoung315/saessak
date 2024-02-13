@@ -149,7 +149,6 @@ public class FcmService {
                         .setNotification(Notification.builder()
                                 .setTitle(fcmResponseDto.getTitle())
                                 .setBody(fcmResponseDto.getBody())
-                                .setImage("https://saessack-photo-album.s3.ap-northeast-2.amazonaws.com/logo/saessak-favicon.png")
                                 .build())
                         .putData("click_action", "https://i10a706.p.ssafy.io")
                         .build();
@@ -164,6 +163,7 @@ public class FcmService {
 
     public boolean checkKidAndAllergy(Kid kid, String menuType) {
         String findKidAllergy = kid.getKidAllergy();
+        if(findKidAllergy == null) return false;
         String[] kidAllergyList = findKidAllergy.split("/");
 
         Menu menu = menuRepository.findByMenuDateAndMenuType(LocalDate.now(), menuType)
@@ -174,9 +174,11 @@ public class FcmService {
         HashSet<Integer> set = new HashSet<Integer>();
 
         for (Food food : foodList) {
-            String[] foodAllergyList = food.getFoodAllergy().split("/");
-            for (String foodAllergy : foodAllergyList) {
-                set.add(Integer.parseInt(foodAllergy));
+            if(food.getFoodAllergy().length() > 0) {
+                String[] foodAllergyList = food.getFoodAllergy().split("/");
+                for (String foodAllergy : foodAllergyList) {
+                    set.add(Integer.parseInt(foodAllergy));
+                }
             }
         }
 
