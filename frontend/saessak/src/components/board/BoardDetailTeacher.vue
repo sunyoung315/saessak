@@ -289,7 +289,7 @@ onMounted(async () => {
 	@apply pl-3 pr-6;
 }
 .no-content {
-	@apply mx-36 mt-8 text-lg;
+	@apply w-[68%] mx-[16%] text-lg;
 }
 .group-button {
 	@apply inline-flex h-11 rounded-md shadow-sm;
