@@ -7,26 +7,28 @@
 			<img
 				src="/main/logo-bubble.png"
 				alt=""
-				class="absolute right-[14rem] top-1/2 transform translate-y-[-52%] w-[40rem] -rotate-12 opacity-65"
+				class="absolute right-[14rem] top-[23rem] transform translate-y-[-52%] w-[40rem] -rotate-12 opacity-65"
 			/>
-			<div
-				class="absolute right-[22rem] top-1/2 transform translate-y-[-70%] text-[8rem] font-bold"
-			>
-				새싹일기
-			</div>
-			<div
-				class="absolute right-[24.3rem] top-1/2 transform translate-y-[35%] text-[2rem]"
-			>
-				어린이집 커뮤니케이션 플랫폼
+			<div class="animate-bounce h-10">
+				<div
+					class="absolute right-[21.5rem] top-[19rem] transform translate-y-[-70%] text-[8rem] font-bold"
+				>
+					새싹일기
+				</div>
+				<div
+					class="absolute right-[23.7rem] top-[19rem] transform translate-y-[35%] text-[2rem]"
+				>
+					어린이집 커뮤니케이션 플랫폼
+				</div>
 			</div>
 			<div class="image-container">
 				<img
-					class="w-[46rem] top-36 left-36"
+					class="w-[46rem] top-[6rem] left-36"
 					:class="{ 'image-visible': isHandUpRef }"
 					src="/main/hands-up.png"
 				/>
 				<img
-					class="w-[46rem] top-36 left-36"
+					class="w-[46rem] top-[6rem] left-36"
 					:class="{ 'image-visible': !isHandUpRef }"
 					src="/main/hands-down.png"
 				/>

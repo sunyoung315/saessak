@@ -42,6 +42,10 @@
       <button id="dropdownNotificationButton" data-dropdown-toggle="dropdownNotification"
         class="relative inline-flex items-center text-sm font-medium text-center text-gray-500 hover:text-gray-900 focus:outline-none dark:hover:text-white dark:text-gray-400"
         type="button" @click="getAlarmList()" v-if="isLogin == true">
+				<template v-if="alarmList.length">
+					<span class="bg-red-500 w-2.5 h-2.5 absolute left-3 -top-0.5 animate-ping rounded-full"></span>
+					<span class="bg-red-500 w-2.5 h-2.5 absolute left-3 -top-0.5 rounded-full"></span>
+				</template>
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 15 20" fill="none" class="w-6 h-6">
           <path fill-rule="evenodd" clip-rule="evenodd"
             d="M8 0C10.2816 0.463729 12 2.58146 12 5V9C13.1046 9 14 9.89543 14 11V16H9C9 17.1046 8.10457 18 7 18C5.89543 18 5 17.1046 5 16H0V11C0 9.89543 0.89543 9 2 9V5C2 2.58111 3.71785 0.463343 6 0H8ZM7 2C5.40232 2 4.09634 3.24892 4.00509 4.82373L4 5V9C4 10.1046 3.10457 11 2 11V14H12V11C10.8954 11 10 10.1046 10 9V5C10 3.34315 8.65685 2 7 2Z"
@@ -248,6 +252,7 @@ const {
 	setTeachername,
 	setAlarmFlag,
 } = store;
+
 onMounted(() => {
 	initFlowbite();
 	// 로그인 여부 판단하기
@@ -265,6 +270,7 @@ onMounted(() => {
 	}
 	getSizeOfDrawer();
 	// console.log(isLogin)
+	getAlarmList();
 });
 
 const roomInfo = ref([]);
