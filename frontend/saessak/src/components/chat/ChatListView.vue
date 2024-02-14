@@ -1,18 +1,23 @@
 <template>
 	<div
-		class="fixed w-1/3 top-0 right-0 flex px-3 py-5 pb-5 mx-auto border-l-2 border-l-gray-300 bg-yellow-50"
+		class="fixed w-1/3 top-0 right-0 flex px-3 py-5 pb-5 mx-auto border-l-2 border-l-gray-300 bg-yellow-100"
 	>
 		<h5
-			class="flex items-center justify-center text-xl font-bold leading-none text-gray-900 dark:text-white"
+			class="flex items-center justify-center text-xl font-bold leading-none text-gray-900 mx-4"
 		>
 			채팅 목록
 		</h5>
 	</div>
 	<div class="flow-root mt-12 grow h-screen">
-		<div v-if="isEmpty == false" class="text-xl text-center mt-56">
+		<div v-if="isEmpty == false" class="text-lg text-center mt-10">
 			생성된 채팅방이 없습니다.
 		</div>
-		<ul role="list" class="" v-for="chatItem in chat" :key="chatItem.chatId">
+		<ul
+			role="list"
+			class="my-2"
+			v-for="chatItem in chat"
+			:key="chatItem.chatId"
+		>
 			<li
 				v-if="chatItem.flag === false"
 				class="cursor-pointer py-3 mb-2 border border-gray-300 shadow rounded-lg sm:py-4"

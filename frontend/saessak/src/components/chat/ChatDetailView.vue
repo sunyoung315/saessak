@@ -1,15 +1,15 @@
 <template>
 	<!-- border border-gray-200 shadow -->
 	<div
-		class="flex flex-col w-full h-full px-0 mx-auto my-0 rounded-lg bg-yellow-50 sm:p-8 dark:bg-gray-800 dark:border-gray-700"
+		class="flex flex-col w-full h-full px-0 mx-auto my-0 rounded-lg bg-white sm:p-8"
 	>
 		<div
-			class="fixed w-1/3 top-0 right-0 flex justify-between px-3 py-3 border-l-2 border-l-gray-300 bg-yellow-50 pb-0 mx-auto"
+			class="fixed w-1/3 top-0 right-0 flex justify-between items-center px-3 py-4 border-l-2 border-l-gray-300 bg-yellow-100 mx-auto"
 		>
-			<h3 class="mb-5 text-xl font-bold text-center left-1/2">
+			<h3 class="text-xl font-bold text-center left-1/2 mx-4">
 				{{ roomName }} {{ isTeacher == true ? '학부모' : '선생님' }}
 			</h3>
-			<button type="button" @click="discon()">
+			<button type="button" @click="discon()" class="mx-4">
 				<svg
 					width="30"
 					height="30"
@@ -19,13 +19,13 @@
 				>
 					<path
 						d="M6 12H19"
-						stroke="#383838"
+						stroke="#000000"
 						stroke-width="2"
 						stroke-linecap="round"
 					/>
 					<path
 						d="M9 8L5 12L9 16"
-						stroke="#383838"
+						stroke="#000000"
 						stroke-width="2"
 						stroke-linecap="round"
 						stroke-linejoin="round"
@@ -38,7 +38,7 @@
 		<!--scrollbar-hide -->
 		<div
 			ref="chatbox"
-			class="chatbox flex flex-col scrollbar-hide overflow-y-scroll w-full h-full mt-0 mb-0 my-0 px-5 py-0"
+			class="chatbox flex flex-col scrollbar-hide overflow-y-scroll w-full h-full px-5 mb-10 mt-5"
 		>
 			<div v-for="msg in recvList" :key="msg.chatId" class="flex flex-col mt-5">
 				<!--발신 메시지(오른쪽)-->
@@ -80,21 +80,19 @@
 		<!-- <div   
         class="fixed bottom-0 right-0 flex items-end justify-between mt-auto left-3"
       ></div> -->
-		<div class="bottom-0 left-0 right-0 w-full max-w-md p-2 mx-auto">
-			<div class="flex items-center justify-evenly">
-				<div class="w-3/4 mt-4 mb-5">
-					<input
-						type="text"
-						id="msg-input"
-						v-model="msg"
-						@keyup.enter="send()"
-						class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-					/>
-				</div>
+		<div class="absolute bottom-4 left-0 right-0 w-full max-w-md p-2 mx-auto">
+			<div class="flex items-end justify-center mx-6">
+				<input
+					type="text"
+					id="msg-input"
+					v-model="msg"
+					@keyup.enter="send()"
+					class="w-3/4 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block p-2.5 mr-2"
+				/>
 				<button
 					type="button"
 					@click="send()"
-					class="text-white bg-gray-600 -mt-1 hover:bg-yellow-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm p-2.5 text-center inline-flex items-center me-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+					class="text-white bg-gray-600 -mt-1 hover:bg-yellow-600 font-medium rounded-lg text-sm p-2.5 text-center inline-flex items-center"
 				>
 					<!--채팅전송버튼-->
 					<svg
@@ -117,25 +115,22 @@
 				<button
 					v-if="isTeacher == true"
 					@click="startFaceChat()"
-					class="block text-white"
 					type="button"
+					class="text-white bg-neutral-500 -mt-1 hover:bg-yellow-600 font-medium rounded-lg text-sm p-2.5 ml-2 text-center inline-flex items-center"
 				>
-					<div
-						class="h-9 w-9 mb-1 ml-auto mr-2.5 border rounded-full bg-neutral-500"
+					<svg
+						class="w-5 h-5"
+						xmlns="http://www.w3.org/2000/svg"
+						fill="none"
+						viewBox="0 0 24 24"
 					>
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							fill="none"
-							viewBox="0 0 24 24"
-						>
-							<path
-								fill="#ffffff"
-								fill-rule="evenodd"
-								d="M14 7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7Zm2 9.387 4.684 1.562A1 1 0 0 0 22 17V7a1 1 0 0 0-1.316-.949L16 7.613v8.774Z"
-								clip-rule="evenodd"
-							/>
-						</svg>
-					</div>
+						<path
+							fill="#ffffff"
+							fill-rule="evenodd"
+							d="M14 7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7Zm2 9.387 4.684 1.562A1 1 0 0 0 22 17V7a1 1 0 0 0-1.316-.949L16 7.613v8.774Z"
+							clip-rule="evenodd"
+						/>
+					</svg>
 				</button>
 			</div>
 		</div>

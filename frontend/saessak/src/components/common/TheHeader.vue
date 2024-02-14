@@ -29,10 +29,11 @@
       <!-- 채팅 -->
       <button v-if="isLogin == true" type="button" data-drawer-target="drawer-right-example"
         data-drawer-show="drawer-right-example" data-drawer-placement="right" aria-controls="drawer-right-example">
-				<template v-if="newChat">
+				<!-- 새로운 채팅이 있을 때 표시 -->
+				<!-- <template v-if="newChat">
 					<span class="bg-blue-500 w-2.5 h-2.5 absolute top-[1.6rem] animate-ping rounded-full"></span>
 					<span class="bg-blue-500 w-2.5 h-2.5 absolute top-[1.6rem] rounded-full"></span>
-				</template>
+				</template> -->
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"
           class="w-6 h-6 mr-3">
           <path fill-rule="evenodd" clip-rule="evenodd"
@@ -162,13 +163,13 @@
 
   <!-- (채팅) drawer component -->
   <div id="drawer-right-example"
-    class="scrollbar-hide fixed top-0 right-0 z-40 h-screen border-l-2 border-l-gray-300 p-4 overflow-auto transition-transform translate-x-full bg-yellow-50 w-1/3 dark:bg-gray-800"
+    class="scrollbar-hide fixed top-0 right-0 z-40 h-screen border-l-2 border-l-gray-300 p-4 overflow-auto transition-transform translate-x-full bg-white w-1/3 dark:bg-gray-800"
     tabindex="-1" ref="drawer" aria-labelledby="drawer-right-label">
     <!-- <div
       class="flex flex-col justify-between h-screen p-8 mx-auto my-auto overflow-y-scroll bg-white border border-gray-200 rounded-lg shadow scrollbar-hide sm:p-8 dark:bg-gray-800 dark:border-gray-700"
     > -->
     <component :is="chatSwitch" @chatEvent="chatEvent" @exitChat="exitChat" :size="size" :roomInfo="roomInfo"></component>
-    <div v-if="flag == false" class="fixed w-1/3 bottom-0 right-0 p-3 border-l-2 border-l-gray-300 bg-yellow-50">
+    <div v-if="flag == false" class="fixed w-1/3 bottom-0 right-0 p-3 border-l-2 border-l-gray-300 bg-yellow-100">
       <div class="flex items-center justify-evenly">
         <button :flag="flag" @click="showChat(ChatPersonView)" class="text-lg font-bold borde">학부모목록</button>
         <button :flag="flag" @click="showChat(ChatListView)" class="text-lg font-bold">채팅목록</button>
@@ -217,7 +218,7 @@ import { chatListParent, chatListTeacher } from '@/api/chat';
 const chat = ref([]);
 const newChat = ref(false);
 
-const getChatList = () => {
+const getChatList = async () => {
 	if (isLogin.value) {
 		if (isTeacher.value) {
 			// 선생님 조회
@@ -225,7 +226,6 @@ const getChatList = () => {
 				chat.value = data.data;
 				for (let i = 0; i < chat.value.length; i++) {
 					if (chat.value[i].flag) {
-						console.log(chat.value[i].flag);
 						newChat.value = true;
 						return;
 					}
@@ -237,7 +237,6 @@ const getChatList = () => {
 				chat.value = data.data;
 				for (let i = 0; i < chat.value.length; i++) {
 					if (chat.value[i].flag) {
-						console.log(chat.value[i].flag);
 						newChat.value = true;
 						return;
 					}
@@ -314,6 +313,8 @@ onMounted(() => {
 	getChatList();
 });
 
+const chatSwitch = shallowRef(ChatPersonView);
+
 const roomInfo = ref([]);
 const chatEvent = data => {
 	// console.log('change')
@@ -329,8 +330,6 @@ const exitChat = input => {
 		flag.value = false;
 	}
 };
-
-const chatSwitch = shallowRef(ChatPersonView);
 
 const showChat = name => {
 	// if(isOpen){ // 채팅방에서 하단 메뉴 클릭할 때
