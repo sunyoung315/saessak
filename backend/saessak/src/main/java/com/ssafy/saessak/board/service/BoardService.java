@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -49,7 +50,7 @@ public class BoardService {
         Board saveBoard = Board.builder()
                 .kid(kid)
                 .classroom(classroom)
-                .boardDate(boardRequestDto.getBoardDate())
+                .boardDate(LocalDate.now(ZoneId.of("Asia/Seoul")))
                 .boardContent(boardRequestDto.getBoardContent())
                 .boardTemperature(boardRequestDto.getBoardTemperature())
                 .boardSleepTime(boardRequestDto.getBoardSleepTime())
@@ -67,7 +68,7 @@ public class BoardService {
         Classroom classroom = user.getClassroom();
         List<Kid> kidList = kidRepository.findAllByClassroomOrderByNickname(classroom);
 
-        LocalDate today = LocalDate.now();
+        LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
         List<KidNoBoardResponseDto> kidNoBoardResponseDtoList = new ArrayList<>();
         for(Kid kid : kidList){
             Optional<Board> boardResult = boardRepository.findFirstByKidAndBoardDate(kid,today);
