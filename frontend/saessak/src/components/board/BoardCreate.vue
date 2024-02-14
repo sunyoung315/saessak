@@ -323,7 +323,7 @@ const kidId = ref(0);
 // 새로운 알림장 변수
 const newBoard = ref({
 	kidId,
-	boardDate: new Date(),
+	boardDate: '',
 	boardContent: '',
 	boardTemperature: 0.0,
 	boardSleepTime: 0.0,
