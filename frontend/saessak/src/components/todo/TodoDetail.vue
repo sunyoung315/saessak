@@ -48,7 +48,7 @@ const emits = defineEmits(['updatedTodo']);
 const todo = props.todo;
 
 const delTodo = () => {
-	console.log('delete', todo.todoId);
+	// console.log('delete', todo.todoId);
 	deleteTodo(todo.todoId, () => {
 		emits('updatedTodo');
 	});
