@@ -50,7 +50,6 @@ const fetchData = async () => {
 			);
 		}
 	}
-	console.log("hi")
 };
 
 // 동의서 버튼 동작
