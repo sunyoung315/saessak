@@ -230,7 +230,7 @@ const registPhotoModal = ref();
 // input type="date"는 "yyyy-MM-dd" 형식의 문자열 -> 같은 형식으로 변환
 let selectedDate = ref(new Date().toISOString().split('T')[0]);
 
-const selectAttribute = ref({ highlight: 'purple' });
+const selectAttribute = ref({ highlight: 'blue' });
 
 const disabledDates = ref([
 	{
