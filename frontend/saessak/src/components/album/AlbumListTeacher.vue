@@ -194,8 +194,10 @@ onMounted(async () => {
 	// 앨범 있는 날짜들 중 가장 최근 날짜
 	const endDate = new Date(activeDates.value[0]);
 
-	// DatePicker의 초기 날짜를 가장 최근 앨범 날짜로 설정
-	date.value = endDate;
+	if (activeDates.value.length) {
+		// DatePicker의 초기 날짜를 가장 최근 앨범 날짜로 설정
+		date.value = endDate;
+	}
 
 	// 앨범 있는 기간 중 앨범이 없는 날짜 disabledDates 배열에 추출
 	for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
