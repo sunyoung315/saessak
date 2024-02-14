@@ -1,7 +1,7 @@
 <template>
 	<div class="flex flex-col">
-		<!-- 아이 이름별 보기 -->
-		<div v-if="props.showToggle">
+		<!-- Card 형식 : 전체 아이들 보기 -->
+		<div v-if="!props.showToggle">
 			<div v-for="kid in recentAlbumList" :key="kid.kidId">
 				<div
 					v-if="
@@ -53,7 +53,7 @@
 				</div>
 			</div>
 		</div>
-		<!-- Card 형식 : 전체 아이들 보기 -->
+		<!-- Carousel 아이 이름별 보기 -->
 		<div v-else>
 			<div class="datepicker px-2">
 				<VDatePicker
@@ -119,7 +119,7 @@
 					</div>
 				</div>
 			</div>
-			<div v-else>
+			<div v-else class="m-6">
 				<p>등록된 사진이 없습니다.</p>
 			</div>
 		</div>

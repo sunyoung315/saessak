@@ -46,6 +46,47 @@
 		</div>
 		<!--내 아이만 보기 -->
 		<div v-if="props.showToggle">
+			<div class="flex items-center" v-if="myKidAlbumDateList.length">
+				<div class="w-full">
+					<div
+						class="m-4 flex flex-wrap"
+						v-if="isSameDate(myKidAlbumDateList[0].albumDate, date)"
+					>
+						<p class="w-full text-2xl font-bold m-2 px-4">
+							{{ myKidAlbumDateList[0].albumTitle }}
+						</p>
+						<div
+							v-for="file in myKidAlbumDateList[0].fileResponseDtoList"
+							:key="file.fileId"
+							class="w-1/4 flex-shrink-0 flex flex-wrap p-2"
+						>
+							<input
+								type="checkbox"
+								:id="file.fileId"
+								:value="`${file.filePath}`"
+								class="hidden peer"
+								v-model="checked"
+							/>
+							<label
+								:for="file.fileId"
+								class="inline-flex items-center justify-between p-2 text-gray-500 bg-white border-2 border-gray-200 rounded-lg cursor-pointer peer-checked:border-nav-green hover:text-gray-600 peer-checked:text-gray-600 hover:bg-gray-50 peer-checked:border-4"
+							>
+								<img
+									class="album rounded"
+									:src="`${file.filePath}`"
+									:for="file.fileId"
+									alt="img"
+								/>
+							</label>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div v-else class="m-6">등록된 사진이 없습니다.</div>
+		</div>
+		<!-- 전체보기 -->
+		<div v-else>
 			<div class="flex items-center" v-if="albumDateAllList.length">
 				<div class="w-full">
 					<div v-for="album in albumDateAllList" :key="album.albumId">
@@ -87,48 +128,7 @@
 					</div>
 				</div>
 			</div>
-			<div v-else class="m-6">등록된 앨범이 없습니다.</div>
-			<!-- <span>Check 이미지 : {{ checked }}</span> -->
-		</div>
-		<!-- 전체보기 -->
-		<div v-else>
-			<div class="flex items-center" v-if="myKidAlbumDateList.length">
-				<div class="w-full">
-					<div
-						class="m-4 flex flex-wrap"
-						v-if="isSameDate(myKidAlbumDateList[0].albumDate, date)"
-					>
-						<p class="w-full text-2xl font-bold m-2 px-4">
-							{{ myKidAlbumDateList[0].albumTitle }}
-						</p>
-						<div
-							v-for="file in myKidAlbumDateList[0].fileResponseDtoList"
-							:key="file.fileId"
-							class="w-1/4 flex-shrink-0 flex flex-wrap p-2"
-						>
-							<input
-								type="checkbox"
-								:id="file.fileId"
-								:value="`${file.filePath}`"
-								class="hidden peer"
-								v-model="checked"
-							/>
-							<label
-								:for="file.fileId"
-								class="inline-flex items-center justify-between p-2 text-gray-500 bg-white border-2 border-gray-200 rounded-lg cursor-pointer peer-checked:border-nav-green hover:text-gray-600 peer-checked:text-gray-600 hover:bg-gray-50 peer-checked:border-4"
-							>
-								<img
-									class="album rounded"
-									:src="`${file.filePath}`"
-									:for="file.fileId"
-									alt="img"
-								/>
-							</label>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div v-else class="m-6">등록된 앨범이 없습니다.</div>
+			<div v-else class="m-6">등록된 사진이 없습니다.</div>
 		</div>
 	</div>
 </template>
