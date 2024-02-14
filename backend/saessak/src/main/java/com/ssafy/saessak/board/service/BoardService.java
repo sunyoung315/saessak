@@ -50,7 +50,7 @@ public class BoardService {
         Board saveBoard = Board.builder()
                 .kid(kid)
                 .classroom(classroom)
-                .boardDate(LocalDate.now(ZoneId.of("Asia/Seoul")))
+                .boardDate(boardRequestDto.getBoardDate())
                 .boardContent(boardRequestDto.getBoardContent())
                 .boardTemperature(boardRequestDto.getBoardTemperature())
                 .boardSleepTime(boardRequestDto.getBoardSleepTime())
@@ -63,15 +63,14 @@ public class BoardService {
 
         return saveBoard;
     }
-    public List<KidNoBoardResponseDto> getClassKidBoardIsNotWritten() {
+    public List<KidNoBoardResponseDto> getClassKidBoardIsNotWritten(LocalDate date) {
         User user = authenticationService.getUserByAuthentication();
         Classroom classroom = user.getClassroom();
         List<Kid> kidList = kidRepository.findAllByClassroomOrderByNickname(classroom);
 
-        LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
         List<KidNoBoardResponseDto> kidNoBoardResponseDtoList = new ArrayList<>();
         for(Kid kid : kidList){
-            Optional<Board> boardResult = boardRepository.findFirstByKidAndBoardDate(kid,today);
+            Optional<Board> boardResult = boardRepository.findFirstByKidAndBoardDate(kid, date);
             if(boardResult.isPresent()) continue;
             KidNoBoardResponseDto kidNoBoardResponseDto = KidNoBoardResponseDto.builder()
                     .kidId(kid.getId())
