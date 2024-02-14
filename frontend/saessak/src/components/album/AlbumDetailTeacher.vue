@@ -1,8 +1,8 @@
 <template>
 	<div class="view-frame p-4">
-		<div class="flex justify-between">
+		<div class="flex justify-between items-center">
 			<!-- DatePicker 시작-->
-			<div class="block mt-1 mb-4">
+			<div class="datepicker">
 				<VDatePicker
 					v-model="date"
 					:select-attribute="selectAttribute"
@@ -36,15 +36,17 @@
 			</div>
 			<!-- DatePicker 끝-->
 			<div>
-				<button type="button" @click="goBack()" class="btn m-0">목록</button>
+				<button type="button" @click="goBack()" class="btn my-0 mx-4">
+					목록
+				</button>
 			</div>
 		</div>
 		<div class="flex items-center" v-if="myKidAlbumDateList.length">
 			<div
-				class="my-2 flex flex-wrap"
+				class="m-4 flex flex-wrap"
 				v-if="isSameDate(myKidAlbumDateList[0].albumDate, date)"
 			>
-				<p class="w-full text-2xl font-bold m-4">
+				<p class="w-full text-2xl font-bold m-2 px-4">
 					{{ myKidAlbumDateList[0].albumTitle }}
 				</p>
 				<div
@@ -60,7 +62,7 @@
 					/>
 					<label
 						:for="file.fileId"
-						class="inline-flex items-center justify-between w-full p-4 text-gray-500 bg-white border-2 border-gray-200 rounded-lg cursor-default"
+						class="inline-flex items-center justify-between p-2 text-gray-500 bg-white border-2 border-gray-200 rounded-lg cursor-default"
 					>
 						<img
 							class="album rounded"
@@ -73,7 +75,7 @@
 			</div>
 		</div>
 		<div v-else>
-			<p>등록된 앨범이 없습니다.</p>
+			<div class="m-6">등록된 앨범이 없습니다.</div>
 		</div>
 		<br />
 	</div>
@@ -174,12 +176,12 @@ function goBack() {
 
 <style scoped>
 .album-box {
-	min-width: 300px;
-	min-height: 250px;
+	min-width: 250px;
+	min-height: 200px;
 }
 
 .album {
-	width: 300px;
-	height: 250px;
+	width: 250px;
+	height: 200px;
 }
 </style>

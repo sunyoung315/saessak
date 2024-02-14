@@ -8,6 +8,7 @@
 						kid.albumResponseDto &&
 						kid.albumResponseDto.fileResponseDtoList.length > 0
 					"
+					class="border rounded-md shadow bg-gray-50 mb-4 p-4 pb-2"
 				>
 					<img class="px-2" src="@/assets/film.png" alt="필름" />
 					<Carousel
@@ -34,15 +35,18 @@
 						</template>
 					</Carousel>
 					<img class="px-2" src="@/assets/film.png" alt="필름" />
-					<div class="flex justify-between">
+					<div class="flex justify-between items-center">
 						<button
-							class="bg-nav-green m-4 text-black font-bold py-2 px-4 rounded-full"
+							class="inline-block bg-nav-green mx-4 my-2 text-black font-bold w-20 h-10 rounded-full"
 							disabled
 						>
 							{{ kid.kidName }}
 						</button>
 
-						<button @click="goDetail(kid.kidId)" class="m-4 text-xl font-bold">
+						<button
+							@click="goDetail(kid.kidId)"
+							class="my-2 mx-1 px-4 py-1 text-xl font-bold rounded-md hover:bg-gray-200 pointer-cursor"
+						>
 							→ 상세 조회
 						</button>
 					</div>
@@ -51,47 +55,44 @@
 		</div>
 		<!-- Card 형식 : 전체 아이들 보기 -->
 		<div v-else>
-			<div class="block mb-5">
-				<div class="block mt-1 mb-10">
-					<VDatePicker
-						v-model="date"
-						:select-attribute="selectAttribute"
-						:disabled-dates="disabledDates"
-					>
-						<template #default="{ inputValue, inputEvents }">
-							<div class="relative max-w-sm">
-								<div
-									class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none"
+			<div class="datepicker px-2">
+				<VDatePicker
+					v-model="date"
+					:select-attribute="selectAttribute"
+					:disabled-dates="disabledDates"
+				>
+					<template #default="{ inputValue, inputEvents }">
+						<div class="relative max-w-sm">
+							<div
+								class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none"
+							>
+								<svg
+									class="w-4 h-4 text-gray-900"
+									aria-hidden="true"
+									xmlns="http://www.w3.org/2000/svg"
+									fill="currentColor"
+									viewBox="0 0 20 20"
 								>
-									<svg
-										class="w-4 h-4 text-gray-900"
-										aria-hidden="true"
-										xmlns="http://www.w3.org/2000/svg"
-										fill="currentColor"
-										viewBox="0 0 20 20"
-									>
-										<path
-											d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"
-										/>
-									</svg>
-								</div>
-								<input
-									:value="inputValue"
-									v-on="inputEvents"
-									class="datepicker-input text"
-								/>
+									<path
+										d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"
+									/>
+								</svg>
 							</div>
-						</template>
-					</VDatePicker>
-				</div>
+							<input
+								:value="inputValue"
+								v-on="inputEvents"
+								class="datepicker-input text"
+							/>
+						</div>
+					</template>
+				</VDatePicker>
 			</div>
 			<div v-if="albumClassroomDateList.length">
 				<div v-for="album in albumClassroomDateList" :key="album.albumId">
-					<div
-						class="my-2 flex flex-wrap"
-						v-if="albumClassroomDateList != null"
-					>
-						<p class="w-full text-2xl font-bold m-2">{{ album.albumTitle }}</p>
+					<div class="m-4 flex flex-wrap" v-if="albumClassroomDateList != null">
+						<p class="w-full text-2xl font-bold m-2 px-4">
+							{{ album.albumTitle }}
+						</p>
 						<div
 							v-for="file in album.fileResponseDtoList"
 							:key="file.fileId"
@@ -105,7 +106,7 @@
 							/>
 							<label
 								:for="file.fileId"
-								class="inline-flex items-center justify-between w-full p-4 text-gray-500 bg-white border-2 border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 hover:text-gray-600 dark:peer-checked:text-gray-300 peer-checked:text-gray-600 hover:bg-gray-50 cursor-default"
+								class="inline-flex items-center justify-between p-2 text-gray-500 bg-white border-2 border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 hover:text-gray-600 dark:peer-checked:text-gray-300 peer-checked:text-gray-600 hover:bg-gray-50 cursor-default"
 							>
 								<img
 									class="album rounded"

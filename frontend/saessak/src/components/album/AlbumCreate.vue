@@ -1,51 +1,99 @@
 <template>
 	<div class="view-frame p-4">
-		<div class="flex justify-end items-center">
-			<button type="button" @click="registAlbum()" class="btn">등록</button>
-			<button type="button" @click="goBack()" class="btn">목록</button>
+		<div class="flex justify-end items-center mb-10">
+			<button type="button" @click="registAlbum()" class="btn mt-7 mr-4 mb-3">
+				등록
+			</button>
+			<button type="button" @click="goBack()" class="btn mt-7 mr-7 mb-3">
+				목록
+			</button>
 		</div>
 
 		<span class="content-title">날짜</span>
-		<div class="ml-32 mb-4">
+		<div class="w-[70%] mx-[15%] mt-1 mb-10">
 			<!-- DatePicker 시작-->
 			<VDatePicker v-model="date" :select-attribute="selectAttribute">
 				<template #default="{ inputValue, inputEvents }">
 					<div class="relative max-w-sm">
-						<div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
-							<svg class="w-4 h-4 text-gray-900" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-								fill="currentColor" viewBox="0 0 20 20">
+						<div
+							class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none"
+						>
+							<svg
+								class="w-4 h-4 text-gray-900"
+								aria-hidden="true"
+								xmlns="http://www.w3.org/2000/svg"
+								fill="currentColor"
+								viewBox="0 0 20 20"
+							>
 								<path
-									d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
+									d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"
+								/>
 							</svg>
 						</div>
-						<input :value="inputValue" v-on="inputEvents" class="datepicker-input text" />
+						<input
+							:value="inputValue"
+							v-on="inputEvents"
+							class="datepicker-input text"
+						/>
 					</div>
 				</template>
 			</VDatePicker>
 			<!-- DatePicker 끝-->
 		</div>
 		<div>
-			<label class="block mt-2 mb-5 w-full">
+			<label class="block mt-2 mb-10 w-full">
 				<span class="content-title">제목</span>
-				<input type="text" class="content-box mb-8 p-2 text-lg" rows="6" placeholder="제목을 입력해주세요." v-model="title"
-					@input="emptyTitle = false" :class="{
+				<input
+					type="text"
+					class="content-box mb-8 p-2 text-lg"
+					rows="6"
+					placeholder="제목을 입력해주세요."
+					v-model="title"
+					@input="emptyTitle = false"
+					:class="{
 						'!border-2 !border-red-500': emptyTitle,
 						shake: shakeTitle,
-					}" required />
+					}"
+					required
+				/>
 			</label>
 		</div>
 
 		<span class="content-title">첨부파일 (사진, 동영상: {{ count }}EA)</span>
-		<div class="flex items-center ml-32 w-full">
+		<div class="flex items-center w-[70%] mx-[15%] mt-1">
 			<label
-				class="flex flex-col justify-center w-3/4 h-64 mb-8 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
-				<div class="flex flex-col items-center justify-center pt-5 pb-6" @dragover.prevent @drop="onDrop">
-					<input ref="image" id="input" type="file" name="image" accept="image/*" multiple="multiple"
-						class="hidden" @change="uploadImage()" required />
-					<svg class="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
-						xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
-						<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-							d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
+				class="flex flex-col justify-center h-64 mb-8 w-full border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+			>
+				<div
+					class="flex flex-col items-center justify-center pt-5 pb-6"
+					@dragover.prevent
+					@drop="onDrop"
+				>
+					<input
+						ref="image"
+						id="input"
+						type="file"
+						name="image"
+						accept="image/*"
+						multiple="multiple"
+						class="hidden"
+						@change="uploadImage()"
+						required
+					/>
+					<svg
+						class="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
+						aria-hidden="true"
+						xmlns="http://www.w3.org/2000/svg"
+						fill="none"
+						viewBox="0 0 20 16"
+					>
+						<path
+							stroke="currentColor"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+						/>
 					</svg>
 					<p class="mb-2 text-sm text-gray-500 dark:text-gray-400">
 						<span class="font-semibold">Click to upload</span> or drag and drop
@@ -59,7 +107,11 @@
 					<span class="font-semibold m-3">업로드 파일</span>
 				</p>
 				<div class="flex flex-wrap">
-					<span class="flex-wrap flex-row m-2" v-for="(fileName, index) in uploadedFileNames" :key="index">
+					<span
+						class="flex-wrap flex-row m-2"
+						v-for="(fileName, index) in uploadedFileNames"
+						:key="index"
+					>
 						{{ fileName }}
 					</span>
 				</div>
@@ -72,7 +124,7 @@
 import router from '@/router';
 import axios from 'axios';
 import { ref, onMounted } from 'vue';
-import Swal from 'sweetalert2'
+import Swal from 'sweetalert2';
 
 const title = ref('');
 const date = ref(new Date());
@@ -118,8 +170,8 @@ function registAlbum() {
 		Swal.fire({
 			icon: 'warning',
 			title: '앨범 이미지를 업로드해주세요!',
-			confirmButtonText: '확인'
-		})
+			confirmButtonText: '확인',
+		});
 		return;
 	}
 
@@ -191,11 +243,11 @@ const checkEmptyFields = () => {
 
 <style scoped>
 .content-title {
-	@apply ml-36 text-gray-900 text-xl font-bold;
+	@apply w-[70%] mx-[15%] px-2 text-gray-900 text-xl font-bold;
 }
 
 .content-box {
-	@apply block ml-32 mt-1 w-9/12 rounded-md border border-neutral-300 shadow;
+	@apply block w-[70%] mx-[15%] mt-1 rounded-md border border-neutral-300 shadow;
 }
 
 @keyframes shake {

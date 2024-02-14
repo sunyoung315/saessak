@@ -22,7 +22,7 @@
       <label class="relative inline-flex items-center cursor-pointer">
         <input type="checkbox" v-model="alarm" class="sr-only peer" />
         <div v-if="isLogin == true"
-          class="mr-8 w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-dark-navy">
+          class="mr-8 w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-dark-navy">
         </div>
       </label>
 
@@ -184,24 +184,24 @@ import ChatPersonView from '@/components/chat/ChatPersonView.vue';
 import ChatDetailView from '../chat/ChatDetailView.vue';
 import { saveToken, deleteToken } from '@/api/fcm';
 import {
-  alarmListOfParent,
-  alarmListOfTeacher,
-  deleteAlarm,
-  deleteAllofParent,
-  deleteAllofTeacher,
+	alarmListOfParent,
+	alarmListOfTeacher,
+	deleteAlarm,
+	deleteAllofParent,
+	deleteAllofTeacher,
 } from '@/api/alarm';
 import Swal from 'sweetalert2';
 
 const {
-  VITE_FIREBASE_APIKEY,
-  VITE_FIREBASE_AUTHDOMAIN,
-  VITE_FIREBASE_PROJECTID,
-  VITE_FIREBASE_STORAGEBUCKET,
-  VITE_FIREBASE_MESSAGINGSENDERID,
-  VITE_FIREBASE_APPID,
-  VITE_FIREBASE_MEASUREMENTID,
-  VITE_KAKAO_CLIENT_ID,
-  VITE_KAKAO_REDIRECT_URL,
+	VITE_FIREBASE_APIKEY,
+	VITE_FIREBASE_AUTHDOMAIN,
+	VITE_FIREBASE_PROJECTID,
+	VITE_FIREBASE_STORAGEBUCKET,
+	VITE_FIREBASE_MESSAGINGSENDERID,
+	VITE_FIREBASE_APPID,
+	VITE_FIREBASE_MEASUREMENTID,
+	VITE_KAKAO_CLIENT_ID,
+	VITE_KAKAO_REDIRECT_URL,
 } = import.meta.env;
 
 const store = loginStore();
@@ -218,310 +218,310 @@ const size = ref([]);
 const flag = ref(false);
 
 const getSizeOfDrawer = () => {
-  const width = drawer.value.offsetWidth;
-  const height = drawer.value.offsetHeight;
-  // console.log(`Drawer size: ${width}px x ${height}px`)
-  // console.log(drawer.value)
-  size.value = { width: width, height: height };
+	const width = drawer.value.offsetWidth;
+	const height = drawer.value.offsetHeight;
+	// console.log(`Drawer size: ${width}px x ${height}px`)
+	// console.log(drawer.value)
+	size.value = { width: width, height: height };
 };
 
 const msg = Swal.mixin({
-  toast: true,
-  position: 'center',
-  input: 'text',
-  inputPlaceholder: '등록 코드를 입력해주세요',
-  showConfirmButton: true,
-  showCancelButton: true,
-  confirmButtonText: '등록',
-  cancelButtonText: '취소',
-  backdrop: true,
+	toast: true,
+	position: 'center',
+	input: 'text',
+	inputPlaceholder: '등록 코드를 입력해주세요',
+	showConfirmButton: true,
+	showCancelButton: true,
+	confirmButtonText: '등록',
+	cancelButtonText: '취소',
+	backdrop: true,
 }); // 아이등록 promt
 
 const { chatName, chatReoom, isOpen } = storeToRefs(chStore);
 const { isLogin, isTeacher, kidList, isAlarm, curKid } = storeToRefs(store);
 const {
-  setlogin,
-  setCurkid,
-  setlogout,
-  setKidlist,
-  setTeacherFlag,
-  setTeachername,
-  setAlarmFlag,
+	setlogin,
+	setCurkid,
+	setlogout,
+	setKidlist,
+	setTeacherFlag,
+	setTeachername,
+	setAlarmFlag,
 } = store;
 onMounted(() => {
-  initFlowbite()
-  // 로그인 여부 판단하기
-  const token = localStorage.getItem('accessToken')
-  // isLogin = token == null ? false : true
-  // isTeacher = store.isTeacher;//sTeacher
-  // console.log('나는 선생님인가? ' + isTeacher)
-  // console.log(isLogin)
-  if (isLogin) {
-    if (!isTeacher) {
-      kidList.value = JSON.parse(localStorage.getItem('kidList'))
-    }
-    alarm.value = isAlarm.value
-    // console.log(isAlarm.value)
-  }
-  getSizeOfDrawer()
-  // console.log(isLogin)
-})
+	initFlowbite();
+	// 로그인 여부 판단하기
+	const token = localStorage.getItem('accessToken');
+	// isLogin = token == null ? false : true
+	// isTeacher = store.isTeacher;//sTeacher
+	// console.log('나는 선생님인가? ' + isTeacher)
+	// console.log(isLogin)
+	if (isLogin) {
+		if (!isTeacher) {
+			kidList.value = JSON.parse(localStorage.getItem('kidList'));
+		}
+		alarm.value = isAlarm.value;
+		// console.log(isAlarm.value)
+	}
+	getSizeOfDrawer();
+	// console.log(isLogin)
+});
 
 const roomInfo = ref([]);
 const chatEvent = data => {
-  // console.log('change')
-  // console.log(data)
-  roomInfo.value = data;
-  chatSwitch.value = ChatDetailView;
-  flag.value = true;
+	// console.log('change')
+	// console.log(data)
+	roomInfo.value = data;
+	chatSwitch.value = ChatDetailView;
+	flag.value = true;
 };
 
 const exitChat = input => {
-  if (input) {
-    chatSwitch.value = ChatListView;
-    flag.value = false;
-  }
+	if (input) {
+		chatSwitch.value = ChatListView;
+		flag.value = false;
+	}
 };
 
 const chatSwitch = shallowRef(ChatPersonView);
 
 const showChat = name => {
-  // if(isOpen){ // 채팅방에서 하단 메뉴 클릭할 때
-  //   console.log("채팅방에서 클릭")
-  // }
-  // flag.value = true
-  chatSwitch.value = name;
-  // console.log(chatSwitch.value)
+	// if(isOpen){ // 채팅방에서 하단 메뉴 클릭할 때
+	//   console.log("채팅방에서 클릭")
+	// }
+	// flag.value = true
+	chatSwitch.value = name;
+	// console.log(chatSwitch.value)
 };
 
 const login = () => {
-  window.location.href =
-    'https://kauth.kakao.com' +
-    '/auth/authorize' +
-    '?client_id=' +
-    VITE_KAKAO_CLIENT_ID +
-    '&redirect_uri=' +
-    VITE_KAKAO_REDIRECT_URL +
-    '&response_type=code&prompt=login';
+	window.location.href =
+		'https://kauth.kakao.com' +
+		'/auth/authorize' +
+		'?client_id=' +
+		VITE_KAKAO_CLIENT_ID +
+		'&redirect_uri=' +
+		VITE_KAKAO_REDIRECT_URL +
+		'&response_type=code&prompt=login';
 };
 
 const logout = () => {
-  userLogout();
-  localStorage.removeItem('accessToken');
-  localStorage.removeItem('refreshToken');
-  localStorage.removeItem('navColor');
-  if (!store.isTeacher) {
-    setKidlist('');
-  }
-  // console.log("로그아웃 드가자")
-  localStorage.removeItem('loginStore');
-  localStorage.removeItem('chatStore');
-  setlogout();
-  setTeacherFlag(false);
-  setTeachername('');
-  window.location.href = '/';
+	userLogout();
+	localStorage.removeItem('accessToken');
+	localStorage.removeItem('refreshToken');
+	localStorage.removeItem('navColor');
+	if (!store.isTeacher) {
+		setKidlist('');
+	}
+	// console.log("로그아웃 드가자")
+	localStorage.removeItem('loginStore');
+	localStorage.removeItem('chatStore');
+	setlogout();
+	setTeacherFlag(false);
+	setTeachername('');
+	window.location.href = '/';
 };
 
 const newKids = () => {
-  msg
-    .fire({
-      icon: 'info',
-    })
-    .then(function (result) {
-      if (result.isConfirmed) {
-        kidRegister({ registCode: result.value }, ({ data }) => {
-          // console.log(data)
-          getkidList(({ data }) => {
-            setKidlist(data.data);
-          });
-        });
-      }
-    });
+	msg
+		.fire({
+			icon: 'info',
+		})
+		.then(function (result) {
+			if (result.isConfirmed) {
+				kidRegister({ registCode: result.value }, ({ data }) => {
+					// console.log(data)
+					getkidList(({ data }) => {
+						setKidlist(data.data);
+					});
+				});
+			}
+		});
 };
 
 const alarm = ref();
 
 const firebaseConfig = {
-  apiKey: VITE_FIREBASE_APIKEY,
-  authDomain: VITE_FIREBASE_AUTHDOMAIN,
-  projectId: VITE_FIREBASE_PROJECTID,
-  storageBucket: VITE_FIREBASE_STORAGEBUCKET,
-  messagingSenderId: VITE_FIREBASE_MESSAGINGSENDERID,
-  appId: VITE_FIREBASE_APPID,
-  measurementId: VITE_FIREBASE_MEASUREMENTID,
+	apiKey: VITE_FIREBASE_APIKEY,
+	authDomain: VITE_FIREBASE_AUTHDOMAIN,
+	projectId: VITE_FIREBASE_PROJECTID,
+	storageBucket: VITE_FIREBASE_STORAGEBUCKET,
+	messagingSenderId: VITE_FIREBASE_MESSAGINGSENDERID,
+	appId: VITE_FIREBASE_APPID,
+	measurementId: VITE_FIREBASE_MEASUREMENTID,
 };
 
 firebase.initializeApp(firebaseConfig);
 const messaging = firebase.messaging();
 
-messaging.onMessage((payload) => {
-  // console.log('[클라이언트] 데이터 메시지 수신: ', payload.notification)
+messaging.onMessage(payload => {
+	// console.log('[클라이언트] 데이터 메시지 수신: ', payload.notification)
 
-  navigator.serviceWorker.controller.postMessage({
-    type: 'foreground',
-    payload: payload.notification,
-  });
+	navigator.serviceWorker.controller.postMessage({
+		type: 'foreground',
+		payload: payload.notification,
+	});
 });
 
 const tokenBox = ref({
-  token: '',
+	token: '',
 });
 
 const saveFcmToken = () => {
-  if (Notification.permission !== 'granted') {
-    Notification.requestPermission().then((permission) => {
-      if (permission === 'granted') {
-        messaging.getToken().then((tokenValue) => {
-          tokenBox.value.token = tokenValue
-          saveToken(tokenBox.value)
-        })
-      } else {
-        Swal.fire({
-          icon: 'error',
-          title: '사용자가 알림 수신을 거부했습니다.',
-          confirmButtonText: '확인'
-        })
-        // alert("사용자가 알림 수신을 거부했습니다")
-      }
-    })
-  } else {
-    messaging.getToken().then((tokenValue) => {
-      tokenBox.value.token = tokenValue
-      saveToken(tokenBox.value)
-    })
-  }
-}
+	if (Notification.permission !== 'granted') {
+		Notification.requestPermission().then(permission => {
+			if (permission === 'granted') {
+				messaging.getToken().then(tokenValue => {
+					tokenBox.value.token = tokenValue;
+					saveToken(tokenBox.value);
+				});
+			} else {
+				Swal.fire({
+					icon: 'error',
+					title: '사용자가 알림 수신을 거부했습니다.',
+					confirmButtonText: '확인',
+				});
+				// alert("사용자가 알림 수신을 거부했습니다")
+			}
+		});
+	} else {
+		messaging.getToken().then(tokenValue => {
+			tokenBox.value.token = tokenValue;
+			saveToken(tokenBox.value);
+		});
+	}
+};
 
 const deleteFcmToken = () => {
-  if (Notification.permission === 'granted') {
-    deleteToken();
-  }
+	if (Notification.permission === 'granted') {
+		deleteToken();
+	}
 };
 
 watch(alarm, (newValue, oldValue) => {
-  if (oldValue !== undefined) {
-    if (newValue) {
-      saveFcmToken();
-      setAlarmFlag(true);
-    } else {
-      deleteFcmToken();
-      setAlarmFlag(false);
-    }
-  }
+	if (oldValue !== undefined) {
+		if (newValue) {
+			saveFcmToken();
+			setAlarmFlag(true);
+		} else {
+			deleteFcmToken();
+			setAlarmFlag(false);
+		}
+	}
 });
 
 const alarmList = ref([]);
 
 const getAlarmList = () => {
-  if (isTeacher.value) {
-    alarmListOfTeacher(
-      ({ data }) => {
-        alarmList.value = data.data;
-      },
-      error => {
-        console.log(error);
-      },
-    );
-  }
-  if (!isTeacher.value) {
-    alarmListOfParent(
-      curKid.value,
-      ({ data }) => {
-        alarmList.value = data.data;
-      },
-      error => {
-        console.log(error);
-      },
-    );
-  }
+	if (isTeacher.value) {
+		alarmListOfTeacher(
+			({ data }) => {
+				alarmList.value = data.data;
+			},
+			error => {
+				console.log(error);
+			},
+		);
+	}
+	if (!isTeacher.value) {
+		alarmListOfParent(
+			curKid.value,
+			({ data }) => {
+				alarmList.value = data.data;
+			},
+			error => {
+				console.log(error);
+			},
+		);
+	}
 };
 
 const removeAllAlarm = () => {
-  if (isTeacher.value) {
-    // console.log("알람 선생님 전체 삭제");
-    deleteAllofTeacher(
-      response => {
-        getAlarmList();
-      },
-      error => {
-        console.log(error);
-      },
-    );
-  }
-  if (!isTeacher.value) {
-    // console.log("알람 학부모 전체 삭제");
-    deleteAllofParent(
-      curKid.value,
-      response => {
-        getAlarmList();
-      },
-      error => {
-        console.log(error);
-      },
-    );
-  }
+	if (isTeacher.value) {
+		// console.log("알람 선생님 전체 삭제");
+		deleteAllofTeacher(
+			response => {
+				getAlarmList();
+			},
+			error => {
+				console.log(error);
+			},
+		);
+	}
+	if (!isTeacher.value) {
+		// console.log("알람 학부모 전체 삭제");
+		deleteAllofParent(
+			curKid.value,
+			response => {
+				getAlarmList();
+			},
+			error => {
+				console.log(error);
+			},
+		);
+	}
 };
 
 const removeAlarm = alarmId => {
-  // console.log("알람 삭제", alarmId);
-  deleteAlarm(
-    alarmId,
-    response => {
-      getAlarmList();
-    },
-    error => {
-      console.log(error);
-    },
-  );
+	// console.log("알람 삭제", alarmId);
+	deleteAlarm(
+		alarmId,
+		response => {
+			getAlarmList();
+		},
+		error => {
+			console.log(error);
+		},
+	);
 };
 
 const route = useRoute();
 
 const kidChange = idx => {
-  // console.log(kidList.value[idx].kidId)
-  setCurkid(kidList.value[idx].kidId);
-  // 변경한 kidId 삭제 후 0번째 kid로 다시 넣기
-  let tmp = kidList.value.splice(idx, 1)[0];
-  kidList.value.unshift(tmp);
+	// console.log(kidList.value[idx].kidId)
+	setCurkid(kidList.value[idx].kidId);
+	// 변경한 kidId 삭제 후 0번째 kid로 다시 넣기
+	let tmp = kidList.value.splice(idx, 1)[0];
+	kidList.value.unshift(tmp);
 
-  // 아이를 변경하면 메인페이지로 이동
-  if (!route.path.substr(1)) {
-    location.reload();
-  } else {
-    router.push('/');
-  }
+	// 아이를 변경하면 메인페이지로 이동
+	if (!route.path.substr(1)) {
+		location.reload();
+	} else {
+		router.push('/');
+	}
 };
 
 const changeColor = () => {
-  // 로고 클릭시 이벤트 전달
-  emits('headerClick', 'click');
+	// 로고 클릭시 이벤트 전달
+	emits('headerClick', 'click');
 };
 </script>
 
 <style scoped>
 .header-frame {
-  @apply h-20 bg-gray-50 shadow-md;
+	@apply h-20 bg-gray-50 shadow-md;
 }
 
 ::-webkit-scrollbar {
-  width: 0.4rem;
+	width: 0.4rem;
 }
 
 /* 스크롤바의 트랙(경로)부분 */
 ::-webkit-scrollbar-track {
-  background-color: #dcdcdc;
-  border-radius: 1rem;
-  box-shadow: inset 0px 0px 5px white;
+	background-color: #dcdcdc;
+	border-radius: 1rem;
+	box-shadow: inset 0px 0px 5px white;
 }
 
 /* 스크롤바의 핸들(드래그하는 부분) */
 ::-webkit-scrollbar-thumb {
-  background-color: #777;
-  border-radius: 1rem;
+	background-color: #777;
+	border-radius: 1rem;
 }
 
 /* 스크롤바의 핸들을 호버 시 */
 ::-webkit-scrollbar-thumb:hover {
-  background: #555;
+	background: #555;
 }
 </style>

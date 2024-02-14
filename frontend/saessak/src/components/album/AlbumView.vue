@@ -1,5 +1,5 @@
 <template>
-	<div class="view-header flex justify-between">
+	<div class="view-header flex items-enter justify-between">
 		<div class="flex items-center">
 			<span class="nav-title">앨범</span>
 			<div class="toggle" v-show="groupBtnVisible">
@@ -11,7 +11,7 @@
 						v-model="showToggle"
 					/>
 					<div
-						class="w-12 h-7 mr-5 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-nav-green peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-1 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 peer-checked:bg-nav-green"
+						class="w-12 h-7 mr-5 bg-gray-200 rounded-full peer peer-focus:ring-nav-green peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-1 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-nav-green"
 					></div>
 					<span
 						v-if="loginStore.isTeacher"
