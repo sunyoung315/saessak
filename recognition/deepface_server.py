@@ -18,6 +18,8 @@ import cv2
 import os
 from deepface.commons import distance as dst 
 from decouple import config
+import joblib
+
 ## db 설정
 album_table = table_info.get_album_table()
 file_table = table_info.get_file_table()
@@ -38,11 +40,38 @@ jwt_secret = config("JWT_SECRET_KEY")
 token_validator = Validator(jwt_secret)
 
 
-model = "Facenet512"
+model = "SFace"
 normal = "Facenet2018"
 detector = "opencv"
 weight = 1.0968750000000003
+
+svm_model = joblib.load('svm_model_euclidean_l2.pkl')
+
 CORS(app, origins="*")  
+
+def is_face_in_picture (know : list, embedding_list : list, distance_metric: str) :
+    distance_list= []
+    # threshold = dst.findThreshold(model_name=model, distance_metric=distance_metric)*weight
+
+    for embed in embedding_list :
+        # 사용함수
+        distance = 100000000
+        if (distance_metric == "cosine"):
+            distance = dst.findCosineDistance(know, embed)
+        elif (distance_metric == "euclidean") :
+            distance = dst.findEuclideanDistance(know, embed)
+        elif (distance_metric == "euclidean_l2"):
+            distance = dst.findEuclideanDistance(
+            dst.l2_normalize(know), dst.l2_normalize(embed)
+        )
+        distance_list.append(distance)
+        # print(distance <= threshold)
+    min_dist = min(distance_list)
+    min_idx = distance_list.index(min_dist)
+    if(distance_metric == "educlidean"):
+        return np.multiply(know - embedding_list[min_idx],know - embedding_list[min_idx])
+    else :
+        return np.multiply(dst.l2_normalize(know) - dst.l2_normalize(embed),dst.l2_normalize(know) - dst.l2_normalize(embed))
 
 def get_face_embeddings (img ): 
     represent_objs = DeepFace.represent(
@@ -65,7 +94,7 @@ def verifyAlbum():
     ## 토큰 유효성 검사
     
     auth_header = request.headers.get('Authorization')
-
+    print(auth_header)
     if auth_header and auth_header.startswith("Bearer ") :
         # 헤더에 Bearer 토큰이 있을 때
         access_token = auth_header.split(' ')[1]
@@ -101,7 +130,6 @@ def verifyAlbum():
                 if url is None : continue
                 kid_dict[kid_id] = url
                 kid_album[kid_id] = []
-
                 url = url.replace(db_base_url, "")
                 response = s3.get_object(Bucket = s3_bucket_name, Key= url)
                 data = response["Body"].read()
@@ -148,25 +176,28 @@ def verifyAlbum():
                 for kid_id, kid_embedding in kid_embeddings.items() : 
                     
                     for kid_embed in kid_embedding :
-                        
-                        for image_embed in image_embeddings : 
-                            # 유사한 사진이 있는지?
-                            distance_euclidean_l2 = dst.findEuclideanDistance(
-                                dst.l2_normalize(kid_embed), dst.l2_normalize(image_embed)
-                            )
-                            threshold_euclidean_l2 = dst.findThreshold(model_name=model,distance_metric="euclidean_l2")
-                            if distance_euclidean_l2 > threshold_euclidean_l2*weight : continue
-                            
-                            threshold_cosine = dst.findThreshold(model_name=model,distance_metric="cosine")
-                            distance_cosine = dst.findCosineDistance(kid_embed, image_embed)
-                            if distance_cosine > threshold_cosine*weight : continue
-                            
-                            threshold_euclidean = dst.findThreshold(model_name=model,distance_metric="euclidean")
-                            distance_euclidean = dst.findEuclideanDistance(kid_embed, image_embed)
-                            if distance_euclidean > threshold_euclidean*weight : continue
-                                
+                        min_dist_vector = is_face_in_picture(kid_embed, image_embeddings, distance_metric="euclidean_l2")
+                        result = svm_model.predict([min_dist_vector])
+                        if(result[0]):
                             kid_album[kid_id].append(add_object.copy())
-                            break
+                        # for image_embed in image_embeddings : 
+                        #     # 유사한 사진이 있는지?
+                        #     distance_euclidean_l2 = dst.findEuclideanDistance(
+                        #         dst.l2_normalize(kid_embed), dst.l2_normalize(image_embed)
+                        #     )
+                        #     threshold_euclidean_l2 = dst.findThreshold(model_name=model,distance_metric="euclidean_l2")
+                        #     if distance_euclidean_l2 > threshold_euclidean_l2*weight : continue
+                            
+                        #     threshold_cosine = dst.findThreshold(model_name=model,distance_metric="cosine")
+                        #     distance_cosine = dst.findCosineDistance(kid_embed, image_embed)
+                        #     if distance_cosine > threshold_cosine*weight : continue
+                            
+                        #     threshold_euclidean = dst.findThreshold(model_name=model,distance_metric="euclidean")
+                        #     distance_euclidean = dst.findEuclideanDistance(kid_embed, image_embed)
+                        #     if distance_euclidean > threshold_euclidean*weight : continue
+                                
+                        #     kid_album[kid_id].append(add_object.copy())
+                        #     break
                         
 
             ## 분류 완료 
@@ -190,6 +221,8 @@ def verifyAlbum():
                 class_album
             )
 
+            # for key , value in kid_album.items() :
+            #     print(key , value)
 
             # 아이앨범 생성
             for key, value in kid_album.items() :
