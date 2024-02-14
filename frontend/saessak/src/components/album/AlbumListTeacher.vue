@@ -1,59 +1,64 @@
 <template>
 	<div class="flex flex-col">
-		<!-- Card 형식 : 전체 아이들 보기 -->
+		<!-- Carousel 아이 이름별 보기 -->
 		<div v-if="!props.showToggle">
-			<div v-for="kid in recentAlbumList" :key="kid.kidId">
-				<div
-					v-if="
-						kid.albumResponseDto &&
-						kid.albumResponseDto.fileResponseDtoList.length > 0
-					"
-					class="border rounded-md shadow bg-gray-50 mb-4 p-4 pb-2"
-				>
-					<img class="px-2" src="@/assets/film.png" alt="필름" />
-					<Carousel
-						:items-to-show="5"
-						:wrap-around="false"
-						snapAlign="start"
-						v-if="kid.albumResponseDto"
+			<template v-if="!isNull">
+				<div v-for="kid in recentAlbumList" :key="kid.kidId">
+					<div
+						v-if="
+							kid.albumResponseDto &&
+							kid.albumResponseDto.fileResponseDtoList.length > 0
+						"
+						class="border rounded-md shadow bg-gray-50 mb-4 p-4 pb-2"
 					>
-						<Slide
-							v-for="file in kid.albumResponseDto.fileResponseDtoList"
-							:key="file.fileId"
+						<img class="px-2" src="@/assets/film.png" alt="필름" />
+						<Carousel
+							:items-to-show="5"
+							:wrap-around="false"
+							snapAlign="start"
+							v-if="kid.albumResponseDto"
 						>
-							<div class="carousel__item">
-								<img
-									class="album px-2"
-									:src="`${file.filePath}`"
-									:for="kid.albumResponseDto.albumId"
-									alt="image"
-								/>
-							</div>
-						</Slide>
-						<template #addons>
-							<Navigation />
-						</template>
-					</Carousel>
-					<img class="px-2" src="@/assets/film.png" alt="필름" />
-					<div class="flex justify-between items-center">
-						<button
-							class="inline-block bg-nav-green mx-4 my-2 text-black font-bold w-20 h-10 rounded-full"
-							disabled
-						>
-							{{ kid.kidName }}
-						</button>
+							<Slide
+								v-for="file in kid.albumResponseDto.fileResponseDtoList"
+								:key="file.fileId"
+							>
+								<div class="carousel__item">
+									<img
+										class="album px-2"
+										:src="`${file.filePath}`"
+										:for="kid.albumResponseDto.albumId"
+										alt="image"
+									/>
+								</div>
+							</Slide>
+							<template #addons>
+								<Navigation />
+							</template>
+						</Carousel>
+						<img class="px-2" src="@/assets/film.png" alt="필름" />
+						<div class="flex justify-between items-center">
+							<button
+								class="inline-block bg-nav-green mx-4 my-2 text-black font-bold w-20 h-10 rounded-full"
+								disabled
+							>
+								{{ kid.kidName }}
+							</button>
 
-						<button
-							@click="goDetail(kid.kidId)"
-							class="my-2 mx-1 px-4 py-1 text-xl font-bold rounded-md hover:bg-gray-200 pointer-cursor"
-						>
-							→ 상세 조회
-						</button>
+							<button
+								@click="goDetail(kid.kidId)"
+								class="my-2 mx-1 px-4 py-1 text-xl font-bold rounded-md hover:bg-gray-200 pointer-cursor"
+							>
+								→ 상세 조회
+							</button>
+						</div>
 					</div>
 				</div>
+			</template>
+			<div v-else class="m-6">
+				<p>등록된 사진이 없습니다.</p>
 			</div>
 		</div>
-		<!-- Carousel 아이 이름별 보기 -->
+		<!-- Card 형식 : 전체 아이들 보기 -->
 		<div v-else>
 			<div class="datepicker px-2">
 				<VDatePicker
@@ -119,7 +124,7 @@
 					</div>
 				</div>
 			</div>
-			<div v-else class="m-6">
+			<div v-else class="m-6 mx-12">
 				<p>등록된 사진이 없습니다.</p>
 			</div>
 		</div>
@@ -162,10 +167,17 @@ watch(date, async newDate => {
 });
 
 // 반 아이들 최신 앨범 리스트 조회 (Carousel)
+const isNull = ref(true);
 const recentAlbumList = ref([]);
 const getRecentAlbumList = async () => {
 	await albumStore.getRecentAlbumList();
 	recentAlbumList.value = albumStore.recentAlbumList;
+	for (let i = 0; i < recentAlbumList.value.length; i++) {
+		if (recentAlbumList.value[i].albumResponseDto) {
+			isNull.value = false;
+			return;
+		}
+	}
 };
 
 // 반 앨범 날짜별 조회
