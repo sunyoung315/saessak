@@ -348,7 +348,7 @@ const checkContentLength = () => {
 // 아이 선택하면 최근 키/체중 가져오기
 watch(kidId, async newVal => {
 	await boardStore.getCurrentBoard(newVal);
-	if (!boardStore.noContent) {
+	if (boardStore.oneBoard) {
 		newBoard.value.boardTall = boardStore.oneBoard.boardTall;
 		newBoard.value.boardWeight = boardStore.oneBoard.boardWeight;
 	} else {
@@ -519,7 +519,7 @@ const registBoard = () => {
 	if (checkEmptyFields()) {
 		return;
 	}
-	if (!boardStore.noContent) {
+	if (boardStore.oneBoard) {
 		if (newBoard.value.boardTall === boardStore.oneBoard.boardTall) {
 			newBoard.value.boardTall = 0;
 		}
@@ -527,6 +527,7 @@ const registBoard = () => {
 			newBoard.value.boardWeight = 0;
 		}
 	}
+
 	createBoard(newBoard.value);
 	router.push({ name: 'BoardList' });
 };
