@@ -59,7 +59,10 @@
 			</label>
 		</div>
 
-		<span class="content-title">첨부파일 (사진, 동영상: {{ count }}EA)</span>
+		<span class="content-title"
+			>첨부파일 (사진, 동영상: {{ count }}EA, 총 용량:
+			{{ (totalFileSize / 1024 / 1024).toFixed(2) }}MB)</span
+		>
 		<div class="flex items-center w-[70%] mx-[15%] mt-1">
 			<label
 				class="flex flex-col justify-center h-64 mb-8 w-full border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
@@ -135,10 +138,11 @@ const selectAttribute = ref({ highlight: 'green' });
 let count = ref(0);
 let uploadedFileNames = ref([]);
 
-// 파일, 이미지, 링크 변수 지정
+// 파일, 이미지, 링크, 총 용량 변수 지정
 let form = new FormData();
 let images = ref([]);
 let imageRef = ref(null);
+let totalFileSize = ref(0);
 
 const uploadImage = () => {
 	let imageFiles = imageRef.value.files;
@@ -148,6 +152,20 @@ const uploadImage = () => {
 
 	for (let i = 0; i < imageFiles.length; i++) {
 		// console.log('업로드 파일명:', imageFiles[i].name);
+		// 각 파일의 용량을 KB 단위로 변환하여 출력
+		totalFileSize.value += imageFiles[i].size;
+
+		if (totalFileSize.value / 1024 / 1024 > 150) {
+			// 총 용량이 150MB를 넘으면 경고 창 표시하고 업로드 중단
+			Swal.fire({
+				icon: 'warning',
+				title: '파일 용량을 초과하셨습니다!',
+				text: '총 업로드 가능한 파일 용량은 150MB입니다.',
+				confirmButtonText: '확인',
+			});
+			return;
+		}
+
 		form.append('images', imageFiles[i]); // 각 파일을 폼에 추가
 		images.value.append = imageFiles[i];
 		uploadedFileNames.value.push(imageFiles[i].name); // 업로드한 파일 이름 저장

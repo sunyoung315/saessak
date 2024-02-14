@@ -17,7 +17,7 @@
 						v-if="loginStore.isTeacher"
 						class="text-xl font-extrabold inline-block text-gray-900"
 					>
-						{{ showToggle ? '아이별 보기' : '전체 보기' }}</span
+						{{ showToggle ? '전체 보기' : '아이별 보기' }}</span
 					>
 					<span
 						v-else

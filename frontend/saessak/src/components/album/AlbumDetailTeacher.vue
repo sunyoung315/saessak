@@ -75,7 +75,7 @@
 			</div>
 		</div>
 		<div v-else>
-			<div class="m-6">등록된 앨범이 없습니다.</div>
+			<div class="m-6">등록된 사진이 없습니다.</div>
 		</div>
 		<br />
 	</div>
