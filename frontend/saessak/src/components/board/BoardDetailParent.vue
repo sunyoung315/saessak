@@ -54,102 +54,125 @@
 				></textarea>
 			</div>
 			<span class="content-title">건강기록</span>
-			<div class="content-box mb-0 p-2">
-				<template v-if="store.oneBoard.boardTemperature">
-					<div class="record-flex">
-						<span class="record-title">체온 체크 </span>
-						<input
-							type="text"
-							class="record-content"
-							:value="store.oneBoard.boardTemperature"
-							readonly
-						/>
-						<div class="unit">°C</div>
-					</div>
-				</template>
-				<template v-if="store.oneBoard.boardSleepTime">
-					<div class="record-flex">
-						<span class="record-title">수면 시간 </span>
-						<div class="relative flex items-center">
+			<template
+				v-if="
+					!store.oneBoard.boardTemperature &&
+					!store.oneBoard.boardPoopStatus &&
+					!store.oneBoard.boardSleepTime &&
+					!store.oneBoard.boardTall &&
+					!store.oneBoard.boardWeight
+				"
+			>
+				<div class="content-box p-6 pb-16">등록된 건강기록이 없습니다.</div>
+			</template>
+			<template v-else>
+				<div class="content-box mb-0 p-2">
+					<template v-if="store.oneBoard.boardTemperature">
+						<div class="record-flex">
+							<span class="record-title">체온 체크 </span>
 							<input
 								type="text"
 								class="record-content"
-								:value="store.oneBoard.boardSleepTime"
+								:value="store.oneBoard.boardTemperature"
 								readonly
 							/>
+							<div class="unit">°C</div>
 						</div>
-						<div class="unit">시간</div>
-					</div>
-				</template>
-				<template v-if="store.oneBoard.boardPoopStatus">
-					<div>
-						<span class="record-title">배변 상태</span>
-						<div class="group-button" role="group">
-							<template v-if="store.oneBoard.boardPoopStatus === '보통'">
-								<button
-									type="button"
-									class="group-button-left-item-focus"
-									disabled
-								>
-									보통
-								</button>
-							</template>
-							<template v-else>
-								<button type="button" class="group-button-left-item" disabled>
-									보통
-								</button>
-							</template>
-							<template v-if="store.oneBoard.boardPoopStatus === '묽음'">
-								<button
-									type="button"
-									class="group-button-center-item-focus"
-									disabled
-								>
-									묽음
-								</button>
-							</template>
-							<template v-else>
-								<button type="button" class="group-button-center-item" disabled>
-									묽음
-								</button>
-							</template>
-							<template v-if="store.oneBoard.boardPoopStatus === '딱딱함'">
-								<button
-									type="button"
-									class="group-button-right-item-focus"
-									disabled
-								>
-									딱딱함
-								</button>
-							</template>
-							<template v-else>
-								<button type="button" class="group-button-right-item" disabled>
-									딱딱함
-								</button>
-							</template>
+					</template>
+					<template v-if="store.oneBoard.boardSleepTime">
+						<div class="record-flex">
+							<span class="record-title">수면 시간 </span>
+							<div class="relative flex items-center">
+								<input
+									type="text"
+									class="record-content"
+									:value="store.oneBoard.boardSleepTime"
+									readonly
+								/>
+							</div>
+							<div class="unit">시간</div>
 						</div>
-					</div>
-				</template>
-				<template v-if="store.oneBoard.boardTall || store.oneBoard.boardWeight">
-					<div class="record-flex">
-						<span class="record-title">키/몸무게</span>
-						<input
-							type="text"
-							class="record-content"
-							:value="store.oneBoard.boardTall"
-							readonly
-						/>
-						<div class="unit">cm</div>
-						<input
-							type="text"
-							class="record-content"
-							:value="store.oneBoard.boardWeight"
-							readonly
-						/>
-						<div class="unit">kg</div>
-					</div>
-				</template>
-			</div>
+					</template>
+					<template v-if="store.oneBoard.boardPoopStatus">
+						<div>
+							<span class="record-title">배변 상태</span>
+							<div class="group-button" role="group">
+								<template v-if="store.oneBoard.boardPoopStatus === '보통'">
+									<button
+										type="button"
+										class="group-button-left-item-focus"
+										disabled
+									>
+										보통
+									</button>
+								</template>
+								<template v-else>
+									<button type="button" class="group-button-left-item" disabled>
+										보통
+									</button>
+								</template>
+								<template v-if="store.oneBoard.boardPoopStatus === '묽음'">
+									<button
+										type="button"
+										class="group-button-center-item-focus"
+										disabled
+									>
+										묽음
+									</button>
+								</template>
+								<template v-else>
+									<button
+										type="button"
+										class="group-button-center-item"
+										disabled
+									>
+										묽음
+									</button>
+								</template>
+								<template v-if="store.oneBoard.boardPoopStatus === '딱딱함'">
+									<button
+										type="button"
+										class="group-button-right-item-focus"
+										disabled
+									>
+										딱딱함
+									</button>
+								</template>
+								<template v-else>
+									<button
+										type="button"
+										class="group-button-right-item"
+										disabled
+									>
+										딱딱함
+									</button>
+								</template>
+							</div>
+						</div>
+					</template>
+					<template
+						v-if="store.oneBoard.boardTall || store.oneBoard.boardWeight"
+					>
+						<div class="record-flex">
+							<span class="record-title">키/몸무게</span>
+							<input
+								type="text"
+								class="record-content"
+								:value="store.oneBoard.boardTall"
+								readonly
+							/>
+							<div class="unit">cm</div>
+							<input
+								type="text"
+								class="record-content"
+								:value="store.oneBoard.boardWeight"
+								readonly
+							/>
+							<div class="unit">kg</div>
+						</div>
+					</template>
+				</div>
+			</template>
 		</template>
 		<template v-else>
 			<div class="no-content">{{ store.noContent }}</div>
