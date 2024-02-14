@@ -519,6 +519,14 @@ const registBoard = () => {
 	if (checkEmptyFields()) {
 		return;
 	}
+	if (!boardStore.noContent) {
+		if (newBoard.value.boardTall === boardStore.oneBoard.boardTall) {
+			newBoard.value.boardTall = 0;
+		}
+		if (newBoard.value.boardWeight === boardStore.oneBoard.boardWeight) {
+			newBoard.value.boardWeight = 0;
+		}
+	}
 	createBoard(newBoard.value);
 	router.push({ name: 'BoardList' });
 };
