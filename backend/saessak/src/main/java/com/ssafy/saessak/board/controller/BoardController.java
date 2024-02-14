@@ -53,10 +53,9 @@ public class BoardController {
     }
     @Operation(summary =  "오늘 작성된 알림장이 없는 아이 리스트 ( 선생님 )")
     @GetMapping("/teacher/day")
-    public ResponseEntity<ResultResponse> getClassKidBoardIsNotWritten(@RequestParam String today) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate date = LocalDate.parse(today, formatter);
-        List<KidNoBoardResponseDto> result = boardService.getClassKidBoardIsNotWritten(date);
+    public ResponseEntity<ResultResponse> getClassKidBoardIsNotWritten() {
+
+        List<KidNoBoardResponseDto> result = boardService.getClassKidBoardIsNotWritten();
         return ResponseEntity.ok(ResultResponse.of(ResultCode.SUCCESS, result));
     }
     // 알림장 등록
