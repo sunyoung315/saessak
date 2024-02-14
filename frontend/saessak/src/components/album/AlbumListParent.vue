@@ -47,7 +47,7 @@
 					</div>
 				</div>
 			</div>
-			<div v-if="!kidAlbumList.length" class="m-6">등록된 앨범이 없습니다.</div>
+			<div v-if="!kidAlbumList.length" class="m-6">등록된 사진이 없습니다.</div>
 		</div>
 		<!-- 반 전체 보기 -->
 		<div v-else>
@@ -95,6 +95,9 @@
 						</div>
 					</div>
 				</div>
+			</div>
+			<div v-if="!albumParentList.length" class="m-6">
+				등록된 사진이 없습니다.
 			</div>
 		</div>
 		<div class="flex justify-center font-bold" v-if="kidAlbumList.length">
