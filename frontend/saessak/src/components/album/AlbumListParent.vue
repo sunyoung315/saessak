@@ -2,7 +2,11 @@
 	<div>
 		<!-- 내 아이 보기 -->
 		<div v-if="props.showToggle">
-			<div v-for="album in currentPageAlbums" :key="album.albumId">
+			<div
+				v-for="album in currentPageAlbums"
+				:key="album.albumId"
+				class="border rounded-md shadow bg-gray-50 mb-4 p-4 pb-2"
+			>
 				<div
 					class="flex justify-start items-center"
 					v-if="album.fileResponseDtoList.length != 0"
@@ -13,7 +17,7 @@
 					>
 						<p>{{ album.albumDate }}</p>
 					</button>
-					<p class="text-2xl font-bold ml-4">{{ album.albumTitle }}</p>
+					<p class="text-2xl font-bold ml-3">{{ album.albumTitle }}</p>
 				</div>
 				<div v-if="album.fileResponseDtoList.length != 0">
 					<img class="px-2" src="@/assets/film.png" alt="필름" />
@@ -33,21 +37,25 @@
 						</template>
 					</Carousel>
 					<img class="px-2" src="@/assets/film.png" alt="필름" />
-					<div
-						@click="goDetail(kidId, album.albumDate)"
-						class="m-4 text-xl font-bold flex justify-end cursor-pointer"
-					>
-						→ 상세 조회
+					<div class="flex justify-end items-center">
+						<button
+							@click="goDetail(kidId, album.albumDate)"
+							class="my-2 mx-1 px-4 py-1 text-xl font-bold rounded-md hover:bg-gray-200 pointer-cursor"
+						>
+							→ 상세 조회
+						</button>
 					</div>
 				</div>
 			</div>
-			<div v-if="!kidAlbumList.length">
-				<p>등록된 앨범이 없습니다.</p>
-			</div>
+			<div v-if="!kidAlbumList.length" class="m-6">등록된 앨범이 없습니다.</div>
 		</div>
 		<!-- 반 전체 보기 -->
 		<div v-else>
-			<div v-for="album in currentPageAlbums" :key="album.albumId">
+			<div
+				v-for="album in currentPageAlbums"
+				:key="album.albumId"
+				class="border rounded-md shadow bg-gray-50 mb-4 p-4 pb-2"
+			>
 				<div
 					class="flex justify-start items-center"
 					v-if="album.fileResponseDtoList.length != 0"
@@ -58,7 +66,7 @@
 					>
 						<p>{{ album.albumDate }}</p>
 					</button>
-					<p class="text-2xl font-bold ml-4">{{ album.albumTitle }}</p>
+					<p class="text-2xl font-bold ml-3">{{ album.albumTitle }}</p>
 				</div>
 				<div v-if="album.fileResponseDtoList.length != 0">
 					<img class="px-2" src="@/assets/film.png" alt="필름" />
@@ -78,41 +86,59 @@
 						</template>
 					</Carousel>
 					<img class="px-2" src="@/assets/film.png" alt="필름" />
-					<div
-						@click="goDetail(kidId, album.albumDate)"
-						class="m-4 text-xl font-bold flex justify-end cursor-pointer"
-					>
-						→ 상세 조회
+					<div class="flex justify-end items-center">
+						<div
+							@click="goDetail(kidId, album.albumDate)"
+							class="my-2 mx-1 px-4 py-1 text-xl font-bold rounded-md hover:bg-gray-200 pointer-cursor"
+						>
+							→ 상세 조회
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-		<div
-			class="flex justify-center text-2xl font-bold"
-			v-if="kidAlbumList.length"
-		>
-			<button
-				@click="movePage(currentPage - 1)"
-				:disabled="currentPage === 0"
-				:class="{ 'text-gray-200': currentPage === 0 }"
-			>
-				←
+		<div class="flex justify-center font-bold" v-if="kidAlbumList.length">
+			<button @click="movePage(currentPage - 1)" :disabled="currentPage === 0">
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					width="7"
+					height="12"
+					viewBox="0 0 7 12"
+					fill="none"
+				>
+					<path
+						fill-rule="evenodd"
+						clip-rule="evenodd"
+						d="M6.70711 0.292893C6.34662 -0.0675907 5.77939 -0.0953203 5.3871 0.209705L5.29289 0.292893L0.292893 5.29289C-0.0675907 5.65338 -0.0953203 6.22061 0.209705 6.6129L0.292893 6.70711L5.29289 11.7071C5.68342 12.0976 6.31658 12.0976 6.70711 11.7071C7.06759 11.3466 7.09532 10.7794 6.7903 10.3871L6.70711 10.2929L2.415 6L6.70711 1.70711C7.06759 1.34662 7.09532 0.779392 6.7903 0.387101L6.70711 0.292893Z"
+						:fill="currentPage === 0 ? '#cccccc' : '#000000'"
+					/>
+				</svg>
 			</button>
 			<button
 				v-for="(page, index) in totalPage"
 				:key="index"
 				@click="movePage(index)"
-				class="m-2 rounded-lg p-2"
-				:class="{ 'bg-nav-green': currentPage === index }"
+				class="rounded p-2 text-base px-3 mx-2"
+				:class="{ 'bg-nav-green bg-opacity-50': currentPage === index }"
 			>
 				{{ index + 1 }}
 			</button>
 			<button
 				@click="movePage(currentPage + 1)"
 				:disabled="currentPage === totalPage - 1"
-				:class="{ 'text-gray-200': currentPage === totalPage - 1 }"
 			>
-				→
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					width="7"
+					height="12"
+					viewBox="0 0 7 12"
+					fill="none"
+				>
+					<path
+						d="M0.292893 0.292893C0.653377 -0.0675907 1.22061 -0.0953203 1.6129 0.209705L1.70711 0.292893L6.70711 5.29289C7.06759 5.65338 7.09532 6.22061 6.7903 6.6129L6.70711 6.70711L1.70711 11.7071C1.31658 12.0976 0.683418 12.0976 0.292893 11.7071C-0.0675907 11.3466 -0.0953203 10.7794 0.209705 10.3871L0.292893 10.2929L4.585 6L0.292893 1.70711C-0.0675907 1.34662 -0.0953203 0.779392 0.209705 0.387101L0.292893 0.292893Z"
+						:fill="currentPage === totalPage - 1 ? '#cccccc' : '#000000'"
+					/>
+				</svg>
 			</button>
 		</div>
 	</div>

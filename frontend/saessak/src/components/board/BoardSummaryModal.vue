@@ -139,7 +139,9 @@
 					<div>확인하고 싶은 알림장 기간을 선택하세요 :)</div>
 				</template>
 				<template v-else>
-					<div class="h-[25rem] whitespace-pre-line text-base">
+					<div
+						class="h-[25rem] w-[50rem] border p-4 overflow-auto whitespace-pre-line text-base"
+					>
 						{{ summary }}
 					</div>
 				</template>
@@ -208,15 +210,14 @@ const summary = ref('');
 // OpenAI 요약
 const API_KEY = import.meta.env.VITE_OPENAI_API_KEY;
 
-const getGPTResponse = async () => {
+const getGPTResponse = async content => {
 	try {
-		// console.log('요약 시작');
 		const openai = new OpenAI({
 			apiKey: API_KEY,
 			dangerouslyAllowBrowser: true,
 		});
 
-		const prompt = `${store.boardList.length}일치의 알림장인 ${content.value} 를 유치원 선생님 말투로 100~150자로 요약해주는데, 날짜를 쓰고 엔터를 치고 요약을 쓰는 형태로 써줘.`;
+		const prompt = `${store.boardList.length}일치의 알림장인 ${content} 를 유치원 선생님 말투로 100~150자로 요약해주는데, 날짜를 쓰고 엔터를 치고 요약을 쓰는 형태로 써줘.`;
 
 		const response = await openai.chat.completions.create({
 			messages: [
@@ -252,7 +253,8 @@ const getSummaryBoard = async kidId => {
 	}
 
 	if (store.boardList.length) {
-		getGPTResponse();
+		await getGPTResponse(content.value);
+		content.value = '';
 	} else {
 		summary.value = '조회된 알림장이 없습니다.';
 	}

@@ -1,60 +1,62 @@
 <template>
 	<div class="view-frame p-4">
-		<div class="flex justify-between">
+		<div class="flex justify-between items-center">
 			<!-- DatePicker 시작-->
-			<div class="block mt-1 mb-4">
-				<div class="datepicker">
-					<VDatePicker
-						v-model="date"
-						:select-attribute="selectAttribute"
-						:disabled-dates="disabledDates"
-					>
-						<template #default="{ inputValue, inputEvents }">
-							<div class="relative max-w-sm">
-								<div
-									class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none"
+			<div class="datepicker">
+				<VDatePicker
+					v-model="date"
+					:select-attribute="selectAttribute"
+					:disabled-dates="disabledDates"
+				>
+					<template #default="{ inputValue, inputEvents }">
+						<div class="relative max-w-sm">
+							<div
+								class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none"
+							>
+								<svg
+									class="w-4 h-4 text-gray-900"
+									aria-hidden="true"
+									xmlns="http://www.w3.org/2000/svg"
+									fill="currentColor"
+									viewBox="0 0 20 20"
 								>
-									<svg
-										class="w-4 h-4 text-gray-900"
-										aria-hidden="true"
-										xmlns="http://www.w3.org/2000/svg"
-										fill="currentColor"
-										viewBox="0 0 20 20"
-									>
-										<path
-											d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"
-										/>
-									</svg>
-								</div>
-								<input
-									:value="inputValue"
-									v-on="inputEvents"
-									class="datepicker-input text"
-								/>
+									<path
+										d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"
+									/>
+								</svg>
 							</div>
-						</template>
-					</VDatePicker>
-				</div>
+							<input
+								:value="inputValue"
+								v-on="inputEvents"
+								class="datepicker-input text"
+							/>
+						</div>
+					</template>
+				</VDatePicker>
 			</div>
 			<!-- DatePicker 끝-->
 			<div>
-				<button @click="download" type="button" class="btn">다운로드</button>
-				<button type="button" @click="goBack()" class="btn">목록</button>
+				<button @click="download" type="button" class="btn mt-7 mr-4 mb-3">
+					다운로드
+				</button>
+				<button type="button" @click="goBack()" class="btn mt-7 mr-7 mb-3">
+					목록
+				</button>
 			</div>
 		</div>
-		<!--전체 보기 -->
+		<!--내 아이만 보기 -->
 		<div v-if="props.showToggle">
 			<div class="flex items-center" v-if="albumDateAllList.length">
 				<div class="w-full">
 					<div v-for="album in albumDateAllList" :key="album.albumId">
 						<div
-							class="my-2 flex flex-wrap"
+							class="m-4 flex flex-wrap"
 							v-if="
 								isSameDate(album.albumDate, date) &&
 								album.fileResponseDtoList.length
 							"
 						>
-							<p class="w-full text-2xl font-bold m-4">
+							<p class="w-full text-2xl font-bold m-2 px-4">
 								{{ album.albumTitle }}
 							</p>
 							<div
@@ -71,7 +73,7 @@
 								/>
 								<label
 									:for="file.fileId"
-									class="inline-flex items-center justify-between w-full p-4 text-gray-500 bg-white border-2 border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 peer-checked:border-nav-green hover:text-gray-600 dark:peer-checked:text-gray-300 peer-checked:text-gray-600 hover:bg-gray-50 peer-checked:border-4"
+									class="inline-flex items-center justify-between p-2 text-gray-500 bg-white border-2 border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 peer-checked:border-nav-green hover:text-gray-600 dark:peer-checked:text-gray-300 peer-checked:text-gray-600 hover:bg-gray-50 peer-checked:border-4"
 								>
 									<img
 										class="album rounded"
@@ -85,20 +87,18 @@
 					</div>
 				</div>
 			</div>
-			<div v-else>
-				<p>등록된 앨범이 없습니다.</p>
-			</div>
+			<div v-else class="m-6">등록된 앨범이 없습니다.</div>
 			<!-- <span>Check 이미지 : {{ checked }}</span> -->
 		</div>
-		<!-- 내 아이 보기 -->
+		<!-- 전체보기 -->
 		<div v-else>
 			<div class="flex items-center" v-if="myKidAlbumDateList.length">
 				<div class="w-full">
 					<div
-						class="my-2 flex flex-wrap"
+						class="m-4 flex flex-wrap"
 						v-if="isSameDate(myKidAlbumDateList[0].albumDate, date)"
 					>
-						<p class="w-full text-2xl font-bold m-4">
+						<p class="w-full text-2xl font-bold m-2 px-4">
 							{{ myKidAlbumDateList[0].albumTitle }}
 						</p>
 						<div
@@ -115,7 +115,7 @@
 							/>
 							<label
 								:for="file.fileId"
-								class="inline-flex items-center justify-between w-full p-4 text-gray-500 bg-white border-2 border-gray-200 rounded-lg cursor-pointer peer-checked:border-nav-green hover:text-gray-600 peer-checked:text-gray-600 hover:bg-gray-50 peer-checked:border-4"
+								class="inline-flex items-center justify-between p-2 text-gray-500 bg-white border-2 border-gray-200 rounded-lg cursor-pointer peer-checked:border-nav-green hover:text-gray-600 peer-checked:text-gray-600 hover:bg-gray-50 peer-checked:border-4"
 							>
 								<img
 									class="album rounded"
@@ -128,9 +128,7 @@
 					</div>
 				</div>
 			</div>
-			<div v-else>
-				<p>등록된 앨범이 없습니다.</p>
-			</div>
+			<div v-else class="m-6">등록된 앨범이 없습니다.</div>
 		</div>
 	</div>
 </template>
@@ -304,7 +302,7 @@ const download = async () => {
 
 <style scoped>
 .album {
-	width: 300px;
-	height: 250px;
+	width: 250px;
+	height: 200px;
 }
 </style>
