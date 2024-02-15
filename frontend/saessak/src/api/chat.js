@@ -6,22 +6,25 @@ const url = "/chat";
 
 const config = {
     headers : {
-        "Authorization" : "Bearer " + sessionStorage.getItem("accessToken")
-    } 
+        "Authorization" : "Bearer " + localStorage.getItem("accessToken")
+    }
 } // 헤더에 accessToken 담아서 전송하기!!
 
-// 1. (선생님) 나의 반 학부모 목록 조회 --> user에서 가져오기
+// 1. (선생님) 나의 반 학부모 목록 조회
+function getClassList(success, fail){
+    local.get(`${url}/kid/list`, config).then(success).catch(fail);
+}
 
 // 2. (학부모) 나의 전체 아이 선생님 목록 조회 - parentId --> user에서 가져오기
 
 // 3. (선생님) 내가 참여하고 있는 채팅방 목록 조회 - teacherId
-function chatListTeacher(sucess, fail){
-    local.get(`${url}/teacher/list`, config).then(sucess).catch(fail);
+async function chatListTeacher(sucess, fail){
+    await local.get(`${url}/teacher/list`, config).then(sucess).catch(fail);
 }
 
 // 4. (학부모) 내가 참여하고 있는 채팅방 목록 조회 - parentId
-function chatListParent(sucess, fail){
-    local.get(`${url}/parent/list`, config).then(sucess).catch(fail);
+async function chatListParent(sucess, fail){
+    await local.get(`${url}/parent/list`, config).then(sucess).catch(fail);
 }
 
 // 5. (공통) 상세 채팅 내용 불러오기 - roomId
@@ -43,8 +46,8 @@ function parentNewChat(teacherId, sucess, fail){
 }
 
 // 7. (공통) 채팅방 진입 시 이전에 저장된 채팅 내역 불러오기
-function loadChat(roomId, sucess, fail){
-    local.get(`${url}/room/list/${roomId}`).then(sucess).catch(fail);
+function loadChat(roomId, param, sucess, fail){
+    local.post(`${url}/room/list/${roomId}`, JSON.stringify(param)).then(sucess).catch(fail);
 }
 
 // 8. (공통) 채팅방 진입 전 userId 받아오기
@@ -52,13 +55,20 @@ function isVaild(success, fail){
     local.get(`${url}/isVaild`, config).then(success).catch(fail);
 }
 
+// 9. (공통) 채팅방 퇴장 시간 기록하기
+async function disconnect(param, success, fail) {
+    await local.get(`${url}/disconnect`, {params : param}).then(success).catch(fail);
+}
+
 
 export {
+    getClassList,
     chatListParent,
     chatListTeacher,
     detailChat,
     teacherNewChat,
     parentNewChat,
     loadChat,
-    isVaild
+    isVaild,
+    disconnect
 }

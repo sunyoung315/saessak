@@ -1,7 +1,7 @@
 <template>
-	<div class="view-frame p-6">
+	<div class="view-frame">
 		<!-- datepicker -->
-		<div class="flex justify-between items-center m-5">
+		<div class="datepicker">
 			<VDatePicker
 				:select-attribute="selectAttribute"
 				v-model="selectedDate"
@@ -27,7 +27,7 @@
 						<input
 							:value="inputValue"
 							v-on="inputEvents"
-							class="border border-gray-300 text-gray-900 text-sm font-bold rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5"
+							class="datepicker-input"
 						/>
 					</div>
 				</template>
@@ -59,7 +59,11 @@
 					</tr>
 				</thead>
 				<tbody>
+					<tr v-if="!attendanceList.length">
+						<td colspan="6" class="p-6">등록된 원아가 없습니다.</td>
+					</tr>
 					<tr
+						v-else
 						class="one-row"
 						v-for="oneKid in attendanceList"
 						:key="oneKid.kidId"
@@ -280,7 +284,7 @@ onMounted(async () => {
 
 <style scoped>
 .table-box {
-	@apply relative overflow-x-auto min-h-screen m-5;
+	@apply relative overflow-x-auto min-h-screen m-3;
 }
 .table {
 	@apply w-full text-base text-left rtl:text-right text-gray-500 dark:text-gray-400;
@@ -289,27 +293,27 @@ onMounted(async () => {
 	@apply text-gray-700 bg-nav-purple bg-opacity-30 dark:bg-gray-700 dark:text-gray-400;
 }
 .col-name {
-	@apply pl-3 pr-6 py-3 w-1/12;
+	@apply pl-3 pr-6 py-3 w-1/12 text-lg;
 }
 .col-date {
-	@apply px-6 py-3 w-1/6;
+	@apply px-6 py-3 w-1/6 text-lg;
 }
 .one-row {
 	@apply bg-white border-b h-20;
 }
 .kid-name {
-	@apply pl-3 pr-6 py-4 text-gray-900 whitespace-nowrap;
+	@apply pl-3 pr-6 py-4 text-gray-900 text-lg whitespace-nowrap;
 }
 .normal-value {
-	@apply w-20 my-2 mr-2 p-2 border rounded-md text-center text-gray-900 font-medium;
+	@apply w-20 my-2 mr-2 p-2 border shadow rounded-md text-center text-gray-900 font-bold;
 }
 .miss-value {
-	@apply w-20 my-2 mr-2 p-2 border rounded-md text-center text-gray-400 font-medium;
+	@apply w-20 my-2 mr-2 p-2 border shadow rounded-md text-center text-gray-400 font-medium;
 }
 .no-value {
-	@apply w-20 my-2 mr-2 p-2 border rounded-md text-center text-red-600 font-medium;
+	@apply w-20 my-2 mr-2 p-2 border shadow rounded-md text-center text-red-600 font-bold;
 }
 .button {
-	@apply w-20 my-2 mr-2 p-2 border rounded-md bg-dark-navy text-center text-gray-100 font-medium;
+	@apply w-20 my-2 mr-2 p-2 border shadow rounded-md bg-dark-navy text-center text-gray-100 font-medium;
 }
 </style>
