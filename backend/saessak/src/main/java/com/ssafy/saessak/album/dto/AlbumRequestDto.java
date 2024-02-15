@@ -11,9 +11,6 @@ import java.util.Date;
 @Getter
 @NoArgsConstructor
 public class AlbumRequestDto {
-
-    private Long albumId;
-
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate albumDate;
 }

@@ -14,7 +14,6 @@ import java.util.Date;
 @NoArgsConstructor
 public class DateRequestDto {
     private Long boardId;
-
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate boardDate;
 }

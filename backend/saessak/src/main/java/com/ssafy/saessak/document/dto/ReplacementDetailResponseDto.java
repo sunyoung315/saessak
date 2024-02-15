@@ -3,6 +3,7 @@ package com.ssafy.saessak.document.dto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import org.springframework.cglib.core.Local;
 
 import java.time.LocalDate;
 

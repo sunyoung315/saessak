@@ -12,9 +12,10 @@ import java.util.Optional;
 
 @Repository
 public interface BoardRepository extends JpaRepository<Board,Long> {
-    Optional<List<Board>> findByKid(Kid kid);
-    Optional<List<Board>> findByKidAndBoardDate(Kid kid, LocalDate date);
-    Optional<List<Board>> findByKidAndBoardDateBetween(Kid kid, LocalDate start, LocalDate end);
-
+    Optional<List<Board>> findByKidOrderByBoardDateDesc(Kid kid);
+    Optional<Board> findFirstByKidAndBoardDateOrderByBoardId(Kid kid, LocalDate date);
+    Optional<List<Board>> findByKidAndBoardDateBetweenOrderByBoardDate(Kid kid, LocalDate start, LocalDate end);
     Optional<Board> findFirstByKidOrderByBoardDateDesc(Kid kid);
+    Optional<List<Board>> findByKidAndBoardDateGreaterThanEqualAndBoardDateLessThanEqualOrderByBoardDateDesc(Kid kid, LocalDate startDate, LocalDate endDate);
+    Optional<Board> findFirstByKidAndBoardDate(Kid kid, LocalDate date);
 }
