@@ -407,6 +407,8 @@ messaging.onMessage(payload => {
 		type: 'foreground',
 		payload: payload.notification,
 	});
+
+	getAlarmList();
 });
 
 const tokenBox = ref({
