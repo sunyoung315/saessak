@@ -259,9 +259,9 @@ def verifyAlbum():
         conn.rollback()
         print(jsonify({"error" : str(sqlerror)}))
         return jsonify({"status" : HTTPStatus.INTERNAL_SERVER_ERROR, "message" : "Error가 발생했습니다."})
-    # except Exception as e:
-    #     print(jsonify({"error" : str(e)}))
-    #     return jsonify({"status" : HTTPStatus.INTERNAL_SERVER_ERROR, "message" : "Error가 발생했습니다."})
+    except Exception as e:
+        print(jsonify({"error" : str(e)}))
+        return jsonify({"status" : HTTPStatus.INTERNAL_SERVER_ERROR, "message" : "Error가 발생했습니다."})
 
         
 
