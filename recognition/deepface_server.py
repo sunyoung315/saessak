@@ -176,8 +176,8 @@ def verifyAlbum():
                 for kid_id, kid_embedding in kid_embeddings.items() : 
                     
                     for kid_embed in kid_embedding :
-                        min_dist_vector = min_dist_vector(kid_embed, image_embeddings, distance_metric="euclidean_l2")
-                        result = svm_model.predict([min_dist_vector])
+                        result_vector = min_dist_vector(kid_embed, image_embeddings, distance_metric="euclidean_l2")
+                        result = svm_model.predict([result_vector])
                         if(result[0]):
                             kid_album[kid_id].append(add_object.copy())
                         # for image_embed in image_embeddings : 
@@ -259,9 +259,9 @@ def verifyAlbum():
         conn.rollback()
         print(jsonify({"error" : str(sqlerror)}))
         return jsonify({"status" : HTTPStatus.INTERNAL_SERVER_ERROR, "message" : "Error가 발생했습니다."})
-    except Exception as e:
-        print(jsonify({"error" : str(e)}))
-        return jsonify({"status" : HTTPStatus.INTERNAL_SERVER_ERROR, "message" : "Error가 발생했습니다."})
+    # except Exception as e:
+    #     print(jsonify({"error" : str(e)}))
+    #     return jsonify({"status" : HTTPStatus.INTERNAL_SERVER_ERROR, "message" : "Error가 발생했습니다."})
 
         
 
