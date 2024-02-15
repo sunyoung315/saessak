@@ -5,6 +5,7 @@
 			placeholder="오늘 할 일을 기록하세요."
 			v-model="content"
 			type="text"
+			@keyup.enter="createTodo"
 		/>
 		<button class="btn m-0 p-4" @click="createTodo">
 			<svg
