@@ -1,7 +1,7 @@
 package com.ssafy.saessak.oauth.service;
 
 import com.ssafy.saessak.exception.code.ExceptionCode;
-import com.ssafy.saessak.exception.UnAuthorizedException;
+import com.ssafy.saessak.exception.model.UnAuthorizedException;
 import com.ssafy.saessak.user.domain.*;
 import com.ssafy.saessak.user.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +19,6 @@ public class AuthenticationService {
         Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
 
         return userRepository.findById(Long.valueOf(authentication.getName()))
-                .orElseThrow(()-> new UnAuthorizedException(ExceptionCode.AUTHENTICATION_CODE_EXPIRED));
+                .orElseThrow(()-> new UnAuthorizedException(ExceptionCode.AUTHENTICATION_USER_NOT_FOUND));
     }
 }

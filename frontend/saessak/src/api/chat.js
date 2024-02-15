@@ -7,7 +7,7 @@ const url = "/chat";
 const config = {
     headers : {
         "Authorization" : "Bearer " + sessionStorage.getItem("accessToken")
-    }
+    } 
 } // 헤더에 accessToken 담아서 전송하기!!
 
 // 1. (선생님) 나의 반 학부모 목록 조회 --> user에서 가져오기

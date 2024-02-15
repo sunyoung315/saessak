@@ -12,5 +12,5 @@ public class KidResponseDto {
     private Long kidId;
     private String kidName;
     private String kidProfile;
-
+    private String classroomName;
 }

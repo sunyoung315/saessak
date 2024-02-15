@@ -14,5 +14,5 @@ public class TeacherListResponseDto {
     private Long kidId;
     private String kidName;
     private String className;
-
+    private String profile;
 }

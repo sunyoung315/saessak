@@ -5,14 +5,22 @@ import com.ssafy.saessak.attendance.dto.*;
 import com.ssafy.saessak.attendance.repository.AttendanceRepository;
 import com.ssafy.saessak.document.domain.Replacement;
 import com.ssafy.saessak.document.repository.ReplacementRepository;
+import com.ssafy.saessak.exception.code.ExceptionCode;
+import com.ssafy.saessak.exception.model.NotFoundException;
+import com.ssafy.saessak.exception.model.UserException;
 import com.ssafy.saessak.oauth.service.AuthenticationService;
 import com.ssafy.saessak.user.domain.Classroom;
+import com.ssafy.saessak.user.domain.Daycare;
 import com.ssafy.saessak.user.domain.Kid;
 import com.ssafy.saessak.user.domain.User;
 import com.ssafy.saessak.user.repository.ClassroomRepository;
+import com.ssafy.saessak.user.repository.DaycareRepository;
 import com.ssafy.saessak.user.repository.KidRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.checkerframework.checker.units.qual.A;
+import org.springframework.cglib.core.Local;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -30,12 +38,14 @@ public class AttendanceService {
 
     private final AttendanceRepository attendanceRepository;
     private final KidRepository kidRepository;
-    private final ReplacementRepository replacementRepository;
+    private final DaycareRepository daycareRepository;
+    private final ClassroomRepository classroomRepository;
     private final AuthenticationService authenticationService;
 
     @Transactional
     public AttendanceTimeResponseDto inTime(Long kidId) {
-        Kid kid = kidRepository.findById(kidId).get();
+        Kid kid = kidRepository.findById(kidId)
+                .orElseThrow(() -> new UserException(ExceptionCode.KID_NOT_FOUND));
         Attendance attendance = Attendance.builder()
                 .attendanceDate(LocalDate.now())
                 .attendanceInTime(LocalTime.now())
@@ -55,8 +65,10 @@ public class AttendanceService {
 
     @Transactional
     public AttendanceTimeResponseDto outTime(Long kidId) {
-        Kid kid = kidRepository.findById(kidId).get();
-        Attendance attendance = attendanceRepository.findByKidAndAttendanceDate(kid, LocalDate.now());
+        Kid kid = kidRepository.findById(kidId)
+                .orElseThrow(() -> new UserException(ExceptionCode.KID_NOT_FOUND));
+        Attendance attendance = attendanceRepository.findByKidAndAttendanceDate(kid, LocalDate.now())
+                .orElseThrow(() -> new NotFoundException(ExceptionCode.ATTENDANCE_KID_AND_DATE_NOT_FOUND));
 
         Attendance savedAttendance = attendance.outTime();
         return AttendanceTimeResponseDto.builder()
@@ -72,7 +84,7 @@ public class AttendanceService {
         User user = authenticationService.getUserByAuthentication();
         Classroom classroom = user.getClassroom();
         // 반에서 아이 찾기
-        List<Kid> kidList = kidRepository.findAllByClassroom(classroom);
+        List<Kid> kidList = kidRepository.findAllByClassroomOrderByNickname(classroom);
         LocalDate startDate = null;
         LocalDate endDate = null;
 
@@ -108,7 +120,8 @@ public class AttendanceService {
     }
 
     public List<AttendanceKidResponseDto> listOfParent(Long kidId) {
-        Kid kid = kidRepository.findById(kidId).get();
+        Kid kid = kidRepository.findById(kidId)
+                .orElseThrow(() -> new UserException(ExceptionCode.KID_NOT_FOUND));
         List<Attendance> attendanceList = attendanceRepository.findAllByKid(kid);
         List<AttendanceKidResponseDto> responseDtoList = new ArrayList<>();
         for(Attendance attendance : attendanceList) {
@@ -134,27 +147,25 @@ public class AttendanceService {
 
         return firstDayOfMonth.plusDays(daysToAdd);
     }
-    
-    public ReplacementResponseDto checkReplacement(Long kidId) {
-        Kid kid = kidRepository.findById(kidId).get();
-        List<Replacement> replacementList = replacementRepository.findByKid(kid);
 
-        boolean check = false;
-        for(Replacement replacement : replacementList) {
-            if(replacement.getReplacementDate()==LocalDate.now()) {
-                LocalTime replacementTime = LocalTime.parse(replacement.getReplacementTime());
-                long timegap = ChronoUnit.MINUTES.between(replacementTime, LocalTime.now());
-                if(Math.abs(timegap) <= 15) {
-                    ReplacementResponseDto replacementResponseDto = ReplacementResponseDto.builder()
-                            .kidName(kid.getNickname())
-                            .replacementName(replacement.getReplacementName())
-                            .replacementRelationship(replacement.getReplacementRelationship())
-                            .build();
-                    return replacementResponseDto;
+    @Scheduled(cron = "0 0 23 ? * MON-FRI")
+    public void checkNoClick() {
+        List<Daycare> daycareList = daycareRepository.findAll();
+        for(Daycare daycare : daycareList) {
+            List<Classroom> classroomList = classroomRepository.findAllByDaycare(daycare);
+            for(Classroom classroom : classroomList) {
+                List<Kid> kidList = kidRepository.findAllByClassroom(classroom);
+                for(Kid kid : kidList) {
+                    if(!attendanceRepository.findByKidAndAttendanceDate(kid, LocalDate.now()).isPresent()) {
+                        Attendance attendance = Attendance.builder()
+                                .attendanceDate(LocalDate.now())
+                                .kid(kid)
+                                .build();
+                        attendanceRepository.save(attendance);
+                    }
                 }
             }
         }
-
-        return null;
     }
+
 }

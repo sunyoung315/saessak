@@ -14,4 +14,6 @@ public class AllergyDetailResponseDto {
     private String kidName;
     private String kidAllergy;
     private String kidAllergySignature;
+    private Boolean kidAllergyCheck;
+
 }
