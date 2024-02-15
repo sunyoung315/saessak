@@ -4,7 +4,7 @@
 		class="flex flex-col w-full h-full px-0 mx-auto my-0 rounded-lg bg-white sm:p-8"
 	>
 		<div
-			class="fixed w-1/3 top-0 right-0 flex justify-between items-center px-3 py-4 border-l-2 border-l-gray-300 bg-yellow-100 mx-auto"
+			class="fixed w-1/3 top-0 right-0 flex justify-between items-center px-3 py-4 border-l-2 border-l-gray-300 bg-[#fcdd6d] mx-auto"
 		>
 			<h3 class="text-xl font-bold text-center left-1/2 mx-4">
 				{{ roomName }} {{ isTeacher == true ? '학부모' : '선생님' }}

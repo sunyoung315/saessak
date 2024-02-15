@@ -1,6 +1,6 @@
 <template>
 	<div
-		class="fixed w-1/3 top-0 right-0 flex items-center justify-between px-3 py-5 pb-4 mx-auto border-l-2 border-l-gray-300 bg-yellow-100"
+		class="fixed w-1/3 top-0 right-0 flex items-center justify-between px-3 py-5 pb-5 mx-auto border-l-2 border-l-gray-300 bg-[#fcdd6d]"
 	>
 		<h5
 			class="flex items-center justify-center text-xl font-bold leading-none text-gray-900 mx-4"

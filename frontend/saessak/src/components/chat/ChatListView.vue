@@ -1,6 +1,6 @@
 <template>
 	<div
-		class="fixed w-1/3 top-0 right-0 flex px-3 py-5 pb-5 mx-auto border-l-2 border-l-gray-300 bg-yellow-100"
+		class="fixed w-1/3 top-0 right-0 flex px-3 py-5 pb-5 mx-auto border-l-2 border-l-gray-300 bg-[#fcdd6d]"
 	>
 		<h5
 			class="flex items-center justify-center text-xl font-bold leading-none text-gray-900 mx-4"
@@ -52,7 +52,7 @@
 					</div>
 					<div class="flex-1 min-w-0 ms-4">
 						<p
-							class="text-sm font-medium text-gray-900 truncate dark:text-white"
+							class="text-base font-bold text-gray-900 truncate dark:text-white"
 						>
 							{{ isTeacher == true ? chatItem.kidName : chatItem.teacherName }}
 							{{ isTeacher == true ? '학부모' : '선생님' }}
@@ -65,10 +65,10 @@
 			</li>
 			<li
 				v-else
-				class="relative py-3 mb-2 cursor-pointer border-2 border-yellow-100 rounded-lg bg-amber-200 sm:py-4"
+				class="relative py-3 mb-2 cursor-pointer border-2 border-yellow-500 rounded-lg bg-yellow-50 shadow sm:py-4"
 			>
 				<div
-					class="absolute left-0.5 w-2 h-2 transform -translate-x-1/2 -translate-y-1/2 bg-yellow-500 rounded-full top-1"
+					class="absolute w-3 h-3 transform -translate-x-1/2 -translate-y-1/2 bg-yellow-600 rounded-full top-0.5"
 				></div>
 
 				<div
@@ -101,7 +101,9 @@
 						/>
 					</div>
 					<div class="flex-1 min-w-0 ms-4">
-						<p class="text-sm font-bold text-gray-900 truncate dark:text-white">
+						<p
+							class="text-base font-bold text-gray-900 truncate dark:text-white"
+						>
 							{{ isTeacher == true ? chatItem.kidName : chatItem.teacherName }}
 							{{ isTeacher == true ? '학부모' : '선생님' }}
 						</p>

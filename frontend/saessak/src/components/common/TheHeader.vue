@@ -169,7 +169,7 @@
       class="flex flex-col justify-between h-screen p-8 mx-auto my-auto overflow-y-scroll bg-white border border-gray-200 rounded-lg shadow scrollbar-hide sm:p-8 dark:bg-gray-800 dark:border-gray-700"
     > -->
     <component :is="chatSwitch" @chatEvent="chatEvent" @exitChat="exitChat" :size="size" :roomInfo="roomInfo"></component>
-    <div v-if="flag == false" class="fixed w-1/3 bottom-0 right-0 p-3 border-l-2 border-l-gray-300 bg-yellow-100">
+    <div v-if="flag == false" class="fixed w-1/3 bottom-0 right-0 p-3 border-l-2 border-l-gray-300 bg-[#fcdd6d]">
       <div class="flex items-center justify-evenly">
         <button :flag="flag" @click="showChat(ChatPersonView)" class="text-lg font-bold borde">학부모목록</button>
         <button :flag="flag" @click="showChat(ChatListView)" class="text-lg font-bold">채팅목록</button>
