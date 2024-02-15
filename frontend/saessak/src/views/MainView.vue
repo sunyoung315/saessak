@@ -16,9 +16,9 @@
 					새싹일기
 				</div>
 				<div
-					class="absolute right-[23.7rem] top-[19rem] transform translate-y-[35%] text-[2rem]"
+					class="absolute right-[21.7rem] top-[19rem] transform translate-y-[35%] text-[2rem]"
 				>
-					어린이집 커뮤니케이션 플랫폼
+					우리 아이 어린이집 생활 공유 서비스
 				</div>
 			</div>
 			<div class="image-container">
