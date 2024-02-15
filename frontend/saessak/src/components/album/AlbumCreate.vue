@@ -131,7 +131,6 @@ import Swal from 'sweetalert2';
 
 const title = ref('');
 const date = ref(new Date());
-const formattedDate = formatDate(date.value);
 const selectAttribute = ref({ highlight: 'green' });
 
 // 이미지 업로드
@@ -145,6 +144,7 @@ let imageRef = ref(null);
 let totalFileSize = ref(0);
 
 const uploadImage = () => {
+	console.log(date);
 	let imageFiles = imageRef.value.files;
 
 	// 업로드 파일명 출력 및 카운트
@@ -192,6 +192,8 @@ function registAlbum() {
 		});
 		return;
 	}
+
+	const formattedDate = formatDate(date.value);
 
 	// 앨범 정보 추가
 	form.append('albumTitle', title.value);
