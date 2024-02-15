@@ -59,11 +59,9 @@
 						/>
 					</svg>
 
-					<span
-						@click="openFileDialog"
-						:class="{ 'text-gray-500': !fileName, 'ml-4': true }"
-						>{{ fileName || '첨부파일 없음' }}</span
-					>
+					<span :class="{ 'text-gray-500': !fileName, 'ml-4': true }">{{
+						fileName || '첨부파일 없음'
+					}}</span>
 					<input
 						type="file"
 						@change="handleFileUpload"
