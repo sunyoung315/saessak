@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Builder
 @Getter
@@ -15,5 +16,6 @@ public class MenuResponseDto {
     private LocalDate menuDate;
     private String menuType;
     private String menuPath;
+    private List<FoodResponseDto> foodList;
 
 }

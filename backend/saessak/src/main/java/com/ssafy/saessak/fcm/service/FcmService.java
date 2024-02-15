@@ -5,9 +5,16 @@ import com.ssafy.saessak.alarm.dto.AlarmRequestDto;
 import com.ssafy.saessak.alarm.repository.AlarmRepository;
 import com.ssafy.saessak.alarm.service.AlarmService;
 import com.ssafy.saessak.attendance.dto.AttendanceTimeResponseDto;
-import com.ssafy.saessak.attendance.dto.ReplacementResponseDto;
-import com.ssafy.saessak.fcm.dto.FcmNotificationRequestDto;
+import com.ssafy.saessak.attendance.dto.ReplacementParentAlarmResponseDto;
+import com.ssafy.saessak.document.dto.ReplacementTeacherAlarmResponseDto;
+import com.ssafy.saessak.exception.code.ExceptionCode;
+import com.ssafy.saessak.exception.model.FcmException;
+import com.ssafy.saessak.exception.model.NotFoundException;
+import com.ssafy.saessak.exception.model.UserException;
+import com.ssafy.saessak.fcm.domain.FcmToken;
+import com.ssafy.saessak.fcm.dto.FcmResponseDto;
 import com.ssafy.saessak.fcm.dto.FcmTokenRequestDto;
+import com.ssafy.saessak.fcm.repository.FcmRepository;
 import com.ssafy.saessak.fcm.util.FirebaseInit;
 import com.ssafy.saessak.menu.domain.Food;
 import com.ssafy.saessak.menu.domain.Menu;
@@ -15,10 +22,7 @@ import com.ssafy.saessak.menu.repository.FoodRepository;
 import com.ssafy.saessak.menu.repository.MenuRepository;
 import com.ssafy.saessak.oauth.service.AuthenticationService;
 import com.ssafy.saessak.user.domain.*;
-import com.ssafy.saessak.user.repository.KidRepository;
-import com.ssafy.saessak.user.repository.ParentRepository;
-import com.ssafy.saessak.user.repository.TeacherRepository;
-import com.ssafy.saessak.user.service.UserService;
+import com.ssafy.saessak.user.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -41,276 +45,199 @@ public class FcmService {
 
     private final FirebaseInit firebaseInit;
 
-    private final ParentRepository parentRepository;
     private final KidRepository kidRepository;
     private final MenuRepository menuRepository;
     private final FoodRepository foodRepository;
     private final AlarmRepository alarmRepository;
     private final TeacherRepository teacherRepository;
     private final AuthenticationService authenticationService;
-    private final UserService userService;
     private final AlarmService alarmService;
+    private final FcmRepository fcmRepository;
+    private final ClassroomRepository classroomRepository;
 
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
 
 
     @Transactional
     public void saveToken(FcmTokenRequestDto requestDto) {
         User user = authenticationService.getUserByAuthentication();
-
-        Optional<Teacher> teacher = teacherRepository.findById(user.getId());
-        if(teacher.isPresent()) {
-            teacher.get().setToken(requestDto.getToken());
+        // 갱신을 위해 기존에 토큰이 있으면 삭제
+        Optional<FcmToken> fcmToken = fcmRepository.findById(user.getId());
+        if(fcmToken.isPresent()) {
+            fcmRepository.delete(fcmToken.get());
         }
-
-        Optional<Parent> parent = parentRepository.findById(user.getId());
-        if(parent.isPresent()) {
-            parent.get().setToken(requestDto.getToken());
-        }
+        fcmRepository.save(FcmToken.of(user.getId(), requestDto.getToken()));
     }
 
     @Transactional
-    public void changeAlarm() {
+    public void deleteToken() {
         User user = authenticationService.getUserByAuthentication();
 
-        Optional<Teacher> teacher = teacherRepository.findById(user.getId());
-        if(teacher.isPresent()) {
-            teacher.get().setAlarm();
-        }
+        FcmToken fcmToken = fcmRepository.findById(user.getId())
+                .orElseThrow(() -> new FcmException(ExceptionCode.FCM_TOKEN_NOT_FOUND));
+        fcmRepository.delete(fcmToken);
+    }
 
-        Optional<Parent> parent = parentRepository.findById(user.getId());
-        if(parent.isPresent()) {
-            parent.get().setAlarm();
-        }
+    public String getParentToken(Long kidId) {
+        Kid kid = kidRepository.findById(kidId)
+                .orElseThrow(() -> new UserException(ExceptionCode.KID_NOT_FOUND));
+        Parent parent = kid.getParent();
+        if(parent == null) return null;
+
+        Optional<FcmToken> fcmToken = fcmRepository.findById(parent.getId());
+        if(fcmToken.isPresent()) return fcmToken.get().getFcmToken();
+        return null;
+    }
+
+    public String getUserToken(Long userId) {
+        Optional<FcmToken> fcmToken = fcmRepository.findById(userId);
+        if(fcmToken.isPresent()) return fcmToken.get().getFcmToken();
+        return null;
     }
 
     public void sendInTime(AttendanceTimeResponseDto responseDto, Long kidId) {
         String TITLE = "등원 알림";
-        String parentToken = userService.getParentToken(kidId);
+        String parentToken = getParentToken(kidId);
+        String messageBody = responseDto.getKidName()+" 어린이가 "+ responseDto.getAttendanceDate()+"일 "+ responseDto.getAttendanceTime().format(formatter) + "에 등원했습니다";
 
-        FcmNotificationRequestDto.Notification notification = FcmNotificationRequestDto.Notification.builder()
-                .token(parentToken)
-                .title(TITLE)
-                .body(responseDto.getKidName()+" 어린이가 "+ responseDto.getAttendanceDate()+"일 "+ responseDto.getAttendanceTime().format(formatter) + "에 등원했습니다")
-                .build();
-        FcmNotificationRequestDto fcmRequestDto = FcmNotificationRequestDto.builder()
-                .notification(notification)
-                .build();
-        System.out.println(notification.getBody());
-
-        AlarmRequestDto alarmRequestDto = AlarmRequestDto.builder()
-                .kidId(kidId)
-                .alarmType(TITLE)
-                .alarmDate(responseDto.getAttendanceDate())
-                .alarmContent(responseDto.getAttendanceTime())
-                .build();
-
-        sendNotification(fcmRequestDto);
-        alarmService.insertAlarm(alarmRequestDto);
+        sendNotification(FcmResponseDto.of(parentToken, TITLE, messageBody));
+        alarmService.insertAlarm(AlarmRequestDto.of(kidId, TITLE, responseDto.getAttendanceDate(), responseDto.getAttendanceTime()));
     }
 
     public void sendOutTime(AttendanceTimeResponseDto responseDto, Long kidId) {
         String TITLE = "하원 알림";
-        String parentToken = userService.getParentToken(kidId);
+        String parentToken = getParentToken(kidId);
+        String messageBody = responseDto.getKidName() + " 어린이가 " + responseDto.getAttendanceDate() + "일 " + responseDto.getAttendanceTime().format(formatter) + "에 하원했습니다";
 
-        FcmNotificationRequestDto.Notification notification = FcmNotificationRequestDto.Notification.builder()
-                .token(parentToken)
-                .title(TITLE)
-                .body(responseDto.getKidName() + " 어린이가 " + responseDto.getAttendanceDate() + "일 " + responseDto.getAttendanceTime().format(formatter) + "에 하원했습니다")
-                .build();
-        FcmNotificationRequestDto fcmRequestDto = FcmNotificationRequestDto.builder()
-                .notification(notification)
-                .build();
-
-        AlarmRequestDto alarmRequestDto = AlarmRequestDto.builder()
-                .kidId(kidId)
-                .alarmType(TITLE)
-                .alarmDate(responseDto.getAttendanceDate())
-                .alarmContent(responseDto.getAttendanceTime())
-                .build();
-
-        sendNotification(fcmRequestDto);
-        alarmService.insertAlarm(alarmRequestDto);
+        sendNotification(FcmResponseDto.of(parentToken, TITLE, messageBody));
+        alarmService.insertAlarm(AlarmRequestDto.of(kidId, TITLE, responseDto.getAttendanceDate(), responseDto.getAttendanceTime()));
     }
 
-    public void sendReplacement(ReplacementResponseDto replacementResponseDto, Long kidId) {
+    public void sendReplacement(ReplacementParentAlarmResponseDto replacementResponseDto, Long kidId) {
         String TITLE = "대리인 알림";
-        String parentToken = userService.getParentToken(kidId);
+        String parentToken = getParentToken(kidId);
+        String messageBody = replacementResponseDto.getReplacementRelationship()+
+                "("+replacementResponseDto.getReplacementName()+") 님이 "+replacementResponseDto.getKidName()+" 어린이와 함께 귀가했습니다";
 
-        FcmNotificationRequestDto.Notification notification = FcmNotificationRequestDto.Notification.builder()
-                .token(parentToken)
-                .title(TITLE)
-                .body(replacementResponseDto.getReplacementRelationship()+
-                        "("+replacementResponseDto.getReplacementName()+") 님이 "+replacementResponseDto.getKidName()+" 어린이와 함께 귀가했습니다")
-                .build();
-        FcmNotificationRequestDto fcmRequestDto = FcmNotificationRequestDto.builder()
-                .notification(notification)
-                .build();
-
-        AlarmRequestDto alarmRequestDto = AlarmRequestDto.builder()
-                .kidId(kidId)
-                .alarmType(TITLE)
-                .build();
-
-        sendNotification(fcmRequestDto);
-        alarmService.insertAlarm(alarmRequestDto);
+        sendNotification(FcmResponseDto.of(parentToken, TITLE, messageBody));
+        alarmService.insertAlarm(AlarmRequestDto.of(kidId, TITLE, null, null));
     }
 
-    public void sendNotification(FcmNotificationRequestDto requestDto) {
-        try {
-            // Firebase Admin SDK 초기화
-            firebaseInit.init();
+    public void sendInsertReplacement(ReplacementTeacherAlarmResponseDto responseDto) {
+        String TITLE = "귀가동의서 알림";
+        String messageBody = responseDto.getKidName() + " 어린이의 대리인 귀가 동의서가 등록되었습니다";
 
-            // 메시지 생성
-            Message message = Message.builder()
-                    .setToken(requestDto.getNotification().getToken()) // 수신자의 FCM 토큰
-                    .setNotification(Notification.builder()
-                            .setTitle(requestDto.getNotification().getTitle()) // 알림 제목
-                            .setBody(requestDto.getNotification().getBody()) // 알림 내용
-                            .build())
-                    .build();
+        Classroom classroom = classroomRepository.findById(responseDto.getClassroomId())
+                .orElseThrow(() -> new UserException(ExceptionCode.CLASSROOM_NOT_FOUND));
+        List<Teacher> teacherList = teacherRepository.findAllByClassroom(classroom);
+        for(Teacher teacher : teacherList) {
+            String teacherToken = getUserToken(teacher.getId());
 
-            FirebaseMessaging.getInstance().send(message); // 알림 보내기
+            sendNotification(FcmResponseDto.of(teacherToken, TITLE, messageBody));
+        }
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        alarmService.insertAlarm(AlarmRequestDto.of(responseDto.getKidId(), TITLE, LocalDate.now(), null));
+    }
+
+    public void sendNotification(FcmResponseDto fcmResponseDto) {
+        if(fcmResponseDto.getToken() != null) {
+            try {
+                firebaseInit.init(); // Firebase Admin SDK 초기화
+                
+                Message message = Message.builder() // 메시지 생ㅅ어
+                        .setToken(fcmResponseDto.getToken())
+                        .setNotification(Notification.builder()
+                                .setTitle(fcmResponseDto.getTitle())
+                                .setBody(fcmResponseDto.getBody())
+                                .build())
+                        .putData("click_action", "https://i10a706.p.ssafy.io")
+                        .build();
+
+                FirebaseMessaging.getInstance().sendAsync(message); // 알림 보내기
+
+            } catch (Exception e) {
+                throw new FcmException(ExceptionCode.FAIL_FCM_ALARM);
+            }
+        }
+    }
+
+    public boolean checkKidAndAllergy(Kid kid, String menuType) {
+        String findKidAllergy = kid.getKidAllergy();
+        if(findKidAllergy == null) return false;
+        String[] kidAllergyList = findKidAllergy.split("/");
+
+        Menu menu = menuRepository.findByMenuDateAndMenuType(LocalDate.now(), menuType)
+                .orElseThrow(() -> new NotFoundException(ExceptionCode.MENU_DATE_AND_TYPE_NOT_FOUND));
+
+        List<Food> foodList = foodRepository.findByMenu(menu);
+
+        HashSet<Integer> set = new HashSet<Integer>();
+
+        for (Food food : foodList) {
+            if(food.getFoodAllergy().length() > 0) {
+                String[] foodAllergyList = food.getFoodAllergy().split("/");
+                for (String foodAllergy : foodAllergyList) {
+                    set.add(Integer.parseInt(foodAllergy));
+                }
+            }
+        }
+
+        for (String kidAllergy : kidAllergyList) {
+            if (set.contains(Integer.parseInt(kidAllergy))) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public void sendAllergyParent(Kid kid, String menuType) {
+        String TITLE = "알러지 알림";
+        String parentToken = getParentToken(kid.getId());
+        String messageBody = LocalDate.now() + "일에 " + menuType + "식단에 " + kid.getNickname() + " 어린이의 알러지를 유발하는 음식이 존재합니다";
+
+        sendNotification(FcmResponseDto.of(parentToken, TITLE, messageBody));
+    }
+
+    public void sendAllergyTeacher(Kid kid, String menuType) {
+        String TITLE = "알러지 알림";
+        String messageBody = LocalDate.now() + "일에 " + menuType + "식단에 " + kid.getNickname() + " 어린이의 알러지를 유발하는 음식이 존재합니다";
+
+        Classroom classroom = kid.getClassroom();
+        List<Teacher> teacherList = teacherRepository.findAllByClassroom(classroom);
+        for(Teacher teacher : teacherList) {
+            String teacherToken = getUserToken(teacher.getId());
+
+            sendNotification(FcmResponseDto.of(teacherToken, TITLE, messageBody));
         }
     }
 
     @Scheduled(cron = "0 0 12 * * ?")
     public void sendScheduledLunchAllergyNotification() {
+        String menuType = "점심";
+        String TITLE = "알러지 알림";
         List<Kid> kidList = kidRepository.findAll();
         for(Kid kid : kidList) {
-            String findKidAllergy = kid.getKidAllergy();
-            String[] kidAllergyList = findKidAllergy.split("/");
+            if(checkKidAndAllergy(kid, menuType)) {
+                sendAllergyParent(kid, menuType);
+                sendAllergyTeacher(kid, menuType);
 
-            Menu menu = menuRepository.findByMenuDateAndMenuType(LocalDate.now(), "점심");
-            if(menu != null) {
-                List<Food> foodList = foodRepository.findByMenu(menu);
-
-                HashSet<Integer> set = new HashSet<Integer>();
-
-                for (Food food : foodList) {
-                    String[] foodAllergyList = food.getFoodAllergy().split("/");
-                    for (String foodAllergy : foodAllergyList) {
-                        set.add(Integer.parseInt(foodAllergy));
-                    }
-                }
-
-                boolean alarmFlag = false;
-
-                for (String kidAllgery : kidAllergyList) {
-                    if (set.contains(Integer.parseInt(kidAllgery))) {
-                        alarmFlag = true;
-                        break;
-                    }
-                }
-
-                if (alarmFlag) {
-                    // 학부모에게 알림
-                    Parent parent = kid.getParent();
-                    FcmNotificationRequestDto.Notification notification1 = FcmNotificationRequestDto.Notification.builder()
-                            .token(parent.getParentDevice())
-                            .title("알러지 알림")
-                            .body(LocalDate.now() + "일에 " + menu.getMenuType() + "식단에 " + kid.getNickname() + " 어린이의 알러지를 유발하는 음식이 존재합니다")
-                            .build();
-                    FcmNotificationRequestDto fcmNotificationRequestDto1 = FcmNotificationRequestDto.builder()
-                            .notification(notification1)
-                            .build();
-                    sendNotification(fcmNotificationRequestDto1);
-
-                    // 반에 있는 선생님들에게 알림
-                    Classroom classroom = kid.getClassroom();
-                    List<Teacher> teacherList = teacherRepository.findAllByClassroom(classroom);
-                    for(Teacher teacher : teacherList) {
-                        FcmNotificationRequestDto.Notification notification2 = FcmNotificationRequestDto.Notification.builder()
-                                .token(teacher.getTeacherDevice())
-                                .title("알러지 알림")
-                                .body(LocalDate.now() + "일에 " + menu.getMenuType() + "식단에 " + kid.getNickname() + " 어린이의 알러지를 유발하는 음식이 존재합니다")
-                                .build();
-                        FcmNotificationRequestDto fcmNotificationRequestDto2 = FcmNotificationRequestDto.builder()
-                                .notification(notification1)
-                                .build();
-                        sendNotification(fcmNotificationRequestDto2);
-                    }
-
-                    AlarmRequestDto alarmRequestDto = AlarmRequestDto.builder()
-                            .kidId(kid.getId())
-                            .alarmType("알러지 알림")
-                            .alarmDate(LocalDate.now())
-                            .build();
-                    insertAlarm(alarmRequestDto);
-                }
+                insertAlarm(AlarmRequestDto.of(kid.getId(), TITLE, LocalDate.now(), null));
             }
         }
     }
 
     @Scheduled(cron = "0 0 15 * * ?")
     public void sendScheduledSnackAllergyNotification() {
+        String menuType = "간식";
+        String TITLE = "알러지 알림";
         List<Kid> kidList = kidRepository.findAll();
         for(Kid kid : kidList) {
-            String findKidAllergy = kid.getKidAllergy();
-            String[] kidAllergyList = null;
-            if(findKidAllergy != null) kidAllergyList = findKidAllergy.split("/");
+            if(checkKidAndAllergy(kid, menuType)) {
+                sendAllergyParent(kid, menuType);
+                sendAllergyTeacher(kid, menuType);
 
-            Menu menu = menuRepository.findByMenuDateAndMenuType(LocalDate.now(), "점심");
-
-            if(menu != null) {
-                List<Food> foodList = foodRepository.findByMenu(menu);
-
-                HashSet<Integer> set = new HashSet<Integer>();
-
-                for (Food food : foodList) {
-                    String[] foodAllergyList = food.getFoodAllergy().split("/");
-                    for (String foodAllergy : foodAllergyList) {
-                        set.add(Integer.parseInt(foodAllergy));
-                    }
-                }
-
-                boolean alarmFlag = false;
-
-                for (String kidAllgery : kidAllergyList) {
-                    if (set.contains(Integer.parseInt(kidAllgery))) {
-                        alarmFlag = true;
-                        break;
-                    }
-                }
-
-                if (alarmFlag) {
-                    // 학부모에게 알림
-                    Parent parent = kid.getParent();
-                    FcmNotificationRequestDto.Notification notification1 = FcmNotificationRequestDto.Notification.builder()
-                            .token(parent.getParentDevice())
-                            .title("알러지 알림")
-                            .body(LocalDate.now() + "일에 " + menu.getMenuType() + "식단에 " + kid.getNickname() + " 어린이의 알러지를 유발하는 음식이 존재합니다")
-                            .build();
-                    FcmNotificationRequestDto fcmNotificationRequestDto1 = FcmNotificationRequestDto.builder()
-                            .notification(notification1)
-                            .build();
-                    sendNotification(fcmNotificationRequestDto1);
-
-                    // 반에 있는 선생님들에게 알림
-                    Classroom classroom = kid.getClassroom();
-                    List<Teacher> teacherList = teacherRepository.findAllByClassroom(classroom);
-                    for(Teacher teacher : teacherList) {
-                        FcmNotificationRequestDto.Notification notification2 = FcmNotificationRequestDto.Notification.builder()
-                                .token(teacher.getTeacherDevice())
-                                .title("알러지 알림")
-                                .body(LocalDate.now() + "일에 " + menu.getMenuType() + "식단에 " + kid.getNickname() + " 어린이의 알러지를 유발하는 음식이 존재합니다")
-                                .build();
-                        FcmNotificationRequestDto fcmNotificationRequestDto2 = FcmNotificationRequestDto.builder()
-                                .notification(notification1)
-                                .build();
-                        sendNotification(fcmNotificationRequestDto2);
-                    }
-
-                    AlarmRequestDto alarmRequestDto = AlarmRequestDto.builder()
-                            .kidId(kid.getId())
-                            .alarmType("알러지 알림")
-                            .alarmDate(LocalDate.now())
-                            .build();
-                    insertAlarm(alarmRequestDto);
-                }
+                insertAlarm(AlarmRequestDto.of(kid.getId(), TITLE, LocalDate.now(), null));
             }
         }
     }
@@ -328,6 +255,5 @@ public class FcmService {
         Alarm savedAlarm = alarmRepository.save(alarm);
         return savedAlarm.getAlarmId();
     }
-
 
 }

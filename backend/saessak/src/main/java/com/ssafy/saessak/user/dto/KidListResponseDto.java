@@ -1,5 +1,6 @@
 package com.ssafy.saessak.user.dto;
 
+import com.ssafy.saessak.user.domain.Gender;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,5 +21,6 @@ public class KidListResponseDto {
     private LocalDate kidAllergyDate;
     private Long parentId;
     private Long classroomId;
+    private Gender kidGender;
 
 }

@@ -2,7 +2,7 @@ package com.ssafy.saessak.config;
 
 import com.ssafy.saessak.oauth.authentication.CustomAccessDeniedHandler;
 import com.ssafy.saessak.oauth.authentication.CustomJwtAuthenticationEntryPoint;
-import com.ssafy.saessak.oauth.jwt.filter.JwtAuthenticationFilter;
+import com.ssafy.saessak.jwt.filter.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -56,7 +56,6 @@ public class WebSecurityConfig {
                                 .requestMatchers(new AntPathRequestMatcher("/api/test/**")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/api/v1/urls/**")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/api/v2/urls/**")).permitAll()
-                                .requestMatchers(new AntPathRequestMatcher("/api/v1/fcm/**")).permitAll() // 임시로 fcm 추가
                                 .requestMatchers(new AntPathRequestMatcher("/swagger-ui/**")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/v3/api-docs/**")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/swagger-resources/**")).permitAll()

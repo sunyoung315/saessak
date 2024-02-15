@@ -1,5 +1,8 @@
 package com.ssafy.saessak.oauth.service;
 
+import com.ssafy.saessak.exception.code.ExceptionCode;
+import com.ssafy.saessak.exception.model.UserException;
+import com.ssafy.saessak.fcm.service.FcmService;
 import com.ssafy.saessak.oauth.dto.KidResponseDto;
 import com.ssafy.saessak.oauth.dto.LoginParentResponseDto;
 import com.ssafy.saessak.oauth.dto.LoginSuccessResponseDto;
@@ -18,11 +21,12 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class ParentService {
+public class  ParentService {
 
     private final ParentRepository parentRepository;
     private final UserRepository userRepository;
     private final KidRepository kidRepository;
+    private final FcmService fcmService;
 
     public Optional<Parent> isParent(KakaoUserResponse kakaoUserResponse) {
         return parentRepository.findByEmailAndNickname(kakaoUserResponse.kakaoAccount().email(),
@@ -31,7 +35,9 @@ public class ParentService {
 
     @Transactional
     public Long registParent(Long userId) {
-        User user = userRepository.findById(userId).get();
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserException(ExceptionCode.USER_NOT_FOUND));
+
         Parent parent = Parent.builder()
                 .id(user.getId())
                 .email(user.getEmail())
@@ -44,29 +50,37 @@ public class ParentService {
     }
 
     public void mapping(Long parentId, Long kidId) {
-        Kid kid = kidRepository.findById(kidId).get();
-        Parent parent = parentRepository.findById(parentId).get();
+        Kid kid = kidRepository.findById(kidId)
+                .orElseThrow(() -> new UserException(ExceptionCode.KID_NOT_FOUND));
+        Parent parent = parentRepository.findById(parentId)
+                .orElseThrow(() -> new UserException(ExceptionCode.PARENT_NOT_FOUND));
         List<Kid> kidList = parent.getKidList();
         if(kidList == null) kidList = new ArrayList<>();
+
         kidList.add(kid);
         kid.mapping_parent(parent);
     }
 
     public LoginParentResponseDto login(LoginSuccessResponseDto loginSuccessResponseDto) {
         List<KidResponseDto> kidResponseDtoList = new ArrayList<>();
-        Parent parent = parentRepository.findById(loginSuccessResponseDto.getUserId()).get();
+        Parent parent = parentRepository.findById(loginSuccessResponseDto.getUserId())
+                .orElseThrow(() -> new UserException(ExceptionCode.PARENT_NOT_FOUND));
         List<Kid> kidList = kidRepository.findAllByParent(parent);
         for(Kid kid : kidList) {
             KidResponseDto kidResponseDto = KidResponseDto.builder()
                     .kidId(kid.getId())
                     .kidName(kid.getNickname())
                     .kidProfile(kid.getProfile())
+                    .classroomName(kid.getClassroom().getClassroomName())
                     .build();
             kidResponseDtoList.add(kidResponseDto);
         }
 
+        String userToken = fcmService.getUserToken(parent.getId());
+        Boolean isAlarm = userToken == null ? false : true;
         LoginParentResponseDto loginResponseDto = LoginParentResponseDto.builder()
                 .isTeacher(false)
+                .isAlarm(isAlarm)
                 .accessToken(loginSuccessResponseDto.getAccessToken())
                 .refreshToken(loginSuccessResponseDto.getRefreshToken())
                 .kidList(kidResponseDtoList)

@@ -7,11 +7,12 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
 
-    Attendance findByKidAndAttendanceDate(Kid kid, LocalDate localDate);
+    Optional<Attendance> findByKidAndAttendanceDate(Kid kid, LocalDate localDate);
 
     List<Attendance> findAllByAttendanceDateBetweenAndKid(LocalDate startDate, LocalDate endDate, Kid kid);
 

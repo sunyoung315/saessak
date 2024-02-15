@@ -12,9 +12,8 @@ import java.util.Date;
 public class BoardRequestDto {
     private Long boardId;
     private Long kidId;
-    private LocalDate boardDate;
     private String boardContent;
-    private String boardTemperature;
+    private Float boardTemperature;
     private Float boardSleepTime;
     private String boardPoopStatus;
     private Float boardTall;

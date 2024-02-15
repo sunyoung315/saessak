@@ -52,4 +52,8 @@ public class Replacement {
     public void changeCheck() {
         this.replacementCheck = true;
     }
+
+    public void uploadSign(String filePath) {
+        this.replacementSignature = filePath;
+    }
 }
