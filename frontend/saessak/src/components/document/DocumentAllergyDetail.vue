@@ -2,158 +2,232 @@
 	<div>
 		<!--Teacher Version-->
 		<div v-if="isTeacher">
-			<div
-				class="container mx-16 p-1.5 w-auto border border-gray-200 shadow rounded-lg"
-			>
+			<div class="view-frame p-1.5">
 				<div class="flex justify-end items-center mb-10">
 					<button
 						type="button"
 						@click="check()"
-						class="mt-8 mr-6 text-white hover:text-dark-navy border border-dark-navy bg-dark-navy hover:bg-white focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+						class="mt-7 mr-4 mb-3"
+						:class="
+							myKidAllergyList.kidAllergyCheck
+								? 'bg-dark-navy w-20 text-white rounded-md p-3 py-[0.6rem] cursor-default'
+								: 'bg-gray-300 w-20 text-black font-semibold rounded-md py-[0.65rem] px-[1.1rem] cursor-pointer hover:bg-dark-navy hover:text-white'
+						"
 					>
-						{{ confirm ? '확인완료' : '미확인' }}
+						{{ myKidAllergyList.kidAllergyCheck ? '확인완료' : '미확인' }}
 					</button>
-					<button
-						type="button"
-						@click="goBack()"
-						class="mt-8 mr-8 text-white hover:text-dark-navy border border-dark-navy bg-dark-navy hover:bg-white focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
-					>
+					<button type="button" @click="goBack()" class="btn mt-7 mr-7 mb-3">
 						목록
 					</button>
 				</div>
 				<div>
-					<p class="text-gray-700 text-3xl font-bold text-center">
+					<p class="text-black text-4xl font-bold text-center">
 						식품 알레르기 조사서
 					</p>
 				</div>
 				<div>
-					<p class="text-wrap text-center text-xl whitespace-pre-line m-8">
+					<p
+						class="text-wrap text-center text-lg whitespace-pre-line m-8 leading-10"
+					>
 						{{ allergyContent }}
 					</p>
 				</div>
 				<div
-					class="text-center whitespace-pre-line border border-gray-200 shadow rounded-lg m-8"
+					class="text-center whitespace-pre-line border border-gray-200 shadow rounded mx-32"
 				>
 					<br />
-					<p class="text-xl underline font-bold">※ 알레르기 유발식품</p>
+					<p class="text-xl underline font-bold">※ 알레르기 유발식품 ※</p>
 					<br />
-					<p class="mb-8">{{ allergyType }}</p>
+					<div class="flex flex-wrap justify-center mx-16 mb-8">
+						<template v-for="allergy in allergyList" :key="allergy.no">
+							<span class="inline-block text-base mr-8 py-2"
+								>{{ allergy.no }}. {{ allergy.name }}</span
+							>
+						</template>
+					</div>
 				</div>
-				<div class="flex items-center flex-wrap">
+				<div class="flex items-center flex-wrap mx-32 mt-8">
 					<template v-for="allergy in allergyList" :key="allergy.no">
-						<div class="w-1/5 p-2">
+						<div class="w-1/5 p-1 flex items-center">
 							<input
 								:id="'checked-checkbox-' + allergy.no"
 								type="checkbox"
 								:value="allergy.no"
 								:checked="isKidAllergic(allergy.no)"
-								class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+								disabled
+								class="w-4 h-4 border-gray-100 rounded"
 							/>
 							<label
 								:for="'checked-checkbox-' + allergy.no"
-								class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+								class="px-3 text-lg font-medium text-black"
 							>
-								{{ allergy.name }}
+								{{ allergy.no }}. {{ allergy.name }}
 							</label>
 						</div>
 					</template>
 				</div>
 				<div class="flex justify-end">
-					<div class="flex-col text-gray-700 text-xl font-bold m-8">
+					<div class="flex-col text-black font-bold m-8">
 						<div>
-							<p class="mb-8">반 : {{ kidAllergy[0].classroomName }}</p>
-							<p class="mb-8">이름 : {{ kidAllergy[0].kidName }}</p>
-						</div>
-						<div>
-							<h2>전자 서명:</h2>
-							<document-signature />
+							<div class="text-black text-xl font-bold">
+								<p class="my-4 mx-1">이름 : {{ myKidAllergyList.kidName }}</p>
+							</div>
+							<h2 class="mx-1 mb-1 text-xl">전자 서명:</h2>
+							<div
+								v-if="myKidAllergyList.kidAllergySignature"
+								class="border relative text-center items-center font-bold text-xl h-32 w-64"
+							>
+								<img
+									:src="myKidAllergyList.kidAllergySignature"
+									alt="image"
+									class="z-0 absolute top-0 left-0 w-full h-full"
+								/>
+								<div
+									class="z-10 relative flex items-center justify-center h-full"
+								>
+									<span>(인 또는 서명)</span>
+								</div>
+							</div>
+							<div
+								class="border relative text-center items-center text-xl h-32 w-64"
+								v-else
+							>
+								<div
+									class="z-10 relative flex items-center justify-center text-lg font-medium h-full"
+								>
+									<span>등록된 서명이 없습니다.</span>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-		<div v-else>
-			<!-- Parents -->
-			<div
-				class="container mx-16 p-1.5 w-auto border border-gray-200 shadow rounded-lg"
-			>
-				<div class="flex justify-end items-center mb-10">
-					<button
-						type="button"
-						@click="check()"
-						class="mt-8 mr-6 text-white hover:text-dark-navy border border-dark-navy bg-dark-navy hover:bg-white focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
-					>
-						{{ confirm ? '확인완료' : '미확인' }}
-					</button>
-					<button
-						type="button"
-						@click="goBack()"
-						class="mt-8 mr-8 text-white hover:text-dark-navy border border-dark-navy bg-dark-navy hover:bg-white focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
-					>
-						목록
-					</button>
-				</div>
-				<div>
-					<p class="text-gray-700 text-4xl font-bold text-center">
-						식품 알레르기 조사서
-					</p>
-				</div>
-				<p class="text-wrap text-center whitespace-pre-line">
-					원아들의 식품 알레르기에 관한 실태를 파악하고 발병 등에 대한 예방
-					조치와 제거 및 대체식품의 필요여부를 확인하고자 하오니 특정 식품에
-					대한 알레르기 반응이 있는 식품을 확인하여 체크해주시기 바랍니다.
-				</p>
-				<div
-					class="text-center whitespace-pre-line border border-gray-200 shadow rounded-lg"
+		<template v-else>
+			<!-- Parents Version -->
+			<div class="flex justify-end items-center mb-10">
+				<button
+					type="button"
+					disabled
+					@click="check()"
+					class="-mt-2.5 mr-5"
+					:class="
+						myKidAllergyList.kidAllergyCheck
+							? 'bg-dark-navy w-20 text-white rounded-md p-3 py-[0.6rem] cursor-default'
+							: 'bg-gray-300 w-20 text-black font-semibold rounded-md py-[0.65rem] px-[1.1rem] cursor-default'
+					"
 				>
-					※ 알레르기 유발식품 1. 난류 2. 우유 3. 메밀 4. 땅콩 5. 대두 6. 밀 7.
-					고등어 8. 게 9. 새우 10. 돼지고기 11. 복숭아 12. 토마토 13. 아황산류
-					14. 호두 15. 닭고기 16. 쇠고기 17. 오징어 18. 조개 19. 잣
-				</div>
-				<div class="flex items-center">
+					{{ myKidAllergyList.kidAllergyCheck ? '확인완료' : '미확인' }}
+				</button>
+			</div>
+			<div>
+				<p class="text-black text-4xl font-bold text-center">
+					식품 알레르기 조사서
+				</p>
+			</div>
+			<div>
+				<p
+					class="text-wrap text-center text-lg whitespace-pre-line m-8 leading-10"
+				>
+					{{ allergyContent }}
+				</p>
+			</div>
+			<div
+				class="text-center whitespace-pre-line border border-gray-200 shadow rounded mx-32"
+			>
+				<br />
+				<p class="text-xl underline font-bold">※ 알레르기 유발식품 ※</p>
+				<br />
+				<div class="flex flex-wrap justify-center mx-16 mb-8">
 					<template v-for="allergy in allergyList" :key="allergy.no">
+						<span class="inline-block text-base mr-8 py-2"
+							>{{ allergy.no }}. {{ allergy.name }}</span
+						>
+					</template>
+				</div>
+			</div>
+			<div class="flex items-center flex-wrap mx-32 mt-8">
+				<template v-for="allergy in allergyList" :key="allergy.no">
+					<div class="w-1/5 p-1 flex items-center">
 						<input
 							:id="'checked-checkbox-' + allergy.no"
 							type="checkbox"
 							:value="allergy.no"
 							:checked="isKidAllergic(allergy.no)"
-							class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+							disabled
+							class="w-4 h-4 border-gray-100 rounded"
 						/>
 						<label
 							:for="'checked-checkbox-' + allergy.no"
-							class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+							class="px-3 text-lg font-medium text-black"
 						>
-							{{ allergy.name }}
+							{{ allergy.no }}. {{ allergy.name }}
 						</label>
-					</template>
-				</div>
-				<div>
-					<p>반 : {{ kidAllergy.classroomName }}</p>
-					<p>이름 : {{ kidAllergy.kidName }}</p>
-					<p>서명란 - 추가작업</p>
+					</div>
+				</template>
+			</div>
+			<div class="flex justify-end">
+				<div class="flex-col text-black font-bold m-8">
+					<div class="text-black text-xl font-bold">
+						<p class="my-4 mx-1">이름 : {{ myKidAllergyList.kidName }}</p>
+					</div>
+					<h2 class="mx-1 mb-1 text-xl">전자 서명:</h2>
+					<div
+						v-if="myKidAllergyList.kidAllergySignature"
+						class="border relative text-center items-center font-bold text-xl h-32 w-64"
+					>
+						<img
+							:src="myKidAllergyList.kidAllergySignature"
+							alt="image"
+							class="z-0 absolute top-0 left-0 w-full h-full"
+						/>
+						<div class="z-10 relative flex items-center justify-center h-full">
+							<span>(인 또는 서명)</span>
+						</div>
+					</div>
+					<div
+						class="border relative text-center items-center text-xl h-32 w-64"
+						v-else
+					>
+						<div
+							class="z-10 relative flex items-center justify-center text-lg font-medium h-full"
+						>
+							<span>등록된 서명이 없습니다.</span>
+						</div>
+					</div>
 				</div>
 			</div>
-		</div>
+		</template>
 	</div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-import DocumentSignature from '@/components/document/DocumentSignature.vue';
+import { ref, onMounted } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
+import { useAllergyStore } from '@/store/allergy';
 
 const router = useRouter();
-const isTeacher = ref(true);
+const route = useRoute();
+const allergyStore = useAllergyStore();
 
-const kidAllergy = [
-	{
-		kidId: 100,
-		classroomName: '개나리',
-		kidName: '김샛별',
-		kidAllergy: '1/2/11/12',
-		kidAllergySignature: 'String',
-	},
-];
+let loginStore = JSON.parse(localStorage.getItem('loginStore'));
+let isTeacher = loginStore.isTeacher;
+
+// 내 아이 id 조회
+const kidId = loginStore.isTeacher
+	? route.params.kidId
+	: loginStore.kidList[0].kidId;
+
+// 데이터 목록 가져오기
+const myKidAllergyList = ref([]);
+const getmyAllergyList = async kidId => {
+	await allergyStore.getmyAllergyList(kidId);
+	myKidAllergyList.value = allergyStore.myKidAllergyList;
+};
+
+onMounted(async () => {
+	await getmyAllergyList(kidId);
+});
 
 const allergyList = ref([
 	{
@@ -234,26 +308,40 @@ const allergyList = ref([
 	},
 ]);
 
-// 해당 알러지 번호가 알러지 목록에 있는지 확인하는 함수
+// 해당 알러지 번호가 알러지 목록에 있는지 확인하는 함수 -> 아래 if문 처리를 안하면, 비동기-동기 undefined 문제 발생
 const isKidAllergic = allergyNo => {
-	return kidAllergy[0].kidAllergy.split('/').includes(allergyNo.toString());
+	if (myKidAllergyList.value && myKidAllergyList.value.kidAllergy) {
+		return myKidAllergyList.value.kidAllergy
+			.split('/')
+			.includes(allergyNo.toString());
+	}
+	return false;
 };
 
-const confirm = ref(false);
-function check() {
-	confirm.value = !confirm.value;
+// 버튼
+async function check() {
+	if (myKidAllergyList.value.kidAllergyCheck === false) {
+		myKidAllergyList.value.kidAllergyCheck =
+			!myKidAllergyList.value.kidAllergyCheck;
+		await allergyStore.getAllergyCheckList(kidId);
+	}
 }
 
 function goBack() {
 	router.go(-1);
 }
+// 버튼 끝
 
+// 문구
 const allergyContent = ref(
-	'원아들의 식품 알레르기에 관한 실태를 파악하고 \n \n 발병 등에 대한 예방조치와 제거 및 대체식품의 필요여부를 확인하고자 하오니 \n \n 특정 식품에 대한 알레르기 반응이 있는 식품을 확인하여 체크해주시기 바랍니다.',
-);
-const allergyType = ref(
-	'1. 난류 2. 우유 3. 메밀 4. 땅콩 5. 대두 6. 밀 7.고등어 8. 게 9. 새우 10. 돼지고기 \n 11. 복숭아 12. 토마토 13. 아황산류 14. 호두 15. 닭고기 16. 쇠고기 17. 오징어 18. 조개 19. 잣',
+	'원아들의 식품 알레르기에 관한 실태를 파악하고 발병 등에 대한 예방조치와 제거 및 대체식품의 필요여부를  \n 확인하고자 하오니 특정 식품에 대한 알레르기 반응이 있는 식품을 확인하여 체크해주시기 바랍니다.',
 );
 </script>
 
-<style scoped></style>
+<style scoped>
+input[type='checkbox']:disabled:checked {
+	-webkit-appearance: none;
+	background-color: #333752;
+	color: white;
+}
+</style>
