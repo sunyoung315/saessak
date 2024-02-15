@@ -49,7 +49,7 @@ svm_model = joblib.load('svm_model_euclidean_l2.pkl')
 
 CORS(app, origins="*")  
 
-def is_face_in_picture (know : list, embedding_list : list, distance_metric: str) :
+def min_dist_vector (know : list, embedding_list : list, distance_metric: str) :
     distance_list= []
     # threshold = dst.findThreshold(model_name=model, distance_metric=distance_metric)*weight
 
@@ -176,7 +176,7 @@ def verifyAlbum():
                 for kid_id, kid_embedding in kid_embeddings.items() : 
                     
                     for kid_embed in kid_embedding :
-                        min_dist_vector = is_face_in_picture(kid_embed, image_embeddings, distance_metric="euclidean_l2")
+                        min_dist_vector = min_dist_vector(kid_embed, image_embeddings, distance_metric="euclidean_l2")
                         result = svm_model.predict([min_dist_vector])
                         if(result[0]):
                             kid_album[kid_id].append(add_object.copy())
