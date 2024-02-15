@@ -323,7 +323,7 @@ const kidId = ref(0);
 // 새로운 알림장 변수
 const newBoard = ref({
 	kidId,
-	boardDate: new Date(),
+	boardDate: '',
 	boardContent: '',
 	boardTemperature: 0.0,
 	boardSleepTime: 0.0,
@@ -348,7 +348,7 @@ const checkContentLength = () => {
 // 아이 선택하면 최근 키/체중 가져오기
 watch(kidId, async newVal => {
 	await boardStore.getCurrentBoard(newVal);
-	if (!boardStore.noContent) {
+	if (boardStore.oneBoard) {
 		newBoard.value.boardTall = boardStore.oneBoard.boardTall;
 		newBoard.value.boardWeight = boardStore.oneBoard.boardWeight;
 	} else {
@@ -519,6 +519,15 @@ const registBoard = () => {
 	if (checkEmptyFields()) {
 		return;
 	}
+	if (boardStore.oneBoard) {
+		if (newBoard.value.boardTall === boardStore.oneBoard.boardTall) {
+			newBoard.value.boardTall = 0;
+		}
+		if (newBoard.value.boardWeight === boardStore.oneBoard.boardWeight) {
+			newBoard.value.boardWeight = 0;
+		}
+	}
+
 	createBoard(newBoard.value);
 	router.push({ name: 'BoardList' });
 };
