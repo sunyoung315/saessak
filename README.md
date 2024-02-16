@@ -17,7 +17,7 @@
 <summary>서비스 화면</summary>
 <div>
 
-![메인페이지](/assets/.gif)
+![메인페이지](/assets/메인화면 로그인.gif)
 </div>
 </details>
 <br>
@@ -30,7 +30,7 @@
 <summary>서비스 화면</summary>
 <div>
 
-![공지사항](/assets/.gif)
+![공지사항](/assets/공지사항.gif)
 </div>
 </details>
 <br>
@@ -44,7 +44,7 @@
 <summary>서비스 화면</summary>
 <div>
 
-![알림장](/assets/.gif)
+![알림장](/assets/알림장.gif)
 </div>
 </details>
 <br>
@@ -58,7 +58,7 @@
 <summary>서비스 화면</summary>
 <div>
 
-![앨범](/assets/.gif)
+![앨범](/assets/앨범.gif)
 </div>
 </details>
 <br>
@@ -72,7 +72,7 @@
 <summary>서비스 화면</summary>
 <div>
 
-![동의서](/assets/.gif)
+![동의서](/assets/동의서.gif)
 </div>
 </details>
 <br>
@@ -86,7 +86,7 @@
 <summary>서비스 화면</summary>
 <div>
 
-![식단표](/assets/.gif)
+![식단표](/assets/식단표.gif)
 </div>
 </details>
 <br>
@@ -100,7 +100,7 @@
 <summary>서비스 화면</summary>
 <div>
 
-![출석부](/assets/.gif)
+![출석부](/assets/출석부.gif)
 </div>
 </details>
 <br>
