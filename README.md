@@ -16,6 +16,7 @@
 <details>
 <summary>서비스 화면</summary>
 <div>
+
 ![메인페이지](/assets/.gif)
 </div>
 </details>
@@ -28,6 +29,7 @@
 <details>
 <summary>서비스 화면</summary>
 <div>
+
 ![공지사항](/assets/.gif)
 </div>
 </details>
@@ -41,6 +43,7 @@
 <details>
 <summary>서비스 화면</summary>
 <div>
+
 ![알림장](/assets/.gif)
 </div>
 </details>
@@ -54,6 +57,7 @@
 <details>
 <summary>서비스 화면</summary>
 <div>
+
 ![앨범](/assets/.gif)
 </div>
 </details>
@@ -67,6 +71,7 @@
 <details>
 <summary>서비스 화면</summary>
 <div>
+
 ![동의서](/assets/.gif)
 </div>
 </details>
@@ -80,6 +85,7 @@
 <details>
 <summary>서비스 화면</summary>
 <div>
+
 ![식단표](/assets/.gif)
 </div>
 </details>
@@ -93,6 +99,7 @@
 <details>
 <summary>서비스 화면</summary>
 <div>
+
 ![출석부](/assets/.gif)
 </div>
 </details>
@@ -106,6 +113,7 @@
 <details>
 <summary>서비스 화면</summary>
 <div>
+
 ![채팅](/assets/a.gif)
 </div>
 </details>
@@ -216,8 +224,13 @@
 
 ### [API 명세서](https://spiny-nylon-a25.notion.site/API-52047430168d4934ba76a379369aa596?pvs=4)
 
-![api](/assets/api1.png)
-![api](/assets/api2.png)
+<details>
+<summary>자세히 보기</summary>
+<div markdown="1">
+
+![api](/assets/api.png)
+</div>
+</details>
 
 ### 아키텍처
 
@@ -247,6 +260,7 @@ Test: 테스트 코드 작성
 <details>
 <summary>FE 폴더 구조</summary>
 <div markdown="1">
+
 ```
 📦frontend
  ┗ 📂saessak
@@ -280,6 +294,7 @@ Test: 테스트 코드 작성
 <details>
 <summary>BE 폴더 구조</summary>
 <div markdown="1">
+
 ```
 📦backend
  ┗ 📂saessak
@@ -379,6 +394,7 @@ Test: 테스트 코드 작성
 <details>
 <summary>AI 폴더 구조</summary>
 <div markdown="1">
+
 ```
 📦recognition   
  ┗ 📂deepface    
