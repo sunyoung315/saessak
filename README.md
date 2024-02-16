@@ -114,7 +114,7 @@
 <summary>서비스 화면</summary>
 <div>
 
-![채팅](/assets/a.gif)
+![채팅](/assets/채팅.gif)
 </div>
 </details>
 <br>
