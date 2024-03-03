@@ -230,6 +230,7 @@
         </td>
     </tr>
 </table>
+<br>
 
 ## 👐 프로젝트 산출물 👐
 
@@ -240,10 +241,12 @@
 
 📌 선생님 화면
 ![Figma](/assets/teacherView.png)
+<br>
 
 ### [ERD](https://www.erdcloud.com/d/jzdAxd3ySZ8tXDa5n)
 
 ![ERD](/assets/ERD.png)
+<br>
 
 ### [API 명세서](https://spiny-nylon-a25.notion.site/API-52047430168d4934ba76a379369aa596?pvs=4)
 
@@ -254,10 +257,12 @@
 ![api](/assets/api.png)
 </div>
 </details>
+<br>
 
 ### 아키텍처
 
 ![image](/assets/architecture.png)
+<br>
 
 ### [포팅 매뉴얼](https://spiny-nylon-a25.notion.site/607d2233ca3d498caaad1617cc111ed3?pvs=4)
 
@@ -277,6 +282,7 @@ Style : 코드 포맷 변경, 세미콜론 누락, 코드 수정이 없는경우
 Refactor : 코드 리팩토링
 Test: 테스트 코드 작성
 ```
+<br>
 
 ## 👐 📦 폴더 구조 👐
 
